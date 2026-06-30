@@ -1,11 +1,11 @@
-import React, { useMemo, useState, type MouseEvent } from 'react'
-import ModalWrapper from '../../../common/ModalWrapper'
+import { useMemo, useState, type MouseEvent } from 'react'
+import Button from '../../../common/Button'
 import { Typography } from '../../../common/Typography'
 import TextInput from '../../../Form/TextInput'
-import Button from '../../../common/Button'
-import type { CatColor, DogColor, PetType } from '../types'
-import { XIcon } from 'lucide-react'
+import ModalHeader from '../../../modal/ModalHeader'
+import ModalWrapper from '../../../modal/ModalWrapper'
 import { usePetHouse } from '../contexts/PetHouseContext'
+import type { CatColor, DogColor, PetType } from '../types'
 
 const cat_colors: {
     id: CatColor,
@@ -68,14 +68,13 @@ export default function NewPetModal({ open, onClose }: NewPetModalProps) {
             <div
 
                 onClick={stopPropagation}
-                className="container p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none">
-                <div className="flex-center-between">
-                    <Typography variant="h2">New Pet</Typography>
+                className="app_container app_gradient backdrop-blur-md p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none">
 
-                    <Button onClick={onClose} variant='ghost' size='icon'>
-                        <XIcon className='size-6' />
-                    </Button>
-                </div>
+
+                <ModalHeader
+                    title='New Pet'
+                    onClose={onClose}
+                />
 
                 <TextInput
                     value={name}

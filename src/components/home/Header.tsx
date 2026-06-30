@@ -24,7 +24,7 @@ export default function Header({ settings }: { settings: Settings }) {
 
             <div className="flex-row-center gap-x-2">
 
-                <div className="container h-16 px-12 w-fit flex-center">
+                <div className="app_container app_gradient backdrop-blur-md h-16 px-12 w-fit flex-center">
                     <Typography className="text-" variant="h1">
                         Hello, {settings.name}
                     </Typography>
@@ -41,7 +41,7 @@ export default function Header({ settings }: { settings: Settings }) {
                 <Focus />
 
 
-                <div className="h-full container w-54 flex-center">
+                <div className="h-full app_container app_gradient backdrop-blur-md w-54 flex-center">
                     <Typography variant="h3">
                         <Moment date={now} format="MMM D, HH:mm:ss" />
                     </Typography>

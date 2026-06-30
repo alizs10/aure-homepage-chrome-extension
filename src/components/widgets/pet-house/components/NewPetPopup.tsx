@@ -1,7 +1,6 @@
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
-import useClickOutside from "../../../../hooks/useOutsideClick";
 
 import Button from "../../../common/Button";
 import NewPetModal from "../modals/NewPetModal";

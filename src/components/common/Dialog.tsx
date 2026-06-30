@@ -1,10 +1,10 @@
-import { XIcon } from "lucide-react";
 import { Typography } from "../common/Typography";
 import type { ChangeEvent, MouseEvent, ReactNode } from "react";
 import type { ButtonVariant } from "./Button";
-import ModalWrapper from "./ModalWrapper";
+import ModalWrapper from "../modal/ModalWrapper";
 import Button from "./Button";
 import TextInput from "../Form/TextInput";
+import ModalHeader from "../modal/ModalHeader";
 
 interface DialogProps {
     open: boolean;
@@ -42,22 +42,14 @@ export default function Dialog({ open, onClose, buttons, title, desc }: DialogPr
 
     return (
         <ModalWrapper open={open} onClose={onClose}>
-            <div onClick={stopPropagation} className="container p-5 flex flex-col w-full max-w-4/5 sm:max-w-md">
+            <div onClick={stopPropagation} className="app_container app_gradient backdrop-blur-md p-5 flex flex-col w-full max-w-4/5 sm:max-w-md">
 
 
+                <ModalHeader
+                    title={title}
+                    onClose={onClose}
+                />
 
-                <div className="flex-center-between">
-                    <Typography
-                        className='text-center'
-                        variant="h2"
-                    >
-                        {title}
-                    </Typography>
-
-                    <Button onClick={onClose} variant='ghost' size='icon'>
-                        <XIcon className='size-6' />
-                    </Button>
-                </div>
 
 
                 {desc && (

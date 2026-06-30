@@ -6,7 +6,7 @@ import { NotesAndChecklistsProvider } from './contexts/NotesAndChecklistsContext
 
 function NotesAndChecklistsContent() {
     return (
-        <div className="flex-1 flex min-h-0 flex-col container col-span-1 p-5 row-span-2 h-full max-h-full gap-y-4">
+        <div className="flex-1 flex min-h-0 flex-col app_container app_gradient backdrop-blur-md col-span-1 p-5 row-span-2 h-full max-h-full gap-y-4">
             <Typography className='capitalize' variant="h1">
                 notes & checklists
             </Typography>

@@ -1,0 +1,117 @@
+import { addMonths, format, subMonths } from 'date-fns';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import { DayPicker } from 'react-day-picker';
+import Button from '../../../common/Button';
+import { Typography } from '../../../common/Typography';
+import DayButton from '../DayButton';
+import { useCalendar } from '../hooks/useCalendar';
+import NewCalendarNote from './NewCalendarNote';
+import AttachedNote from './AttachedNote';
+import { useMemo } from 'react';
+
+export default function CalendarContent() {
+
+    const { today, isTodaySelected, selectedDay, selectSelectedDay, month, selectMonth, getNoteForDay } = useCalendar()
+
+    const hasAttachedNote = useMemo(() => {
+        if (!selectedDay) return false;
+        return getNoteForDay(selectedDay);
+    }, [selectedDay, getNoteForDay]);
+
+    return (
+        <div className="col-span-1 row-span-2 app_container app_gradient backdrop-blur-md h-full flex flex-col gap-y-4 p-5">
+            <div className="flex-center-between">
+                <Typography className="capitalize" variant="h1">
+                    Calendar
+                </Typography>
+
+                <div className="flex-row-center gap-x-2 h-full">
+                    {(!isTodaySelected && selectedDay) && (
+                        <Button
+                            size="sm"
+                            className="h-full"
+                            onClick={() => {
+                                selectSelectedDay(today);
+                                selectMonth(today);
+                            }}
+                        >
+                            <Typography variant="caption-xs" weight="medium">
+                                Today
+                            </Typography>
+                        </Button>
+                    )}
+                    {(selectedDay && !hasAttachedNote) && (
+                        <NewCalendarNote selected_day={selectedDay} />
+                    )}
+                </div>
+            </div>
+
+            <div className="flex-1 min-h-0 w-full">
+
+                <div className="flex items-center justify-between mb-4">
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => selectMonth(subMonths(month, 1))}
+                    >
+                        <ChevronLeftIcon className="size-4" />
+                    </Button>
+
+                    <Typography variant="h3">
+                        {format(month, "MMMM yyyy")}
+                    </Typography>
+
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => selectMonth(addMonths(month, 1))}
+                    >
+                        <ChevronRightIcon className="size-4" />
+                    </Button>
+                </div>
+
+                <DayPicker
+                    month={month}
+                    onMonthChange={selectMonth}
+                    hideNavigation
+                    mode="single"
+                    selected={selectedDay}
+                    onSelect={selectSelectedDay}
+                    components={{
+                        DayButton: DayButton,
+
+                    }}
+                    className="text-sm"
+                    classNames={{
+                        root: "w-full",
+
+                        months: "w-full",
+                        month: "w-full space-y-4",
+
+                        month_caption: "hidden",
+                        caption_label: "text-lg font-semibold",
+
+                        nav: "flex items-center gap-2",
+
+                        // button_previous: buttonClass("ghost", "icon-sm"),
+                        // button_next: buttonClass("ghost", "icon-sm"),
+
+                        weekdays: "grid grid-cols-7",
+                        weekday:
+                            "flex justify-center text-xs font-medium text-muted-foreground uppercase",
+
+                        month_grid: "w-full border-separate",
+
+                        week: "grid grid-cols-7",
+
+                        day: "flex justify-center",
+                    }}
+                />
+            </div>
+
+
+            <AttachedNote />
+
+        </div>
+    )
+}

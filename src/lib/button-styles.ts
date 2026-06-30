@@ -40,7 +40,7 @@ export function buttonClass(
     className?: string
 ) {
     return cn(
-        "relative inline-flex items-center justify-center gap-x-2 rounded-3xl font-medium transition-all duration-150 disabled:opacity-50",
+        "relative gap-x-2 rounded-3xl font-medium transition-all duration-150 disabled:opacity-50",
         buttonVariants[variant],
         buttonSizes[size],
         className

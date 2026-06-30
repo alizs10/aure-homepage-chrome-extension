@@ -15,7 +15,7 @@ export default function PetHouse() {
     return (
         <PetHouseProvider>
 
-            <div className="container col-span-1 row-span-1 flex flex-col h-full relative">
+            <div className="app_container app_gradient backdrop-blur-md col-span-1 row-span-1 flex flex-col h-full relative">
 
                 <div id="pet-popup-root" className="absolute inset-0 pointer-events-none" />
 

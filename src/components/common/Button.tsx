@@ -7,11 +7,13 @@ import { cn } from "../../lib/util";
 
 export type ButtonVariant =
     | "primary"
+    | "primary-active"
     // | "outline-primary"
     // | "secondary"
     // | "outline"
     | "ghost"
     | "success"
+    | "success-active"
     // | "ghost-success"
     | "destructive"
     | "ghost-destructive"
@@ -54,7 +56,9 @@ type ButtonProps = LinkButtonProps | NativeButtonProps;
 
 const variantClasses: Record<ButtonVariant, string> = {
     primary:
-        "bg-gradient-to-b from-background to-background/30  backdrop-blur-md text-foreground border-t border-border hover:to-primary/20 dark:hover:to-primary/50",
+        "bg-gradient-to-b from-background to-background/30 backdrop-blur-md text-foreground border-t border-border hover:to-primary/20 dark:hover:to-primary/50",
+    "primary-active":
+        "bg-gradient-to-b from-background to-primary/30 backdrop-blur-md text-foreground border-t border-border hover:to-primary/20 dark:hover:to-primary/50",
 
     // secondary:
     //     "bg-secondary text-secondary-foreground hover:outline-6 outline-secondary/10",
@@ -72,6 +76,8 @@ const variantClasses: Record<ButtonVariant, string> = {
 
     success:
         "bg-gradient-to-b from-background to-background/30 backdrop-blur-md text-foreground border-t border-border hover:to-success/20 dark:hover:to-success/50",
+    "success-active":
+        "bg-gradient-to-b from-background to-success/30 backdrop-blur-md text-foreground border-t border-border hover:to-success/20 dark:hover:to-success/50",
     // "ghost-success":
     //     "text-foreground hover:bg-success/10 hover:text-success",
     destructive:

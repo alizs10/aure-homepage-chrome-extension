@@ -55,10 +55,10 @@ export function InputSection() {
             {editable && (
                 <div className="flex-row-center gap-x-2">
 
-                    <div role='div' className='size-10 min-w-10 container flex-center'>
+                    <div role='div' className='size-10 min-w-10 app_container app_gradient backdrop-blur-md flex-center'>
                         <PenLineIcon className='size-5' />
                     </div>
-                    <div className="container px-4 py-2">
+                    <div className="app_container app_gradient flex-1 backdrop-blur-md px-4 py-2">
                         <Typography className='' variant='body'>
                             {sliceText(editable.content, 15)}
                         </Typography>
@@ -70,19 +70,21 @@ export function InputSection() {
                 </div>
             )}
 
-            <div className="flex flex-row gap-x-2">
+            <div className="w-full flex flex-row gap-x-2">
 
 
 
-                <TextInput
-                    ref={inputRef}
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder='Type here...'
-                    className='placeholder:text-muted-foreground'
-                />
-                <Button size='icon' className='' onClick={handler}>
+                <div className="w-full">
+                    <TextInput
+                        ref={inputRef}
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder='Type here...'
+                        className='placeholder:text-muted-foreground text-base placeholder:text-base'
+                    />
+                </div>
+                <Button size='icon' className='h-full' onClick={handler}>
                     <SendIcon className='size-5' />
                 </Button>
             </div>

@@ -12,7 +12,7 @@ const ThemeToggle: React.FC = () => {
 
     if (!mounted) {
         // if (true) {
-        return <div className="flex items-center gap-1 p-1 container h-16">
+        return <div className="flex items-center gap-1 p-1 app_container app_gradient backdrop-blur-md h-16">
 
             <div className="h-full aspect-square rounded-full bg-muted animate-pulse" />
             <div className="h-full aspect-square rounded-full bg-muted animate-pulse" />
@@ -27,7 +27,7 @@ const ThemeToggle: React.FC = () => {
 
     return (
         <div className="relative">
-            <div className="p-1 h-16 container flex-row-center gap-x-1">
+            <div className="p-1 h-16 app_container app_gradient backdrop-blur-md flex-row-center gap-x-1">
                 <Button
                     onClick={() => {
                         setTheme('light');

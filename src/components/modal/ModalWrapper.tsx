@@ -11,7 +11,11 @@ export default function ModalWrapper({ children, open, onClose }: ModalWrapperPr
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
-        setMounted(true)
+        const init = () => {
+            setMounted(true)
+        }
+
+        init()
     }, [])
 
     useEffect(() => {

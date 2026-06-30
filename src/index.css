@@ -241,6 +241,10 @@ button {
   display: none;
 }
 
-.container {
-  @apply border-t border-border bg-linear-to-b from-background/30 to-background backdrop-blur-md rounded-3xl;
+.app_gradient {
+  @apply bg-linear-to-b from-background/30 to-background/60
+}
+
+.app_container {
+  @apply border-t border-border rounded-3xl;
 }

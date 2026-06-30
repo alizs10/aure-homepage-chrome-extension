@@ -16,7 +16,7 @@ export function ChecklistItem({ item, onChange }: ChecklistItemProps) {
     const content = item.content.substring(3, item.content.length);
 
     return (
-        <div className="flex-1 flex-row-center gap-x-1">
+        <div className="flex-row-center gap-x-1">
             <Button variant='success' onClick={() => onChange(item.id)} size='icon'>
                 {item.status ? (
                     <CircleCheckIcon className='size-5 text-success' />
@@ -24,7 +24,7 @@ export function ChecklistItem({ item, onChange }: ChecklistItemProps) {
                     <CircleIcon className='size-5' />
                 )}
             </Button>
-            <div className="container flex-1 px-4 py-2">
+            <div className="app_container app_gradient backdrop-blur-md flex-1 px-4 py-2">
                 <Typography className={`${item.status ? 'line-through' : ''}`} variant='body'>
                     {content}
                 </Typography>
