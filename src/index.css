@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+/* ===============================
+   Estedad Fa
+   =============================== */
+
+/* @font-face {
+  font-family: 'Estedad';
+  src: url('../public/fonts/estedad-fa/Estedad-FD-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Estedad';
+  src: url('../public/fonts/estedad-fa/Estedad-FD-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Estedad';
+  src: url('../public/fonts/estedad-fa/Estedad-FD-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Estedad';
+  src: url('../public/fonts/estedad-fa/Estedad-FD-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+} */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  /* Custom Sidebar Color */
+  --color-sidebar: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --font-sans:
+    "Montserrat", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* 
+  Using HSL values wrapped in hsl() to ensure they work as colors in Tailwind 4.
+*/
+
+:root {
+  /* Background: White */
+  --background: hsl(0 0% 100%);
+  /* Foreground: Zinc-950 */
+  --foreground: hsl(240 10% 3.9%);
+
+  /* Card: White */
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(240 10% 3.9%);
+
+  /* Popover */
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(240 10% 3.9%);
+
+  /* Primary: Indigo-600 */
+  --primary: hsl(249.2 75.8% 58.6%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  /* Secondary: Zinc-100 */
+  --secondary: hsl(240 4.8% 95.9%);
+  --secondary-foreground: hsl(240 5.9% 10%);
+
+  /* Muted/Borders: Zinc-200 */
+  --muted: hsl(240 5.9% 90%);
+  --muted-foreground: hsl(240 3.8% 46.1%);
+
+  /* Accent */
+  --accent: hsl(240 4.8% 95.9%);
+  --accent-foreground: hsl(240 5.9% 10%);
+
+  /* Destructive: Rose-600 */
+  --destructive: hsl(346.8 77.2% 49.8%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  /* Success: Lime-600 */
+  --success: hsl(85 85% 35%);
+  --success-foreground: hsl(0 0% 100%);
+
+  /* Warning: Amber-600 */
+  --warning: hsl(37 92% 44%);
+  --warning-foreground: hsl(0 0% 100%);
+
+  /* Border */
+  --border: hsl(240, 0.7%, 73.1%);
+  --input: hsl(240 5.9% 90%);
+  --ring: hsl(249.2 75.8% 58.6%);
+
+  /* Sidebar: Zinc-50 */
+  --sidebar-background: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 10% 3.9%);
+
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* Background: Zinc-950 */
+  --background: hsl(240 10% 3.9%);
+  /* Foreground: Zinc-50 */
+  --foreground: hsl(0 0% 98%);
+
+  /* Card */
+  --card: hsl(240 10% 3.9%);
+  --card-foreground: hsl(0 0% 98%);
+
+  /* Popover */
+  --popover: hsl(240 10% 3.9%);
+  --popover-foreground: hsl(0 0% 98%);
+
+  /* Primary: Indigo-500 */
+  --primary: hsl(243.6 85.5% 66.7%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  /* Secondary: Zinc-800 */
+  --secondary: hsl(240 3.7% 15.9%);
+  --secondary-foreground: hsl(0 0% 98%);
+
+    /* Muted: Zinc-900 */
+  --muted: hsl(240 5.9% 10%);
+  --muted-foreground: hsl(240 5% 64.9%);
+
+  /* Accent */
+  --accent: hsl(240 3.7% 15.9%);
+  --accent-foreground: hsl(0 0% 98%);
+
+  /* Destructive: Rose-500 */
+  --destructive: hsl(349.7 89.2% 60.2%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  /* Success: Lime-500 */
+  --success: hsl(84 81% 44%);
+  --success-foreground: hsl(0 0% 100%);
+
+  /* Warning: Amber-500 */
+  --warning: hsl(42 91% 50%);
+  --warning-foreground: hsl(0 0% 100%);
+
+  /* Border */
+  --border: hsl(240, 1%, 36.5%);
+  --input: hsl(240 3.7% 15.9%);
+  --ring: hsl(243.6 85.5% 66.7%);
+
+  /* Sidebar: Zinc-900 */
+  --sidebar-background: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(0 0% 98%);
+}
+html, body {
+  background: var(--secondary);
+  color: var(--foreground);
+  /* font-family: "Estedad", Arial, Helvetica, sans-serif; */
+}
+
+@utility flex-center {
+  @apply flex justify-center items-center;
+}
+
+@utility flex-center-between {
+  @apply flex justify-between items-center;
+}
+
+@utility flex-row-center {
+  @apply flex flex-row items-center;
+}
+
+@utility dir-ltr {
+  direction: ltr;
+}
+
+@utility dir-rtl {
+  direction: rtl;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+button {
+  @apply cursor-pointer;
+}
+
+.scrollbar-hide {
+  /* Firefox */
+  scrollbar-width: none;
+  
+  /* Internet Explorer and Edge (legacy) */
+  -ms-overflow-style: none;
+}
+
+/* Chrome, Safari, Edge (newer), and other WebKit browsers */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.container {
+  @apply border-t border-border bg-linear-to-b from-background/30 to-background backdrop-blur-md rounded-3xl;
+}
