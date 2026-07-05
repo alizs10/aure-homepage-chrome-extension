@@ -1,44 +1,52 @@
 // components/notes-and-checklists/InputSection.tsx
-import { PenLineIcon, PlusIcon, SendIcon, XIcon } from 'lucide-react';
+import { PenLineIcon, SendIcon, XIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { sliceText } from '../../../../helpers';
 import TextInput from '../../../Form/TextInput';
-import { useNotesAndChecklists } from '../contexts/NotesAndChecklistsContext';
 import Button from '../../../common/Button';
 import { Typography } from '../../../common/Typography';
-import { sliceText } from '../../../../helpers';
+import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
 
 export function InputSection() {
     const [input, setInput] = useState('');
     const { addItem, editable, updateItem, cancelEdit } = useNotesAndChecklists();
 
     const inputRef = useRef<HTMLInputElement | null>(null)
-
     useEffect(() => {
+
+        const clearInput = () => {
+            setInput('')
+        }
+
+        const init = () => {
+
+            if (!editable?.content) return
+
+            setInput(editable.content)
+            if (!inputRef.current) return
+            inputRef.current.focus()
+        }
+
 
         if (!editable) {
 
-            setInput("")
-
+            clearInput()
             return
         }
 
-        setInput(editable.content)
-        if (!inputRef.current) return
-        inputRef.current.focus()
+        init()
 
     }, [editable])
 
-    // const handleAdd = () => {
-    //     if (input.trim()) {
-    //         addItem(input);
-    //         setInput('');
-    //     }
-    // };
 
     const handler = () => {
         if (input.trim()) {
 
-            editable ? updateItem(input) : addItem(input);
+            if (editable) {
+                updateItem(input)
+            } else {
+                addItem(input);
+            }
 
             setInput('');
         }

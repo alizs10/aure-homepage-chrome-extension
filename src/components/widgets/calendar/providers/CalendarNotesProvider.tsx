@@ -9,10 +9,10 @@ const STORAGE_KEY = "calendar_notes";
 export default function CalendarNotesProvider({ children }: { children: ReactNode }) {
     const [data, setData] = useState<CalendarNote[]>([]);
 
-    const [month, setMonth] = useState(new Date());
-    const [selectedDay, setSelectedDay] = useState<Date>();
-
     const today = new Date();
+    const [month, setMonth] = useState(new Date());
+    const [selectedDay, setSelectedDay] = useState<Date>(today);
+
 
     const isTodaySelected =
         selectedDay && isSameDay(selectedDay, today);

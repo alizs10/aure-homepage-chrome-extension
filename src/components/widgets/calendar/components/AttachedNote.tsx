@@ -34,7 +34,7 @@ export default function AttachedNote() {
             <div className="app_container bg-background px-4 py-2 group relative">
                 {attachedNote ? (
                     <>
-                        <Typography className='line-clamp-2' variant="body">
+                        <Typography className='line-clamp-2 wrap-break-word' variant="body">
                             <StickyNoteIcon className='size-4.5 float-left mr-1 mt-0.75' />
                             {attachedNote.text}
                         </Typography>

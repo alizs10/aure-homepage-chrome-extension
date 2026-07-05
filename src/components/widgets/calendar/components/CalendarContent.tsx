@@ -21,7 +21,7 @@ export default function CalendarContent() {
     return (
         <div className="col-span-1 row-span-2 app_container app_gradient backdrop-blur-md h-full flex flex-col gap-y-4 p-5">
             <div className="flex-center-between">
-                <Typography className="capitalize" variant="h1">
+                <Typography className='capitalize' variant="h2">
                     Calendar
                 </Typography>
 
@@ -41,7 +41,7 @@ export default function CalendarContent() {
                         </Button>
                     )}
                     {(selectedDay && !hasAttachedNote) && (
-                        <NewCalendarNote selected_day={selectedDay} />
+                        <NewCalendarNote />
                     )}
                 </div>
             </div>

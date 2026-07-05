@@ -1,15 +1,9 @@
-import { ChartNoAxesColumnIcon, InfoIcon, PlusIcon } from "lucide-react";
-import Button from "../../common/Button";
 import { Typography } from "../../common/Typography";
-import Cat from "./components/Cat";
-import Cell from "./components/Cell";
-import Dog from "./components/Dog";
-import PetMovement from "./components/PetMovement";
 import InfoPopup from "./components/InfoPopup";
 import NewPetPopup from "./components/NewPetPopup";
 import PetsCells from "./components/PetsCells";
-import { PetHouseProvider } from "./contexts/PetHouseContext";
 import StatsPopup from "./components/StatsPopup";
+import { PetHouseProvider } from "./contexts/PetHouseContext";
 
 export default function PetHouse() {
     return (
@@ -23,7 +17,7 @@ export default function PetHouse() {
                 <div className="flex-center-between p-5">
 
 
-                    <Typography className="capitalize" variant="h2">
+                    <Typography className='capitalize' variant="h2">
                         pet house
                     </Typography>
 

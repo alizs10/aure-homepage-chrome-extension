@@ -1,8 +1,8 @@
 export interface Note {
     id: number;
     content: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: number;
+    updatedAt: number;
 }
 
 export interface Checklist extends Note {

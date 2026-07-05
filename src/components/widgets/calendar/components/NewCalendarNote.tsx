@@ -3,11 +3,7 @@ import { useState } from 'react';
 import Button from '../../../common/Button';
 import CalendarNoteModal from '../modals/CalendarNoteModal';
 
-interface NewCalendarNoteProps {
-    selected_day: Date;
-}
-
-export default function NewCalendarNote({ selected_day }: NewCalendarNoteProps) {
+export default function NewCalendarNote() {
 
     const [open, setOpen] = useState(false);
 
@@ -21,6 +17,7 @@ export default function NewCalendarNote({ selected_day }: NewCalendarNoteProps) 
             <Button
                 size="icon"
                 className="h-full"
+                variant="primary"
                 onClick={toggle}
             >
                 <CalendarPlusIcon className="size-4" />
@@ -29,7 +26,7 @@ export default function NewCalendarNote({ selected_day }: NewCalendarNoteProps) 
 
 
 
-            {open && (<CalendarNoteModal open={open} onClose={toggle} selected_day={selected_day} />)}
+            {open && (<CalendarNoteModal open={open} onClose={toggle} />)}
 
         </>
     )

@@ -4,10 +4,10 @@ import { ChecklistItem } from './ChecklistItem';
 import { NoteItem } from './NoteItem';
 import Button from '../../../common/Button';
 import { CopyCheckIcon, CopyIcon, PenIcon, TrashIcon } from 'lucide-react';
-import { useNotesAndChecklists } from '../contexts/NotesAndChecklistsContext';
-import type { NoteAndChecklist } from '../../../../types';
 import { copyToClipboard } from '../../../../helpers';
 import { AnimatePresence, motion } from 'framer-motion';
+import type { NoteAndChecklist } from '../types';
+import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
 
 interface ItemProps {
     item: NoteAndChecklist
@@ -101,9 +101,9 @@ export function Item({ item, onChange }: ItemProps) {
     const isChecklist = item.content.startsWith("[] ");
 
     const content = isChecklist ? (
-        <ChecklistItem item={item} onChange={onChange} />
+        <ChecklistItem item={item} onChange={onChange} date={item.updatedAt} edited={item.createdAt !== item.updatedAt} />
     ) : (
-        <NoteItem content={item.content} />
+        <NoteItem content={item.content} date={item.updatedAt} edited={item.createdAt !== item.updatedAt} />
     );
 
     return (

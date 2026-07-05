@@ -1,14 +1,11 @@
-import { SettingsIcon } from "lucide-react";
-import { Typography } from "../components/common/Typography";
-import type { Settings } from "../types/settings";
-import HomeLayout from "../layouts/HomeLayout";
 import TextInput from "../components/Form/TextInput";
-import { useEffect, useState } from "react";
 import TopSites from "../components/home/TopSites";
-import NotesAndChecklists from "../components/widgets/notes-and-checklists/NotesAndChecklists";
-import Cat from "../components/widgets/pet-house/components/Cat";
-import PetHouse from "../components/widgets/pet-house/PetHouse";
 import Calendar from "../components/widgets/calendar/Calendar";
+import MoodTracker from "../components/widgets/mood-tracker/MoodTracker";
+import NotesAndChecklists from "../components/widgets/notes-and-checklists/NotesAndChecklists";
+import PetHouse from "../components/widgets/pet-house/PetHouse";
+import HomeLayout from "../layouts/HomeLayout";
+import type { Settings } from "../types/settings";
 
 
 
@@ -35,11 +32,7 @@ export default function Home({ settings }: { settings: Settings }) {
                     <div className="w-full grid grid-cols-3 grid-rows-2 gap-4 flex-1 min-h-0 h-full">
                         <NotesAndChecklists />
                         <Calendar />
-                        <div className="border-t border-border col-span-1 flex-center row-span-1 rounded-3xl bg-background/50 backdrop-blur-md h-full">
-                            <Typography variant="h1">
-                                game
-                            </Typography>
-                        </div>
+                        <MoodTracker />
 
                         <PetHouse />
                         {/* <div className="border-t border-border col-span-1 flex-center row-span-2 rounded-3xl bg-background/50 backdrop-blur-md h-full">

@@ -1,9 +1,9 @@
 // components/notes-and-checklists/ItemsList.tsx
 import { useRef } from 'react';
 import { Item } from './Item';
-import { useNotesAndChecklists } from '../contexts/NotesAndChecklistsContext';
 import { useScrollToBottom } from '../../../../hooks/useScrollToBottom';
 import { Typography } from '../../../common/Typography';
+import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
 
 export function ItemsList() {
     const containerRef = useRef<HTMLDivElement>(null);
