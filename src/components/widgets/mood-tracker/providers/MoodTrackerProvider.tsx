@@ -4,8 +4,9 @@ import { format } from "date-fns";
 import MoodTrackerContext from "../contexts/MoodTrackerContext";
 import type { filters, MoodHistory, MoodType } from "../types";
 import { calculateMoodScore } from "../helpers/history";
+import { STORAGE_KEYS } from "@/constants/storage_keys";
 
-const STORAGE_KEY = "mood_tracker_history";
+const STORAGE_KEY = STORAGE_KEYS.moodTracker;
 
 export default function MoodTrackerProvider({ children }: { children: ReactNode }) {
     const [data, setData] = useState<MoodHistory[]>([]);

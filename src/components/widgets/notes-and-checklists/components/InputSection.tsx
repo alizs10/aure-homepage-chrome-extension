@@ -63,10 +63,10 @@ export function InputSection() {
             {editable && (
                 <div className="flex-row-center gap-x-2">
 
-                    <div role='div' className='size-10 min-w-10 app_container app_gradient backdrop-blur-md flex-center'>
+                    <div role='div' className='size-10 min-w-10 app_container app_gradient app-blur flex-center'>
                         <PenLineIcon className='size-5' />
                     </div>
-                    <div className="app_container app_gradient flex-1 backdrop-blur-md px-4 py-2">
+                    <div className="app_container app_gradient flex-1 app-blur px-4 py-2">
                         <Typography className='' variant='body'>
                             {sliceText(editable.content, 15)}
                         </Typography>

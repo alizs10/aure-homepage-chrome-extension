@@ -39,7 +39,7 @@ export default function AttachedNote() {
                             {attachedNote.text}
                         </Typography>
 
-                        <div className="app_container  absolute inset-0 left-auto transition-all duration-200 w-0 group-hover:w-24 h-full flex-center gap-2 overflow-clip border-t-0!  backdrop-blur-md rounded-l-none! z-20">
+                        <div className="app_container  absolute inset-0 left-auto transition-all duration-200 w-0 group-hover:w-24 h-full flex-center gap-2 overflow-clip border-t-0!  app-blur rounded-l-none! z-20">
                             <Button
                                 onClick={toggle}
                                 size='icon-sm' variant='warning'>

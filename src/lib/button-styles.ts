@@ -4,22 +4,22 @@ import { cn } from "./util";
 
 export const buttonVariants = {
     primary:
-        "bg-gradient-to-b from-background to-background/30 backdrop-blur-md text-foreground border-t border-border hover:to-primary/20 dark:hover:to-primary/50",
+        "bg-gradient-to-b from-background to-background/30 app-blur text-foreground border-t border-border hover:to-primary/20 dark:hover:to-primary/50",
 
     ghost:
-        "bg-none hover:bg-gradient-to-b hover:from-secondary hover:to-background/30 hover:backdrop-blur-md border-t border-transparent hover:border-border text-foreground",
+        "bg-none hover:bg-gradient-to-b hover:from-secondary hover:to-background/30 hover:app-blur border-t border-transparent hover:border-border text-foreground",
 
     success:
-        "bg-gradient-to-b from-background to-background/30 backdrop-blur-md text-foreground border-t border-border hover:to-success/20 dark:hover:to-success/50",
+        "bg-gradient-to-b from-background to-background/30 app-blur text-foreground border-t border-border hover:to-success/20 dark:hover:to-success/50",
 
     destructive:
-        "bg-gradient-to-b from-background to-background/30 backdrop-blur-md text-foreground border-t border-border hover:to-destructive/20 dark:hover:to-destructive/50",
+        "bg-gradient-to-b from-background to-background/30 app-blur text-foreground border-t border-border hover:to-destructive/20 dark:hover:to-destructive/50",
 
     "ghost-destructive":
-        "bg-none hover:bg-gradient-to-b hover:from-secondary hover:to-background/30 hover:backdrop-blur-md border-t border-transparent hover:border-border hover:to-destructive/20 dark:hover:to-destructive/50",
+        "bg-none hover:bg-gradient-to-b hover:from-secondary hover:to-background/30 hover:app-blur border-t border-transparent hover:border-border hover:to-destructive/20 dark:hover:to-destructive/50",
 
     warning:
-        "bg-gradient-to-b from-background to-background/30 backdrop-blur-md text-foreground border-t border-border hover:to-warning/20 dark:hover:to-warning/50",
+        "bg-gradient-to-b from-background to-background/30 app-blur text-foreground border-t border-border hover:to-warning/20 dark:hover:to-warning/50",
 
     none: "",
 } as const;

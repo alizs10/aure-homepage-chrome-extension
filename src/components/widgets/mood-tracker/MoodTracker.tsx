@@ -11,7 +11,7 @@ export default function MoodTracker() {
         <MoodTrackerProvider>
 
 
-            <div className="border-t border-border col-span-1 flex flex-col p-5 row-span-1 rounded-3xl bg-background/50 backdrop-blur-md h-full gap-y-3">
+            <div className="border-t border-border col-span-1 flex flex-col p-5 row-span-1 rounded-3xl bg-background/50 app-blur h-full gap-y-3">
                 <Header />
 
                 <ChooseMood />

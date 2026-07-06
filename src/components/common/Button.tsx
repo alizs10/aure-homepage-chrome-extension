@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/util";
+import { Link } from "react-router-dom";
 // import clsx from "clsx";
 // import { twMerge } from "tailwind-merge";
 // import { Link } from 'react-router';
@@ -56,9 +57,9 @@ type ButtonProps = LinkButtonProps | NativeButtonProps;
 
 const variantClasses: Record<ButtonVariant, string> = {
     primary:
-        "bg-gradient-to-b from-background to-background/30 backdrop-blur-md text-foreground border-t border-border hover:to-primary/20 dark:hover:to-primary/50",
+        "bg-gradient-to-b from-background to-background/30 app-blur text-foreground border-t border-border hover:to-primary/20 dark:hover:to-primary/50",
     "primary-active":
-        "bg-gradient-to-b from-background to-primary/30 backdrop-blur-md text-foreground border-t border-border hover:to-primary/20 dark:hover:to-primary/50",
+        "bg-gradient-to-b from-background to-primary/30 app-blur text-foreground border-t border-border hover:to-primary/20 dark:hover:to-primary/50",
 
     // secondary:
     //     "bg-secondary text-secondary-foreground hover:outline-6 outline-secondary/10",
@@ -72,20 +73,20 @@ const variantClasses: Record<ButtonVariant, string> = {
     //     "border border-border bg-background hover:bg-warning/10 hover:border-warning hover:outline-6 outline-warning/10 hover:text-warning",
 
     ghost:
-        "bg-none hover:bg-gradient-to-b hover:from-secondary hover:to-background/30 hover:backdrop-blur-md border-t border-transparent hover:border-border text-foreground",
+        "bg-none hover:bg-gradient-to-b hover:from-secondary hover:to-background/30 hover:app-blur border-t border-transparent hover:border-border text-foreground",
 
     success:
-        "bg-gradient-to-b from-background to-background/30 backdrop-blur-md text-foreground border-t border-border hover:to-success/20 dark:hover:to-success/50",
+        "bg-gradient-to-b from-background to-background/30 app-blur text-foreground border-t border-border hover:to-success/20 dark:hover:to-success/50",
     "success-active":
-        "bg-gradient-to-b from-background to-success/30 backdrop-blur-md text-foreground border-t border-border hover:to-success/20 dark:hover:to-success/50",
+        "bg-gradient-to-b from-background to-success/30 app-blur text-foreground border-t border-border hover:to-success/20 dark:hover:to-success/50",
     // "ghost-success":
     //     "text-foreground hover:bg-success/10 hover:text-success",
     destructive:
-        "bg-gradient-to-b from-background to-background/30 backdrop-blur-md text-foreground border-t border-border hover:to-destructive/20 dark:hover:to-destructive/50",
+        "bg-gradient-to-b from-background to-background/30 app-blur text-foreground border-t border-border hover:to-destructive/20 dark:hover:to-destructive/50",
     "ghost-destructive":
-        "bg-none hover:bg-gradient-to-b hover:from-secondary hover:to-background/30 hover:backdrop-blur-md border-t border-transparent hover:border-border hover:to-destructive/20 dark:hover:to-destructive/50",
+        "bg-none hover:bg-gradient-to-b hover:from-secondary hover:to-background/30 hover:app-blur border-t border-transparent hover:border-border hover:to-destructive/20 dark:hover:to-destructive/50",
     warning:
-        "bg-gradient-to-b from-background to-background/30 backdrop-blur-md text-foreground border-t border-border hover:to-warning/20 dark:hover:to-warning/50",
+        "bg-gradient-to-b from-background to-background/30 app-blur text-foreground border-t border-border hover:to-warning/20 dark:hover:to-warning/50",
     // "ghost-warning":
     //     "text-foreground hover:bg-warning/10 hover:text-warning",
     none:
@@ -136,13 +137,16 @@ export default function Button(props: ButtonProps) {
         </>
     );
 
-    // if ("href" in props && props.href) {
-    //     return (
-    //         <Link to={props.href} className={classes}>
-    //             {content}
-    //         </Link>
-    //     );
-    // }
+    if ("href" in props && props.href) {
+        return (
+            <Link
+                to={props.href}
+                className={classes}
+            >
+                {content}
+            </Link>
+        );
+    }
 
     return (
         <button

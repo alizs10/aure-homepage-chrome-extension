@@ -4,16 +4,15 @@ import Calendar from "../components/widgets/calendar/Calendar";
 import MoodTracker from "../components/widgets/mood-tracker/MoodTracker";
 import NotesAndChecklists from "../components/widgets/notes-and-checklists/NotesAndChecklists";
 import PetHouse from "../components/widgets/pet-house/PetHouse";
-import HomeLayout from "../layouts/HomeLayout";
-import type { Settings } from "../types/settings";
+import AppLayout from "../layouts/AppLayout";
 
 
 
-export default function Home({ settings }: { settings: Settings }) {
+export default function Home() {
 
 
     return (
-        <HomeLayout settings={settings}>
+        <AppLayout>
 
             <section className="flex-1 min-h-0 flex flex-col w-full max-w-6xl mx-auto gap-y-8 py-22">
 
@@ -35,21 +34,21 @@ export default function Home({ settings }: { settings: Settings }) {
                         <MoodTracker />
 
                         <PetHouse />
-                        {/* <div className="border-t border-border col-span-1 flex-center row-span-2 rounded-3xl bg-background/50 backdrop-blur-md h-full">
+                        {/* <div className="border-t border-border col-span-1 flex-center row-span-2 rounded-3xl bg-background/50 app-blur h-full">
                             <Typography variant="h1">
                                 weather
                             </Typography>
                         </div> */}
                     </div>
                     {/* <div className="w-full grid grid-cols-3 gap-4 flex-1">
-                        <div className="border-t border-border col-span-1 rounded-3xl bg-background/50 backdrop-blur-md h-full"></div>
-                        <div className="border-t border-border col-span-1 rounded-3xl bg-background/50 backdrop-blur-md h-full"></div>
-                        <div className="border-t border-border col-span-1 rounded-3xl bg-background/50 backdrop-blur-md h-full"></div>
+                        <div className="border-t border-border col-span-1 rounded-3xl bg-background/50 app-blur h-full"></div>
+                        <div className="border-t border-border col-span-1 rounded-3xl bg-background/50 app-blur h-full"></div>
+                        <div className="border-t border-border col-span-1 rounded-3xl bg-background/50 app-blur h-full"></div>
                     </div> */}
                 </div>
             </section>
 
 
-        </HomeLayout>
+        </AppLayout>
     )
 }

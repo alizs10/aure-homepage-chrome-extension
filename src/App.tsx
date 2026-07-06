@@ -1,46 +1,22 @@
-import { useEffect, useState } from "react";
-import type { Settings } from "./types/settings";
-import { storage } from "./lib/storage";
+import { HashRouter, Route, Routes } from "react-router-dom";
+import AppLoader from "./AppLoader";
 import Home from "./pages/Home";
+import Settings from "./pages/Settings";
 import Wizard from "./pages/Wizard";
 
-function App() {
 
-  const [isLoading, setIsLoading] = useState(true)
-  const [settings, setSettings] = useState<Settings | null>(null)
+export default function App() {
+  return (
+    <HashRouter>
+      <AppLoader>
 
-  const [pageToDisplay, setPageToDisplay] = useState<'home' | 'wizard'>('home')
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/wizard" element={<Wizard />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
 
-
-  useEffect(() => {
-
-    const loadSettings = async () => {
-      const result = await storage.get<Settings>('settings')
-      console.log(result)
-      if (result) {
-        setSettings(result)
-      } else {
-        setPageToDisplay('wizard')
-      }
-
-      setIsLoading(false)
-    }
-
-
-    loadSettings()
-
-  }, [])
-
-  if (isLoading) {
-    return <div>loading...</div>
-  }
-
-  if (pageToDisplay === 'home' && settings) {
-    return <Home settings={settings} />
-  }
-
-  return <Wizard />
-
+      </AppLoader>
+    </HashRouter>
+  )
 }
-
-export default App

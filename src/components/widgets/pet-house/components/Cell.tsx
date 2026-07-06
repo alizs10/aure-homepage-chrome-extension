@@ -1,23 +1,23 @@
-import { BoneIcon, CatIcon, SkullIcon, SoupIcon } from "lucide-react";
+import { BoneIcon, CatIcon, SoupIcon } from "lucide-react";
 import { useMemo, type PropsWithChildren } from "react";
 import Button from "../../../common/Button";
 import { Typography } from "../../../common/Typography";
-import { getPetAge, getPetAgeLabel, getRemainingFoodToday } from "../helpers";
+import KillPetDialog from "../dialogs/KillPetDialog";
+import { getPetAgeLabel, getRemainingFoodToday } from "../helpers";
 import type { Pet } from "../types";
 import PetMovement from "./PetMovement";
-import { usePetHouse } from "../contexts/PetHouseContext";
-import KillPetDialog from "../dialogs/KillPetDialog";
+import { usePetHouse } from "../hooks/usePetHouse";
 
 export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }) {
 
 
-    const { removeItem, feedPet } = usePetHouse()
+    const { feedPet } = usePetHouse()
 
     const remainingFoodToday = useMemo(() => {
 
         return getRemainingFoodToday(pet)
 
-    }, [pet.hasBeenFeedCount])
+    }, [pet])
 
     const ageLabel = useMemo(() => {
         return getPetAgeLabel(pet)
@@ -51,7 +51,7 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
 
                     </Button>
 
-                    <div className="app_container app_gradient backdrop-blur-md py-1 px-2 flex-row-center gap-x-0.5">
+                    <div className="app_container app_gradient app-blur py-1 px-2 flex-row-center gap-x-0.5">
 
                         <CatIcon className="size-3.5" />
 

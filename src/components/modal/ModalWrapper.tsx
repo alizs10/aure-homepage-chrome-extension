@@ -40,7 +40,7 @@ export default function ModalWrapper({ children, open, onClose }: ModalWrapperPr
 
     return createPortal(
         <div onClick={handleClose} className="fixed inset-0 z-99 bg-background/30
-        backdrop-blur-md flex-center">
+        app-blur flex-center">
             {children}
         </div>,
         document.body

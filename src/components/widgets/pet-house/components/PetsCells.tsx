@@ -1,5 +1,5 @@
 import { Typography } from '../../../common/Typography'
-import { usePetHouse } from '../contexts/PetHouseContext'
+import { usePetHouse } from '../hooks/usePetHouse'
 import PetWithCell from './PetWithCell'
 
 export default function PetsCells() {

@@ -2,7 +2,7 @@
 import Button from '@/components/common/Button';
 import { Typography } from '@/components/common/Typography';
 import { CircleCheckIcon, CircleIcon } from 'lucide-react';
-import ItemFooter from './itemFooter';
+import ItemFooter from './ItemFooter';
 
 
 interface ChecklistItemProps {

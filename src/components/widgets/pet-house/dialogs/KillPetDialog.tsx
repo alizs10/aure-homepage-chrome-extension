@@ -1,10 +1,10 @@
-import React, { useMemo, useState, type ChangeEvent } from 'react'
-import type { Pet } from '../types'
 import { SkullIcon } from 'lucide-react'
-import type { ButtonVariant } from '../../../common/Button'
-import { usePetHouse } from '../contexts/PetHouseContext'
-import Dialog from '../../../common/Dialog'
-import Button from '../../../common/Button'
+import { useMemo, useState, type ChangeEvent } from 'react'
+import type { Pet } from '../types'
+import { usePetHouse } from '../hooks/usePetHouse'
+import type { ButtonVariant } from '@/components/common/Button'
+import Button from '@/components/common/Button'
+import Dialog from '@/components/common/Dialog'
 
 export default function KillPetDialog({ pet }: { pet: Pet }) {
 

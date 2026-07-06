@@ -2,6 +2,9 @@ import { useEffect, useState, type ReactNode } from "react";
 import type { Checklist, NoteAndChecklist } from "../types";
 import { storage } from "@/lib/storage";
 import { NotesAndChecklistsContext } from "../contexts/NotesAndChecklistsContext";
+import { STORAGE_KEYS } from "@/constants/storage_keys";
+
+const STORAGE_KEY = STORAGE_KEYS.notesAndChecklists
 
 export function NotesAndChecklistsProvider({ children }: { children: ReactNode }) {
     const [data, setData] = useState<NoteAndChecklist[]>([]);
@@ -10,7 +13,7 @@ export function NotesAndChecklistsProvider({ children }: { children: ReactNode }
     // Load data on mount
     useEffect(() => {
         const loadData = async () => {
-            const result = await storage.get<NoteAndChecklist[]>('notes_and_checklists');
+            const result = await storage.get<NoteAndChecklist[]>(STORAGE_KEY);
             console.log(result);
             setData(result ?? []);
         };
@@ -20,7 +23,7 @@ export function NotesAndChecklistsProvider({ children }: { children: ReactNode }
     // Save data whenever it changes
     useEffect(() => {
         const saveData = async () => {
-            await storage.set('notes_and_checklists', data);
+            await storage.set(STORAGE_KEY, data);
         };
         saveData();
     }, [data]);

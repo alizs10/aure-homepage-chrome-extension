@@ -3,13 +3,13 @@ import InfoPopup from "./components/InfoPopup";
 import NewPetPopup from "./components/NewPetPopup";
 import PetsCells from "./components/PetsCells";
 import StatsPopup from "./components/StatsPopup";
-import { PetHouseProvider } from "./contexts/PetHouseContext";
+import { PetHouseProvider } from "./provider/PetHouseProvider";
 
 export default function PetHouse() {
     return (
         <PetHouseProvider>
 
-            <div className="app_container app_gradient backdrop-blur-md col-span-1 row-span-1 flex flex-col h-full relative">
+            <div className="app_container app_gradient app-blur col-span-1 row-span-1 flex flex-col h-full relative">
 
                 <div id="pet-popup-root" className="absolute inset-0 pointer-events-none" />
 

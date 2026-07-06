@@ -1,11 +1,12 @@
 import { useMemo, useState, type MouseEvent } from 'react'
-import Button from '../../../common/Button'
-import { Typography } from '../../../common/Typography'
-import TextInput from '../../../Form/TextInput'
-import ModalHeader from '../../../modal/ModalHeader'
-import ModalWrapper from '../../../modal/ModalWrapper'
-import { usePetHouse } from '../contexts/PetHouseContext'
+
 import type { CatColor, DogColor, PetType } from '../types'
+import { usePetHouse } from '../hooks/usePetHouse'
+import ModalWrapper from '@/components/modal/ModalWrapper';
+import ModalHeader from '@/components/modal/ModalHeader';
+import TextInput from '@/components/Form/TextInput';
+import { Typography } from '@/components/common/Typography';
+import Button from '@/components/common/Button';
 
 const cat_colors: {
     id: CatColor,
@@ -68,7 +69,7 @@ export default function NewPetModal({ open, onClose }: NewPetModalProps) {
             <div
 
                 onClick={stopPropagation}
-                className="app_container app_gradient backdrop-blur-md p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none">
+                className="app_container app_gradient app-blur p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none">
 
 
                 <ModalHeader

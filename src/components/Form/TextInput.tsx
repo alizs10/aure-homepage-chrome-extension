@@ -32,7 +32,7 @@ const TextInput = forwardRef<
                         ref={ref}
                         {...props}
                         className={cn(
-                            "border-t bg-background/50 backdrop-blur-md flex-1 w-full rounded-full px-4 py-2 focus:ring-0 focus:outline-0 text-base md:text-lg lg:text-xl text-foreground placeholder:text-foreground",
+                            "border-t bg-background/50 app-blur flex-1 w-full rounded-full px-4 py-2 focus:ring-0 focus:outline-0 text-base md:text-lg lg:text-xl text-foreground placeholder:text-foreground",
                             error ? "border-destructive text-destructive" : "border-border text-foreground",
                             className
                         )}

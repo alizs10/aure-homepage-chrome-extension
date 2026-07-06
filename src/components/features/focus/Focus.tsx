@@ -3,8 +3,9 @@ import { useEffect, useMemo, useState } from 'react'
 import Button from '../../common/Button'
 import { Typography } from '../../common/Typography'
 import { storage } from '../../../lib/storage'
+import { STORAGE_KEYS } from '@/constants/storage_keys'
 
-const STORAGE_KEY = 'focus_timer'
+const STORAGE_KEY = STORAGE_KEYS.focus
 
 type FocusTimer = {
     isRunning: boolean

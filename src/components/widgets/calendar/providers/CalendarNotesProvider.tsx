@@ -3,8 +3,9 @@ import type { CalendarNote } from "../types";
 import { storage } from "../../../../lib/storage";
 import { format, isSameDay } from "date-fns";
 import CalendarNotesContext from "../contexts/CalendarContext";
+import { STORAGE_KEYS } from "@/constants/storage_keys";
 
-const STORAGE_KEY = "calendar_notes";
+const STORAGE_KEY = STORAGE_KEYS.calendar
 
 export default function CalendarNotesProvider({ children }: { children: ReactNode }) {
     const [data, setData] = useState<CalendarNote[]>([]);

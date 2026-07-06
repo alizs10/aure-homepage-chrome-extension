@@ -1,6 +1,6 @@
 // components/notes-and-checklists/NoteItem.tsx
 import { Typography } from '../../../common/Typography';
-import ItemFooter from './itemFooter';
+import ItemFooter from './ItemFooter';
 
 interface NoteItemProps {
     content: string;

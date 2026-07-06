@@ -25,7 +25,7 @@ export default function TopSites() {
                 <a
                     key={site.url}
                     href={site.url}
-                    className="h-14 w-14 hover:w-auto hover:px-2 rounded-full border-t border-border bg-linear-to-b from-background/30 to-background backdrop-blur-md flex-center group flex-row-center overflow-clip"
+                    className="h-14 w-14 hover:w-auto hover:px-2 rounded-full border-t border-border bg-linear-to-b from-background/30 to-background app-blur flex-center group flex-row-center overflow-clip"
                 >
                     <Favicon url={site.url} />
 

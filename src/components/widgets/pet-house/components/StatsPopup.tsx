@@ -3,7 +3,7 @@ import { useMemo, useState } from "react"
 import useClickOutside from "../../../../hooks/useOutsideClick"
 import Button from "../../../common/Button"
 import { Typography } from "../../../common/Typography"
-import { usePetHouse } from "../contexts/PetHouseContext"
+import { usePetHouse } from "../hooks/usePetHouse"
 
 
 
@@ -64,7 +64,7 @@ export default function StatsPopup() {
             </Button>
 
             {open && (
-                <ul className='flex flex-col justify-start bg-linear-to-b from-background to-secondary/30 backdrop-blur-3xl border-t border-border absolute top-full right-0 h-fit mt-1 rounded-3xl overflow-clip py-3 px-4'>
+                <ul className='flex flex-col justify-start bg-linear-to-b from-background to-secondary/30 app-blur border-t border-border absolute top-full right-0 h-fit mt-1 rounded-3xl overflow-clip py-3 px-4'>
                     {stats.map(stat => (
                         <li key={stat.id} className='py-1'>
 

@@ -106,6 +106,7 @@
   --sidebar-foreground: hsl(240 10% 3.9%);
 
   --radius: 0.5rem;
+  --app-blur: 12px;
 }
 
 .dark {
@@ -183,6 +184,10 @@ html, body {
 
 @utility dir-rtl {
   direction: rtl;
+}
+
+@utility app-blur {
+  backdrop-filter: blur(var(--app-blur));
 }
 
 html {
