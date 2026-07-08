@@ -89,7 +89,7 @@ export function InputSection() {
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder='Type here...'
-                        className='placeholder:text-muted-foreground text-base placeholder:text-base'
+                        className='placeholder:text-muted-foreground text-xs md:text-sm lg:text-base placeholder:text-base'
                     />
                 </div>
                 <Button size='icon' className='h-full' onClick={handler}>

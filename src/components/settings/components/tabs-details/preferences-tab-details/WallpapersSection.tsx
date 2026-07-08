@@ -10,6 +10,7 @@ import Button from "@/components/common/Button";
 import WallpaperCard from "@/components/common/WallpaperCard";
 import type { Wallpaper } from "@/types";
 import AddWallpaperModal from "./modals/AddWallpaperModal";
+import { ImagePlusIcon } from "lucide-react";
 
 // Define default wallpapers with a single "default" ID
 const DEFAULT_WALLPAPERS: Wallpaper[] = [
@@ -25,8 +26,6 @@ export function WallpapersSection() {
     // Helper to fetch wallpapers from IndexedDB
     const fetchCustomWallpapers = async () => {
         const wps = await db.getAll("wallpapers");
-
-        console.log("Fetched wallpapers from IndexedDB:", wps);
         setCustomWallpapers(wps.map(wp => ({ ...wp })));
     };
 
@@ -87,6 +86,7 @@ export function WallpapersSection() {
                     </Typography>
 
                     <Button
+                        leftIcon={<ImagePlusIcon className="size-4" />}
                         onClick={() => setOpen(true)}
                     >
                         Add Wallpaper

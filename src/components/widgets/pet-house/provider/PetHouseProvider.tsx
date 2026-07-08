@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import type { Pet, PetColor, PetType } from "../types";
-import { getRemainingFoodToday, isPetDead } from "../helpers";
-import { storage } from "@/lib/storage";
-import { STORAGE_KEYS } from "@/constants/storage_keys";
 import { PetHouseContext } from "../contexts/PetHouseContext";
+import { PetRepository } from "../db";
+import { getRemainingFoodToday, isPetDead } from "../helpers";
+import type { Pet, PetColor, PetType } from "../types";
 
-const STORAGE_KEY = STORAGE_KEYS.petHouse
 
 
 export function PetHouseProvider({ children }: { children: ReactNode }) {
@@ -30,30 +28,47 @@ export function PetHouseProvider({ children }: { children: ReactNode }) {
     // Load data on mount
     useEffect(() => {
         const loadData = async () => {
-            const result = await storage.get<Pet[]>(STORAGE_KEY);
-            console.log(result);
-            setData(result ?? []);
+            const pets = await PetRepository.getAll();
+            setData(pets);
         };
         loadData();
     }, []);
 
-    // Save data whenever it changes
-    useEffect(() => {
-        const saveData = async () => {
-            await storage.set(STORAGE_KEY, data);
-        };
-        saveData();
-    }, [data]);
+    /**
+   * Updates a pet in both IndexedDB and React state.
+   */
+    async function updatePet(
+        id: number,
+        updater: (pet: Pet) => Pet
+    ): Promise<boolean> {
+        const pet = data.find((p) => p.id === id);
 
-    const addItem = (name: string, color: PetColor, type: PetType) => {
+        if (!pet) return false;
 
-        console.log(data.length)
+        const updated = updater(pet);
 
+        await PetRepository.put(updated);
+
+        setData((prev) =>
+            prev.map((p) => (p.id === id ? updated : p))
+        );
+
+        return true;
+    }
+
+
+
+    const addItem = async (
+        name: string,
+        color: PetColor,
+        type: PetType
+    ) => {
         if (data.length >= 4) return;
 
         const now = Date.now();
-        const newItem: Pet = {
-            id: Date.now(),
+
+        const pet: Pet = {
+            id: now,
             name,
             color,
             type,
@@ -62,47 +77,38 @@ export function PetHouseProvider({ children }: { children: ReactNode }) {
             updatedAt: now,
             deletedAt: null,
         };
-        setData(prev => [...prev, newItem]);
+
+        await PetRepository.put(pet);
+
+        setData((prev) => [...prev, pet]);
     };
 
-    const removeItem = (id: number) => {
-        setData(prev => {
-            const dataIns = [...prev];
-            const updatableIndex = dataIns.findIndex(d => d.id === id);
-            if (updatableIndex !== -1) {
-                const updatable = dataIns[updatableIndex];
+    const removeItem = async (id: number) => {
+        await updatePet(id, (pet) => {
+            const now = Date.now();
 
-                const now = Date.now();
-                updatable.hasBeenFeedCount++;
-                updatable.updatedAt = now;
-                updatable.deletedAt = now;
-
-                console.log(updatable)
-            }
-            return dataIns;
+            return {
+                ...pet,
+                hasBeenFeedCount: pet.hasBeenFeedCount + 1,
+                updatedAt: now,
+                deletedAt: now,
+            };
         });
     };
 
-    const feedPet = (id: number) => {
-
-        setData(prev => {
-            const dataIns = [...prev];
-            const updatableIndex = dataIns.findIndex(d => d.id === id);
-            if (updatableIndex !== -1) {
-                const updatable = dataIns[updatableIndex];
-
-                const remainingFoodToday = getRemainingFoodToday(updatable)
-
-                if (remainingFoodToday > 0) {
-                    updatable.hasBeenFeedCount++;
-                    updatable.updatedAt = Date.now();
-                }
-
+    const feedPet = async (id: number) => {
+        await updatePet(id, (pet) => {
+            if (getRemainingFoodToday(pet) <= 0) {
+                return pet;
             }
-            return dataIns;
-        });
 
-    }
+            return {
+                ...pet,
+                hasBeenFeedCount: pet.hasBeenFeedCount + 1,
+                updatedAt: Date.now(),
+            };
+        });
+    };
 
 
 

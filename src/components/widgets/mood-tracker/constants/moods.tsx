@@ -10,7 +10,7 @@ export const MOODS_OPTIONS: {
         {
             id: 'great',
             label: "Great",
-            icon: <LaughIcon className="size-10 text-primary" />
+            icon: <LaughIcon className="size-10 text-indigo-600 dark:text-indigo-500" />
         },
         {
             id: 'good',
@@ -37,7 +37,7 @@ export const MOODS_OPTIONS: {
 export const getMoodBgColor = (mood: MoodType) => {
     switch (mood) {
         case 'great':
-            return 'bg-primary';
+            return 'bg-indigo-600 dark:bg-indigo-500';
         case 'good':
             return 'bg-success';
         case 'okay':
@@ -54,11 +54,11 @@ export const getMoodBgColor = (mood: MoodType) => {
 export const getMoodTextColor = (mood: MoodType, foreground = true) => {
     switch (mood) {
         case 'great':
-            return foreground ? 'text-primary-foreground' : 'text-primary';
+            return foreground ? 'text-white' : 'text-indigo-600 dark:text-indigo-500';
         case 'good':
             return foreground ? 'text-success-foreground' : 'text-success';
         case 'okay':
-            return foreground ? 'text-muted-foreground' : 'text-muted';
+            return foreground ? 'text-foreground' : 'text-muted-foreground';
         case 'meh':
             return foreground ? 'text-warning-foreground' : 'text-warning';
         case 'bad':
@@ -87,7 +87,7 @@ export const getMoodIcon = (mood: MoodType) => {
 
 export const getWeekColor = (score: number) => {
     if (score >= 4) {
-        return "bg-primary text-primary-foreground";
+        return "bg-indigo-600 dark:bg-indigo-500 text-indigo-600 dark:text-indigo-500-foreground";
     }
 
     if (score >= 3) {

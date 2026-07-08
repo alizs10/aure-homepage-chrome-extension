@@ -10,7 +10,7 @@ interface Props {
 
 export function SettingsTabsProvider({ children }: Props) {
     const [activeTab, setActiveTab] =
-        useState<SettingsTab>("user-information");
+        useState<SettingsTab>("preferences");
 
     return (
         <SettingsTabsContext.Provider

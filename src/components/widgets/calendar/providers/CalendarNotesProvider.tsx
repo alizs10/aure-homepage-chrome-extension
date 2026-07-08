@@ -1,11 +1,9 @@
-import { useEffect, useState, type ReactNode } from "react";
-import type { CalendarNote } from "../types";
-import { storage } from "../../../../lib/storage";
 import { format, isSameDay } from "date-fns";
+import { useEffect, useState, type ReactNode } from "react";
 import CalendarNotesContext from "../contexts/CalendarContext";
-import { STORAGE_KEYS } from "@/constants/storage_keys";
+import { CalendarRepository } from "../db";
+import type { CalendarNote } from "../types";
 
-const STORAGE_KEY = STORAGE_KEYS.calendar
 
 export default function CalendarNotesProvider({ children }: { children: ReactNode }) {
     const [data, setData] = useState<CalendarNote[]>([]);
@@ -31,25 +29,12 @@ export default function CalendarNotesProvider({ children }: { children: ReactNod
 
     // Load data on mount
     useEffect(() => {
-        const loadData = async () => {
-            const result = await storage.get<CalendarNote[]>(STORAGE_KEY);
-            console.log(result);
-            setData(result ?? []);
-        };
-        loadData();
+        async function load() {
+            const notes = await CalendarRepository.getAll();
+            setData(notes);
+        }
+        load();
     }, []);
-
-    // Save data whenever it changes
-    useEffect(() => {
-        const saveData = async () => {
-            await storage.set(STORAGE_KEY, data);
-        };
-        saveData();
-    }, [data]);
-
-    function isNoteExists(date: string): boolean {
-        return data.findIndex(d => d.date === date) !== -1
-    }
 
     function getNoteForDay(date: Date) {
         const formattedDate = format(date, "yyyy-MM-dd")
@@ -58,46 +43,60 @@ export default function CalendarNotesProvider({ children }: { children: ReactNod
 
     }
 
-    const addItem = (note: string, date: Date) => {
+    async function updateNote(
+        id: number,
+        updater: (note: CalendarNote) => CalendarNote
+    ): Promise<boolean> {
+        const note = data.find((n) => n.id === id);
 
+        if (!note) return false;
 
-        const formattedDate = format(date, "yyyy-MM-dd")
+        const updated = updater(note);
 
-        console.log(isNoteExists(formattedDate))
+        await CalendarRepository.put(updated);
 
-        if (isNoteExists(formattedDate)) return;
+        setData((prev) =>
+            prev.map((n) => (n.id === id ? updated : n))
+        );
+
+        return true;
+    }
+
+    const addItem = async (text: string, date: Date) => {
+        const formattedDate = format(date, "yyyy-MM-dd");
+
+        const existing = await CalendarRepository.getByDate(formattedDate);
+
+        if (existing) return;
 
         const now = Date.now();
-        const newItem: CalendarNote = {
-            id: Date.now(),
-            text: note,
+
+        const note: CalendarNote = {
+            id: now,
+            text,
             date: formattedDate,
             createdAt: now,
-            updatedAt: now
+            updatedAt: now,
         };
-        setData(prev => [...prev, newItem]);
+
+        await CalendarRepository.put(note);
+
+        setData((prev) => [...prev, note]);
     };
 
-    const removeItem = (id: number) => {
-        setData(prev => prev.filter(p => p.id !== id));
+    const removeItem = async (id: number) => {
+        await CalendarRepository.remove(id);
+
+        setData((prev) => prev.filter((n) => n.id !== id));
     };
 
-    const updateItem = (id: number, note: string) => {
-
-        setData(prev => {
-            const dataIns = [...prev];
-            const updatableIndex = dataIns.findIndex(d => d.id === id);
-            if (updatableIndex !== -1) {
-                const updatable = dataIns[updatableIndex];
-
-                updatable.text = note;
-                updatable.updatedAt = Date.now();
-
-            }
-            return dataIns;
-        });
-
-    }
+    const updateItem = async (id: number, text: string) => {
+        await updateNote(id, (note) => ({
+            ...note,
+            text,
+            updatedAt: Date.now(),
+        }));
+    };
 
 
 

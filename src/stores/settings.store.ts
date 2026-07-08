@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { storage } from "../lib/storage";
 import type { Settings } from "../types";
 import { STORAGE_KEYS } from "@/constants/storage_keys";
+import { db } from "@/lib/db";
 
 type SettingsStore = {
     settings: Settings | null;
@@ -55,6 +56,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
                 storage.remove(key)
             )
         );
+
+        await db.deleteDatabase();
 
         set({
             settings: null,

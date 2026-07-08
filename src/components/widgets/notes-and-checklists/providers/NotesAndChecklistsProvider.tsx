@@ -1,92 +1,98 @@
 import { useEffect, useState, type ReactNode } from "react";
 import type { Checklist, NoteAndChecklist } from "../types";
-import { storage } from "@/lib/storage";
 import { NotesAndChecklistsContext } from "../contexts/NotesAndChecklistsContext";
-import { STORAGE_KEYS } from "@/constants/storage_keys";
+import { NotesRepository } from "../db";
 
-const STORAGE_KEY = STORAGE_KEYS.notesAndChecklists
-
-export function NotesAndChecklistsProvider({ children }: { children: ReactNode }) {
+export function NotesAndChecklistsProvider({
+    children,
+}: {
+    children: ReactNode;
+}) {
     const [data, setData] = useState<NoteAndChecklist[]>([]);
-    const [editable, setEditable] = useState<NoteAndChecklist | undefined>(undefined)
+    const [editable, setEditable] = useState<NoteAndChecklist>();
 
-    // Load data on mount
     useEffect(() => {
-        const loadData = async () => {
-            const result = await storage.get<NoteAndChecklist[]>(STORAGE_KEY);
-            console.log(result);
-            setData(result ?? []);
-        };
-        loadData();
+        async function load() {
+            const notes = await NotesRepository.getAll();
+            setData(notes);
+        }
+
+        load();
     }, []);
 
-    // Save data whenever it changes
-    useEffect(() => {
-        const saveData = async () => {
-            await storage.set(STORAGE_KEY, data);
-        };
-        saveData();
-    }, [data]);
+    async function updateNote(
+        id: number,
+        updater: (note: NoteAndChecklist) => NoteAndChecklist
+    ) {
+        const note = data.find((n) => n.id === id);
 
-    const addItem = (content: string) => {
+        if (!note) return false;
 
-        const now = new Date().getTime();
+        const updated = updater(note);
 
-        const newItem: NoteAndChecklist = {
-            id: Date.now(),
+        await NotesRepository.put(updated);
+
+        setData((prev) =>
+            prev.map((n) => (n.id === id ? updated : n))
+        );
+
+        return true;
+    }
+
+    const addItem = async (content: string) => {
+        const now = Date.now();
+
+        const note: NoteAndChecklist = {
+            id: now,
             content,
             createdAt: now,
             updatedAt: now,
             status: false,
         };
-        setData(prev => [...prev, newItem]);
+
+        await NotesRepository.put(note);
+
+        setData((prev) => [...prev, note]);
     };
 
-    const removeItem = (id: number) => {
-        setData(prev => prev.filter(d => d.id !== id));
-    };
+    const removeItem = async (id: number) => {
+        await NotesRepository.remove(id);
 
-    const toggleCheckbox = (id: number) => {
-        setData(prev => {
+        setData((prev) => prev.filter((n) => n.id !== id));
 
-            const now = new Date().getTime();
-
-            const dataIns = [...prev];
-            const updatableIndex = dataIns.findIndex(d => d.id === id);
-            if (updatableIndex !== -1) {
-                const updatable = dataIns[updatableIndex] as Checklist;
-                updatable.status = !updatable.status;
-                updatable.updatedAt = now;
-            }
-            return dataIns;
-        });
-    };
-
-    const startEdit = (id: number) => {
-        const item = data.find(d => d.id === id);
-        if (item) {
-            setEditable({ ...item }); // Create a copy to avoid mutating original
+        if (editable?.id === id) {
+            setEditable(undefined);
         }
     };
 
-    const updateItem = (content: string) => {
+    const toggleCheckbox = async (id: number) => {
+        await updateNote(id, (note) => ({
+            ...note,
+            status: !(note as Checklist).status,
+            updatedAt: Date.now(),
+        }));
+    };
+
+    const startEdit = (id: number) => {
+        const note = data.find((n) => n.id === id);
+
+        if (note) {
+            setEditable({ ...note });
+        }
+    };
+
+    const updateItem = async (content: string) => {
         if (!editable) return;
 
-        setData(prev => {
+        const success = await updateNote(editable.id, (note) => ({
+            ...note,
+            content,
+            updatedAt: Date.now(),
+        }));
 
-            const now = new Date().getTime();
-
-            const dataIns = [...prev];
-            const updatableIndex = dataIns.findIndex(d => d.id === editable.id);
-            if (updatableIndex !== -1) {
-                const updatable = dataIns[updatableIndex];
-                updatable.content = content;
-                updatable.updatedAt = now;
-            }
-            return dataIns;
-        });
-
-        cancelEdit();
+        if (success) {
+            setEditable(undefined);
+        }
     };
 
     const cancelEdit = () => {
@@ -94,7 +100,18 @@ export function NotesAndChecklistsProvider({ children }: { children: ReactNode }
     };
 
     return (
-        <NotesAndChecklistsContext.Provider value={{ data, editable, addItem, removeItem, toggleCheckbox, cancelEdit, startEdit, updateItem }}>
+        <NotesAndChecklistsContext.Provider
+            value={{
+                data,
+                editable,
+                addItem,
+                removeItem,
+                toggleCheckbox,
+                startEdit,
+                updateItem,
+                cancelEdit,
+            }}
+        >
             {children}
         </NotesAndChecklistsContext.Provider>
     );

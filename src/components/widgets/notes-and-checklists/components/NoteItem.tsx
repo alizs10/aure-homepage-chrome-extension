@@ -12,7 +12,7 @@ export function NoteItem({ content, date, edited }: NoteItemProps) {
 
     return (
         <div className="app_container bg-background min-w-1/2 px-4 py-2 flex flex-col gap-y-2">
-            <Typography className='wrap-break-word' variant='body'>
+            <Typography className='wrap-break-word' variant='body-sm'>
                 {content}
             </Typography>
             <ItemFooter date={date} edited={edited} />

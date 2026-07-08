@@ -29,7 +29,7 @@ export function ChecklistItem({ item, onChange, date, edited }: ChecklistItemPro
                 )}
             </Button>
             <div className="app_container bg-background  min-w-2/3 flex-1 px-4 py-2 flex flex-col gap-y-2">
-                <Typography className={`${item.status ? 'line-through' : ''}`} variant='body'>
+                <Typography className={`${item.status ? 'line-through' : ''}`} variant='body-sm'>
                     {content}
                 </Typography>
                 <ItemFooter date={date} edited={edited} />

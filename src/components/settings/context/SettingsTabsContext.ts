@@ -1,6 +1,7 @@
 import { createContext } from "react";
 
 export type SettingsTab =
+    | "about"
     | "user-information"
     | "preferences"
     | "widgets-center";

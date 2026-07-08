@@ -50,7 +50,7 @@ export default function UserInfoTabDetails() {
                 <TextInput
                     {...register('name')}
                     placeholder="Your name..."
-                    className="px-4 py-1 text-sm placeholder:text-sm"
+                    className=""
                     error={errors.name?.message} // passes error message to the custom TextInput
                 />
             </div>

@@ -1,12 +1,9 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { storage } from "../../../../lib/storage";
 import { format } from "date-fns";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import MoodTrackerContext from "../contexts/MoodTrackerContext";
-import type { filters, MoodHistory, MoodType } from "../types";
+import { MoodRepository } from "../db";
 import { calculateMoodScore } from "../helpers/history";
-import { STORAGE_KEYS } from "@/constants/storage_keys";
-
-const STORAGE_KEY = STORAGE_KEYS.moodTracker;
+import type { filters, MoodHistory, MoodType } from "../types";
 
 export default function MoodTrackerProvider({ children }: { children: ReactNode }) {
     const [data, setData] = useState<MoodHistory[]>([]);
@@ -35,22 +32,19 @@ export default function MoodTrackerProvider({ children }: { children: ReactNode 
     // Load data on mount
     useEffect(() => {
         const loadData = async () => {
-            const result = await storage.get<MoodHistory[]>(STORAGE_KEY);
-            setData(result ?? []);
+            // const result = await storage.get<MoodHistory[]>(STORAGE_KEY);
+            // setData(result ?? []);
+
+            // const result = await db.getAll(DB_STORES.moods);
+
+            const moods = await MoodRepository.getAll();
+
+            setData(moods);
         };
         loadData();
     }, []);
 
-    // Save data whenever it changes
-    useEffect(() => {
-        const saveData = async () => {
-            await storage.set(STORAGE_KEY, data);
-        };
-        saveData();
-    }, [data]);
-
-
-    const addItem = (mood: MoodType, date: Date) => {
+    const addItem = async (mood: MoodType, date: Date) => {
 
 
         const formattedDate = format(date, "yyyy-MM-dd")
@@ -63,29 +57,36 @@ export default function MoodTrackerProvider({ children }: { children: ReactNode 
             createdAt: now,
             updatedAt: now
         };
+
+
+        await MoodRepository.put(newItem);
+
         setData(prev => [...prev, newItem]);
     };
 
-    const removeItem = (id: number) => {
+    const removeItem = async (id: number) => {
+        await MoodRepository.remove(id);
         setData(prev => prev.filter(p => p.id !== id));
     };
 
-    const updateItem = (id: number, mood: MoodType) => {
+    const updateItem = async (id: number, mood: MoodType) => {
+        const item = data.find((d) => d.id === id);
 
-        setData(prev => {
-            const dataIns = [...prev];
-            const updatableIndex = dataIns.findIndex(d => d.id === id);
-            if (updatableIndex !== -1) {
-                const updatable = dataIns[updatableIndex];
+        if (!item) return;
 
-                updatable.mood = mood;
-                updatable.updatedAt = Date.now();
+        const updated: MoodHistory = {
+            ...item,
+            mood,
+            updatedAt: Date.now(),
+        };
 
-            }
-            return dataIns;
-        });
+        await MoodRepository.put(updated);
 
-    }
+
+        setData((prev) =>
+            prev.map((d) => (d.id === id ? updated : d))
+        );
+    };
 
 
 

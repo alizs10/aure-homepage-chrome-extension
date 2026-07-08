@@ -5,6 +5,7 @@ import { useSettingsTabs } from "../hooks/useSettingsTabs";
 import PreferencesTabDetails from "./tabs-details/preferences-tab-details/PreferencesTabDetails";
 import UserInfoTabDetails from "./tabs-details/user-info-tab-details/UserInfoTabDetails";
 import WidgetsCenterTabDetails from "./tabs-details/widgets-center/WidgetsCenterTabDetails";
+import AboutTabDetails from "./tabs-details/about-tab-details/AboutTabDetails";
 
 export default function TabDetails() {
 
@@ -15,7 +16,7 @@ export default function TabDetails() {
     }, [activeTab])
 
     return (
-        <div className="flex flex-col gap-y-4 col-span-3 flex-1 min-h-0 app_container app_gradient app-blur py-5 px-8">
+        <div className="flex flex-col gap-y-6 col-span-3 flex-1 min-h-0 app_container app_gradient app-blur py-5 px-8">
 
             <div className="flex-row-center gap-x-2">
                 {tab?.Icon && (
@@ -34,6 +35,9 @@ export default function TabDetails() {
             )}
             {activeTab === 'widgets-center' && (
                 <WidgetsCenterTabDetails />
+            )}
+            {activeTab === 'about' && (
+                <AboutTabDetails />
             )}
 
         </div>

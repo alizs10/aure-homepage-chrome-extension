@@ -25,6 +25,14 @@ export default function Wizard() {
             name: "",
             theme: "light",
             wallpaper: "default",
+            blur: 'md',
+            widgets: {
+                "mood-tracker": true,
+                "calendar": true,
+                "notes-and-checklists": true,
+                "pet-house": true,
+            },
+            accent: "default"
         },
     });
 
@@ -45,6 +53,9 @@ export default function Wizard() {
                 break;
             }
             case 3:
+
+                console.log("tada", errors)
+
                 handleSubmit(onSubmit)();
                 return;
         }
@@ -59,7 +70,16 @@ export default function Wizard() {
     const navigate = useNavigate();
 
     const onSubmit = async (data: Settings) => {
-        await save({ ...data, blur: 'md' });
+
+        await save({
+            ...data, blur: 'md', widgets: {
+                "mood-tracker": true,
+                "calendar": true,
+                "notes-and-checklists": true,
+                "pet-house": true,
+            },
+            accent: "default"
+        });
         navigate("/", { replace: true });
     };
 

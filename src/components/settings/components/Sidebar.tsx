@@ -20,7 +20,7 @@ export default function Sidebar() {
                 </Typography>
             </div>
 
-            <ul className="mt-10 flex flex-col gap-y-2">
+            <ul className="mt-6 flex flex-col gap-y-2">
                 {TABS.map((tab) => (
                     <li key={tab.id}>
                         <Button

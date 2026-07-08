@@ -1,13 +1,18 @@
+import type { CalendarNote } from "@/components/widgets/calendar/types";
+import type { MoodHistory } from "@/components/widgets/mood-tracker/types";
+import type { NoteAndChecklist } from "@/components/widgets/notes-and-checklists/types";
+import type { Pet } from "@/components/widgets/pet-house/types";
 import type { Wallpaper } from "@/types";
 
 const DB_NAME = "newtab-db";
-const DB_VERSION = 1;
+const DB_VERSION = 7;
 
 export const DB_STORES = {
     wallpapers: "wallpapers",
-    // notes: "notes",
-    // calendar: "calendar",
-    // moods: "moods",
+    moods: "moods",
+    pets: "pets",
+    calendar: "calendar",
+    notes: "notes",
 } as const;
 
 export type DBStore = (typeof DB_STORES)[keyof typeof DB_STORES];
@@ -18,6 +23,10 @@ export type DBStore = (typeof DB_STORES)[keyof typeof DB_STORES];
 // In db.ts
 export interface DBValueTypes {
     wallpapers: Wallpaper;
+    moods: MoodHistory;
+    pets: Pet;
+    calendar: CalendarNote;
+    notes: NoteAndChecklist;
 }
 
 // --- 2. Connection Caching ---
@@ -32,6 +41,16 @@ export function openDB(): Promise<IDBDatabase> {
 
         request.onupgradeneeded = () => {
             const db = request.result;
+
+
+            if (!db.objectStoreNames.contains(DB_STORES.calendar)) {
+                const store = db.createObjectStore(DB_STORES.calendar, {
+                    keyPath: "id",
+                });
+
+                store.createIndex("date", "date", { unique: true });
+            }
+
             Object.values(DB_STORES).forEach((storeName) => {
                 if (!db.objectStoreNames.contains(storeName)) {
                     db.createObjectStore(storeName, { keyPath: "id" });
@@ -145,11 +164,54 @@ export function clear<S extends DBStore>(store: S): Promise<void> {
     ).then(() => undefined);
 }
 
+export function getByIndex<
+    S extends DBStore,
+    K extends keyof DBValueTypes[S]
+>(
+    store: S,
+    index: K,
+    value: IDBValidKey
+): Promise<DBValueTypes[S] | undefined> {
+    return executeTransaction<S, DBValueTypes[S] | undefined>(
+        store,
+        "readonly",
+        (os) =>
+            os.index(index as string).get(value) as IDBRequest<
+                DBValueTypes[S] | undefined
+            >
+    );
+}
+
+export async function clearAll(): Promise<void> {
+    await Promise.all(
+        Object.values(DB_STORES).map((store) => clear(store))
+    );
+}
+
+export async function deleteDatabase(): Promise<void> {
+    const db = await openDB();
+
+    db.close();
+    dbPromise = null;
+
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.deleteDatabase(DB_NAME);
+
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+        request.onblocked = () =>
+            reject(new Error("Database deletion blocked"));
+    });
+}
+
 // --- 5. Unified Export ---
 export const db = {
     put,
     get,
     getAll,
+    getByIndex,
     remove,
     clear,
+    clearAll,
+    deleteDatabase
 };
