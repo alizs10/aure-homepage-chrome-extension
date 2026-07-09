@@ -15,7 +15,7 @@ export default function NewCalendarNote() {
     return (
         <>
             <Button
-                size="icon"
+                size="icon-sm"
                 className="h-full"
                 variant="primary"
                 onClick={toggle}

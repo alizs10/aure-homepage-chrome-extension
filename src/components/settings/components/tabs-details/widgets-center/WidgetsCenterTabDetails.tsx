@@ -17,6 +17,7 @@ import { widgetsSchema, type WidgetsFormValues } from './validation/widgets-sche
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { WidgetId } from '@/types'
 import { useEffect } from 'react'
+import { toast } from 'sonner'
 
 type WidgetItem = {
     id: WidgetId;
@@ -113,11 +114,10 @@ export default function WidgetsCenterTabDetails() {
     });
 
     const onSubmit = (data: WidgetsFormValues) => {
-        // TODO: Implement your save logic here (e.g. update settings store or trigger API call)
-        console.log("Saving widgets settings:", data);
         update({
             widgets: { ...data.widgets }
         })
+        toast.success("Widgets settings saved successfully!")
     };
 
     useEffect(() => {

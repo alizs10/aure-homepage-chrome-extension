@@ -5,6 +5,7 @@ import { copyToClipboard } from '@/helpers'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CopyCheckIcon, CopyIcon, HeartIcon, MailIcon, SendIcon } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 export default function AboutTabDetails() {
 
@@ -16,6 +17,7 @@ export default function AboutTabDetails() {
 
         await copyToClipboard(import.meta.env.VITE_WALLET_ADDRESS)
         setCopied(true)
+        toast.success("Copied!")
 
         setTimeout(() => {
 

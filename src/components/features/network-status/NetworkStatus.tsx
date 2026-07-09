@@ -17,6 +17,13 @@ export default function NetworkStatus() {
         };
     }, []);
 
+    // return (
+    //     <div
+    //         className={`size-2 rounded-full ${isOnline ? "bg-success" : "bg-destructive"
+    //             }`}
+    //     />
+    // )
+
     return (
         <div className="app_container app_gradient app-blur flex-row-center gap-x-1.5 px-4 py-1.5">
             <div

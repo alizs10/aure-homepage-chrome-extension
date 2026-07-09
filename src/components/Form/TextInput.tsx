@@ -26,8 +26,8 @@ const TextInput = forwardRef<
         ref
     ) => {
         return (
-            <div className="flex flex-col gap-y-0.5">
-                <div className="relative overflow-clip">
+            <div className="flex flex-col gap-y-0.5 h-full">
+                <div className="relative overflow-clip h-full">
                     <input
                         ref={ref}
                         {...props}

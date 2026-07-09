@@ -1,5 +1,6 @@
 import { type PropsWithChildren } from 'react'
 import Background from '../components/common/Background'
+import MyToaster from '@/components/common/MyToaster'
 export default function Layout({ children }: PropsWithChildren) {
 
 
@@ -11,6 +12,7 @@ export default function Layout({ children }: PropsWithChildren) {
 
 
             <Background />
+            <MyToaster />
         </div>
     )
 }

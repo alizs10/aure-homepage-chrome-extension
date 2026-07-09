@@ -1,6 +1,7 @@
 import { STORAGE_KEYS } from '@/constants/storage_keys'
 import { HistoryIcon, PauseIcon, PlayIcon } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { storage } from '../../../lib/storage'
 import Button from '../../common/Button'
 import { Typography } from '../../common/Typography'
@@ -22,35 +23,35 @@ export default function Focus() {
         elapsed: 0,
     })
 
-    // Used only to force a re-render every second while running.
-    const [tick, setTick] = useState(0)
-
     async function reset() {
         const initial: FocusTimer = {
             isRunning: false,
             isStarted: false,
             startedAt: null,
             elapsed: 0,
-        };
+        }
 
-        setTimer(initial);
-        await storage.remove(STORAGE_KEY);
+        setTimer(initial)
+        await storage.remove(STORAGE_KEY)
+
+        toast.info("Focus timer has been reset.")
     }
 
     async function toggle() {
         if (timer.isRunning) {
             // Pause
+            const now = Date.now()
             const updated: FocusTimer = {
                 ...timer,
                 isRunning: false,
                 startedAt: null,
-                elapsed:
-                    timer.elapsed +
-                    (Date.now() - (timer.startedAt ?? Date.now())),
+                elapsed: timer.elapsed + (now - (timer.startedAt ?? now)),
             }
 
             setTimer(updated)
             await storage.set(STORAGE_KEY, updated)
+
+            toast.info("Focus session paused.")
         } else {
             // Start / Resume
             const updated: FocusTimer = {
@@ -62,43 +63,57 @@ export default function Focus() {
 
             setTimer(updated)
             await storage.set(STORAGE_KEY, updated)
+
+            toast.success(timer.isStarted ? "Focus session resumed." : "Focus session started.")
         }
     }
 
-    // Load from storage
+    // Load from storage and account for time passed while closed
     useEffect(() => {
         async function load() {
             const saved = await storage.get<FocusTimer>(STORAGE_KEY)
 
             if (saved) {
-                setTimer(saved)
+                if (saved.isRunning && saved.startedAt) {
+                    const now = Date.now()
+                    const additionalElapsed = now - saved.startedAt
+                    setTimer({
+                        ...saved,
+                        elapsed: saved.elapsed + additionalElapsed,
+                        startedAt: now,
+                    })
+                } else {
+                    setTimer(saved)
+                }
             }
         }
 
         load()
     }, [])
 
-    // Update UI every second while running.
+    // Update elapsed time every second while running
     useEffect(() => {
         if (!timer.isRunning) return
 
         const id = setInterval(() => {
-            setTick(t => t + 1)
+            setTimer(prev => {
+                if (!prev.isRunning || !prev.startedAt) return prev
+
+                const now = Date.now()
+                const newElapsed = prev.elapsed + (now - prev.startedAt)
+
+                return {
+                    ...prev,
+                    elapsed: newElapsed,
+                    startedAt: now, // Reset startedAt to prevent drift
+                }
+            })
         }, 1000)
 
         return () => clearInterval(id)
     }, [timer.isRunning])
 
-    const totalMs = useMemo(() => {
-        return (
-            timer.elapsed +
-            (timer.isRunning && timer.startedAt
-                ? Date.now() - timer.startedAt
-                : 0)
-        )
-    }, [timer, timer.isRunning, tick])
-
-    const totalSeconds = Math.floor(totalMs / 1000)
+    const totalSeconds = Math.floor(timer.elapsed / 1000)
 
     const hours = Math.floor(totalSeconds / 3600)
     const minutes = Math.floor((totalSeconds % 3600) / 60)
@@ -110,11 +125,8 @@ export default function Focus() {
         seconds.toString().padStart(2, '0'),
     ].join(':')
 
-
-
     return (
         <div className="flex-row-center gap-x-1 h-full">
-
             <Button
                 variant={timer.isRunning ? 'destructive' : 'success'}
                 size="lg"
@@ -142,10 +154,7 @@ export default function Focus() {
                     className="h-full"
                     onClick={reset}
                 >
-
                     <HistoryIcon className="size-4 md:size-5 lg:size-6" />
-
-
                 </Button>
             )}
         </div>

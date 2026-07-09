@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { userInfoSchema, type UserInfoFormValues } from './validation/user-info-schema';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 export default function UserInfoTabDetails() {
 
@@ -29,6 +30,7 @@ export default function UserInfoTabDetails() {
         update({
             name: data.name
         })
+        toast.success("Your name updated successfully!")
 
     }
 

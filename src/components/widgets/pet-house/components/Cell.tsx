@@ -8,6 +8,7 @@ import { usePetAgeTicker } from "../hooks/usePetAgeTicker";
 import { usePetHouse } from "../hooks/usePetHouse";
 import type { Pet } from "../types";
 import PetMovement from "./PetMovement";
+import { toast } from "sonner";
 
 
 export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }) {
@@ -15,11 +16,29 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
 
     const { feedPet } = usePetHouse()
 
+
+
     const remainingFoodToday = useMemo(() => {
 
         return getRemainingFoodToday(pet)
 
     }, [pet])
+
+    function handleFeedPet() {
+        feedPet(pet.id);
+
+        const remaining = getRemainingFoodToday(pet) - 1;
+
+        const messages: Record<number, string> = {
+            2: "First feed of the day! Your pet loved it.",
+            1: "Second meal down. One more to go!",
+            0: "Final feed of the day! Pet is happily full.",
+        };
+
+        const message = messages[remaining] || "Pet fed successfully.";
+
+        toast.success(message);
+    }
 
     usePetAgeTicker(pet.createdAt);
 
@@ -34,7 +53,7 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
 
                 <div className="flex-row-center gap-x-1">
                     <Button
-                        onClick={() => feedPet(pet.id)}
+                        onClick={handleFeedPet}
                         disabled={remainingFoodToday === 0}
                         rightIcon={pet.type === 'cat' ? <SoupIcon className="size-4" /> : <BoneIcon className="size-4" />}
                         variant="primary" size="xs">

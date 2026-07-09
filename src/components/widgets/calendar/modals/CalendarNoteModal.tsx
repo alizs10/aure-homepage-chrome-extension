@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import { useCalendar } from '../hooks/useCalendar';
 import { calendarNoteSchema, type CalendarNoteFormValues } from '../validation/note-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 
 interface CalendarNoteModalProps {
     open: boolean;
@@ -44,10 +45,14 @@ export default function CalendarNoteModal({ open, onClose, init_value = '', note
 
         if (!selectedDay) return;
 
+        const formattedSelectedDay = format(selectedDay, "MMMM dd")
+
         if (editing) {
             updateItem(note_id, data.note)
+            toast.success("Calendar note updated!")
         } else {
             addItem(data.note, selectedDay)
+            toast.success("Note attached for " + formattedSelectedDay)
         }
         reset({ note: '' });
         onClose();

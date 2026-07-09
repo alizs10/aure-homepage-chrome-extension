@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { NoteAndChecklist } from '../types';
 import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
 import useClickOutside from '@/hooks/useOutsideClick';
+import { toast } from 'sonner';
 
 interface ItemProps {
     item: NoteAndChecklist
@@ -28,6 +29,8 @@ function WrapperWithOptions({ children, item, index }: PropsWithChildren & { ite
 
         await copyToClipboard(item.content)
         setCopied(true)
+        toast.success("Copied!")
+
 
         setTimeout(() => {
 
@@ -46,6 +49,14 @@ function WrapperWithOptions({ children, item, index }: PropsWithChildren & { ite
 
     const optionsContainerRef = useClickOutside(() => setOpen(false))
 
+    function handleRemove(id: number) {
+
+        const isChecklist = item.content.startsWith("[] ");
+        const type = isChecklist ? 'Item' : 'Note'
+
+        removeItem(id)
+        toast.success(`${type} deleted!`)
+    }
 
     return (
         <div
@@ -59,7 +70,7 @@ function WrapperWithOptions({ children, item, index }: PropsWithChildren & { ite
                 <Button
                     onClick={toggle}
                     className={`${open ? '' : 'group-hover:opacity-100 opacity-0'}`}
-                    size='icon-xs' variant='destructive'>
+                    size='icon-xs' variant={open ? 'primary-active' : 'primary'}>
                     <EllipsisIcon className='size-3' />
                 </Button>
 
@@ -150,7 +161,7 @@ function WrapperWithOptions({ children, item, index }: PropsWithChildren & { ite
 
                                 <Button
                                     onClick={() => {
-                                        removeItem(item.id)
+                                        handleRemove(item.id)
                                         setOpen(false)
                                     }}
                                     size='icon' variant='destructive'>

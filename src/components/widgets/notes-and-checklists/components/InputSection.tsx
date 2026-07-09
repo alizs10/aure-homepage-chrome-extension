@@ -6,6 +6,7 @@ import TextInput from '../../../Form/TextInput';
 import Button from '../../../common/Button';
 import { Typography } from '../../../common/Typography';
 import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
+import { toast } from 'sonner';
 
 export function InputSection() {
     const [input, setInput] = useState('');
@@ -13,10 +14,10 @@ export function InputSection() {
 
     const isChecklist = useMemo(() => {
 
-        if (!editable) return false;
+        if (!input) return false;
 
-        return editable.content.startsWith("[] ");
-    }, [editable])
+        return input.startsWith("[] ");
+    }, [input])
 
     const editableContent = useMemo(() => {
 
@@ -60,10 +61,15 @@ export function InputSection() {
     const handler = () => {
         if (input.trim()) {
 
+            const type = isChecklist ? 'Item' : 'Note'
+
             if (editable) {
                 updateItem(input)
+                toast.success(`${type} updated successfully!`)
+
             } else {
                 addItem(input);
+                toast.success(`${type} added!`)
             }
 
             setInput('');

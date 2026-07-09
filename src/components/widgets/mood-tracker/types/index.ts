@@ -1,4 +1,11 @@
 export type MoodType = "great" | "good" | "okay" | "meh" | "bad"
+export const moodMessages: Record<MoodType, string> = {
+    great: "Amazing! You're feeling great today.",
+    good: "Nice! Good mood saved.",
+    okay: "It's okay. Mood logged.",
+    meh: "Meh days happen. Thanks for logging.",
+    bad: "Bad day noted. Hang in there.",
+};
 
 export type MoodHistory = {
     id: number;

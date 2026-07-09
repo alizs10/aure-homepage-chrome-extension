@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import type { Checklist, NoteAndChecklist } from "../types";
 import { NotesAndChecklistsContext } from "../contexts/NotesAndChecklistsContext";
 import { NotesRepository } from "../db";
+import { toast } from "sonner";
 
 export function NotesAndChecklistsProvider({
     children,
@@ -66,11 +67,18 @@ export function NotesAndChecklistsProvider({
     };
 
     const toggleCheckbox = async (id: number) => {
-        await updateNote(id, (note) => ({
-            ...note,
-            status: !(note as Checklist).status,
-            updatedAt: Date.now(),
-        }));
+        await updateNote(id, (note) => {
+
+            const status = (note as Checklist).status ? 'Unchecked' : 'Checked'
+
+            toast.info(`${status} item`)
+
+            return ({
+                ...note,
+                status: !(note as Checklist).status,
+                updatedAt: Date.now(),
+            })
+        });
     };
 
     const startEdit = (id: number) => {

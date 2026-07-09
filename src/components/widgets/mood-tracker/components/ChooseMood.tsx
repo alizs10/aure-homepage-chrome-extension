@@ -2,15 +2,17 @@ import { Typography } from '@/components/common/Typography'
 import { MOODS_OPTIONS } from '../constants/moods'
 import Button from '@/components/common/Button'
 import { useMoodTracker } from '../hooks/useMoodTracker'
-import type { MoodType } from '../types'
+import { moodMessages, type MoodType } from '../types'
+import { toast } from 'sonner'
 
 export default function ChooseMood() {
 
     const { todayMood, today, addItem } = useMoodTracker()
 
     function handleMoodSelect(mood: MoodType) {
-        console.log(`Selected mood: ${mood}`);
+
         addItem(mood, today)
+        toast.success(moodMessages[mood]);
     }
 
     if (todayMood) return null;

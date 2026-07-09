@@ -50,7 +50,7 @@ export default function Header() {
                 )}
 
                 <div className="hidden sm:flex app_container app_gradient app-blur h-10 md:h-full px-4 md:px-6 lg:px-12 w-fit flex-center">
-                    <Typography className="text-base lg:text-lg tracking-tight text-nowrap" variant="h1">
+                    <Typography className="text-nowrap" variant="h4">
                         Hey, {settings?.name}
                     </Typography>
                 </div>

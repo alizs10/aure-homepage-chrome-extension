@@ -7,6 +7,7 @@ import ModalHeader from '@/components/modal/ModalHeader';
 import TextInput from '@/components/Form/TextInput';
 import { Typography } from '@/components/common/Typography';
 import Button from '@/components/common/Button';
+import { toast } from 'sonner';
 
 const cat_colors: {
     id: CatColor,
@@ -49,14 +50,27 @@ export default function NewPetModal({ open, onClose }: NewPetModalProps) {
 
     const [color, setColor] = useState<CatColor | DogColor>("white");
     function handleCreatePet() {
+        addItem(name, color, type);
 
-        addItem(
-            name,
-            color,
-            type,
-        )
+        const messages: Record<PetType, string[]> = {
+            cat: [
+                `${name} the cat has been born! Welcome to the family.`,
+                `A curious kitten named ${name} just joined us!`,
+                `Meow! ${name} is now part of the Pet House.`,
+            ],
+            dog: [
+                `${name} the dog is here! Ready to play.`,
+                `Woof! ${name} the puppy has joined the family.`,
+                `A loyal friend named ${name} just arrived.`,
+            ],
+        };
 
-        onClose()
+        const typeMessages = messages[type];
+        const message = typeMessages[Math.floor(Math.random() * typeMessages.length)];
+
+        toast.success(message);
+
+        onClose();
     }
 
     function stopPropagation(e: MouseEvent<HTMLDivElement>) {

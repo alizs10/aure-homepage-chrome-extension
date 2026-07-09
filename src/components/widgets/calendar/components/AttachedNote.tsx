@@ -5,6 +5,7 @@ import { useCalendar } from '../hooks/useCalendar';
 import { PenIcon, StickyNoteIcon, TrashIcon } from 'lucide-react';
 import Button from '../../../common/Button';
 import CalendarNoteModal from '../modals/CalendarNoteModal';
+import { toast } from 'sonner';
 
 export default function AttachedNote() {
 
@@ -46,7 +47,10 @@ export default function AttachedNote() {
                                 <PenIcon className='size-4' />
                             </Button>
                             <Button
-                                onClick={() => removeItem(attachedNote.id)}
+                                onClick={() => {
+                                    removeItem(attachedNote.id)
+                                    toast.success("Attached note deleted!")
+                                }}
                                 size='icon-sm' variant='destructive'>
                                 <TrashIcon className='size-4' />
                             </Button>
