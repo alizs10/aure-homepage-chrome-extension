@@ -87,7 +87,7 @@ export const getMoodIcon = (mood: MoodType) => {
 
 export const getWeekColor = (score: number) => {
     if (score >= 4) {
-        return "bg-indigo-600 dark:bg-indigo-500 text-indigo-600 dark:text-indigo-500-foreground";
+        return "bg-indigo-600 dark:bg-indigo-500 text-white";
     }
 
     if (score >= 3) {

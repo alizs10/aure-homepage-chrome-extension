@@ -39,7 +39,7 @@ export default function Dropdown({ value, options, onValueChange }: DropdownProp
             </Button>
 
             {isOpen && (
-                <div className="mt-1 absolute top-full left-0 w-full app_container bg-background z-10">
+                <div className="mt-1 absolute top-full right-0 w-fit app_container bg-background z-10">
                     <ul className="px-2 py-1.5 space-y-0.5">
                         {options?.map((option) => (
                             <li key={option.value} className="w-full">
@@ -48,9 +48,9 @@ export default function Dropdown({ value, options, onValueChange }: DropdownProp
                                         onValueChange?.(option.value)
                                         setIsOpen(false)
                                     }}
-                                    variant={value.value === option.value ? "primary-active" : "ghost"} size="xs" className="w-full text-start">
-                                    <Typography variant="caption-xxs" weight="medium"
-                                        className="w-full text-start"
+                                    variant={value.value === option.value ? "primary-active" : "ghost"} size="sm" className="w-full text-start h-auto py-1">
+                                    <Typography variant="caption-xs" weight="medium"
+                                        className="w-full text-start text-nowrap"
                                     >
                                         {option.label}
                                     </Typography>

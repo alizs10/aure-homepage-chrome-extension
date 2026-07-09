@@ -130,8 +130,8 @@ export default function WidgetsCenterTabDetails() {
 
     return (
         // Wrapped in a form tag to handle submission
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-2 flex-1 min-h-0">
-            <div className="grid grid-cols-4 gap-3">
+        <form onSubmit={handleSubmit(onSubmit)} className="h-fit flex-1 flex flex-col gap-y-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
                 {widgets.map(w => (
                     <Controller
                         key={w.id}

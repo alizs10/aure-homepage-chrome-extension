@@ -6,9 +6,9 @@ const MAX_AGE = {
 } as const;
 
 export const FEEDS_PER_DAY = 3;
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
-const PET_DAYS_PER_YEAR = 365;
-const PET_DAYS_PER_MONTH = 30;
+export const MS_PER_DAY = 1000 * 60 * 60 * 24;
+export const PET_DAYS_PER_YEAR = 365;
+export const PET_DAYS_PER_MONTH = 30;
 
 /**
  * 1 real day = 1 pet year
@@ -41,14 +41,15 @@ export function getPetDetailsAge(pet: Pet) {
 export function getPetAgeLabel(pet: Pet) {
     const { years, months, days } = getPetDetailsAge(pet);
 
-    const parts: string[] = [];
+    if (years > 0) {
+        return `${years}y`;
+    }
 
-    if (years) parts.push(`${years} year${years !== 1 ? "s" : ""}`);
-    if (months) parts.push(`${months} month${months !== 1 ? "s" : ""}`);
-    if (days || parts.length === 0)
-        parts.push(`${days} day${days !== 1 ? "s" : ""}`);
+    if (months > 0) {
+        return `${months}m`;
+    }
 
-    return parts.join(" ");
+    return `${days}d`;
 }
 
 export function isPetDeadByAge(pet: Pet): boolean {

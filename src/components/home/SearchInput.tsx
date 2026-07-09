@@ -33,7 +33,7 @@ export default function SearchInput() {
     }
 
     return (
-        <div className="w-full flex flex-nowrap">
+        <div className="w-full flex flex-nowrap px-4 md:px-8 lg:px-10">
             <motion.div
                 // layout
                 initial={false}
@@ -76,7 +76,7 @@ export default function SearchInput() {
                 <Button
                     onClick={handleSearch}
                     size='icon' className='h-full ml-2'>
-                    <SearchIcon className='size-7' />
+                    <SearchIcon className='size-5 md:size-6 lg:size-7' />
                 </Button>
             </motion.div>
 

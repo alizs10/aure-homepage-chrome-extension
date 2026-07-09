@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@custom-variant h-sm (@media (min-height: 40rem));   /* 640px */
+@custom-variant h-md (@media (min-height: 48rem));   /* 768px */
+@custom-variant h-lg (@media (min-height: 64rem));   /* 1024px */
+@custom-variant h-xl (@media (min-height: 80rem));   /* 1280px */
+@custom-variant h-2xl (@media (min-height: 96rem));  /* 1536px */
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

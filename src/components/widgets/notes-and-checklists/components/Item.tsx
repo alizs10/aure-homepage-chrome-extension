@@ -3,18 +3,20 @@ import { useState, type PropsWithChildren } from 'react';
 import { ChecklistItem } from './ChecklistItem';
 import { NoteItem } from './NoteItem';
 import Button from '../../../common/Button';
-import { CopyCheckIcon, CopyIcon, PenIcon, TrashIcon } from 'lucide-react';
+import { CopyCheckIcon, CopyIcon, EllipsisIcon, PenIcon, TrashIcon } from 'lucide-react';
 import { copyToClipboard } from '../../../../helpers';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { NoteAndChecklist } from '../types';
 import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
+import useClickOutside from '@/hooks/useOutsideClick';
 
 interface ItemProps {
     item: NoteAndChecklist
     onChange: (id: number) => void;
+    index: number;
 }
 
-function WrapperWithOptions({ children, item }: PropsWithChildren & { item: NoteAndChecklist }) {
+function WrapperWithOptions({ children, item, index }: PropsWithChildren & { item: NoteAndChecklist, index: number }) {
 
     const { removeItem, startEdit } = useNotesAndChecklists()
 
@@ -33,71 +35,142 @@ function WrapperWithOptions({ children, item }: PropsWithChildren & { item: Note
 
         }, 2000)
 
+
     }
+
+    const [open, setOpen] = useState(false)
+
+    function toggle() {
+        setOpen(prev => !prev)
+    }
+
+    const optionsContainerRef = useClickOutside(() => setOpen(false))
 
 
     return (
-        <div className='group flex flex-row relative overflow-clip rounded-3xl'>
+        <div
+            // onMouseLeave={() => setOpen(false)}
+
+            className='group flex flex-row justify-between items-end gap-2 relative rounded-3xl'>
             {children}
 
-            <div className="absolute inset-0 top-auto left-auto transition-all duration-200 w-0 group-hover:w-32 h-fit flex-center gap-1 overflow-clip app_container rounded-l-none! border-t-0!">
+            <div ref={optionsContainerRef} className="relative">
+
                 <Button
-                    onClick={handleCopy}
-                    // disabled={copied}
-                    size='icon' variant='success'>
-                    {/* <CopyIcon className='size-4' /> */}
+                    onClick={toggle}
+                    className={`${open ? '' : 'group-hover:opacity-100 opacity-0'}`}
+                    size='icon-xs' variant='destructive'>
+                    <EllipsisIcon className='size-3' />
+                </Button>
 
-                    <AnimatePresence mode="wait">
-                        {copied ? (
-                            <motion.div
-                                key={'copy-check'}
-                                initial={{ y: -25 }}
-                                animate={{ y: 0 }}
-                                exit={{ y: 25 }}
-                                transition={{
-                                    ease: "linear",
-                                    duration: .1
-                                }}
-                            >
-                                <CopyCheckIcon
 
-                                    className="size-4 text-success" />
-                            </motion.div>
-                        ) : (
+                <AnimatePresence mode='wait'>
+
+                    {open && (
+                        <motion.div
+                            layout
+                            className={`absolute ${index > 1 ? 'bottom-full mb-1' : "top-full mt-1"} right-0 transition-all duration-200 w-fit h-fit flex-col flex-center gap-1 app_container rounded-l-none! border-t-0!`}>
                             <motion.div
-                                key={'copy'}
-                                initial={{ y: -25 }}
-                                animate={{ y: 0 }}
-                                exit={{ y: 25 }}
+                                initial={{ x: 50 }}
+                                animate={{ x: 0 }}
+                                exit={{ x: 50 }}
                                 transition={{
-                                    ease: "linear",
-                                    duration: .1
+                                    delay: .2
                                 }}
                             >
 
-                                <CopyIcon className={`size-4`} />
+                                <Button
+                                    onClick={handleCopy}
+                                    size='icon' variant='success'>
+
+                                    <AnimatePresence mode="wait" initial={false}>
+                                        {copied ? (
+                                            <motion.div
+                                                key={'copy-check'}
+                                                initial={{ y: -25 }}
+                                                animate={{ y: 0 }}
+                                                exit={{ y: 25 }}
+                                                transition={{
+                                                    ease: "linear",
+                                                    duration: .1
+                                                }}
+                                            >
+                                                <CopyCheckIcon
+
+                                                    className="size-4 text-success" />
+                                            </motion.div>
+                                        ) : (
+                                            <motion.div
+                                                key={'copy'}
+                                                initial={{ y: -25 }}
+                                                animate={{ y: 0 }}
+                                                exit={{ y: 25 }}
+                                                transition={{
+                                                    ease: "linear",
+                                                    duration: .1
+                                                }}
+                                            >
+
+                                                <CopyIcon className={`size-4`} />
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </Button>
                             </motion.div>
-                        )}
-                    </AnimatePresence>
-                </Button>
-                <Button
-                    onClick={() => startEdit(item.id)}
-                    size='icon' variant='warning'>
-                    <PenIcon className='size-4' />
-                </Button>
-                <Button
-                    onClick={() => removeItem(item.id)}
-                    size='icon' variant='destructive'>
-                    <TrashIcon className='size-4' />
-                </Button>
+
+                            <motion.div
+                                initial={{ x: 50 }}
+                                animate={{ x: 0 }}
+                                exit={{ x: 50 }}
+                                transition={{
+                                    delay: .1
+                                }}
+                            >
+
+
+
+                                <Button
+                                    onClick={() => {
+                                        startEdit(item.id)
+                                        setOpen(false)
+                                    }}
+                                    size='icon' variant='warning'>
+                                    <PenIcon className='size-4' />
+                                </Button>
+                            </motion.div>
+
+                            <motion.div
+                                initial={{ x: 50 }}
+                                animate={{ x: 0 }}
+                                exit={{ x: 50 }}
+                                transition={{
+                                    delay: 0
+                                }}
+                            >
+
+                                <Button
+                                    onClick={() => {
+                                        removeItem(item.id)
+                                        setOpen(false)
+                                    }}
+                                    size='icon' variant='destructive'>
+                                    <TrashIcon className='size-4' />
+                                </Button>
+                            </motion.div>
+
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
             </div>
+
         </div>
     )
 
 }
 
 
-export function Item({ item, onChange }: ItemProps) {
+export function Item({ item, onChange, index }: ItemProps) {
     const isChecklist = item.content.startsWith("[] ");
 
     const content = isChecklist ? (
@@ -107,7 +180,7 @@ export function Item({ item, onChange }: ItemProps) {
     );
 
     return (
-        <WrapperWithOptions item={item}>
+        <WrapperWithOptions item={item} index={index}>
             {content}
         </WrapperWithOptions>
     );

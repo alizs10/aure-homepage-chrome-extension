@@ -19,7 +19,7 @@ export default function CalendarContent() {
     }, [selectedDay, getNoteForDay]);
 
     return (
-        <div className="col-span-1 row-span-2 app_container app_gradient app-blur h-full flex flex-col gap-y-4 p-5">
+        <div className="w-full sm:col-span-1 app_container app_gradient app-blur h-full max-h-110 lg:max-h-full flex flex-col gap-y-4 p-5 lg:row-span-2">
             <div className="flex-center-between">
                 <Typography className='capitalize' variant="h2">
                     Calendar

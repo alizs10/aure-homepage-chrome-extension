@@ -62,14 +62,14 @@ export default function Favicon({ url }: { url: string }) {
     }, [isLocal, imageStatus]);
 
     if (showGlobe || !src) {
-        return <Globe className="min-w-10 size-10 text-muted-foreground" />;
+        return <Globe className="min-w-6 md:min-w-10 size-6 md:size-10 text-muted-foreground" />;
     }
 
     return (
         <img
             ref={imgRef}
             src={src}
-            className="min-w-10 size-10 rounded-full"
+            className="min-w-6 md:min-w-10 size-6 md:size-10 rounded-full"
             alt="Website favicon"
         />
     );

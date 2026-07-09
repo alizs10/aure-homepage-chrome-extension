@@ -12,15 +12,15 @@ export default function Sidebar() {
     const { activeTab, setActiveTab } = useSettingsTabs();
 
     return (
-        <div className="col-span-1 flex-1 min-h-0 app_container app_gradient app-blur p-5 flex flex-col">
-            <div className="flex-row-center gap-x-2">
+        <div className="w-full md:col-span-1 flex-1 md:min-h-0 h-fit app_container bg-background app-blur flex flex-col  md:overflow-y-scroll scrollbar-none overflow-x-auto">
+            <div className="flex-row-center gap-x-2 sticky top-0 z-10 app_gradient app-blur rounded-t-3xl  p-5">
                 <SettingsIcon className="size-6" />
                 <Typography className="capitalize" variant="h2">
                     Settings
                 </Typography>
             </div>
 
-            <ul className="mt-6 flex flex-col gap-y-2">
+            <ul className="mt-1 mb-6 flex flex-col gap-y-2 px-5">
                 {TABS.map((tab) => (
                     <li key={tab.id}>
                         <Button
@@ -49,7 +49,7 @@ export default function Sidebar() {
                 ))}
             </ul>
 
-            <div className="mt-auto w-full">
+            <div className="mt-auto w-full p-5">
                 <Button
                     onClick={clear}
                     // type="submit"

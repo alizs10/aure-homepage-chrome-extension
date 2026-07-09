@@ -14,10 +14,10 @@ export function ItemsList() {
     return (
         <div
             ref={containerRef}
-            className="flex-1 min-h-0 overflow-y-scroll scrollbar-none w-full flex flex-col gap-y-2"
+            className="flex-1 min-h-0 overflow-y-scroll scrollbar-none w-full flex flex-col gap-y-2 pb-14"
         >
-            {data.map(d => (
-                <Item key={d.id} item={d} onChange={toggleCheckbox} />
+            {data.map((d, index) => (
+                <Item key={d.id} item={d} index={index} onChange={toggleCheckbox} />
             ))}
 
             {data.length === 0 && (

@@ -4,9 +4,11 @@ import Button from "../../../common/Button";
 import { Typography } from "../../../common/Typography";
 import KillPetDialog from "../dialogs/KillPetDialog";
 import { getPetAgeLabel, getRemainingFoodToday } from "../helpers";
+import { usePetAgeTicker } from "../hooks/usePetAgeTicker";
+import { usePetHouse } from "../hooks/usePetHouse";
 import type { Pet } from "../types";
 import PetMovement from "./PetMovement";
-import { usePetHouse } from "../hooks/usePetHouse";
+
 
 export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }) {
 
@@ -19,20 +21,14 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
 
     }, [pet])
 
-    const ageLabel = useMemo(() => {
-        return getPetAgeLabel(pet)
-    }, [pet])
+    usePetAgeTicker(pet.createdAt);
 
+    const ageLabel = getPetAgeLabel(pet);
 
     return (
         <div className="relative border-2 nth-[1]:border-t-0 nth-[1]:border-l-0 nth-[2]:border-t-0 nth-[2]:border-r-0 nth-[3]:border-b-0 nth-[3]:border-l-0 nth-[4]:border-b-0 nth-[4]:border-r-0 border-muted overflow-hidden">
 
             <div className="flex-center-between px-3 py-1">
-                {/* <Button
-                    onClick={() => removeItem(pet.id)}
-                    variant="ghost-destructive" size="icon-xs">
-                    <SkullIcon className="size-4" />
-                </Button> */}
 
                 <KillPetDialog pet={pet} />
 

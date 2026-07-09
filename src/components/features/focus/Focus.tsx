@@ -1,9 +1,9 @@
+import { STORAGE_KEYS } from '@/constants/storage_keys'
 import { HistoryIcon, PauseIcon, PlayIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
+import { storage } from '../../../lib/storage'
 import Button from '../../common/Button'
 import { Typography } from '../../common/Typography'
-import { storage } from '../../../lib/storage'
-import { STORAGE_KEYS } from '@/constants/storage_keys'
 
 const STORAGE_KEY = STORAGE_KEYS.focus
 
@@ -110,26 +110,25 @@ export default function Focus() {
         seconds.toString().padStart(2, '0'),
     ].join(':')
 
+
+
     return (
-        <div className="flex-row-center gap-x-2 h-full">
-
-
-
+        <div className="flex-row-center gap-x-1 h-full">
 
             <Button
                 variant={timer.isRunning ? 'destructive' : 'success'}
                 size="lg"
-                className="h-full"
+                className="h-full px-4 md:px-6 lg:px-8"
                 onClick={toggle}
             >
                 {timer.isRunning ? (
-                    <PauseIcon className="size-8 text-destructive" />
+                    <PauseIcon className="size-4 md:size-5 lg:size-6 text-destructive" />
                 ) : (
-                    <PlayIcon className="size-8" />
+                    <PlayIcon className="size-4 md:size-5 lg:size-6" />
                 )}
 
                 <Typography
-                    className={timer.isStarted ? 'w-32 text-start' : ''}
+                    className={`text-sm md:text-base lg:text-2xl ${timer.isStarted ? 'w-20 md:w-20 lg:w-32 text-start' : ''}`}
                     variant="h2"
                 >
                     {timer.isStarted ? formattedTime : 'Focus'}
@@ -139,12 +138,12 @@ export default function Focus() {
             {timer.isStarted && (
                 <Button
                     variant={"warning"}
-                    size="lg"
+                    size="icon"
                     className="h-full"
                     onClick={reset}
                 >
 
-                    <HistoryIcon className="size-8" />
+                    <HistoryIcon className="size-4 md:size-5 lg:size-6" />
 
 
                 </Button>

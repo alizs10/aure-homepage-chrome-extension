@@ -8,13 +8,15 @@ export default function Header() {
 
     return (
         <div className="flex-center-between">
-            <Typography className='capitalize' variant="h2">
+            <Typography className='capitalize text-nowrap' variant="h2">
                 Mood Tracker
             </Typography>
 
 
-            <div className="app_container bg-background px-4 py-2">
-                Mood Score: {score}/5
+            <div className="app_container bg-background px-4 py-2  text-nowrap">
+                <Typography variant='caption-xs'>
+                    Score: {score}/5
+                </Typography>
             </div>
 
         </div>

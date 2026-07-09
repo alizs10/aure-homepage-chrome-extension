@@ -84,7 +84,7 @@ export default function Wizard() {
     };
 
     return (
-        <div className="flex flex-col w-full h-screen max-h-screen overflow-y-scroll p-10 gap-y-8">
+        <div className="flex flex-col w-full h-screen max-h-screen overflow-y-scroll scrollbar-none p-10 gap-y-8">
 
             <section className="flex-1 w-full grid grid-cols-5 gap-6 max-w-6xl mx-auto max-h-2/3 my-auto">
                 <WizardIntro currentStep={currentStep} />

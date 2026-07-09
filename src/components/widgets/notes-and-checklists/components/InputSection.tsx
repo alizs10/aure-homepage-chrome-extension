@@ -1,6 +1,6 @@
 // components/notes-and-checklists/InputSection.tsx
 import { PenLineIcon, SendIcon, XIcon } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { sliceText } from '../../../../helpers';
 import TextInput from '../../../Form/TextInput';
 import Button from '../../../common/Button';
@@ -10,6 +10,24 @@ import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
 export function InputSection() {
     const [input, setInput] = useState('');
     const { addItem, editable, updateItem, cancelEdit } = useNotesAndChecklists();
+
+    const isChecklist = useMemo(() => {
+
+        if (!editable) return false;
+
+        return editable.content.startsWith("[] ");
+    }, [editable])
+
+    const editableContent = useMemo(() => {
+
+        if (!editable) return undefined
+
+        if (!isChecklist) return editable.content;
+
+        return editable.content.substring(3, editable.content.length);
+
+    }, [editable, isChecklist])
+
 
     const inputRef = useRef<HTMLInputElement | null>(null)
     useEffect(() => {
@@ -59,8 +77,8 @@ export function InputSection() {
     };
 
     return (
-        <div className="flex flex-col gap-y-2">
-            {editable && (
+        <div className="fixed inset-0 top-auto flex flex-col gap-y-2 p-5">
+            {(editable && editableContent) && (
                 <div className="flex-row-center gap-x-2">
 
                     <div role='div' className='size-10 min-w-10 app_container app_gradient app-blur flex-center'>
@@ -68,7 +86,7 @@ export function InputSection() {
                     </div>
                     <div className="app_container app_gradient flex-1 app-blur px-4 py-2">
                         <Typography className='' variant='body'>
-                            {sliceText(editable.content, 15)}
+                            {sliceText(editableContent, 15)}
                         </Typography>
                     </div>
                     <Button variant='destructive' size='icon' className='' onClick={cancelEdit}>

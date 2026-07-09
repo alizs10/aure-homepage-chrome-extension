@@ -40,7 +40,7 @@ export default function UserInfoTabDetails() {
         }
     }, [settings, reset]);
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex-1 min-h-0 grid grid-cols-2 gap-4 h-full">
+        <form onSubmit={handleSubmit(onSubmit)} className="h-fit flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="flex flex-col gap-y-1">
                 <label htmlFor="name">
                     <Typography variant='label'>

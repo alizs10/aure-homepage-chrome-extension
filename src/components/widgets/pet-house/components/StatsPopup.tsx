@@ -56,8 +56,7 @@ export default function StatsPopup() {
 
     return (
         <div ref={containerRef} className="relative z-20">
-            <Button onClick={toggle} variant='ghost' size='icon-sm'
-                className={`${open ? 'to-primary/20 dark:to-primary/50' : ''}`}
+            <Button onClick={toggle} variant={open ? 'primary-active' : 'ghost'} size='icon-sm'
             >
                 <ChartNoAxesColumnIcon className='size-4' />
 

@@ -16,7 +16,7 @@ export default function TabDetails() {
     }, [activeTab])
 
     return (
-        <div className="flex flex-col gap-y-6 col-span-3 flex-1 min-h-0 app_container app_gradient app-blur py-5 px-8">
+        <div className="flex flex-col gap-y-6 flex-1 md:col-span-1 lg:col-span-2 xl:col-span-3 md:flex-1 md:min-h-0 app_container app_gradient app-blur py-5 px-8 overflow-y-scroll scrollbar-none">
 
             <div className="flex-row-center gap-x-2">
                 {tab?.Icon && (

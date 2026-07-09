@@ -9,18 +9,18 @@ export function ChooseTheme({
 }) {
     return (
 
-        <div className="flex flex-wrap gap-x-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4">
             <button
                 onClick={() => onChange("light")}
                 className={`p-1 rounded-[28px] ${value === "light" ? "outline-2 outline-primary" : ""}`}>
 
-                <div className={`h-30 aspect-video rounded-3xl bg-white  relative`} />
+                <div className={`h-full aspect-video rounded-3xl bg-white  relative`} />
             </button>
             <button
                 onClick={() => onChange("dark")}
                 className={`p-1 rounded-[28px] ${value === "dark" ? "outline-2 outline-primary" : ""} `}>
 
-                <div className={`h-30 aspect-video rounded-3xl bg-gray-800 relative`} />
+                <div className={`h-full aspect-video rounded-3xl bg-gray-800 relative`} />
             </button>
         </div>
     );

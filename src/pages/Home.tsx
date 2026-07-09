@@ -20,17 +20,17 @@ export default function Home() {
     return (
         <AppLayout>
 
-            <section className="flex-1 min-h-0 flex flex-col w-full max-w-6xl mx-auto gap-y-8 py-22">
+            <section className="flex-1 min-h-0 flex flex-col w-full max-w-6xl mx-auto gap-y-4 md:gap-y-8 mt-10">
 
-                <div className="flex-1 min-h-0 flex flex-col w-full">
+                <div className="h-fit flex flex-col">
                     <SearchInput />
 
                     <TopSites />
                 </div>
 
-                <div className="flex-3 min-h-0 h-fit w-full flex flex-col gap-y-4">
+                <div className="w-full flex-1 min-h-0 flex flex-col gap-y-4 overflow-y-scroll scrollbar-none pb-14 md:pb-18 lg:pb-20 px-4 md:px-8 lg:px-10">
 
-                    <div className="w-full grid grid-cols-3 grid-rows-2 gap-4 flex-1 min-h-0 h-full">
+                    <div className="w-full flex flex-col sm:grid sm:grid-cols-2 lg:grid-rows-2 lg:grid-cols-3 gap-4 max-h-fit">
                         {widgetsSettings?.["notes-and-checklists"] && (
                             <NotesAndChecklists />
                         )}
