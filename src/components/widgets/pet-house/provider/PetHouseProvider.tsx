@@ -63,7 +63,7 @@ export function PetHouseProvider({ children }: { children: ReactNode }) {
         color: PetColor,
         type: PetType
     ) => {
-        if (data.length >= 4) return;
+        if (alivePets.length >= 4) return;
 
         const now = Date.now();
 

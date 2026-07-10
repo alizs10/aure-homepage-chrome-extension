@@ -77,22 +77,7 @@ export default function Dialog({ open, onClose, buttons, title, desc }: DialogPr
 
                 <div className="mt-6 flex flex-wrap gap-x-2">
 
-                    <Button
-                        variant={buttons.confirm.variant ?? "primary"}
-                        className="flex-1"
-                        onClick={buttons.confirm.onConfirm}
-                        rightIcon={buttons.confirm?.icon}
-                        disabled={buttons.confirm?.confirmInput?.value?.trim().length === 0}
-                    >
-                        <Typography
 
-                            variant="caption"
-                            weight="semibold"
-                        >
-                            {buttons.confirm.content}
-                        </Typography>
-
-                    </Button>
 
                     <Button
                         onClick={buttons.cancel.onCancel}
@@ -110,7 +95,22 @@ export default function Dialog({ open, onClose, buttons, title, desc }: DialogPr
                         </Typography>
                     </Button>
 
+                    <Button
+                        variant={buttons.confirm.variant ?? "primary"}
+                        className="flex-1"
+                        onClick={buttons.confirm.onConfirm}
+                        rightIcon={buttons.confirm?.icon}
+                        disabled={buttons.confirm?.confirmInput?.value?.trim().length === 0}
+                    >
+                        <Typography
 
+                            variant="caption"
+                            weight="semibold"
+                        >
+                            {buttons.confirm.content}
+                        </Typography>
+
+                    </Button>
 
                 </div>
             </div>
