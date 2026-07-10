@@ -16,7 +16,7 @@ export default function StatsPopup() {
     const stats = useMemo(() => {
         return [
             { id: 1, label: "Notes", value: notesCount },
-            { id: 2, label: "Items", value: itemsCount },
+            { id: 2, label: "Tasks", value: itemsCount },
             { id: 3, label: "Checked", value: checkedItemsCount },
             { id: 4, label: "Remaining", value: itemsCount - checkedItemsCount },
         ];
@@ -36,46 +36,48 @@ export default function StatsPopup() {
             </Button>
 
             {open && (
-                <ul className='flex flex-col justify-start app_container bg-background absolute top-full right-0 h-fit mt-1 rounded-3xl overflow-clip py-3 px-4 min-w-40'>
 
+                <div className="absolute top-full right-0 h-fit mt-1 flex flex-col gap-y-2 app_container bg-background rounded-3xl overflow-clip py-3 px-4 min-w-40">
                     <Typography className='border-border' variant='caption' weight="medium">
                         Stats
                     </Typography>
 
+                    <ul className='flex flex-col justify-start'>
 
-                    {stats.map(stat => (
-                        <li key={stat.id} className='py-1'>
-                            <Typography className='text-nowrap' variant='caption-xs'>
-                                {stat.label}: <span className="font-semibold">{stat.value}</span>
-                            </Typography>
-                        </li>
-                    ))}
-
-                    {/* 🌟 NEW: Progress Bar Section */}
-                    {itemsCount > 0 && (
-
-                        <li className="pt-3 mt-2 border-t border-border">
-                            <div className="flex justify-between items-center mb-1.5">
-                                <Typography variant="caption-xs" weight="medium">
-                                    Completion
+                        {stats.map(stat => (
+                            <li key={stat.id} className='py-0.5'>
+                                <Typography className='text-nowrap' variant='caption-xs'>
+                                    {stat.label}: <span className="font-semibold">{stat.value}</span>
                                 </Typography>
-                                <Typography variant="caption-xs" className="text-primary font-bold">
-                                    {Math.round(progress)}%
-                                </Typography>
-                            </div>
+                            </li>
+                        ))}
 
-                            <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
-                                <motion.div
-                                    className="h-full bg-primary rounded-full"
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${progress}%` }}
-                                    transition={{ duration: 0.6, ease: "easeOut" }}
-                                />
-                            </div>
-                        </li>
-                    )}
+                        {/* 🌟 NEW: Progress Bar Section */}
+                        {itemsCount > 0 && (
 
-                </ul>
+                            <li className="pt-3 mt-2 border-t border-border">
+                                <div className="flex justify-between items-center mb-1.5">
+                                    <Typography variant="caption-xs" weight="medium">
+                                        Completion
+                                    </Typography>
+                                    <Typography variant="caption-xs" className="text-primary font-bold">
+                                        {Math.round(progress)}%
+                                    </Typography>
+                                </div>
+
+                                <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
+                                    <motion.div
+                                        className="h-full bg-primary rounded-full"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${progress}%` }}
+                                        transition={{ duration: 0.6, ease: "easeOut" }}
+                                    />
+                                </div>
+                            </li>
+                        )}
+
+                    </ul>
+                </div>
             )}
         </div>
     )
