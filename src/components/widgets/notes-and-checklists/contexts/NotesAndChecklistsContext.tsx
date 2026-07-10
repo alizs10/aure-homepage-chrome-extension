@@ -11,6 +11,9 @@ interface NotesAndChecklistsContextType {
     startEdit: (id: number) => void;
     updateItem: (content: string) => void;
     cancelEdit: () => void;
+    notesCount: number;
+    itemsCount: number;
+    checkedItemsCount: number;
 }
 
 export const NotesAndChecklistsContext = createContext<NotesAndChecklistsContextType | undefined>(undefined);

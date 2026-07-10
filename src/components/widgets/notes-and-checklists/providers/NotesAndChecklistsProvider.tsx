@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Checklist, NoteAndChecklist } from "../types";
 import { NotesAndChecklistsContext } from "../contexts/NotesAndChecklistsContext";
 import { NotesRepository } from "../db";
@@ -20,6 +20,17 @@ export function NotesAndChecklistsProvider({
 
         load();
     }, []);
+
+    const notesCount = useMemo(() => {
+        return data.filter(p => (!p.content.startsWith("[] "))).length
+    }, [data])
+    const itemsCount = useMemo(() => {
+        return data.length - notesCount
+    }, [data, notesCount])
+    const checkedItemsCount = useMemo(() => {
+        return data.filter((p) => ((p.content.startsWith("[] ") && (p as Checklist).status))).length
+
+    }, [data])
 
     async function updateNote(
         id: number,
@@ -118,6 +129,9 @@ export function NotesAndChecklistsProvider({
                 startEdit,
                 updateItem,
                 cancelEdit,
+                notesCount,
+                itemsCount,
+                checkedItemsCount
             }}
         >
             {children}

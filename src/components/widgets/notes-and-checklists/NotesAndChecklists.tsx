@@ -3,6 +3,7 @@ import { Typography } from '../../common/Typography';
 import InfoPopup from './components/InfoPopup';
 import { InputSection } from './components/InputSection';
 import { ItemsList } from './components/ItemsList';
+import StatsPopup from './components/StatsPopup';
 import { NotesAndChecklistsProvider } from './providers/NotesAndChecklistsProvider';
 
 function NotesAndChecklistsContent() {
@@ -13,7 +14,10 @@ function NotesAndChecklistsContent() {
                     notes & checklists
                 </Typography>
 
-                <InfoPopup />
+                <div className="flex-row-center gap-x-1">
+                    <StatsPopup />
+                    <InfoPopup />
+                </div>
             </div>
 
             <ItemsList />
