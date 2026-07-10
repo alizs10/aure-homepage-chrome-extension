@@ -42,7 +42,7 @@ export default function Dialog({ open, onClose, buttons, title, desc }: DialogPr
 
     return (
         <ModalWrapper open={open} onClose={onClose}>
-            <div onClick={stopPropagation} className="app_container app_gradient app-blur p-5 flex flex-col w-full max-w-4/5 sm:max-w-md">
+            <div onClick={stopPropagation} className="app_container bg-background p-5 flex flex-col w-full max-w-4/5 sm:max-w-md">
 
 
                 <ModalHeader

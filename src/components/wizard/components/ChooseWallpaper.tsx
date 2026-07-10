@@ -66,7 +66,7 @@ export function ChooseWallpaper({
 
             <div className="flex flex-col gap-y-4">
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:sm:grid-cols-2 lg:sm:grid-cols-3 gap-1 sm:gap-2">
                     {allWallpapers.map((wp) => (
                         <WallpaperCard
                             key={wp.id}
@@ -86,8 +86,8 @@ export function ChooseWallpaper({
                         onClick={() => setOpen(true)}
                         className="aspect-video rounded-3xl bg-secondary/50 border-2 border-border hover:border-primary transition-colors flex flex-col items-center justify-center gap-y-4 cursor-pointer overflow-hidden relative"
                     >
-                        <ImagePlusIcon className="size-10 text-muted-foreground" />
-                        <Typography variant="body" weight="medium">
+                        <ImagePlusIcon className="size-6 lg:size-10 text-muted-foreground" />
+                        <Typography className="text-nowrap" variant="caption-xxs" weight="medium">
                             Add Your Own Wallpaper
                         </Typography>
                     </div>

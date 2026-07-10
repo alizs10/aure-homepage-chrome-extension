@@ -5,37 +5,48 @@ import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import Button from '../common/Button';
 import TextInput from '../Form/TextInput';
 import { getDestination } from './helpers/search';
-import Suggestions from './Suggestions';
+import Suggestions, { type Suggestion } from './Suggestions';
 
 export default function SearchInput() {
     const [searchValue, setSearchValue] = useState("")
     const [showSuggestions, setShowSuggestions] = useState(false)
+    const [isNavigating, setIsNavigating] = useState(false)
+
+    const handleSuggestionSelect = (suggestion: Suggestion) => {
+        // 🌟 CHANGED: Navigate in the current tab instead of opening a new one
+        window.location.href = suggestion.url;
+        setSearchValue('');
+        setIsNavigating(false);
+    };
+
+    const handleSearchUpdate = (value: string) => {
+        setSearchValue(value);
+        setIsNavigating(true); // Enter navigation mode
+    };
 
     useEffect(() => {
         const show = () => setShowSuggestions(true)
         const hide = () => setShowSuggestions(false)
 
-        if (searchValue.length > 0 && !showSuggestions) {
-            show()
-        }
-
-        if (searchValue.length === 0 && showSuggestions) {
-            hide()
-        }
+        if (searchValue.length > 0 && !showSuggestions) show()
+        if (searchValue.length === 0 && showSuggestions) hide()
     }, [searchValue.length, showSuggestions])
 
     function onChange(e: ChangeEvent<HTMLInputElement>) {
-        setSearchValue(e.target.value)
+
+        setIsNavigating(false);
+        setSearchValue(e.target.value);
     }
-
-    // const inputRef = useFocusInput()
-
 
     function handleSearch() {
         const url = getDestination(searchValue);
         if (!url) return;
-        chrome.tabs.create({ url });
+
+        // 🌟 CHANGED: Navigate in the current tab instead of chrome.tabs.create
+        window.location.href = url;
+
         setSearchValue("");
+        setIsNavigating(false);
     }
 
     const { width } = useWidth()
@@ -61,7 +72,6 @@ export default function SearchInput() {
                 className='z-30'
             >
                 <TextInput
-                    // ref={inputRef}
                     className="flex-1 mt-auto text-lg md:text-xl lg:text-2xl md:px-6 md:py-2.5 lg:px-10 lg:py-4 h-full"
                     placeholder="Search through web..."
                     value={searchValue}
@@ -69,6 +79,10 @@ export default function SearchInput() {
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             handleSearch();
+                        }
+                        // Reset navigation on destructive keys
+                        if (e.key === "Backspace" || e.key === "Delete") {
+                            setIsNavigating(false);
                         }
                     }}
                     autoFocus
@@ -99,8 +113,12 @@ export default function SearchInput() {
 
             <AnimatePresence>
                 {showSuggestions && (
-                    // Pass searchValue to Suggestions
-                    <Suggestions searchValue={searchValue} />
+                    <Suggestions
+                        searchValue={searchValue}
+                        isNavigating={isNavigating}
+                        onSuggestionSelect={handleSuggestionSelect}
+                        onSearchUpdate={handleSearchUpdate}
+                    />
                 )}
             </AnimatePresence>
         </div>

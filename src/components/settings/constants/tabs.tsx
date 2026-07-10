@@ -1,4 +1,4 @@
-import { InfoIcon, LayoutDashboardIcon, SwatchBookIcon, UserPenIcon } from "lucide-react";
+import { AppWindowIcon, InfoIcon, LayoutDashboardIcon, SwatchBookIcon, UserPenIcon } from "lucide-react";
 
 export const TABS = [
     {
@@ -10,6 +10,11 @@ export const TABS = [
         id: "widgets-center",
         label: "Widgets Center",
         Icon: LayoutDashboardIcon
+    },
+    {
+        id: "sites-and-shortcuts",
+        label: "Sites & Shortcuts",
+        Icon: AppWindowIcon
     },
     {
         id: "user-information",

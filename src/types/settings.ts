@@ -84,4 +84,6 @@ export interface Settings {
     blur: BlurSize
     widgets: WidgetSettings
     accent: Accent
+    show_top_sites: boolean
+    show_favorites: boolean
 }

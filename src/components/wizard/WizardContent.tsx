@@ -36,7 +36,7 @@ export function WizardContent({
     }, [currentStep]);
 
     return (
-        <div className="flex flex-col gap-y-4 col-span-3 flex-1 min-h-0 app_container app_gradient app-blur py-5 px-8">
+        <div className="flex flex-col gap-y-4 col-span-1 lg:col-span-3 flex-1 lg:min-h-0 app_container app_gradient app-blur p-5 min-h-80">
             {step && (
                 <Typography className="capitalize" variant="h2">
                     {`${step.id}. ${step.label}`}

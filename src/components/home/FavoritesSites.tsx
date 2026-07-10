@@ -2,19 +2,25 @@ import { useEffect, useState } from "react";
 import Favicon from "../common/Favicon";
 import { Typography } from "../common/Typography";
 import { sliceText } from "../../helpers";
-import { getTopSites } from "@/lib/chrome/top-sites";
 import { Link } from "react-router-dom";
+import { FavoritesRepository } from "../settings/components/tabs-details/sites-and-shortcuts/db";
+import type { Favorite } from "../settings/components/tabs-details/sites-and-shortcuts/types";
 
 
 
-export default function TopSites() {
+export default function FavoritesSites() {
 
-    const [sites, setSites] = useState<chrome.topSites.MostVisitedURL[]>([]);
+    const [sites, setSites] = useState<Favorite[]>([]);
 
     useEffect(() => {
-        getTopSites().then(setSites);
-    }, []);
+        async function load() {
+            const favorites = await FavoritesRepository.getAll();
+            const sorted = favorites.sort((a, b) => a.order - b.order)
+            setSites(sorted);
+        }
 
+        load();
+    }, []);
     return (
         <div className="py-2 md:py-4 flex justify-center z-30 relative">
 

@@ -10,7 +10,7 @@ export default function Settings() {
         <SettingsTabsProvider>
 
             <AppLayout>
-                <div className="flex-1 min-h-0 flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full max-w-6xl mx-auto mt-4 mb-4 md:mb-0 md:mt-10 overflow-y-scroll scrollbar-none">
+                <div className="flex-1 min-h-0 flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full max-w-6xl mx-auto mt-4 md:mt-10 overflow-y-scroll scrollbar-none pb-14 md:pb-18 lg:pb-20 px-4 md:px-8 lg:px-10">
 
                     <Sidebar />
                     <TabDetails />

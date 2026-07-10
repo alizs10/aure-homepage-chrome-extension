@@ -45,7 +45,7 @@ export default function Header() {
                     <Button
                         href='/'
                         size='icon' className="h-full">
-                        <MoveLeftIcon className="size-6" />
+                        <MoveLeftIcon className="size-4 md:size-5 lg:size-6" />
                     </Button>
                 )}
 

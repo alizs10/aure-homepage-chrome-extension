@@ -6,6 +6,7 @@ import MoodTracker from "../components/widgets/mood-tracker/MoodTracker";
 import NotesAndChecklists from "../components/widgets/notes-and-checklists/NotesAndChecklists";
 import PetHouse from "../components/widgets/pet-house/PetHouse";
 import AppLayout from "../layouts/AppLayout";
+import FavoritesSites from "@/components/home/FavoritesSites";
 
 
 
@@ -25,7 +26,12 @@ export default function Home() {
                 <div className="h-fit flex flex-col">
                     <SearchInput />
 
-                    <TopSites />
+                    {(settings?.show_top_sites && !settings?.show_favorites) && (
+                        <TopSites />
+                    )}
+                    {settings?.show_favorites && (
+                        <FavoritesSites />
+                    )}
                 </div>
 
                 <div className="w-full flex-1 min-h-0 flex flex-col gap-y-4 overflow-y-scroll scrollbar-none pb-14 md:pb-18 lg:pb-20 px-4 md:px-8 lg:px-10">

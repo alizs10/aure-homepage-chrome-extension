@@ -1,5 +1,5 @@
 export const STEPS = [
-    { id: 1, label: "enter your name" },
-    { id: 2, label: "choose theme" },
-    { id: 3, label: "choose background" },
+    { id: 1, label: "your name" },
+    { id: 2, label: "theme" },
+    { id: 3, label: "background" },
 ] as const;

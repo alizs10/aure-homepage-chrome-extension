@@ -95,54 +95,7 @@ export function WallpapersSection() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4">
                     {allWallpapers.map((wp) => (
-                        // <div
-                        //     key={wp.id}
-                        //     onClick={() => handleSelect(wp.id)}
-                        //     className="relative group aspect-video rounded-3xl overflow-hidden border-2 border-transparent hover:border-primary transition-all cursor-pointer"
-                        // >
-                        //     <div
-                        //         style={{
-                        //             // Safely handle undefined dark variant to prevent invalid CSS
-                        //             background: wp.variants.dark ? `url(${wp.variants.dark})` : 'none',
-                        //             backgroundSize: "cover",
-                        //             backgroundPosition: "center",
-                        //             backgroundRepeat: "no-repeat"
-                        //         }}
-                        //         className="relative aspect-video bg-secondary/50">
 
-                        //         {/* Safely handle undefined light variant */}
-                        //         {wp.variants.light && (
-                        //             <img
-                        //                 src={wp.variants.light}
-                        //                 alt={wp.name}
-                        //                 className="w-full h-full object-cover"
-                        //                 style={{
-                        //                     clipPath: "polygon(0 0, 0 0, 100% 100%, 0% 100%)"
-                        //                 }}
-                        //             />
-                        //         )}
-                        //     </div>
-
-                        //     {/* Show check icon if this is the active wallpaper */}
-                        //     {isWallpaperActive(wp.id) && (
-                        //         <div className="absolute top-3 right-3">
-                        //             <CheckCircleIcon className="size-6 text-primary drop-shadow-md" />
-                        //         </div>
-                        //     )}
-
-                        //     {/* Delete button appears on hover ONLY for custom (non-default) wallpapers */}
-                        //     {wp.id !== 'default' && (
-                        //         <button
-                        //             onClick={(e) => {
-                        //                 e.stopPropagation(); // Prevent triggering the parent onClick
-                        //                 handleDelete(wp.id);
-                        //             }}
-                        //             className="absolute top-3 left-3 p-1.5 bg-background/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                        //         >
-                        //             <Trash2Icon className="size-4 text-destructive" />
-                        //         </button>
-                        //     )}
-                        // </div>
                         <WallpaperCard
                             key={wp.id}
                             lightVariant={wp.variants.light}

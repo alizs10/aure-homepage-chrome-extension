@@ -7,6 +7,7 @@ import Button from '@/components/common/Button';
 import { Typography } from '@/components/common/Typography';
 import Toggle from '@/components/common/Toggle';
 import { UploadIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface AddWallpaperModalProps {
     open: boolean;
@@ -72,9 +73,12 @@ export default function AddWallpaperModal({ open, onClose, onWallpaperChange }: 
             onClose();
         } catch (error) {
             console.error("Failed to save wallpaper to IndexedDB", error);
+            toast.error("Failed to save wallpaper")
         } finally {
             setIsUploading(false);
+            toast.success("New wallpaper added!")
         }
+
     };
 
     const canSave = useSameImage ? !!lightImage : !!lightImage && !!darkImage;
@@ -87,7 +91,7 @@ export default function AddWallpaperModal({ open, onClose, onWallpaperChange }: 
         <ModalWrapper open={open} onClose={onClose}>
             <div
                 onClick={stopPropagation}
-                className="app_container bg-background app-blur p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none"
+                className="app_container bg-background p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none"
             >
                 <ModalHeader
                     title='Add Wallpaper'

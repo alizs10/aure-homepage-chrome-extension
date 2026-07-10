@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react'; // Added useRef
 import { Typography } from '../common/Typography';
 import { getTopSites } from "@/lib/chrome/top-sites";
 
-interface Suggestion {
+export interface Suggestion {
   id: string | number;
   url: string;
   label: string;
@@ -12,11 +12,23 @@ interface Suggestion {
 
 interface SuggestionsProps {
   searchValue: string;
+  isNavigating?: boolean;
+  onSuggestionSelect?: (suggestion: Suggestion) => void;
+  onSearchUpdate?: (value: string) => void;
 }
 
-export default function Suggestions({ searchValue }: SuggestionsProps) {
+export default function Suggestions({
+  searchValue,
+  isNavigating = false,
+  onSuggestionSelect,
+  onSearchUpdate
+}: SuggestionsProps) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [topSites, setTopSites] = useState<chrome.topSites.MostVisitedURL[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   // Fetch top sites once on component mount
   useEffect(() => {
@@ -25,18 +37,18 @@ export default function Suggestions({ searchValue }: SuggestionsProps) {
 
   // Fetch Google suggestions and filter top sites when searchValue changes
   useEffect(() => {
+    if (isNavigating) return;
+
     const fetchSuggestions = async () => {
       let googleSuggestions: string[] = [];
 
       if (searchValue.trim().length > 0) {
         try {
-          // Google Suggest API (returns JSON array)
           const response = await fetch(
             `https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(searchValue)}`
           );
           const data = await response.json();
 
-          // The response format is typically ["query", ["suggestion1", "suggestion2", ...]]
           if (Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
             googleSuggestions = data[1];
           }
@@ -45,17 +57,15 @@ export default function Suggestions({ searchValue }: SuggestionsProps) {
         }
       }
 
-      // Filter top sites based on searchValue (matches title or URL)
       const filteredTopSites = topSites
         .filter(site =>
           site.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
           site.url.toLowerCase().includes(searchValue.toLowerCase())
         )
-        .slice(0, 5); // Limit to top 5 sites to save space
+        .slice(0, 5);
 
       const combinedSuggestions: Suggestion[] = [];
 
-      // 1. Add filtered top sites first
       filteredTopSites.forEach((site, index) => {
         combinedSuggestions.push({
           id: `top-${index}`,
@@ -65,7 +75,6 @@ export default function Suggestions({ searchValue }: SuggestionsProps) {
         });
       });
 
-      // 2. Add Google search suggestions
       googleSuggestions.forEach((suggestion, index) => {
         combinedSuggestions.push({
           id: `google-${index}`,
@@ -76,17 +85,94 @@ export default function Suggestions({ searchValue }: SuggestionsProps) {
       });
 
       setSuggestions(combinedSuggestions);
+      setSelectedIndex(-1);
     };
 
-    // Debounce the API call by 300ms to avoid excessive requests while typing
     const timer = setTimeout(() => {
       fetchSuggestions();
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchValue, topSites]);
+  }, [searchValue, topSites, isNavigating]);
 
-  if (suggestions.length === 0) return;
+  useEffect(() => {
+    if (selectedIndex >= 0) {
+      if (selectedIndex === 0) {
+        // Force scroll the container to the very top
+        scrollContainerRef.current?.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      } else if (itemRefs.current[selectedIndex]) {
+        // For all other items, use nearest scroll
+        itemRefs.current[selectedIndex]?.scrollIntoView({
+          block: 'nearest',
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [selectedIndex]);
+
+  const handleSuggestionClick = useCallback((suggestion: Suggestion) => {
+    if (onSuggestionSelect) {
+      onSuggestionSelect(suggestion);
+    }
+  }, [onSuggestionSelect]);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (suggestions.length === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedIndex(prev =>
+          prev < suggestions.length - 1 ? prev + 1 : prev
+        );
+        break;
+
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedIndex(prev => prev > 0 ? prev - 1 : prev);
+        break;
+
+      case 'Enter':
+        if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
+          e.preventDefault();
+          const selectedSuggestion = suggestions[selectedIndex];
+          handleSuggestionClick(selectedSuggestion);
+        }
+        break;
+
+      case 'Escape':
+        e.preventDefault();
+        setSelectedIndex(-1);
+        break;
+
+      // 🌟 RESTORED DEFAULT CASE
+      default:
+        // NO e.preventDefault() here! We want the keypress to pass through 
+        // to the input so the user can actually type the letter.
+        // But we DO reset the index so we instantly exit navigation mode.
+        setSelectedIndex(-1);
+        break;
+    }
+  }, [suggestions, selectedIndex, handleSuggestionClick]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
+  useEffect(() => {
+    if (selectedIndex >= 0 && selectedIndex < suggestions.length && onSearchUpdate) {
+      const selectedSuggestion = suggestions[selectedIndex];
+      onSearchUpdate(selectedSuggestion.label);
+    }
+  }, [selectedIndex, suggestions, onSearchUpdate]);
+
+  if (suggestions.length === 0) return null;
 
   return (
     <motion.div
@@ -95,10 +181,8 @@ export default function Suggestions({ searchValue }: SuggestionsProps) {
       exit={{ y: -100, opacity: 0 }}
       className='absolute top-full left-0 right-0 px-4 md:px-8 lg:px-10 mt-4 z-20'
     >
-
       <div className="app_container app_gradient rounded-3xl overflow-clip">
-
-        <div className="flex flex-col max-h-100 overflow-y-scroll rounded-3xl scrollbar-none">
+        <div ref={scrollContainerRef} className="flex flex-col max-h-100 overflow-y-scroll rounded-3xl scrollbar-none">
           <div className="app_gradient app-blur p-5 sticky top-0">
             <Typography className='' variant='h4' weight='medium'>
               Suggestions
@@ -106,14 +190,24 @@ export default function Suggestions({ searchValue }: SuggestionsProps) {
           </div>
 
           <ul className='flex flex-col overflow-clip'>
-            {suggestions.map(s => (
-              <li key={s.id}>
-                {/* Changed to standard <a> tag to properly handle external URLs in Chrome extensions */}
+            {suggestions.map((s, index) => (
+              <li
+                key={s.id}
+                // 🌟 NEW: Assign the ref to each list item
+                ref={(el) => { itemRefs.current[index] = el; }}
+              >
                 <a
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className='flex justify-between items-start py-2.5 px-5 bg-background hover:bg-secondary transition-colors duration-200'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSuggestionClick(s);
+                  }}
+                  className={`flex justify-between items-start py-2.5 px-5 transition-colors duration-200 ${selectedIndex === index
+                    ? 'bg-secondary'
+                    : 'bg-background hover:bg-secondary'
+                    }`}
                 >
                   <div className="flex flex-col gap-y-1">
                     <Typography variant='body' weight='medium'>
@@ -124,7 +218,13 @@ export default function Suggestions({ searchValue }: SuggestionsProps) {
                     </Typography>
                   </div>
 
-                  <Typography variant='caption-xxs' className={`px-2 py-0.5 ${s.source === 'top-sites' ? 'bg-success text-success-foreground' : "bg-secondary text-foreground"} text-nowrap rounded-3xl`}>
+                  <Typography
+                    variant='caption-xxs'
+                    className={`px-2 py-0.5 ${s.source === 'top-sites'
+                      ? 'bg-success text-success-foreground'
+                      : "bg-secondary text-foreground"
+                      } text-nowrap rounded-3xl`}
+                  >
                     {s.source === 'google' ? "google search" : "Top Site"}
                   </Typography>
                 </a>
@@ -133,7 +233,6 @@ export default function Suggestions({ searchValue }: SuggestionsProps) {
           </ul>
         </div>
       </div>
-
     </motion.div>
   )
 }

@@ -3,6 +3,7 @@ import { createContext } from "react";
 export type SettingsTab =
     | "about"
     | "user-information"
+    | "sites-and-shortcuts"
     | "preferences"
     | "widgets-center";
 

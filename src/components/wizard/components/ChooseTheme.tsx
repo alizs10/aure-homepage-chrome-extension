@@ -9,7 +9,7 @@ export function ChooseTheme({
 }) {
     return (
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-2">
             <button
                 onClick={() => onChange("light")}
                 className={`p-1 rounded-[28px] ${value === "light" ? "outline-2 outline-primary" : ""}`}>

@@ -1,4 +1,4 @@
-import { ChartNoAxesColumnIcon, CircleQuestionMarkIcon } from "lucide-react"
+import { ChartNoAxesColumnIcon } from "lucide-react"
 import { useMemo, useState } from "react"
 import useClickOutside from "../../../../hooks/useOutsideClick"
 import Button from "../../../common/Button"
@@ -63,7 +63,7 @@ export default function StatsPopup() {
             </Button>
 
             {open && (
-                <ul className='flex flex-col justify-start bg-linear-to-b from-background to-secondary/30 app-blur border-t border-border absolute top-full right-0 h-fit mt-1 rounded-3xl overflow-clip py-3 px-4'>
+                <ul className='flex flex-col justify-start app_container bg-background absolute top-full right-0 h-fit mt-1 rounded-3xl overflow-clip py-3 px-4'>
                     {stats.map(stat => (
                         <li key={stat.id} className='py-1'>
 

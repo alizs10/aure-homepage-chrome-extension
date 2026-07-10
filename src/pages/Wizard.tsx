@@ -7,6 +7,7 @@ import { wizardSchema, type WizardFormValues } from "@/components/wizard/validat
 import { zodResolver } from "@hookform/resolvers/zod";
 import { WizardIntro } from "@/components/wizard/components/WizardIntro";
 import { WizardContent } from "@/components/wizard/WizardContent";
+import { toast } from "sonner";
 
 export default function Wizard() {
     const save = useSettingsStore((s) => s.save);
@@ -25,14 +26,6 @@ export default function Wizard() {
             name: "",
             theme: "light",
             wallpaper: "default",
-            blur: 'md',
-            widgets: {
-                "mood-tracker": true,
-                "calendar": true,
-                "notes-and-checklists": true,
-                "pet-house": true,
-            },
-            accent: "default"
         },
     });
 
@@ -78,15 +71,18 @@ export default function Wizard() {
                 "notes-and-checklists": true,
                 "pet-house": true,
             },
-            accent: "default"
+            accent: "default",
+            show_top_sites: true,
+            show_favorites: false,
         });
+        toast.success("All set, enjoy!")
         navigate("/", { replace: true });
     };
 
     return (
-        <div className="flex flex-col w-full h-screen max-h-screen overflow-y-scroll scrollbar-none p-10 gap-y-8">
+        <div className="w-full flex-1 min-h-0 flex flex-col gap-y-4 overflow-y-scroll scrollbar-none px-4 md:px-8 lg:px-10 max-h-dvh py-10">
 
-            <section className="flex-1 w-full grid grid-cols-5 gap-6 max-w-6xl mx-auto max-h-2/3 my-auto">
+            <section className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 max-w-6xl mx-auto my-auto overflow-y-scroll min-h-fit">
                 <WizardIntro currentStep={currentStep} />
                 <WizardContent
                     currentStep={currentStep}

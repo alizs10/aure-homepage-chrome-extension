@@ -1,3 +1,4 @@
+import type { Favorite } from "@/components/settings/components/tabs-details/sites-and-shortcuts/types";
 import type { CalendarNote } from "@/components/widgets/calendar/types";
 import type { MoodHistory } from "@/components/widgets/mood-tracker/types";
 import type { NoteAndChecklist } from "@/components/widgets/notes-and-checklists/types";
@@ -5,7 +6,7 @@ import type { Pet } from "@/components/widgets/pet-house/types";
 import type { Wallpaper } from "@/types";
 
 const DB_NAME = "newtab-db";
-const DB_VERSION = 7;
+const DB_VERSION = 9;
 
 export const DB_STORES = {
     wallpapers: "wallpapers",
@@ -13,6 +14,7 @@ export const DB_STORES = {
     pets: "pets",
     calendar: "calendar",
     notes: "notes",
+    favorites: "favorites",
 } as const;
 
 export type DBStore = (typeof DB_STORES)[keyof typeof DB_STORES];
@@ -27,6 +29,7 @@ export interface DBValueTypes {
     pets: Pet;
     calendar: CalendarNote;
     notes: NoteAndChecklist;
+    favorites: Favorite;
 }
 
 // --- 2. Connection Caching ---

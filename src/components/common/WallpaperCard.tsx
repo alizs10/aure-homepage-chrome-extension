@@ -1,4 +1,6 @@
 import { Trash2Icon } from 'lucide-react';
+import Button from './Button';
+import { toast } from 'sonner';
 
 interface WallpaperCardProps {
     lightVariant?: string;
@@ -43,18 +45,22 @@ export default function WallpaperCard({ lightVariant, darkVariant, name, isActiv
                 </div>
                 {/* Delete button appears on hover ONLY for custom (non-default) wallpapers */}
                 {deletable && (
-                    <button
+                    <Button
+                        size='icon-sm'
+                        variant='destructive'
                         onClick={(e) => {
                             e.stopPropagation(); // Prevent triggering the parent onClick
                             // handleDelete(wp.id);
                             if (onDelete) {
                                 onDelete();
+                                toast.info("Wallpaper removed!")
+
                             }
                         }}
                         className="absolute top-3 left-3 p-1.5 bg-background/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                         <Trash2Icon className="size-4 text-destructive" />
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>

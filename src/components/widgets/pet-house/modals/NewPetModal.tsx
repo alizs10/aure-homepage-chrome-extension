@@ -83,7 +83,7 @@ export default function NewPetModal({ open, onClose }: NewPetModalProps) {
             <div
 
                 onClick={stopPropagation}
-                className="app_container app_gradient app-blur p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none">
+                className="app_container bg-background p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none">
 
 
                 <ModalHeader

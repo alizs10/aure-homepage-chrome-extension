@@ -78,7 +78,7 @@ const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
         return (
             <div
                 className={cn(
-                    "inline-flex items-center gap-3",
+                    "inline-flex justify-between items-center gap-3",
                     disabled && "opacity-50"
                 )}
             >
