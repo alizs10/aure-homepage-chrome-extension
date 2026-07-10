@@ -1,26 +1,15 @@
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { sliceText } from "../../helpers";
 import Favicon from "../common/Favicon";
 import { Typography } from "../common/Typography";
-import { sliceText } from "../../helpers";
-import { Link } from "react-router-dom";
-import { FavoritesRepository } from "../settings/components/tabs-details/sites-and-shortcuts/db";
-import type { Favorite } from "../settings/components/tabs-details/sites-and-shortcuts/types";
+import { useFavorites } from "../settings/components/tabs-details/sites-and-shortcuts/hooks/useFavorites";
 
 
 
 export default function FavoritesSites() {
 
-    const [sites, setSites] = useState<Favorite[]>([]);
+    const { data: sites } = useFavorites()
 
-    useEffect(() => {
-        async function load() {
-            const favorites = await FavoritesRepository.getAll();
-            const sorted = favorites.sort((a, b) => a.order - b.order)
-            setSites(sorted);
-        }
-
-        load();
-    }, []);
     return (
         <div className="py-2 md:py-4 flex justify-center z-30 relative">
 

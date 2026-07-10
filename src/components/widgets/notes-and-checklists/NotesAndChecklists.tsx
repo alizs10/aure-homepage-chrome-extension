@@ -4,7 +4,6 @@ import InfoPopup from './components/InfoPopup';
 import { InputSection } from './components/InputSection';
 import { ItemsList } from './components/ItemsList';
 import StatsPopup from './components/StatsPopup';
-import { NotesAndChecklistsProvider } from './providers/NotesAndChecklistsProvider';
 
 function NotesAndChecklistsContent() {
     return (
@@ -29,8 +28,6 @@ function NotesAndChecklistsContent() {
 
 export default function NotesAndChecklists() {
     return (
-        <NotesAndChecklistsProvider>
-            <NotesAndChecklistsContent />
-        </NotesAndChecklistsProvider>
+        <NotesAndChecklistsContent />
     );
 }

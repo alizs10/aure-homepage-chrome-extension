@@ -1,10 +1,38 @@
-import { useContext } from "react";
-import { PetHouseContext } from "../contexts/PetHouseContext";
+// hooks/usePetHouse.ts
+import { useMemo } from 'react';
+import { isPetDead } from '../helpers';
+import { usePetHouseStore } from '../store';
 
 export function usePetHouse() {
-    const context = useContext(PetHouseContext);
-    if (context === undefined) {
-        throw new Error('usePetHouse must be used within a PetHouseProvider');
-    }
-    return context;
+    // Select state and actions
+    const data = usePetHouseStore((state) => state.data);
+    const addItem = usePetHouseStore((state) => state.addItem);
+    const removeItem = usePetHouseStore((state) => state.removeItem);
+    const feedPet = usePetHouseStore((state) => state.feedPet);
+    const initialize = usePetHouseStore((state) => state.initialize);
+
+    // Compute derived state with useMemo
+    const alivePets = useMemo(() => {
+        return data.filter(p => !isPetDead(p) && (p.deletedAt === null || p.deletedAt === undefined));
+    }, [data]);
+
+    const catPets = useMemo(() => {
+        return data.filter(p => p.type === 'cat');
+    }, [data]);
+
+    const dogPets = useMemo(() => {
+        return data.filter(p => p.type === 'dog');
+    }, [data]);
+
+    // Return the exact same object shape as the old Context
+    return {
+        data,
+        alivePets,
+        catPets,
+        dogPets,
+        addItem,
+        removeItem,
+        feedPet,
+        initialize // Exposed so the root component can trigger data loading
+    };
 }

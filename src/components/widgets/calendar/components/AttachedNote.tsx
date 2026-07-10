@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 export default function AttachedNote() {
 
 
-    const { selectedDay, getNoteForDay, removeItem } = useCalendar()
+    const { selectedDay, removeItem, data } = useCalendar();
     const [open, setOpen] = useState(false)
     function toggle() {
         setOpen(prev => !prev)
@@ -23,10 +23,10 @@ export default function AttachedNote() {
     }, [selectedDay])
 
     const attachedNote = useMemo(() => {
-
-        return selectedDay ? getNoteForDay(selectedDay) : null;
-
-    }, [selectedDay, getNoteForDay])
+        if (!selectedDay) return null;
+        const formattedDate = format(selectedDay, "yyyy-MM-dd");
+        return data.find(d => d.date === formattedDate);
+    }, [selectedDay, data]);
 
     if (!selectedDay) return null;
 
