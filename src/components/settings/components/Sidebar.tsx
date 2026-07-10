@@ -1,14 +1,13 @@
-import { RotateCcwIcon, SettingsIcon } from "lucide-react";
+import { SettingsIcon } from "lucide-react";
 import Button from "../../common/Button";
 import { Typography } from "../../common/Typography";
 import { TABS } from "../constants/tabs";
 import { useSettingsTabs } from "../hooks/useSettingsTabs";
-import { useSettingsStore } from "@/stores";
+import ResetSettings from "./ResetSettings";
 
 
 
 export default function Sidebar() {
-    const { clear } = useSettingsStore()
     const { activeTab, setActiveTab } = useSettingsTabs();
 
     return (
@@ -50,17 +49,7 @@ export default function Sidebar() {
             </ul>
 
             <div className="mt-auto w-full p-5">
-                <Button
-                    onClick={clear}
-                    // type="submit"
-                    // disabled={!isDirty || !isValid || isSubmitting}
-                    className="w-full"
-                    variant="destructive"
-                    size="md"
-                >
-                    <RotateCcwIcon className="size-5" />
-                    <Typography className="w-full text-start" variant="caption">Reset Settings</Typography>
-                </Button>
+                <ResetSettings />
             </div>
         </div>
     );

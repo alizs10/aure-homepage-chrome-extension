@@ -34,10 +34,9 @@ export default function AboutTabDetails() {
 
             <div className="flex flex-col gap-y-2 p-5 bg-background app_container">
 
-                {/* <Typography variant='h2'>
-                    App Info
-                </Typography> */}
-
+                <Typography variant='body'>
+                    App Name: <span className='font-semibold'>{`"${import.meta.env.VITE_APP_NAME}"`}</span>
+                </Typography>
                 <Typography variant='body'>
                     Version: <span className='font-semibold'>{import.meta.env.VITE_APP_VERSION}</span>
                 </Typography>

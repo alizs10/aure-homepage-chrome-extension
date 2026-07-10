@@ -62,10 +62,13 @@ export default function Wizard() {
 
     const navigate = useNavigate();
 
-    const onSubmit = async (data: Settings) => {
+    const onSubmit = async (data: WizardFormValues) => {
 
-        await save({
-            ...data, blur: 'md', widgets: {
+        // Construct the full Settings object using the form data + your defaults
+        const settingsToSave: Settings = {
+            ...data,
+            blur: 'md',
+            widgets: {
                 "mood-tracker": true,
                 "calendar": true,
                 "notes-and-checklists": true,
@@ -74,7 +77,9 @@ export default function Wizard() {
             accent: "default",
             show_top_sites: true,
             show_favorites: false,
-        });
+        };
+
+        await save(settingsToSave);
         toast.success("All set, enjoy!")
         navigate("/", { replace: true });
     };
