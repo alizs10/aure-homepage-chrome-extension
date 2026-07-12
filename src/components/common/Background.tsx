@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
 import { motion } from "framer-motion";
 
 import { useSettingsStore } from "@/stores";
@@ -9,7 +9,7 @@ import darkBackground from "../../assets/background/default-dark-1.jpg";
 
 import { useImage } from "../../hooks/useImage";
 import { useTheme } from "../../hooks/useTheme";
-import type { Wallpaper } from "@/types/settings"; // Adjust path to your Settings types
+import type { Wallpaper } from "@/types";
 
 export default function Background() {
     const { resolvedTheme } = useTheme();
@@ -19,40 +19,39 @@ export default function Background() {
 
     const defaultBackground = resolvedTheme === "dark" ? darkBackground : lightBackground;
 
-    // Store the entire wallpaper object to avoid re-querying IndexedDB on theme changes
-    const [wallpaperData, setWallpaperData] = useState<Wallpaper | null>(null);
+    // 1. Removed the 3rd argument (null) to fix the "Expected 1-2 arguments" error.
+    // 2. The return type is now `Wallpaper | null | undefined`.
+    const wallpaperData = useLiveQuery<Wallpaper | null>(
+        async () => {
+            if (!wallpaperId || wallpaperId === "default") {
+                return null;
+            }
 
-    // Fetch the wallpaper data from IndexedDB when the ID changes
-    useEffect(() => {
-        // If no wallpaper is selected, or if it's explicitly set to "default"
-        if (!wallpaperId || wallpaperId === "default") {
-            setWallpaperData(null);
-            return;
-        }
+            const wp = await db.wallpapers.get(wallpaperId);
 
-        db.get("wallpapers", wallpaperId)
-            .then((wp) => {
-                if (wp && "variants" in wp) {
-                    setWallpaperData(wp as Wallpaper);
-                } else {
-                    setWallpaperData(null); // Fallback if DB record is missing/invalid
-                }
-            })
-            .catch(() => setWallpaperData(null)); // Fallback on DB error
-    }, [wallpaperId]);
+            // We cast to Wallpaper to satisfy TypeScript
+            return wp && "variants" in wp ? (wp as Wallpaper) : null;
+        },
+        [wallpaperId]
+    );
+
+    // 3. Handle the `undefined` loading state here.
+    // If it's undefined, it's still loading. If it's null, it's explicitly empty/default.
+    if (wallpaperData === undefined) {
+        // Optional: You could render a loading spinner or just the default background while loading
+        // For now, we'll just fallback to the default background
+    }
 
     // Determine the correct variant based on the current theme
-    // Includes a smart fallback: if the dark variant is missing, it uses the light one (and vice versa)
+    // Because we handle `undefined` above, we only check for `null` here.
     const customBackground = wallpaperData
-        ? (resolvedTheme === "dark"
-            ? (wallpaperData.variants.dark || wallpaperData.variants.light)
-            : (wallpaperData.variants.light || wallpaperData.variants.dark))
+        ? resolvedTheme === "dark"
+            ? wallpaperData.variants.dark || wallpaperData.variants.light
+            : wallpaperData.variants.light || wallpaperData.variants.dark
         : null;
 
-    // Use custom background if available, otherwise fallback to default theme background
     const background = customBackground || defaultBackground;
 
-    // useImage handles preloading (works with both imported assets and base64 data URLs)
     const loaded = useImage(background);
 
     return (

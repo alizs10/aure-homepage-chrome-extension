@@ -1,16 +1,20 @@
+import { useLiveQuery } from "dexie-react-hooks";
+import { ImagePlusIcon } from "lucide-react";
+import { useState } from "react";
+
 import { Typography } from "@/components/common/Typography";
+import Button from "@/components/common/Button";
+import WallpaperCard from "@/components/common/WallpaperCard";
+import AddWallpaperModal from "./modals/AddWallpaperModal";
 import { db } from "@/lib/db";
 import { useSettingsStore } from "@/stores";
-import { useEffect, useState } from "react";
 
 // Import default wallpapers 
 import defaultDark1 from "@/assets/background/default-dark-1.jpg";
 import defaultLight from "@/assets/background/default-light.jpg";
-import Button from "@/components/common/Button";
-import WallpaperCard from "@/components/common/WallpaperCard";
 import type { Wallpaper } from "@/types";
-import AddWallpaperModal from "./modals/AddWallpaperModal";
-import { ImagePlusIcon } from "lucide-react";
+
+// 🚨 IMPORTANT: Ensure this path matches the exact same path you use in db.ts!
 
 // Define default wallpapers with a single "default" ID
 const DEFAULT_WALLPAPERS: Wallpaper[] = [
@@ -19,27 +23,16 @@ const DEFAULT_WALLPAPERS: Wallpaper[] = [
 
 export function WallpapersSection() {
     const [open, setOpen] = useState(false);
-
     const { settings, update } = useSettingsStore();
-    const [customWallpapers, setCustomWallpapers] = useState<Wallpaper[]>([]);
 
-    // Helper to fetch wallpapers from IndexedDB
-    const fetchCustomWallpapers = async () => {
-        const wps = await db.getAll("wallpapers");
-        setCustomWallpapers(wps.map(wp => ({ ...wp })));
-    };
-
-    // Fetch custom wallpapers from IndexedDB on mount
-    useEffect(() => {
-
-        const init = () => {
-            fetchCustomWallpapers();
-        }
-
-
-
-        init()
-    }, []);
+    // 🚀 REPLACED useEffect & useState with useLiveQuery!
+    // This automatically fetches wallpapers and re-renders the grid 
+    // whenever a wallpaper is added or deleted in IndexedDB.
+    const customWallpapers = useLiveQuery(
+        () => db.wallpapers.toArray(),
+        [], // No dependencies needed, it reacts to DB changes automatically
+        []  // Default value to return while the query is loading
+    );
 
     // Combine default and custom wallpapers for rendering
     const allWallpapers = [...DEFAULT_WALLPAPERS, ...customWallpapers];
@@ -49,8 +42,11 @@ export function WallpapersSection() {
     };
 
     const handleDelete = async (id: string) => {
-        await db.remove("wallpapers", id);
-        setCustomWallpapers((prev) => prev.filter((wp) => wp.id !== id));
+        // 🚀 Updated delete function using Dexie syntax
+        await db.wallpapers.delete(id);
+
+        // 🪄 MAGIC: No need to manually call setCustomWallpapers() here!
+        // useLiveQuery detects the deletion and automatically removes it from the UI.
 
         // If the deleted wallpaper was the active one, fallback to "default"
         if (settings?.wallpaper === id) {
@@ -72,9 +68,12 @@ export function WallpapersSection() {
     };
 
     // Called by AddWallpaperModal when a new wallpaper is successfully saved
-    const handleWallpaperAdded = () => {
-        fetchCustomWallpapers(); // Refresh the grid
-        // update({ wallpaper: newId }); // Automatically set the new wallpaper as active
+    const handleWallpaperAdded = (newId: string) => {
+        // 🪄 MAGIC: No need to manually call fetchCustomWallpapers() here!
+        // useLiveQuery detects the new addition and automatically adds it to the grid.
+
+        // Automatically set the new wallpaper as active
+        update({ wallpaper: newId });
     };
 
     return (
@@ -95,7 +94,6 @@ export function WallpapersSection() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4">
                     {allWallpapers.map((wp) => (
-
                         <WallpaperCard
                             key={wp.id}
                             lightVariant={wp.variants.light}

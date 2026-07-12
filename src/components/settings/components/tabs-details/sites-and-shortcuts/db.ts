@@ -1,21 +1,20 @@
-import { db, DB_STORES } from "@/lib/db";
+import { db } from "@/lib/db";
 import type { Favorite } from "./types";
 
-// FavoriteRepository
 export const FavoritesRepository = {
     getAll() {
-        return db.getAll(DB_STORES.favorites);
+        return db.favorites.toArray();
     },
 
     get(id: number) {
-        return db.get(DB_STORES.favorites, id);
+        return db.favorites.get(id);
     },
 
     put(favorite: Favorite) {
-        return db.put(DB_STORES.favorites, favorite);
+        return db.favorites.put(favorite);
     },
 
     remove(id: number) {
-        return db.remove(DB_STORES.favorites, id);
+        return db.favorites.delete(id);
     },
 };

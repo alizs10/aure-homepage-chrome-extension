@@ -1,13 +1,18 @@
-import { Typography } from "@/components/common/Typography";
-import { db } from "@/lib/db";
-import type { Wallpaper } from "@/types"; // Adjust path to your types file
+import { useLiveQuery } from "dexie-react-hooks";
 import { ImagePlusIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+import { Typography } from "@/components/common/Typography";
+import WallpaperCard from "@/components/common/WallpaperCard";
+import AddWallpaperModal from "@/components/settings/components/tabs-details/preferences-tab-details/modals/AddWallpaperModal";
+import { db } from "@/lib/db";
+
 // Import default wallpapers 
 import defaultDark1 from "@/assets/background/default-dark-1.jpg";
 import defaultLight from "@/assets/background/default-light.jpg";
-import WallpaperCard from "@/components/common/WallpaperCard";
-import AddWallpaperModal from "@/components/settings/components/tabs-details/preferences-tab-details/modals/AddWallpaperModal";
+import type { Wallpaper } from "@/types";
+
+// 🚨 IMPORTANT: Ensure this path matches the exact same path you use in db.ts!
 
 // Define default wallpapers with a single "default" ID
 const DEFAULT_WALLPAPERS: Wallpaper[] = [
@@ -21,51 +26,43 @@ export function ChooseWallpaper({
     value: string;
     onChange: (wallpaperId: string) => void;
 }) {
-
-    const isWallpaperActive = (id: string) => value === id;
-
     const [open, setOpen] = useState(false);
-    const [customWallpapers, setCustomWallpapers] = useState<Wallpaper[]>([]);
 
+    // 🚀 REPLACED useEffect & useState with useLiveQuery!
+    // This automatically fetches wallpapers and re-renders the grid 
+    // whenever a wallpaper is added or deleted in IndexedDB.
+    const customWallpapers = useLiveQuery(
+        () => db.wallpapers.toArray(),
+        [], // No dependencies needed, it reacts to DB changes automatically
+        []  // Default value to return while the query is loading
+    );
 
     // Combine default and custom wallpapers for rendering
     const allWallpapers = [...DEFAULT_WALLPAPERS, ...customWallpapers];
 
-    // Helper to fetch wallpapers from IndexedDB
-    const fetchCustomWallpapers = async () => {
-        const wps = await db.getAll("wallpapers");
+    const isWallpaperActive = (id: string) => value === id;
 
-        console.log("Fetched wallpapers from IndexedDB:", wps);
-        setCustomWallpapers(wps.map(wp => ({ ...wp })));
-    };
-
-    // Fetch custom wallpapers from IndexedDB on mount
-    useEffect(() => {
-
-        const init = () => {
-            fetchCustomWallpapers();
-        }
-
-
-
-        init()
-    }, []);
-
+    // 🚀 Updated delete function using Dexie syntax
     const handleDelete = async (id: string) => {
-        await db.remove("wallpapers", id);
-        setCustomWallpapers((prev) => prev.filter((wp) => wp.id !== id));
+        // Dexie syntax: directly access the table property
+        await db.wallpapers.delete(id);
+
+        // 🪄 MAGIC: No need to manually call setCustomWallpapers() here!
+        // useLiveQuery detects the deletion and automatically removes it from the UI.
     };
 
-    const handleWallpaperAdded = () => {
-        fetchCustomWallpapers(); // Refresh the grid
-        // update({ wallpaper: newId }); // Automatically set the new wallpaper as active
+    // 🚀 Updated handler for when a new wallpaper is added
+    const handleWallpaperAdded = (newId: string) => {
+        // 🪄 MAGIC: No need to manually call fetchCustomWallpapers() here!
+        // useLiveQuery detects the new addition and automatically adds it to the grid.
+
+        // Automatically set the new wallpaper as active
+        onChange(newId);
     };
 
     return (
         <>
-
             <div className="flex flex-col gap-y-4">
-
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:sm:grid-cols-2 lg:sm:grid-cols-3 gap-1 sm:gap-2">
                     {allWallpapers.map((wp) => (
                         <WallpaperCard
@@ -80,8 +77,6 @@ export function ChooseWallpaper({
                         />
                     ))}
 
-
-
                     <div
                         onClick={() => setOpen(true)}
                         className="aspect-video rounded-3xl bg-secondary/50 border-2 border-border hover:border-primary transition-colors flex flex-col items-center justify-center gap-y-4 cursor-pointer overflow-hidden relative"
@@ -92,19 +87,6 @@ export function ChooseWallpaper({
                         </Typography>
                     </div>
                 </div>
-
-
-
-                {/* <Button
-                type="button"
-                variant="ghost"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-            >
-                <Typography variant="body" weight="medium">
-                    {preview ? "Change Wallpaper" : "Choose Wallpaper"}
-                </Typography>
-            </Button> */}
             </div>
 
             {open && (

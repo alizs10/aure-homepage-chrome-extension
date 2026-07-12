@@ -60,7 +60,8 @@ export default function AddWallpaperModal({ open, onClose, onWallpaperChange }: 
         try {
             const wallpaperId = crypto.randomUUID();
 
-            await db.put("wallpapers", {
+            // 🚀 UPDATED: Dexie syntax uses the table property directly
+            await db.wallpapers.put({
                 id: wallpaperId,
                 name: "Custom Wallpaper",
                 variants: {
@@ -78,7 +79,6 @@ export default function AddWallpaperModal({ open, onClose, onWallpaperChange }: 
             setIsUploading(false);
             toast.success("New wallpaper added!")
         }
-
     };
 
     const canSave = useSameImage ? !!lightImage : !!lightImage && !!darkImage;
@@ -139,7 +139,6 @@ export default function AddWallpaperModal({ open, onClose, onWallpaperChange }: 
                             <div className="relative aspect-video rounded-3xl overflow-hidden border-2 border-border bg-secondary/50">
 
                                 {/* 🚨 FIX: Replaced CSS background-image with an <img> tag */}
-                                {/* Browsers repaint <img> tags instantly, whereas CSS backgrounds often fail with large base64 strings */}
                                 {darkImage ? (
                                     <img
                                         src={darkImage}

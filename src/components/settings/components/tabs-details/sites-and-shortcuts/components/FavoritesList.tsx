@@ -14,7 +14,7 @@ export default function FavoritesList() {
             layout // Optional: animates the container if its size changes
             className="flex flex-col gap-y-1"
         >
-            {data.map((f) => (
+            {data.map((f, i) => (
                 <motion.li
                     key={f.id}
                     layout // This is the magic prop that animates position changes
@@ -26,9 +26,7 @@ export default function FavoritesList() {
                     className="flex-center-between group"
                 >
                     <Typography className='line-clamp-1' variant="body-sm" weight="medium">
-                        {/* Note: We removed {i + 1} because index changes during animation 
-                            can look glitchy. If you want numbers, consider using f.order + 1 */}
-                        {f.order + 1}. {f.title}<span className="text-muted-foreground font-normal">{` (${f.url})`}</span>
+                        {i + 1}. {f.title}<span className="text-muted-foreground font-normal">{` (${f.url})`}</span>
                     </Typography>
 
                     <div className="flex-row-center gap-x-1">

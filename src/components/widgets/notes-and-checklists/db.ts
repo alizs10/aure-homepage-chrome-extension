@@ -1,20 +1,20 @@
-import { db, DB_STORES } from "@/lib/db";
+import { db } from "@/lib/db";
 import type { NoteAndChecklist } from "./types";
 
 export const NotesRepository = {
     getAll() {
-        return db.getAll(DB_STORES.notes);
+        return db.notes.toArray();
     },
 
     get(id: number) {
-        return db.get(DB_STORES.notes, id);
+        return db.notes.get(id);
     },
 
     put(note: NoteAndChecklist) {
-        return db.put(DB_STORES.notes, note);
+        return db.notes.put(note);
     },
 
     remove(id: number) {
-        return db.remove(DB_STORES.notes, id);
+        return db.notes.delete(id);
     },
-};  
+};

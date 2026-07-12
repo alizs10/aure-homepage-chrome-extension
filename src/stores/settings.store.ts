@@ -51,13 +51,15 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
     },
 
     clear: async () => {
+        // Clear all local storage / chrome storage keys
         await Promise.all(
             Object.values(STORAGE_KEYS).map((key) =>
                 storage.remove(key)
             )
         );
 
-        await db.deleteDatabase();
+        // 🚀 UPDATED: Dexie uses db.delete() to wipe the IndexedDB database
+        await db.delete();
 
         set({
             settings: null,

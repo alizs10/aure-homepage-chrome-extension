@@ -1,16 +1,16 @@
-import { db, DB_STORES } from "@/lib/db";
+import { db } from "@/lib/db";
 import type { Pet } from "./types";
 
 export const PetRepository = {
     getAll() {
-        return db.getAll(DB_STORES.pets);
+        return db.pets.toArray();
     },
 
     put(item: Pet) {
-        return db.put(DB_STORES.pets, item);
+        return db.pets.put(item);
     },
 
     remove(id: number) {
-        return db.remove(DB_STORES.pets, id);
+        return db.pets.delete(id);
     },
 };
