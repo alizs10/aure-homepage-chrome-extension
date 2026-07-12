@@ -102,18 +102,18 @@ export function InputSection() {
                 </div>
             )}
 
-            <div className="w-full flex flex-row gap-x-2">
+            <div className="w-full flex flex-row gap-x-2 h-full">
 
 
 
-                <div className="w-full">
+                <div className="w-full h-full">
                     <TextInput
                         ref={inputRef}
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder='Type here...'
-                        className='placeholder:text-muted-foreground text-xs md:text-sm lg:text-base placeholder:text-base'
+                        className='placeholder:text-muted-foreground text-xs md:text-sm lg:text-base placeholder:text-base py-0 h-10'
                     />
                 </div>
                 <Button size='icon' className='h-full' onClick={handler}>
