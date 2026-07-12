@@ -18,6 +18,7 @@ export function EnterName({
             className="text-sm md:text-base lg:text-lg py-2.5"
             error={errors.name?.message}
             onKeyDown={e => e.code === 'Enter' ? onNext() : undefined}
+            autoFocus
         />
     );
 }

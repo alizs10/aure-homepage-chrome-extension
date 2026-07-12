@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { userInfoSchema, type UserInfoFormValues } from './validation/user-info-schema';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import DataBackup from '../../DataBackup';
 
 export default function UserInfoTabDetails() {
 
@@ -42,31 +43,40 @@ export default function UserInfoTabDetails() {
         }
     }, [settings, reset]);
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="h-fit flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-y-1">
-                <label htmlFor="name">
-                    <Typography variant='label'>
-                        Name
-                    </Typography>
-                </label>
-                <TextInput
-                    {...register('name')}
-                    placeholder="Your name..."
-                    className=""
-                    error={errors.name?.message} // passes error message to the custom TextInput
-                />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-fit">
+            <form onSubmit={handleSubmit(onSubmit)} className='col-span-1 lg:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-4'>
+
+                <div className="col-span-1 flex flex-col gap-y-1">
+                    <label htmlFor="name">
+                        <Typography variant='label'>
+                            Name
+                        </Typography>
+                    </label>
+                    <TextInput
+                        {...register('name')}
+                        placeholder="Your name..."
+                        className=""
+                        error={errors.name?.message} // passes error message to the custom TextInput
+                    />
+                </div>
+
+                <div className="col-span-2 mt-auto flex justify-end">
+                    <Button
+                        type="submit"
+                        disabled={!isDirty || !isValid || isSubmitting}
+                        variant="primary-active"
+                        size="md"
+                    >
+                        <Typography variant="caption">Save Changes</Typography>
+                    </Button>
+                </div>
+            </form>
+
+            <div className="col-span-1 lg:col-span-2 mt-4 pt-6 border-t border-border">
+                <DataBackup />
             </div>
 
-            <div className="col-span-2 mt-auto flex justify-end">
-                <Button
-                    type="submit"
-                    disabled={!isDirty || !isValid || isSubmitting}
-                    variant="primary-active"
-                    size="md"
-                >
-                    <Typography variant="caption">Save Changes</Typography>
-                </Button>
-            </div>
-        </form>
+
+        </div>
     )
 }

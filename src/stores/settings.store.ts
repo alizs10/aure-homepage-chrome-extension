@@ -59,7 +59,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
         );
 
         // 🚀 UPDATED: Dexie uses db.delete() to wipe the IndexedDB database
-        await db.delete();
+        await Promise.all(db.tables.map((table) => table.clear()));
 
         set({
             settings: null,

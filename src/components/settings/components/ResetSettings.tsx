@@ -12,10 +12,18 @@ export default function ResetSettings() {
 
     const [dialogOpen, setDialogOpen] = useState(false)
 
-    const handleRemove = useCallback(() => {
-        clear()
+    // ✅ Make the function async and await the clear() method
+    const handleRemove = useCallback(async () => {
+        // 1. Wipe DB and Storage
+        await clear()
+
+        // 2. Show success message
         toast.info("Settings have been reset successfully")
         setDialogOpen(false)
+
+        // ✅ 3. Soft reload the page to reset all in-memory Zustand stores
+        // This acts exactly like a hard refresh, but is triggered automatically!
+        window.location.reload()
     }, [clear])
 
     const dialog = useMemo(() => ({
@@ -26,7 +34,6 @@ export default function ResetSettings() {
         buttons: {
             confirm: {
                 content: "Reset settings",
-                // icon: <SkullIcon className="size-4" />,
                 variant: "destructive" as ButtonVariant,
                 onConfirm: handleRemove,
             },
