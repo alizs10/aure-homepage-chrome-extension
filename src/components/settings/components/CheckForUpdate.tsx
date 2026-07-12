@@ -2,6 +2,7 @@ import Button from "@/components/common/Button";
 import { Typography } from "@/components/common/Typography";
 import { useState } from "react";
 import UpdateAvailableModal from "./modals/UpdateAvailableModal";
+import { toast } from "sonner";
 
 // Updated interface to match the new JSON structure
 interface VersionInfo {
@@ -16,11 +17,17 @@ interface VersionInfo {
 export default function CheckForUpdate() {
     const [open, setOpen] = useState(false);
     const [update, setUpdate] = useState<VersionInfo | null>(null);
+    const [loading, setLoading] = useState(false)
 
     async function checkForUpdate() {
+
+        if (loading) return
+
+        setLoading(true)
+
         try {
             const res = await fetch(
-                "https://raw.githubusercontent.com/alizs10/aure-homepage-chrome-extension/main/version.json", // Fixed typo: 'extention' -> 'extension'
+                "https://raw.githubusercontent.com/alizs10/aure-homepage-chrome-extension/main/version.json",
                 {
                     cache: "no-store",
                 }
@@ -43,12 +50,16 @@ export default function CheckForUpdate() {
                 // TODO: Show a toast:
                 // "You're already using the latest version."
                 console.log("Already up to date.");
+                toast.info("Already up to date.")
             }
         } catch (error) {
             console.error(error);
 
             // TODO: Show a toast:
             // "Unable to check for updates."
+            toast.error("Unable to check for updates.")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -58,13 +69,14 @@ export default function CheckForUpdate() {
                 onClick={checkForUpdate}
                 size="sm"
                 variant="primary"
+                loading={loading}
             >
                 <Typography variant="caption-xs">
-                    Check for update
+                    {loading ? 'checking...' : 'Check for update'}
                 </Typography>
             </Button>
 
-            {update && (
+            {(open && update) && (
                 <UpdateAvailableModal
                     open={open}
                     onClose={() => setOpen(false)}
