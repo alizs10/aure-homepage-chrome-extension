@@ -20,21 +20,27 @@ export default function Background() {
 
     const defaultBackground = resolvedTheme === "dark" ? darkBackground : lightBackground;
 
+    console.log(resolvedTheme, loading, wallpaperId)
+
     // 1. Removed the 3rd argument (null) to fix the "Expected 1-2 arguments" error.
     // 2. The return type is now `Wallpaper | null | undefined`.
-    const wallpaperData = useLiveQuery<Wallpaper | null>(
+    const wallpaperData = useLiveQuery(
         async () => {
+            // Settings aren't ready yet.
+            if (loading) return undefined;
+
+            // We know the answer now: use the default wallpaper.
             if (!wallpaperId || wallpaperId === "default") {
                 return null;
             }
 
-            const wp = await db.wallpapers.get(wallpaperId);
-
-            // We cast to Wallpaper to satisfy TypeScript
-            return wp && "variants" in wp ? (wp as Wallpaper) : null;
+            // Query finished. Either a wallpaper or null.
+            return (await db.wallpapers.get(wallpaperId)) ?? null;
         },
-        [wallpaperId]
+        [loading, wallpaperId]
     );
+
+    const isWallpaperDataLoading = wallpaperData === undefined;
 
     // Determine the correct variant based on the current theme
     // Because we handle `undefined` above, we only check for `null` here.
@@ -49,11 +55,11 @@ export default function Background() {
     const loaded = useImage(background);
 
 
-    // 3. Handle the `undefined` loading state here.
-    // If it's undefined, it's still loading. If it's null, it's explicitly empty/default.
-    if ((!wallpaperData && wallpaperId !== 'default') || loading) {
-        // Optional: You could render a loading spinner or just the default background while loading
-        // For now, we'll just fallback to the default background
+    const isLoading =
+        loading ||
+        wallpaperData === undefined;
+
+    if (isLoading) {
         return null;
     }
 
