@@ -14,8 +14,6 @@ export default function Header() {
 
     const isSettingsPath = useMemo(() => {
 
-        console.log(location)
-
         if (!location?.pathname) return false
 
         return location?.pathname === '/settings'

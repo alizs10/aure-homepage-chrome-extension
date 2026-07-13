@@ -36,8 +36,6 @@ export default function Background() {
         [wallpaperId]
     );
 
-
-
     // Determine the correct variant based on the current theme
     // Because we handle `undefined` above, we only check for `null` here.
     const customBackground = wallpaperData
@@ -50,9 +48,10 @@ export default function Background() {
 
     const loaded = useImage(background);
 
+
     // 3. Handle the `undefined` loading state here.
     // If it's undefined, it's still loading. If it's null, it's explicitly empty/default.
-    if (wallpaperData === undefined || loading) {
+    if ((!wallpaperData && wallpaperId !== 'default') || loading) {
         // Optional: You could render a loading spinner or just the default background while loading
         // For now, we'll just fallback to the default background
         return null;

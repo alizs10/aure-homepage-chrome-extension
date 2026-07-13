@@ -46,9 +46,6 @@ export default function Wizard() {
                 break;
             }
             case 3:
-
-                console.log("tada", errors)
-
                 handleSubmit(onSubmit)();
                 return;
         }

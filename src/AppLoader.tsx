@@ -17,7 +17,8 @@ export default function AppLoader({ children }: AppLoaderProps) {
     }, [load]);
 
     if (loading) {
-        return <>Loading...</>;
+        // if (true) {
+        return null;
     }
 
     if (!settings && location.pathname !== "/wizard") {
