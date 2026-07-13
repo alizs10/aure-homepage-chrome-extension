@@ -6,6 +6,7 @@ import { usePetHouseStore } from '../store';
 export function usePetHouse() {
     // Select state and actions
     const data = usePetHouseStore((state) => state.data);
+    const loading = usePetHouseStore((state) => state.loading);
     const addItem = usePetHouseStore((state) => state.addItem);
     const removeItem = usePetHouseStore((state) => state.removeItem);
     const feedPet = usePetHouseStore((state) => state.feedPet);
@@ -27,6 +28,7 @@ export function usePetHouse() {
     // Return the exact same object shape as the old Context
     return {
         data,
+        loading,
         alivePets,
         catPets,
         dogPets,

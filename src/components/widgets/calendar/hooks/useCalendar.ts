@@ -6,6 +6,7 @@ import { useCalendarNotesStore } from '../store';
 export function useCalendar() {
     // Select state slices
     const data = useCalendarNotesStore((state) => state.data);
+    const loading = useCalendarNotesStore((state) => state.loading);
     const today = useCalendarNotesStore((state) => state.today);
     const month = useCalendarNotesStore((state) => state.month);
     const selectedDay = useCalendarNotesStore((state) => state.selectedDay);
@@ -27,6 +28,7 @@ export function useCalendar() {
     // Return the exact same object shape as the old Context
     return {
         data,
+        loading,
         today,
         month,
         selectMonth,

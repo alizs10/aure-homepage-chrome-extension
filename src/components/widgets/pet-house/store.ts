@@ -6,6 +6,7 @@ import { getRemainingFoodToday, isPetDead } from './helpers';
 
 interface PetHouseState {
     data: Pet[];
+    loading: boolean;
 
     // Actions
     initialize: () => Promise<void>;
@@ -16,11 +17,12 @@ interface PetHouseState {
 
 export const usePetHouseStore = create<PetHouseState>((set, get) => ({
     data: [],
+    loading: true,
 
     // Load data on app start
     initialize: async () => {
         const pets = await PetRepository.getAll();
-        set({ data: pets });
+        set({ data: pets, loading: false });
     },
 
     addItem: async (name, color, type) => {

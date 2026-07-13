@@ -7,6 +7,7 @@ import { useMoodTrackerStore } from '../store';
 export function useMoodTracker() {
     // Select only the state slices we need (prevents unnecessary re-renders)
     const data = useMoodTrackerStore((state) => state.data);
+    const loading = useMoodTrackerStore((state) => state.loading);
     const filter = useMoodTrackerStore((state) => state.filter);
     const today = useMoodTrackerStore((state) => state.today);
 
@@ -29,6 +30,7 @@ export function useMoodTracker() {
 
     return {
         data,
+        loading,
         today,
         todayMood,
         score,

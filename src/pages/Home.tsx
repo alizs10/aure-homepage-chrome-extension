@@ -13,9 +13,7 @@ import FavoritesSites from "@/components/home/FavoritesSites";
 export default function Home() {
 
     const { settings } = useSettingsStore()
-
     const widgetsSettings = settings?.widgets;
-
 
 
     return (
@@ -23,7 +21,7 @@ export default function Home() {
 
             <section className="flex-1 min-h-0 flex flex-col w-full max-w-6xl mx-auto gap-y-4 md:gap-y-8 mt-10">
 
-                <div className="h-fit flex flex-col">
+                <div className="h-fit min-h-fit flex flex-col">
                     <SearchInput />
 
                     {(settings?.show_top_sites && !settings?.show_favorites) && (

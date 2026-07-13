@@ -5,6 +5,7 @@ import { FavoritesRepository } from './db';
 
 interface FavoritesState {
     data: Favorite[];
+    loading: boolean;
 
     // Actions
     initialize: () => Promise<void>;
@@ -17,12 +18,13 @@ interface FavoritesState {
 
 export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     data: [],
+    loading: true,
 
     // Load data on app start
     initialize: async () => {
         const favorites = await FavoritesRepository.getAll();
         const sorted = favorites.sort((a, b) => a.order - b.order);
-        set({ data: sorted });
+        set({ data: sorted, loading: false, });
     },
 
     addItem: async ({ title, url }) => {

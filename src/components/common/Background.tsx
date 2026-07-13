@@ -9,7 +9,6 @@ import darkBackground from "../../assets/background/default-dark-1.jpg";
 
 import { useImage } from "../../hooks/useImage";
 import { useTheme } from "../../hooks/useTheme";
-import type { Wallpaper } from "@/types";
 
 export default function Background() {
     const { resolvedTheme } = useTheme();
@@ -19,8 +18,6 @@ export default function Background() {
     const wallpaperId = useSettingsStore((s) => s.settings?.wallpaper);
 
     const defaultBackground = resolvedTheme === "dark" ? darkBackground : lightBackground;
-
-    console.log(resolvedTheme, loading, wallpaperId)
 
     // 1. Removed the 3rd argument (null) to fix the "Expected 1-2 arguments" error.
     // 2. The return type is now `Wallpaper | null | undefined`.
@@ -39,8 +36,6 @@ export default function Background() {
         },
         [loading, wallpaperId]
     );
-
-    const isWallpaperDataLoading = wallpaperData === undefined;
 
     // Determine the correct variant based on the current theme
     // Because we handle `undefined` above, we only check for `null` here.

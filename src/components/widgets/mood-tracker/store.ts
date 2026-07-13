@@ -6,6 +6,7 @@ import { MoodRepository } from './db';
 
 interface MoodTrackerState {
     data: MoodHistory[];
+    loading: boolean;
     filter: typeof filters[number]['value'];
     today: Date;
 
@@ -19,13 +20,14 @@ interface MoodTrackerState {
 
 export const useMoodTrackerStore = create<MoodTrackerState>((set, get) => ({
     data: [],
+    loading: true,
     filter: "last30days",
     today: new Date(), // Created once when the store initializes
 
     // Load data on app start (replaces the useEffect in the Provider)
     initialize: async () => {
         const moods = await MoodRepository.getAll();
-        set({ data: moods });
+        set({ data: moods, loading: false });
     },
 
     addItem: async (mood, date) => {

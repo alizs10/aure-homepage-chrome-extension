@@ -6,6 +6,7 @@ import { NotesRepository } from './db';
 
 interface NotesAndChecklistsState {
     data: NoteAndChecklist[];
+    loading: boolean;
     editable: NoteAndChecklist | undefined;
 
     // Actions
@@ -20,12 +21,13 @@ interface NotesAndChecklistsState {
 
 export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, get) => ({
     data: [],
+    loading: true,
     editable: undefined,
 
     // Load data on app start
     initialize: async () => {
         const notes = await NotesRepository.getAll();
-        set({ data: notes });
+        set({ data: notes, loading: false });
     },
 
     addItem: async (content) => {

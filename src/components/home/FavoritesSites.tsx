@@ -9,7 +9,6 @@ import { useFavorites } from "../settings/components/tabs-details/sites-and-shor
 export default function FavoritesSites() {
 
     const { data: sites } = useFavorites()
-
     return (
         <div className="py-2 md:py-4 flex justify-center z-30 relative">
 
@@ -22,7 +21,7 @@ export default function FavoritesSites() {
                         key={site.url}
                         to={site.url}
                         id={`top-site-${site.url}`}
-                        className="size-10 md:size-14 min-w-10 md:min-w-14 rounded-full border-t border-border bg-linear-to-b from-background/30 to-background app-blur flex-center group flex-row-center z-30"
+                        className="size-10 md:size-14 min-w-10 min-h-10 md:min-w-14 md:min-h-14 rounded-full border-t border-border bg-linear-to-b from-background/30 to-background app-blur flex-center group flex-row-center z-30"
                     >
                         <div className="group-hover:rotate-12 transition-all duration-200">
                             <Favicon url={site.url} />

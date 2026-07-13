@@ -6,6 +6,7 @@ import { useNotesAndChecklistsStore } from '../store';
 export function useNotesAndChecklists() {
     // Select state slices
     const data = useNotesAndChecklistsStore((state) => state.data);
+    const loading = useNotesAndChecklistsStore((state) => state.loading);
     const editable = useNotesAndChecklistsStore((state) => state.editable);
 
     // Select actions
@@ -33,6 +34,7 @@ export function useNotesAndChecklists() {
     // Return the exact same object shape as the old Context
     return {
         data,
+        loading,
         editable,
         addItem,
         removeItem,
