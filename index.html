@@ -3,9 +3,24 @@
 
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="aure-homepage-chrome-extension" />
+  <link rel="manifest" href="/site.webmanifest" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aure Homepage</title>
+
+  <!-- Preconnect (optional but good) -->
+  <link rel="preconnect" href="%PUBLIC_URL%" crossorigin />
+
+  <!-- Preload critical Ubuntu font weights -->
+  <link rel="preload" as="font" type="font/woff2" href="%PUBLIC_URL%/fonts/Ubuntu-Regular.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="%PUBLIC_URL%/fonts/Ubuntu-Bold.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="%PUBLIC_URL%/fonts/Ubuntu-Medium.woff2" crossorigin />
+
+
+  <title>Aure Homepage Chrome Extension</title>
 </head>
 
 <body>
