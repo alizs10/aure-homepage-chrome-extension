@@ -15,7 +15,7 @@ export default function Background() {
     const { resolvedTheme } = useTheme();
 
     // Get the wallpaper ID from the settings store
-    // const loading = useSettingsStore((s) => s.loading);
+    const loading = useSettingsStore((s) => s.loading);
     const wallpaperId = useSettingsStore((s) => s.settings?.wallpaper);
 
     const defaultBackground = resolvedTheme === "dark" ? darkBackground : lightBackground;
@@ -52,7 +52,7 @@ export default function Background() {
 
     // 3. Handle the `undefined` loading state here.
     // If it's undefined, it's still loading. If it's null, it's explicitly empty/default.
-    if (wallpaperData === undefined) {
+    if (wallpaperData === undefined || loading) {
         // Optional: You could render a loading spinner or just the default background while loading
         // For now, we'll just fallback to the default background
         return null;
