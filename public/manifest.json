@@ -1,5 +1,6 @@
 {
     "manifest_version": 3,
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqVSsWgHXNk5g1WZUuLpN/P+QgU36daupNUxHXkTCbCGhwDXXnksJ/PhXoUgJgZfLEzeNDiCmJSqqRjrTjbmxAGOb4kPgCplxUpC8nQAWOAZ+OLYE5XFqS3Sc65krb7SKxl33/ed4yq4R0Dna7lgwTwvOSxWxae8m+/MY6SZLpZ6jdUxN5hERgQmQUumMJhTx8hJ6Kdw1kscZT9w/vPtThsG3/ZfhXKdhx9R3BOlKqgZi8F5ji/+WHhU6gUw8AClJAZA8WE8vGRVxViXCcDO1oYP9/qdQlyJFKXbpricbT1iX/l7NHGYaIynJjuqhl+GpXyJlikAUrKNOAZ/MXmUMdwIDAQAB%",
     "name": "Aure Homepage",
     "version": "0.0.1",
     "description": "Custom New Tab",
