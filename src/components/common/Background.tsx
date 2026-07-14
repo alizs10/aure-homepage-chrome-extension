@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { useSettingsStore } from "@/stores";
 import { db } from "@/lib/db";
 
-import lightBackground from "../../assets/background/default-light.jpg";
-import darkBackground from "../../assets/background/default-dark-1.jpg";
+import lightBackground from "../../assets/background/default-light.webp";
+import darkBackground from "../../assets/background/default-dark.webp";
 
 import { useImage } from "../../hooks/useImage";
 import { useTheme } from "../../hooks/useTheme";

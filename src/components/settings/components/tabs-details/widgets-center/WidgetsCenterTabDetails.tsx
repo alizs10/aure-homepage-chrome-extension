@@ -2,14 +2,14 @@ import Button from '@/components/common/Button'
 import Toggle from '@/components/common/Toggle'
 import { Typography } from '@/components/common/Typography'
 
-import calendarMockupLightImg from "@/assets/mockups/calendar-light.png"
-import calendarMockupDarkImg from "@/assets/mockups/calendar-dark.png"
-import notesMockupLightImg from "@/assets/mockups/notes-light.png"
-import notesMockupDarkImg from "@/assets/mockups/notes-dark.png"
-import petHouseMockupLightImg from "@/assets/mockups/pet-house-light.png"
-import petHouseMockupDarkImg from "@/assets/mockups/pet-house-dark.png"
-import moodTrackerMockupLightImg from "@/assets/mockups/mood-tracker-light.png"
-import moodTrackerMockupDarkImg from "@/assets/mockups/mood-tracker-dark.png"
+import calendarMockupLightImg from "@/assets/mockups/calendar-light.webp"
+import calendarMockupDarkImg from "@/assets/mockups/calendar-dark.webp"
+import notesMockupLightImg from "@/assets/mockups/notes-light.webp"
+import notesMockupDarkImg from "@/assets/mockups/notes-dark.webp"
+import petHouseMockupLightImg from "@/assets/mockups/pet-house-light.webp"
+import petHouseMockupDarkImg from "@/assets/mockups/pet-house-dark.webp"
+import moodTrackerMockupLightImg from "@/assets/mockups/mood-tracker-light.webp"
+import moodTrackerMockupDarkImg from "@/assets/mockups/mood-tracker-dark.webp"
 import { useTheme } from '@/hooks/useTheme'
 import { useSettingsStore } from '@/stores'
 import { useForm, Controller } from 'react-hook-form'

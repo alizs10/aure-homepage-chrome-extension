@@ -10,8 +10,8 @@ import { db } from "@/lib/db";
 import { useSettingsStore } from "@/stores";
 
 // Import default wallpapers 
-import defaultDark1 from "@/assets/background/default-dark-1.jpg";
-import defaultLight from "@/assets/background/default-light.jpg";
+import defaultDark1 from "@/assets/background/default-dark.webp";
+import defaultLight from "@/assets/background/default-light.webp";
 import type { Wallpaper } from "@/types";
 
 // 🚨 IMPORTANT: Ensure this path matches the exact same path you use in db.ts!
