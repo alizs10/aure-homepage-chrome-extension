@@ -11,7 +11,9 @@
         "service_worker": "background.js"
     },
     "host_permissions": [
-        "<all_urls>"
+        "https://suggestqueries.google.com/*",
+        "https://www.google.com/s2/*",
+        "https://raw.githubusercontent.com/alizs10/*"
     ],
     "chrome_url_overrides": {
         "newtab": "index.html"
