@@ -49,7 +49,7 @@ async function clearAllData() {
     await storage.remove("settings");
 }
 
-export async function exportUserData() {
+export async function exportUserData(username?: string) {
     const wallpapers = await db.wallpapers.toArray();
     const moods = await db.moods.toArray();
     const pets = await db.pets.toArray();
@@ -73,10 +73,11 @@ export async function exportUserData() {
     const jsonString = JSON.stringify(payload, null, 2);
     const blob = new Blob([jsonString], { type: "application/json" });
     const url = URL.createObjectURL(blob);
+    const filename = `${username ? username.toLowerCase().split(" ").join("-") : 'aure-homepage'}-backup-${new Date().toISOString().split('T')[0]}`
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `aure-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `${filename}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

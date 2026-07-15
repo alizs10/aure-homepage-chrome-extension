@@ -4,13 +4,15 @@ import { DownloadIcon, UploadIcon } from "lucide-react";
 import { useRef } from "react";
 import { exportUserData, importUserData } from "@/lib/backup";
 import { toast } from "sonner";
+import { useSettingsStore } from "@/stores";
 
 export default function DataBackup() {
+    const username = useSettingsStore(s => s.settings?.name)
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleExport = async () => {
         try {
-            await exportUserData();
+            await exportUserData(username);
             toast.success("Data exported successfully!");
         } catch (error) {
             console.error("Export failed:", error);
