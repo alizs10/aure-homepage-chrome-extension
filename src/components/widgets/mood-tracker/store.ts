@@ -15,6 +15,8 @@ interface MoodTrackerState {
     addItem: (mood: MoodType, date: Date) => Promise<void>;
     removeItem: (id: number) => Promise<void>;
     updateItem: (id: number, mood: MoodType) => Promise<void>;
+    getItemByDate: (date: Date) => Promise<MoodHistory | undefined>;
+    getItem: (id: number) => Promise<MoodHistory | undefined>;
     onFilterChange: (value: typeof filters[number]['value']) => void;
 }
 
@@ -53,9 +55,20 @@ export const useMoodTrackerStore = create<MoodTrackerState>((set, get) => ({
         set((state) => ({ data: state.data.filter(p => p.id !== id) }));
     },
 
+
+    getItemByDate: async (date: Date) => {
+        const formattedDate = format(date, "yyyy-MM-dd");
+        return get().data.find((d) => d.date === formattedDate);
+    },
+    getItem: async (id: number) => {
+        return get().data.find((d) => d.id === id);
+    },
+
+
+
     updateItem: async (id, mood) => {
         // Use get() to read current state inside an action
-        const item = get().data.find((d) => d.id === id);
+        const item = await get().getItem(id)
         if (!item) return;
 
         const updated: MoodHistory = {

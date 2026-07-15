@@ -4,7 +4,7 @@ import ModalWrapper from '@/components/modal/ModalWrapper'
 import { type MouseEvent } from 'react'
 import { MOODS_OPTIONS } from '../constants/moods';
 import Button from '@/components/common/Button';
-import type { MoodHistory, MoodType } from '../types';
+import { moodMessages, type MoodHistory, type MoodType } from '../types';
 import { useMoodTracker } from '../hooks/useMoodTracker';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -22,7 +22,8 @@ export default function MoodModal({ open, onClose, mood }: MoodModalProps) {
     function handleMoodSelect(selected: MoodType) {
         updateItem(mood.id, selected)
         onClose()
-        toast.success("Mood updated!")
+        toast.success(`Mood updated: ${moodMessages[selected]}`);
+        // toast.success("Mood updated!")
 
     }
 
