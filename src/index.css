@@ -242,5 +242,5 @@ button {
 }
 
 .app_container {
-  @apply border-t border-border rounded-3xl;
+  @apply border-t border-border rounded-3xl transition-colors duration-200;
 }

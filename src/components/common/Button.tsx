@@ -73,7 +73,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     //     "border border-border bg-background hover:bg-warning/10 hover:border-warning hover:outline-6 outline-warning/10 hover:text-warning",
 
     ghost:
-        "bg-none hover:bg-gradient-to-b hover:from-secondary/30 hover:to-background/60 hover:app-blur border-t border-transparent hover:border-border text-foreground",
+        "bg-gradient-to-b from-transparent to-transparent hover:from-secondary/30 hover:to-background/60 hover:app-blur border-t border-transparent hover:border-border text-foreground",
 
     success:
         "bg-gradient-to-b from-background/30 to-background/60 app-blur text-foreground border-t border-border hover:to-success/10 dark:hover:to-success/30",
@@ -122,7 +122,7 @@ export default function Button(props: ButtonProps) {
     // loading = true
 
     const classes = cn(
-        "relative z-0 inline-flex items-center justify-center gap-x-2 rounded-3xl font-medium transition-all duration-150",
+        "relative z-0 inline-flex items-center justify-center gap-x-2 rounded-3xl font-medium transition-colors duration-200",
         "disabled:opacity-50",
         variantClasses[variant],
         sizeClasses[size],

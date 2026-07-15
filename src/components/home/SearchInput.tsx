@@ -96,7 +96,7 @@ export default function SearchInput() {
     }, [width]);
 
     return (
-        <div className="w-full flex flex-nowrap px-4 md:px-8 lg:px-10 h-12 md:h-14 lg:h-16 relative z-40">
+        <div className="w-full flex flex-nowrap px-4 md:px-8 lg:px-10 h-12 md:h-14 lg:h-16 relative">
             <motion.div
                 initial={false}
                 animate={{
@@ -106,7 +106,7 @@ export default function SearchInput() {
                 className='z-30'
             >
                 <TextInput
-                    className={`flex-1 mt-auto text-lg md:text-xl lg:text-2xl md:px-6 md:py-2.5 lg:px-10 lg:py-4 h-full transition-colors duration-200 ${isCommandMode ? 'border-accent ring-1 ring-accent/20' : ''
+                    className={`flex-1 mt-auto text-lg md:text-xl lg:text-2xl md:px-6 md:py-2.5 lg:px-10 lg:py-4 h-full  transition-colors duration-200 ${isCommandMode ? 'border-accent ring-1 ring-accent/20' : ''
                         }`}
                     placeholder={isCommandMode ? "Type a command..." : "Search through web..."}
                     value={searchValue}
