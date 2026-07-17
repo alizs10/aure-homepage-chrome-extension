@@ -1,16 +1,16 @@
-import { useEffect, useState, type MouseEvent } from 'react';
+import { useEffect, useState } from 'react';
 
-import Button from '@/components/common/Button';
 import { Typography } from '@/components/common/Typography';
-import ModalHeader from '@/components/modal/ModalHeader';
-import ModalWrapper from '@/components/modal/ModalWrapper';
-import { useForm } from 'react-hook-form';
-import { favoriteSchema, type FavoriteFormValues } from '../validation/favorite-schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import TextInput from '@/components/Form/TextInput';
-import { useFavorites } from '../hooks/useFavorites';
-import { toast } from 'sonner';
+import Button from '@/components/ui/Button';
+import TextInput from '@/components/ui/TextInput';
 import { getTopSites } from '@/lib/chrome/top-sites';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { useFavorites } from '../hooks/useFavorites';
+import { favoriteSchema, type FavoriteFormValues } from '../validation/favorite-schema';
+import ModalWrapper from '@/components/ui/modal/ModalWrapper';
+import ModalHeader from '@/components/ui/modal/ModalHeader';
 
 interface FavoriteModalProps {
     open: boolean;
@@ -82,14 +82,11 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
         setValue('url', site.url, { shouldValidate: true, shouldDirty: true });
     }
 
-    function stopPropagation(e: MouseEvent<HTMLDivElement>) {
-        e.stopPropagation();
-    }
+
 
     return (
         <ModalWrapper open={open} onClose={onClose}>
             <div
-                onClick={stopPropagation}
                 className="app_container bg-background p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none"
             >
                 <ModalHeader

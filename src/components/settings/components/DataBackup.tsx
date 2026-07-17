@@ -1,4 +1,4 @@
-import Button from "@/components/common/Button";
+import Button from "@/components/ui/Button";
 import { Typography } from "@/components/common/Typography";
 import { DownloadIcon, UploadIcon } from "lucide-react";
 import { useRef } from "react";

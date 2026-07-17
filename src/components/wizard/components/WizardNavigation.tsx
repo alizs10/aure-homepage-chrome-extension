@@ -1,5 +1,5 @@
 
-import Button from "@/components/common/Button";
+import Button from "@/components/ui/Button";
 import { Typography } from "@/components/common/Typography";
 import { STEPS } from "../constants/steps";
 

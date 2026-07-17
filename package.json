@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@base-ui/react": "^1.6.0",
     "@hookform/resolvers": "^5.4.0",
     "@tailwindcss/vite": "^4.3.1",
     "clsx": "^2.1.1",

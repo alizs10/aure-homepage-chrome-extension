@@ -8,6 +8,7 @@
         "Added Commands to search input",
         "Improve app layout",
         "Improve animations",
-        "Create export file from username"
+        "Create export file from username",
+        "Rewrite all ui components using base ui"
     ]
 }

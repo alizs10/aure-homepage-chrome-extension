@@ -1,13 +1,13 @@
 import { Typography } from '@/components/common/Typography';
-import ModalHeader from '@/components/modal/ModalHeader';
-import ModalWrapper from '@/components/modal/ModalWrapper'
 import { type MouseEvent } from 'react'
 import { MOODS_OPTIONS } from '../constants/moods';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import { moodMessages, type MoodHistory, type MoodType } from '../types';
 import { useMoodTracker } from '../hooks/useMoodTracker';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import ModalWrapper from '@/components/ui/modal/ModalWrapper';
+import ModalHeader from '@/components/ui/modal/ModalHeader';
 
 interface MoodModalProps {
     open: boolean;

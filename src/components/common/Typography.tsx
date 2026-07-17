@@ -29,7 +29,7 @@ interface TypographyProps {
     weight?: FontWeight;
     as?: ElementType;
     className?: string;
-    children: ReactNode;
+    children?: ReactNode;
 }
 
 

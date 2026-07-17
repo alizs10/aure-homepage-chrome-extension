@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { Typography } from '../../../common/Typography';
 import { useCalendar } from '../hooks/useCalendar';
 import { PenIcon, StickyNoteIcon, TrashIcon } from 'lucide-react';
-import Button from '../../../common/Button';
+import Button from '../../../ui/Button';
 import CalendarNoteModal from '../modals/CalendarNoteModal';
 import { toast } from 'sonner';
 

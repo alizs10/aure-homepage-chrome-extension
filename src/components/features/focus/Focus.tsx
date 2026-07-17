@@ -1,6 +1,6 @@
 import { HistoryIcon, PauseIcon, PlayIcon } from 'lucide-react';
 import { useEffect } from 'react';
-import Button from '../../common/Button';
+import Button from '../../ui/Button';
 import { Typography } from '../../common/Typography';
 import { useFocusTimerStore } from './store';
 

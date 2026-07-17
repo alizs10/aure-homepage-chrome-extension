@@ -2,8 +2,8 @@
 import { PenLineIcon, SendIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { sliceText } from '../../../../helpers';
-import TextInput from '../../../Form/TextInput';
-import Button from '../../../common/Button';
+import TextInput from '../../../ui/TextInput';
+import Button from '../../../ui/Button';
 import { Typography } from '../../../common/Typography';
 import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
 import { toast } from 'sonner';

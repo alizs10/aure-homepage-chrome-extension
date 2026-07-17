@@ -1,10 +1,10 @@
-import Toggle from '@/components/common/Toggle'
+import Toggle from '@/components/ui/Toggle'
 import { Typography } from '@/components/common/Typography'
 import AddNewFavorite from './AddNewFavorite'
 import FavoritesList from './FavoritesList'
 import { useSettingsStore } from '@/stores'
 import { useEffect } from 'react'
-import Button from '@/components/common/Button'
+import Button from '@/components/ui/Button'
 import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'sonner'
 

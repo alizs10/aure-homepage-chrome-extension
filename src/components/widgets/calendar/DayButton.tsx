@@ -1,5 +1,5 @@
 import type { DayButtonProps } from "react-day-picker";
-import Button from "../../common/Button";
+import Button from "../../ui/Button";
 import { cn } from "../../../lib/util";
 import { useMemo } from "react";
 import { useCalendar } from "./hooks/useCalendar";

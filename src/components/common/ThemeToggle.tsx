@@ -1,5 +1,5 @@
 import { ChevronDownIcon, ChevronUpIcon, Monitor, Moon, Sun } from "lucide-react";
-import Button from "./Button";
+import Button from "../ui/Button";
 import { useSettingsStore } from "@/stores";
 import { useState } from "react";
 import useClickOutside from "@/hooks/useOutsideClick";

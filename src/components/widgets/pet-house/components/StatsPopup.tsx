@@ -1,83 +1,48 @@
-import { ChartNoAxesColumnIcon } from "lucide-react"
-import { useMemo, useState } from "react"
-import useClickOutside from "../../../../hooks/useOutsideClick"
-import Button from "../../../common/Button"
-import { Typography } from "../../../common/Typography"
-import { usePetHouse } from "../hooks/usePetHouse"
-
-
+import { ChartNoAxesColumnIcon } from "lucide-react";
+import Button from "../../../ui/Button";
+import { Typography } from "../../../common/Typography";
+import { usePetHouse } from "../hooks/usePetHouse";
+import Popup from "@/components/ui/Popup";
 
 export default function StatsPopup() {
+    const { data: pets, alivePets, catPets, dogPets } = usePetHouse();
 
-    const { data: pets, alivePets, catPets, dogPets } = usePetHouse()
-
-    const [open, setOpen] = useState(false)
-
-    const stats = useMemo(() => {
-
-        return [
-            {
-                id: 1,
-                label: "All Pets",
-                value: pets.length,
-            },
-            {
-                id: 2,
-                label: "Alive Pets",
-                value: alivePets.length,
-            },
-            {
-                id: 3,
-                label: "Dead Pets",
-                value: pets.length - alivePets.length,
-            },
-            {
-                id: 4,
-                label: "Cats",
-                value: catPets.length,
-            },
-            {
-                id: 5,
-                label: "Dogs",
-                value: dogPets.length,
-            },
-        ];
-
-    }, [pets, alivePets])
-
-    // const router = useRouter()
-
-    function toggle() {
-        setOpen(prev => !prev)
-    }
-
-    const containerRef = useClickOutside<HTMLUListElement>(() => setOpen(false))
-
+    const stats = [
+        { label: "All Pets", value: pets.length },
+        { label: "Alive Pets", value: alivePets.length },
+        { label: "Dead Pets", value: pets.length - alivePets.length },
+        { label: "Cats", value: catPets.length },
+        { label: "Dogs", value: dogPets.length },
+    ];
 
     return (
-        <div ref={containerRef} className="relative z-20">
-            <Button onClick={toggle} variant={open ? 'primary-active' : 'ghost'} size='icon-sm'
-            >
-                <ChartNoAxesColumnIcon className='size-4' />
-
-            </Button>
-
-            {open && (
-                <ul className='flex flex-col justify-start app_container bg-background absolute top-full right-0 h-fit mt-1 rounded-3xl overflow-clip py-3 px-4'>
-                    {stats.map(stat => (
-                        <li key={stat.id} className='py-1'>
-
-                            <Typography className='text-nowrap' variant='caption-xs'>
-                                {stat.label}: {stat.value}
-                            </Typography>
-
-
-                        </li>
-                    ))}
-
-
-                </ul>
+        <Popup
+            // 🎯 Dynamic trigger: receives `props` and `state` from Base UI
+            trigger={(props, state) => (
+                <Button
+                    {...props} // ⚠️ Crucial: spreads Base UI's onClick and aria attributes
+                    variant={state.open ? "primary-active" : "ghost"}
+                    size="icon-sm"
+                >
+                    <ChartNoAxesColumnIcon className="size-4" />
+                </Button>
             )}
-        </div>
-    )
+            // Optional: tweak positioning or add specific padding/width
+            className="py-3 px-4 min-w-40"
+        >
+            {/* 🎯 Completely dynamic content goes here */}
+            <ul className="flex flex-col gap-y-2">
+                {stats.map((stat) => (
+                    <li key={stat.label} className="flex justify-between items-center">
+                        <Typography variant="caption-xs" className="text-muted-foreground">
+                            {stat.label}
+                        </Typography>
+                        <Typography variant="caption-xs" weight="semibold">
+                            {stat.value}
+                        </Typography>
+                    </li>
+                ))}
+            </ul>
+        </Popup>
+    );
 }

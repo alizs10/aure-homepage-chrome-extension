@@ -1,11 +1,11 @@
-import { useRef, useState, type MouseEvent } from 'react';
+import { useRef, useState } from 'react';
 
-import ModalHeader from '@/components/modal/ModalHeader';
-import ModalWrapper from '@/components/modal/ModalWrapper';
-import { db } from '@/lib/db';
-import Button from '@/components/common/Button';
+import Toggle from '@/components/ui/Toggle';
 import { Typography } from '@/components/common/Typography';
-import Toggle from '@/components/common/Toggle';
+import Button from '@/components/ui/Button';
+import ModalHeader from '@/components/ui/modal/ModalHeader';
+import ModalWrapper from '@/components/ui/modal/ModalWrapper';
+import { db } from '@/lib/db';
 import { UploadIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -83,14 +83,9 @@ export default function AddWallpaperModal({ open, onClose, onWallpaperChange }: 
 
     const canSave = useSameImage ? !!lightImage : !!lightImage && !!darkImage;
 
-    function stopPropagation(e: MouseEvent<HTMLDivElement>) {
-        e.stopPropagation();
-    }
-
     return (
         <ModalWrapper open={open} onClose={onClose}>
             <div
-                onClick={stopPropagation}
                 className="app_container bg-background p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none"
             >
                 <ModalHeader

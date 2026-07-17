@@ -1,5 +1,5 @@
 import { SettingsIcon } from "lucide-react";
-import Button from "../../common/Button";
+import Button from "../../ui/Button";
 import { Typography } from "../../common/Typography";
 import { TABS } from "../constants/tabs";
 import { useSettingsTabs } from "../hooks/useSettingsTabs";

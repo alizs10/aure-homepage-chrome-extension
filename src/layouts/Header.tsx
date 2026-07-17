@@ -1,4 +1,4 @@
-import Button from '@/components/common/Button'
+import Button from '@/components/ui/Button'
 import ThemeToggle from '@/components/common/ThemeToggle'
 import { Typography } from '@/components/common/Typography'
 import Focus from '@/components/features/focus/Focus'

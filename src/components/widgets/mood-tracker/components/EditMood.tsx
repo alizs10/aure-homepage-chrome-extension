@@ -1,4 +1,4 @@
-import Button from '@/components/common/Button'
+import Button from '@/components/ui/Button'
 import { PenIcon } from 'lucide-react'
 import { useState } from 'react'
 import MoodModal from '../modals/MoodModal'

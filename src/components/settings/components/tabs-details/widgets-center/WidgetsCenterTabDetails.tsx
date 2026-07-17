@@ -1,5 +1,5 @@
-import Button from '@/components/common/Button'
-import Toggle from '@/components/common/Toggle'
+import Button from '@/components/ui/Button'
+import Toggle from '@/components/ui/Toggle'
 import { Typography } from '@/components/common/Typography'
 
 import calendarMockupLightImg from "@/assets/mockups/calendar-light.webp"

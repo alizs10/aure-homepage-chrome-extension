@@ -1,6 +1,6 @@
 import { Typography } from '@/components/common/Typography'
 import { MOODS_OPTIONS } from '../constants/moods'
-import Button from '@/components/common/Button'
+import Button from '@/components/ui/Button'
 import { useMoodTracker } from '../hooks/useMoodTracker'
 import { moodMessages, type MoodType } from '../types'
 import { toast } from 'sonner'

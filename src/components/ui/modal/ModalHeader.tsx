@@ -1,6 +1,7 @@
-import { Typography } from '../common/Typography'
-import Button from '../common/Button'
+
+import { Typography } from '@/components/common/Typography';
 import { XIcon } from 'lucide-react'
+import Button from '../Button';
 
 interface ModalHeaderProps {
     title: string;

@@ -1,5 +1,5 @@
-import TextInput from '@/components/Form/TextInput';
-import Button from '@/components/common/Button';
+import TextInput from '@/components/ui/TextInput';
+import Button from '@/components/ui/Button';
 import { Typography } from '@/components/common/Typography';
 import { useSettingsStore } from '@/stores';
 import { zodResolver } from '@hookform/resolvers/zod';

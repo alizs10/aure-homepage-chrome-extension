@@ -1,4 +1,4 @@
-import TextInput from "@/components/Form/TextInput";
+import TextInput from "@/components/ui/TextInput";
 import type { WizardFormValues } from "@/components/wizard/validation/wizard-schema";
 import { type FieldErrors, type UseFormRegister } from "react-hook-form";
 

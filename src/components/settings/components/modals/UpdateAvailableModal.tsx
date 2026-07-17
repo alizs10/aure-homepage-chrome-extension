@@ -1,9 +1,8 @@
-import Button from "@/components/common/Button";
 import { Typography } from "@/components/common/Typography";
-import ModalHeader from "@/components/modal/ModalHeader";
-import ModalWrapper from "@/components/modal/ModalWrapper";
+import Button from "@/components/ui/Button";
+import ModalHeader from "@/components/ui/modal/ModalHeader";
+import ModalWrapper from "@/components/ui/modal/ModalWrapper";
 import { DownloadIcon, ExternalLinkIcon } from "lucide-react";
-import type { MouseEvent } from "react";
 
 interface VersionInfo {
     latestVersion: string;
@@ -27,9 +26,7 @@ export default function UpdateAvailableModal({
     currentVersion,
     latest,
 }: UpdateAvailableModalProps) {
-    function stopPropagation(e: MouseEvent<HTMLDivElement>) {
-        e.stopPropagation();
-    }
+
 
     function downloadUpdate() {
         window.open(latest.downloadUrl, "_blank");
@@ -42,7 +39,6 @@ export default function UpdateAvailableModal({
     return (
         <ModalWrapper open={open} onClose={onClose}>
             <div
-                onClick={stopPropagation}
                 className="app_container bg-background p-5 flex flex-col gap-5 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-auto scrollbar-none"
             >
                 <ModalHeader

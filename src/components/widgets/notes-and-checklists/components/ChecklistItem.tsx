@@ -1,5 +1,5 @@
 // components/notes-and-checklists/ChecklistItem.tsx
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import { Typography } from '@/components/common/Typography';
 import { CircleCheckIcon, CircleIcon } from 'lucide-react';
 import ItemFooter from './ItemFooter';

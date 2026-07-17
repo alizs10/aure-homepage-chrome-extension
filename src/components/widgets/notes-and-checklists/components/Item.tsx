@@ -2,7 +2,7 @@
 import { useState, type PropsWithChildren } from 'react';
 import { ChecklistItem } from './ChecklistItem';
 import { NoteItem } from './NoteItem';
-import Button from '../../../common/Button';
+import Button from '../../../ui/Button';
 import { CopyCheckIcon, CopyIcon, EllipsisIcon, PenIcon, TrashIcon } from 'lucide-react';
 import { copyToClipboard } from '../../../../helpers';
 import { AnimatePresence, motion } from 'framer-motion';

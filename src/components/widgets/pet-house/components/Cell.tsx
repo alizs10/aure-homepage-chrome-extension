@@ -1,7 +1,7 @@
 import { BoneIcon, CatIcon, SoupIcon } from "lucide-react";
 import { useMemo, useState, type PropsWithChildren } from "react";
 import { motion, AnimatePresence } from "framer-motion"; // 🌟 Added Framer Motion imports
-import Button from "../../../common/Button";
+import Button from "../../../ui/Button";
 import { Typography } from "../../../common/Typography";
 import KillPetDialog from "../dialogs/KillPetDialog";
 import { getPetAgeLabel, getRemainingFoodToday } from "../helpers";

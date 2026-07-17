@@ -3,7 +3,7 @@ import { ImagePlusIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Typography } from "@/components/common/Typography";
-import Button from "@/components/common/Button";
+import Button from "@/components/ui/Button";
 import WallpaperCard from "@/components/common/WallpaperCard";
 import AddWallpaperModal from "./modals/AddWallpaperModal";
 import { db } from "@/lib/db";

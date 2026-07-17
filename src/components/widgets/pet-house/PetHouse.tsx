@@ -1,5 +1,5 @@
 import { Typography } from "../../common/Typography";
-import InfoPopup from "./components/InfoPopup";
+import PetRulesPopup from "./components/PetRulesPopup";
 import NewPetPopup from "./components/NewPetPopup";
 import PetsCells from "./components/PetsCells";
 import StatsPopup from "./components/StatsPopup";
@@ -29,7 +29,7 @@ export default function PetHouse() {
                     </Button> */}
 
                     <StatsPopup />
-                    <InfoPopup />
+                    <PetRulesPopup />
                 </div>
             </div>
 

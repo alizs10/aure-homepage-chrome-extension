@@ -1,44 +1,38 @@
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
+import { Switch } from "@base-ui/react/switch";
 import { cn } from "../../lib/util";
 
 type ToggleSize = "sm" | "md" | "lg";
 
-type ToggleProps = {
+export interface ToggleProps {
     checked?: boolean;
     defaultChecked?: boolean;
     onCheckedChange?: (checked: boolean) => void;
-
     disabled?: boolean;
     size?: ToggleSize;
-
     leftLabel?: React.ReactNode;
     rightLabel?: React.ReactNode;
-
     className?: string;
-};
+}
 
 const sizeClasses: Record<
     ToggleSize,
     {
         track: string;
         thumb: string;
-        translate: string;
     }
 > = {
     sm: {
         track: "w-10 h-6",
         thumb: "size-4",
-        translate: "translate-x-4",
     },
     md: {
         track: "w-12 h-7",
         thumb: "size-5",
-        translate: "translate-x-5",
     },
     lg: {
         track: "w-14 h-8",
         thumb: "size-6",
-        translate: "translate-x-6",
     },
 };
 
@@ -56,23 +50,6 @@ const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
         },
         ref
     ) => {
-        const [internalChecked, setInternalChecked] = useState(defaultChecked);
-
-        const isControlled = checked !== undefined;
-        const value = isControlled ? checked : internalChecked;
-
-        const handleToggle = () => {
-            if (disabled) return;
-
-            const next = !value;
-
-            if (!isControlled) {
-                setInternalChecked(next);
-            }
-
-            onCheckedChange?.(next);
-        };
-
         const styles = sizeClasses[size];
 
         return (
@@ -84,31 +61,33 @@ const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
             >
                 {leftLabel}
 
-                <button
+                <Switch.Root
                     ref={ref}
-                    type="button"
-                    role="switch"
-                    aria-checked={value}
+                    checked={checked}
+                    defaultChecked={defaultChecked}
+                    onCheckedChange={onCheckedChange}
                     disabled={disabled}
-                    onClick={handleToggle}
                     className={cn(
-                        "relative rounded-full transition-all duration-200",
+                        "relative rounded-full transition-all duration-200 cursor-pointer",
                         "bg-linear-to-b from-background to-background/30",
                         "border-t border-border app-blur",
-                        value &&
-                        "to-primary/30 dark:to-primary/50",
+                        "data-checked:to-primary/30 data-checked:dark:to-primary/50",
                         styles.track,
                         className
                     )}
                 >
-                    <span
+                    <Switch.Thumb
                         className={cn(
                             "absolute top-1/2 left-1 -translate-y-1/2 rounded-full bg-foreground transition-transform duration-200",
                             styles.thumb,
-                            value && styles.translate
+                            // 🎯 FIX: Explicitly write out the full class names.
+                            // Tailwind's JIT compiler needs to see the exact strings to generate the CSS.
+                            size === "sm" && "data-checked:translate-x-4",
+                            size === "md" && "data-checked:translate-x-5",
+                            size === "lg" && "data-checked:translate-x-6"
                         )}
                     />
-                </button>
+                </Switch.Root>
 
                 {rightLabel}
             </div>

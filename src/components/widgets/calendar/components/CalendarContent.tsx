@@ -1,7 +1,7 @@
 import { addMonths, format, subMonths } from 'date-fns';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
-import Button from '../../../common/Button';
+import Button from '../../../ui/Button';
 import { Typography } from '../../../common/Typography';
 import DayButton from '../DayButton';
 import { useCalendar } from '../hooks/useCalendar';

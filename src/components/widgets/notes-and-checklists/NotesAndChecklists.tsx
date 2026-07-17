@@ -1,9 +1,9 @@
 // components/notes-and-checklists/NotesAndChecklists.tsx
 import { Typography } from '../../common/Typography';
-import InfoPopup from './components/InfoPopup';
+import ChecklistInfoPopup from './components/ChecklistInfoPopup';
 import { InputSection } from './components/InputSection';
 import { ItemsList } from './components/ItemsList';
-import StatsPopup from './components/StatsPopup';
+import NotesStatsPopup from './components/NotesStatsPopup';
 
 function NotesAndChecklistsContent() {
     return (
@@ -14,8 +14,8 @@ function NotesAndChecklistsContent() {
                 </Typography>
 
                 <div className="flex-row-center gap-x-1">
-                    <StatsPopup />
-                    <InfoPopup />
+                    <NotesStatsPopup />
+                    <ChecklistInfoPopup />
                 </div>
             </div>
 

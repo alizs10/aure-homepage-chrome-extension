@@ -1,6 +1,6 @@
-import Button from '@/components/common/Button'
+import Button from '@/components/ui/Button'
 import { Typography } from '@/components/common/Typography'
-import TextInput from '@/components/Form/TextInput'
+import TextInput from '@/components/ui/TextInput'
 import { copyToClipboard } from '@/helpers'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CopyCheckIcon, CopyIcon, HeartIcon, MailIcon, SendIcon } from 'lucide-react'
