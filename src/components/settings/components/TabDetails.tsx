@@ -1,4 +1,4 @@
-import { Typography } from "@/components/common/Typography";
+import { BetterTypography } from "@/components/common/BetterTypography";
 import { useMemo } from "react";
 import { TABS } from "../constants/tabs";
 import { useSettingsTabs } from "../hooks/useSettingsTabs";
@@ -27,9 +27,14 @@ export default function TabDetails() {
                     {tab?.Icon && (
                         <tab.Icon className="size-7" />
                     )}
-                    <Typography className="capitalize" variant="h2">
+                    <BetterTypography
+                        as="h2"
+                        variant="lg"
+                        className="capitalize"
+                        weight="medium"
+                    >
                         {tab?.label}
-                    </Typography>
+                    </BetterTypography>
                 </div>
 
 

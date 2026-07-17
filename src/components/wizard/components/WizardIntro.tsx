@@ -1,15 +1,15 @@
-import { Typography } from "@/components/common/Typography";
+import { BetterTypography } from "@/components/common/BetterTypography";
 import { WizardStepper } from "./WizardStepper";
 
 export function WizardIntro({ currentStep }: { currentStep: number }) {
     return (
         <div className="col-span-1 lg:col-span-2 flex-1 app_container app_gradient app-blur p-5 flex flex-col gap-y-4 lg:gap-y-6 min-h-60 lg:min-h-100">
-            <Typography variant="display">
+            <BetterTypography variant="xl">
                 Setup Wizard
-            </Typography>
-            <Typography variant="h1">
+            </BetterTypography>
+            <BetterTypography variant="md">
                 Lets quickly set you up!
-            </Typography>
+            </BetterTypography>
 
             <div className="mt-auto">
                 <WizardStepper currentStep={currentStep} />

@@ -1,8 +1,7 @@
-import React from 'react';
 import { Select } from '@base-ui/react/select';
 import { ChevronDownIcon } from 'lucide-react';
+import { BetterTypography } from '../common/BetterTypography';
 import Button from '../ui/Button';
-import { Typography } from '../common/Typography';
 
 // 1. Allow T to be string OR number to support values like 0
 export interface DropdownProps<T extends string | number> {
@@ -54,12 +53,13 @@ export default function Dropdown<T extends string | number>({
                     />
                 }
             >
-                <Typography variant="caption-xs" weight="medium">
-                    {/* 4. Explicitly render the found label. 
-                        This guarantees the string label is shown, completely bypassing 
-                        any Base UI fallback that might accidentally render the raw value "0" */}
+                <BetterTypography
+                    variant="xs"
+                    weight="medium"
+                    className='text-nowrap'
+                >
                     {displayLabel}
-                </Typography>
+                </BetterTypography>
             </Select.Trigger>
 
             <Select.Portal>
@@ -80,13 +80,13 @@ export default function Dropdown<T extends string | number>({
                                 }
                             >
                                 <Select.ItemText>
-                                    <Typography
-                                        variant="caption-xs"
+                                    <BetterTypography
+                                        variant="xs"
                                         weight="medium"
                                         className="w-full text-start text-nowrap"
                                     >
                                         {option.label}
-                                    </Typography>
+                                    </BetterTypography>
                                 </Select.ItemText>
                             </Select.Item>
                         ))}

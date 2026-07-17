@@ -1,12 +1,12 @@
-import { useMemo, useState, useEffect } from 'react';
-import { Typography } from '@/components/common/Typography';
-import Button from '@/components/ui/Button';
-import ModalHeader from '@/components/ui/modal/ModalHeader';
-import TextInput from '@/components/ui/TextInput';
-import { toast } from 'sonner';
-import { usePetHouse } from '../hooks/usePetHouse';
-import type { CatColor, DogColor, PetType } from '../types';
-import Modal from '@/components/ui/modal/ModalWrapper';
+import { useMemo, useState, useEffect } from "react";
+import Button from "@/components/ui/Button";
+import ModalHeader from "@/components/ui/modal/ModalHeader";
+import TextInput from "@/components/ui/TextInput";
+import { toast } from "sonner";
+import { usePetHouse } from "../hooks/usePetHouse";
+import type { CatColor, DogColor, PetType } from "../types";
+import Modal from "@/components/ui/modal/ModalWrapper";
+import { BetterTypography } from "@/components/common/BetterTypography";
 
 const cat_colors: { id: CatColor; className: string }[] = [
     { id: "white", className: "bg-white" },
@@ -27,31 +27,30 @@ interface NewPetModalProps {
     onClose: () => void;
 }
 
-export default function NewPetModal({ open, onClose }: NewPetModalProps) {
+export default function NewPetModal({
+    open,
+    onClose,
+}: NewPetModalProps) {
     const { addItem } = usePetHouse();
 
     const [name, setName] = useState("");
     const [type, setType] = useState<PetType>("cat");
     const [color, setColor] = useState<CatColor | DogColor>("white");
 
-
-
-    // Defensive reset: Ensures form is clean even if parent stops unmounting the component
     useEffect(() => {
-
         const clear = () => {
             setName("");
             setType("cat");
             setColor("white");
-        }
+        };
 
         if (!open) {
-            clear()
+            clear();
         }
     }, [open]);
 
     const colors = useMemo(() => {
-        return type === 'cat' ? cat_colors : dog_colors;
+        return type === "cat" ? cat_colors : dog_colors;
     }, [type]);
 
     function handleCreatePet() {
@@ -74,7 +73,8 @@ export default function NewPetModal({ open, onClose }: NewPetModalProps) {
         };
 
         const typeMessages = messages[type];
-        const message = typeMessages[Math.floor(Math.random() * typeMessages.length)];
+        const message =
+            typeMessages[Math.floor(Math.random() * typeMessages.length)];
 
         toast.success(message);
         onClose();
@@ -83,8 +83,6 @@ export default function NewPetModal({ open, onClose }: NewPetModalProps) {
     return (
         <Modal open={open} onClose={onClose}>
             <div className="app_container bg-background p-5 flex flex-col gap-4">
-
-                {/* ModalHeader no longer needs onClose! It uses Base UI's Dialog.Close internally */}
                 <ModalHeader title="New Pet" onClose={onClose} />
 
                 <TextInput
@@ -92,43 +90,52 @@ export default function NewPetModal({ open, onClose }: NewPetModalProps) {
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Pet name"
                     className="px-4 py-1 text-sm placeholder:text-sm"
-                    // UX Improvement: Allow "Enter" key to submit the form
                     onKeyDown={(e) => {
-                        if (e.key === 'Enter' && name.trim()) {
+                        if (e.key === "Enter" && name.trim()) {
                             handleCreatePet();
                         }
                     }}
                 />
 
-                <div className="space-y-2">
-                    <Typography variant="body-sm" weight="medium">Species</Typography>
+                <div className="flex flex-col gap-y-2">
+                    <BetterTypography variant="xs" weight="medium">
+                        Species
+                    </BetterTypography>
+
                     <div className="flex gap-2">
                         <Button
                             size="sm"
                             variant={type === "cat" ? "primary" : "ghost"}
                             onClick={() => setType("cat")}
                         >
-                            Cat
+                            <BetterTypography variant="sm">
+                                Cat
+                            </BetterTypography>
                         </Button>
+
                         <Button
                             size="sm"
                             variant={type === "dog" ? "primary" : "ghost"}
                             onClick={() => setType("dog")}
                         >
-                            Dog
+                            <BetterTypography variant="sm">
+                                Dog
+                            </BetterTypography>
                         </Button>
                     </div>
                 </div>
 
-                <div className="space-y-2">
-                    <Typography variant="body-sm" weight="medium">Color</Typography>
+                <div className="flex flex-col gap-y-2">
+                    <BetterTypography variant="xs" weight="medium">
+                        Color
+                    </BetterTypography>
+
                     <div className="flex gap-3 flex-wrap">
                         {colors.map((c) => (
                             <button
                                 key={c.id}
                                 type="button"
                                 onClick={() => setColor(c.id)}
-                                // Accessibility: Screen readers need to know what this button does
                                 aria-label={`Select ${c.id} color`}
                                 aria-pressed={color === c.id}
                                 className={`
@@ -152,7 +159,9 @@ export default function NewPetModal({ open, onClose }: NewPetModalProps) {
                     size="sm"
                     className="mt-2"
                 >
-                    <Typography variant="caption" weight="semibold">Make it Born</Typography>
+                    <BetterTypography variant="sm" weight="semibold">
+                        Make it Born
+                    </BetterTypography>
                 </Button>
             </div>
         </Modal>

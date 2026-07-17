@@ -1,8 +1,8 @@
-import { motion } from "framer-motion";
-import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
-import { Typography } from '../common/Typography';
 import { getTopSites } from "@/lib/chrome/top-sites";
 import { commands } from "@/lib/commands";
+import { motion } from "framer-motion";
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { BetterTypography } from "../common/BetterTypography";
 
 export interface Suggestion {
   id: string | number;
@@ -189,9 +189,9 @@ export default function Suggestions({
       <div className="app_container app_gradient rounded-3xl overflow-clip">
         <div ref={scrollContainerRef} className="flex flex-col max-h-100 overflow-y-scroll rounded-3xl scrollbar-none">
           <div className="app_gradient app-blur p-5 sticky top-0">
-            <Typography variant='h4' weight='medium'>
-              {isCommandMode ? 'Commands' : 'Suggestions'}
-            </Typography>
+            <BetterTypography variant="lg" weight="medium">
+              {isCommandMode ? "Commands" : "Suggestions"}
+            </BetterTypography>
           </div>
 
           <ul className='flex flex-col overflow-clip'>
@@ -212,26 +212,33 @@ export default function Suggestions({
                     }`}
                 >
                   <div className="flex flex-col gap-y-1">
-                    <Typography variant='body' weight='medium'>
+                    <BetterTypography variant="md" weight="medium">
                       {s.label}
-                    </Typography>
-                    <Typography variant='caption-xs' className='text-muted-foreground line-clamp-1'>
-                      {/* 🌟 Show description for commands, URL for everything else */}
-                      {s.source === 'command' && s.description ? s.description : s.url}
-                    </Typography>
+                    </BetterTypography>
+
+                    <BetterTypography
+                      variant="xs"
+                      className="text-muted-foreground line-clamp-1"
+                    >
+                      {s.source === "command" && s.description ? s.description : s.url}
+                    </BetterTypography>
                   </div>
 
-                  <Typography
-                    variant='caption-xxs'
-                    className={`px-2 py-0.5 text-nowrap rounded-3xl ${s.source === 'top-sites'
-                      ? 'bg-success text-success-foreground'
-                      : s.source === 'command'
-                        ? 'bg-primary text-primary-foreground' // Adjust to your theme's accent/primary
-                        : "bg-secondary text-foreground"
+                  <BetterTypography
+                    variant="xs"
+                    className={`px-2 py-0.5 text-nowrap rounded-3xl ${s.source === "top-sites"
+                        ? "bg-success text-success-foreground"
+                        : s.source === "command"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-secondary text-foreground"
                       }`}
                   >
-                    {s.source === 'google' ? "Google Search" : s.source === 'command' ? "Command" : "Top Site"}
-                  </Typography>
+                    {s.source === "google"
+                      ? "Google Search"
+                      : s.source === "command"
+                        ? "Command"
+                        : "Top Site"}
+                  </BetterTypography>
                 </a>
               </li>
             ))}

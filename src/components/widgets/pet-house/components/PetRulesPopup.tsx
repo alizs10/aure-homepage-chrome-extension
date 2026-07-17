@@ -1,7 +1,7 @@
+import { BetterTypography } from "@/components/common/BetterTypography";
+import Popup from "@/components/ui/Popup";
 import { CircleQuestionMarkIcon } from "lucide-react";
 import Button from "../../../ui/Button";
-import { Typography } from "../../../common/Typography";
-import Popup from "@/components/ui/Popup";
 
 const listOfInfo = [
     { label: "Max age", value: "Cats: 10y • Dogs: 15y" },
@@ -24,13 +24,13 @@ export default function PetRulesPopup() {
             )}
             className="py-3 px-4 min-w-55"
         >
-            <ul className="flex flex-col gap-y-2">
+            <ul className="flex flex-col gap-y-1.5">
                 {listOfInfo.map((item, index) => (
                     <li key={index}>
-                        <Typography className="text-nowrap" variant="caption-xs">
+                        <BetterTypography className="text-nowrap" variant="xs">
                             <span className="font-medium text-muted-foreground">{item.label}:</span>{" "}
                             {item.value}
-                        </Typography>
+                        </BetterTypography>
                     </li>
                 ))}
             </ul>

@@ -1,8 +1,8 @@
 import { HistoryIcon, PauseIcon, PlayIcon } from 'lucide-react';
 import { useEffect } from 'react';
-import Button from '../../ui/Button';
-import { Typography } from '../../common/Typography';
 import { useFocusTimerStore } from './store';
+import { BetterTypography } from '@/components/common/BetterTypography';
+import Button from '@/components/ui/Button';
 
 export default function Focus() {
     const { isRunning, isStarted, elapsed, initialize, start, stop, reset } = useFocusTimerStore();
@@ -43,11 +43,11 @@ export default function Focus() {
     ].join(':');
 
     return (
-        <div className="flex-row-center gap-x-1 h-full">
+        <div className="flex-row-center gap-x-0.5 sm:gap-x-1 h-full">
             <Button
                 variant={isRunning ? 'destructive' : 'success'}
                 size="lg"
-                className="h-full px-4 md:px-6 lg:px-8"
+                className="h-full px-3 sm:px-4 md:px-6 lg:px-8"
                 onClick={isRunning ? stop : start}
             >
                 {isRunning ? (
@@ -56,12 +56,13 @@ export default function Focus() {
                     <PlayIcon className="size-4 md:size-5 lg:size-6" />
                 )}
 
-                <Typography
-                    className={`text-sm md:text-base lg:text-2xl ${isStarted ? 'w-20 md:w-20 lg:w-32 text-start' : ''}`}
-                    variant="h2"
+                <BetterTypography
+                    className={`text-nowrap ${isStarted ? 'w-14 md:w-20 lg:w-32 text-start' : 'w-fit'}`}
+                    variant="12-12-20-24" weight='semibold' as="h3"
+                // variant="h2"
                 >
                     {isStarted ? formattedTime : 'Focus'}
-                </Typography>
+                </BetterTypography>
             </Button>
 
             {isStarted && (

@@ -1,8 +1,8 @@
+import { BetterTypography } from '@/components/common/BetterTypography'
 import Button from '@/components/ui/Button'
-import { Typography } from '@/components/common/Typography'
+import { motion } from 'framer-motion'; // Import motion
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from 'lucide-react'
 import { toast } from 'sonner'
-import { motion } from 'framer-motion' // Import motion
 import { useFavorites } from '../hooks/useFavorites'
 import EditFavorite from './EditFavorite'
 
@@ -25,9 +25,16 @@ export default function FavoritesList() {
                     }}
                     className="flex-center-between group"
                 >
-                    <Typography className='line-clamp-1' variant="body-sm" weight="medium">
-                        {i + 1}. {f.title}<span className="text-muted-foreground font-normal">{` (${f.url})`}</span>
-                    </Typography>
+                    <BetterTypography
+                        variant="sm"
+                        weight="medium"
+                        className="line-clamp-1"
+                    >
+                        {i + 1}. {f.title}
+                        <span className="text-muted-foreground font-normal">
+                            {` (${f.url})`}
+                        </span>
+                    </BetterTypography>
 
                     <div className="flex-row-center gap-x-1">
                         <Button

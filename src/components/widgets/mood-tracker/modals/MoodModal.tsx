@@ -1,13 +1,13 @@
-import { Typography } from '@/components/common/Typography';
-import { type MouseEvent } from 'react'
-import { MOODS_OPTIONS } from '../constants/moods';
+import { BetterTypography } from '@/components/common/BetterTypography';
 import Button from '@/components/ui/Button';
-import { moodMessages, type MoodHistory, type MoodType } from '../types';
-import { useMoodTracker } from '../hooks/useMoodTracker';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
-import ModalWrapper from '@/components/ui/modal/ModalWrapper';
 import ModalHeader from '@/components/ui/modal/ModalHeader';
+import ModalWrapper from '@/components/ui/modal/ModalWrapper';
+import { format } from 'date-fns';
+import { type MouseEvent } from 'react';
+import { toast } from 'sonner';
+import { MOODS_OPTIONS } from '../constants/moods';
+import { useMoodTracker } from '../hooks/useMoodTracker';
+import { moodMessages, type MoodHistory, type MoodType } from '../types';
 
 interface MoodModalProps {
     open: boolean;
@@ -42,9 +42,9 @@ export default function MoodModal({ open, onClose, mood }: MoodModalProps) {
                 />
 
                 <div className="flex-center flex-col gap-y-4 pb-5">
-                    <Typography variant="body" weight="semibold">
+                    <BetterTypography variant="md" weight="medium">
                         How did you feel {format(mood.date, "MMMM dd")}?
-                    </Typography>
+                    </BetterTypography>
 
                     <div className="flex-center gap-x-2">
                         {MOODS_OPTIONS.map(mood => (

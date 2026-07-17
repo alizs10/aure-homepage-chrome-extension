@@ -1,3 +1,4 @@
+import { BetterTypography } from '@/components/common/BetterTypography';
 import ModalHeader from '@/components/ui/modal/ModalHeader';
 import ModalWrapper from '@/components/ui/modal/ModalWrapper';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -5,7 +6,6 @@ import { format } from 'date-fns';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { Typography } from '../../../common/Typography';
 import Button from '../../../ui/Button';
 import TextInput from '../../../ui/TextInput';
 import { useCalendar } from '../hooks/useCalendar';
@@ -65,9 +65,9 @@ export default function CalendarNoteModal({ open, onClose, init_value = '', note
             >
                 <ModalHeader title="New Calendar Note" onClose={onClose} />
 
-                <Typography variant="body">
-                    Note for {format(selectedDay!, 'MMMM dd')}
-                </Typography>
+                <BetterTypography variant="sm">
+                    Note for {format(selectedDay!, "MMMM dd")}
+                </BetterTypography>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
                     <TextInput
@@ -83,7 +83,9 @@ export default function CalendarNoteModal({ open, onClose, init_value = '', note
                         variant="primary-active"
                         size="sm"
                     >
-                        <Typography variant="caption">{editing ? "Update Note" : "Save Note"}</Typography>
+                        <BetterTypography variant="sm">
+                            {editing ? "Update Note" : "Save Note"}
+                        </BetterTypography>
                     </Button>
                 </form>
             </div>

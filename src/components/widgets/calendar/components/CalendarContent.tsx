@@ -1,13 +1,13 @@
+import { BetterTypography } from '@/components/common/BetterTypography';
 import { addMonths, format, subMonths } from 'date-fns';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import { useMemo } from 'react';
 import { DayPicker } from 'react-day-picker';
 import Button from '../../../ui/Button';
-import { Typography } from '../../../common/Typography';
 import DayButton from '../DayButton';
 import { useCalendar } from '../hooks/useCalendar';
-import NewCalendarNote from './NewCalendarNote';
 import AttachedNote from './AttachedNote';
-import { useMemo } from 'react';
+import NewCalendarNote from './NewCalendarNote';
 
 export default function CalendarContent() {
 
@@ -21,9 +21,9 @@ export default function CalendarContent() {
     return (
         <div className="w-full sm:col-span-1 app_container app_gradient app-blur h-full max-h-110 lg:max-h-full flex flex-col gap-y-4 p-5 lg:row-span-2">
             <div className="flex-center-between">
-                <Typography className='capitalize' variant="h2">
+                <BetterTypography className='capitalize text-nowrap' variant='14-16-20' weight='semibold' as="h3">
                     Calendar
-                </Typography>
+                </BetterTypography>
 
                 <div className="flex-row-center gap-x-2 h-full">
                     {(!isTodaySelected && selectedDay) && (
@@ -35,9 +35,12 @@ export default function CalendarContent() {
                                 selectMonth(today);
                             }}
                         >
-                            <Typography variant="caption-xs" weight="medium">
+                            <BetterTypography
+                                variant="xs"
+                                weight="medium"
+                            >
                                 Today
-                            </Typography>
+                            </BetterTypography>
                         </Button>
                     )}
                     {(selectedDay && !hasAttachedNote) && (
@@ -57,9 +60,13 @@ export default function CalendarContent() {
                         <ChevronLeftIcon className="size-4" />
                     </Button>
 
-                    <Typography variant="h3">
+                    <BetterTypography
+                        as="span"
+                        variant="md"
+                        weight='medium'
+                    >
                         {format(month, "MMMM yyyy")}
-                    </Typography>
+                    </BetterTypography>
 
                     <Button
                         variant="ghost"

@@ -1,9 +1,9 @@
 // components/notes-and-checklists/ItemsList.tsx
+import { BetterTypography } from '@/components/common/BetterTypography';
 import { useRef } from 'react';
-import { Item } from './Item';
 import { useScrollToBottom } from '../../../../hooks/useScrollToBottom';
-import { Typography } from '../../../common/Typography';
 import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
+import { Item } from './Item';
 
 export function ItemsList() {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -22,9 +22,9 @@ export function ItemsList() {
 
             {data.length === 0 && (
                 <div className="flex-1 flex-center">
-                    <Typography variant='caption'>
+                    <BetterTypography variant="sm">
                         add your first note or check list
-                    </Typography>
+                    </BetterTypography>
                 </div>
             )}
         </div>

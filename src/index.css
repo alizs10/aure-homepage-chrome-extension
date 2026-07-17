@@ -244,3 +244,24 @@ button {
 .app_container {
   @apply border-t border-border rounded-3xl transition-colors duration-200;
 }
+
+
+/* typography */
+.responsive-text {
+  font-size: var(--size-base);
+}
+@media (min-width: 640px) { /* sm */
+  .responsive-text { font-size: var(--size-sm, var(--size-base)); }
+}
+@media (min-width: 768px) { /* md */
+  .responsive-text { font-size: var(--size-md, var(--size-sm, var(--size-base))); }
+}
+@media (min-width: 1024px) { /* lg */
+  .responsive-text { font-size: var(--size-lg, var(--size-md, var(--size-sm, var(--size-base)))); }
+}
+@media (min-width: 1280px) { /* xl */
+  .responsive-text { font-size: var(--size-xl, var(--size-lg, var(--size-md, var(--size-sm, var(--size-base))))); }
+}
+@media (min-width: 1536px) { /* 2xl */
+  .responsive-text { font-size: var(--size-2xl, var(--size-xl, var(--size-lg, var(--size-md, var(--size-sm, var(--size-base)))))); }
+}

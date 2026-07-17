@@ -1,10 +1,10 @@
 import type { ChangeEvent, ReactNode } from "react";
+import { BetterTypography } from "../common/BetterTypography";
 import type { ButtonVariant } from "./Button";
+import Button from "./Button";
 import ModalHeader from "./modal/ModalHeader";
 import ModalWrapper from "./modal/ModalWrapper";
-import { Typography } from "../common/Typography";
 import TextInput from "./TextInput";
-import Button from "./Button";
 
 export interface ConfirmDialogProps {
     open: boolean;
@@ -59,9 +59,12 @@ export default function ConfirmDialog({
                 <ModalHeader title={title} onClose={onClose} />
 
                 {description && (
-                    <Typography className="mt-4 text-center text-muted-foreground" variant="body">
+                    <BetterTypography
+                        variant="sm"
+                        className="mt-4 text-center text-muted-foreground"
+                    >
                         {description}
-                    </Typography>
+                    </BetterTypography>
                 )}
 
                 {confirmInput && (
@@ -82,9 +85,12 @@ export default function ConfirmDialog({
                         className="flex-1"
                         rightIcon={cancelIcon}
                     >
-                        <Typography variant="caption" weight="semibold">
+                        <BetterTypography
+                            variant="sm"
+                            className="text-secondary-foreground"
+                        >
                             {cancelText}
-                        </Typography>
+                        </BetterTypography>
                     </Button>
 
                     <Button
@@ -94,9 +100,12 @@ export default function ConfirmDialog({
                         rightIcon={confirmIcon}
                         disabled={isConfirmDisabled}
                     >
-                        <Typography variant="caption" weight="semibold">
+                        <BetterTypography
+                            variant="sm"
+                            weight="semibold"
+                        >
                             {confirmText}
-                        </Typography>
+                        </BetterTypography>
                     </Button>
                 </div>
             </div>

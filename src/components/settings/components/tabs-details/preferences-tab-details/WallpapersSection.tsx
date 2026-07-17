@@ -2,16 +2,16 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { ImagePlusIcon } from "lucide-react";
 import { useState } from "react";
 
-import { Typography } from "@/components/common/Typography";
-import Button from "@/components/ui/Button";
 import WallpaperCard from "@/components/common/WallpaperCard";
-import AddWallpaperModal from "./modals/AddWallpaperModal";
+import Button from "@/components/ui/Button";
 import { db } from "@/lib/db";
 import { useSettingsStore } from "@/stores";
+import AddWallpaperModal from "./modals/AddWallpaperModal";
 
 // Import default wallpapers 
 import defaultDark1 from "@/assets/background/default-dark.webp";
 import defaultLight from "@/assets/background/default-light.webp";
+import { BetterTypography } from "@/components/common/BetterTypography";
 import type { Wallpaper } from "@/types";
 
 // 🚨 IMPORTANT: Ensure this path matches the exact same path you use in db.ts!
@@ -80,15 +80,18 @@ export function WallpapersSection() {
         <>
             <div className="flex flex-col gap-y-2">
                 <div className="flex-center-between">
-                    <Typography variant="h3">
+                    <BetterTypography as="h3" variant="md" weight="medium">
+
                         Wallpapers
-                    </Typography>
+                    </BetterTypography>
 
                     <Button
                         leftIcon={<ImagePlusIcon className="size-4" />}
                         onClick={() => setOpen(true)}
                     >
-                        Add Wallpaper
+                        <BetterTypography as="span" variant="xs">
+                            Add Wallpaper
+                        </BetterTypography>
                     </Button>
                 </div>
 

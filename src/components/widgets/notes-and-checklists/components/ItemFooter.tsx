@@ -1,4 +1,4 @@
-import { Typography } from '@/components/common/Typography';
+import { BetterTypography } from '@/components/common/BetterTypography';
 import { formatDate } from 'date-fns';
 import { useMemo } from 'react';
 
@@ -18,8 +18,8 @@ export default function ItemFooter({ date, edited }: ItemFooterProps) {
     }, [date]);
 
     return (
-        <Typography className='wrap-break-word text-muted-foreground ml-auto' variant='caption-xxs'>
+        <BetterTypography className="wrap-break-word text-muted-foreground ml-auto" variant="10">
             {edited && 'edited - '} {formattedDate}
-        </Typography>
+        </BetterTypography>
     )
 }

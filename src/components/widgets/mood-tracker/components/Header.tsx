@@ -1,5 +1,5 @@
-import { Typography } from '@/components/common/Typography'
 import { useMoodTracker } from '../hooks/useMoodTracker'
+import { BetterTypography } from '@/components/common/BetterTypography'
 
 export default function Header() {
 
@@ -8,15 +8,15 @@ export default function Header() {
 
     return (
         <div className="flex-center-between">
-            <Typography className='capitalize text-nowrap' variant="h2">
+            <BetterTypography className='capitalize text-nowrap' variant='14-16-20' weight='semibold' as="h3">
                 Mood Tracker
-            </Typography>
+            </BetterTypography>
 
 
             <div className="app_container bg-background px-4 py-2  text-nowrap">
-                <Typography variant='caption-xs'>
+                <BetterTypography variant="xs">
                     Score: {score}/5
-                </Typography>
+                </BetterTypography>
             </div>
 
         </div>

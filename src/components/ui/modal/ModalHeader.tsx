@@ -1,6 +1,6 @@
 
-import { Typography } from '@/components/common/Typography';
-import { XIcon } from 'lucide-react'
+import { BetterTypography } from '@/components/common/BetterTypography';
+import { XIcon } from 'lucide-react';
 import Button from '../Button';
 
 interface ModalHeaderProps {
@@ -11,7 +11,9 @@ interface ModalHeaderProps {
 export default function ModalHeader({ onClose, title }: ModalHeaderProps) {
     return (
         <div className="flex-center-between">
-            <Typography variant="h2">{title}</Typography>
+            <BetterTypography as="h4" variant="lg">
+                {title}
+            </BetterTypography>
 
             <Button onClick={onClose} variant='ghost' size='icon'>
                 <XIcon className='size-6' />

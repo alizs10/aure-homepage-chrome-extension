@@ -1,4 +1,4 @@
-import { Typography } from "@/components/common/Typography";
+import { BetterTypography } from "@/components/common/BetterTypography";
 import Button from "@/components/ui/Button";
 import ModalHeader from "@/components/ui/modal/ModalHeader";
 import ModalWrapper from "@/components/ui/modal/ModalWrapper";
@@ -26,8 +26,6 @@ export default function UpdateAvailableModal({
     currentVersion,
     latest,
 }: UpdateAvailableModalProps) {
-
-
     function downloadUpdate() {
         window.open(latest.downloadUrl, "_blank");
     }
@@ -38,40 +36,49 @@ export default function UpdateAvailableModal({
 
     return (
         <ModalWrapper open={open} onClose={onClose}>
-            <div
-                className="app_container bg-background p-5 flex flex-col gap-5 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-auto scrollbar-none"
-            >
+            <div className="app_container bg-background p-5 flex flex-col gap-5 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-auto scrollbar-none">
                 <ModalHeader
                     title="Update Available"
                     onClose={onClose}
                 />
 
                 <div className="space-y-1">
-                    <Typography variant="body" weight="medium">
+                    <BetterTypography
+                        variant="md"
+                        weight="medium"
+                    >
                         New version available
-                    </Typography>
+                    </BetterTypography>
 
-                    <Typography variant="body-sm" className="text-muted-foreground">
+                    <BetterTypography
+                        variant="xs"
+                        className="text-muted-foreground"
+                    >
                         {currentVersion} → {latest.latestVersion}
-                    </Typography>
+                    </BetterTypography>
 
-                    {/* Added Release Date */}
-                    <Typography variant="caption-xs" className="text-muted-foreground">
+                    <BetterTypography
+                        variant="xs"
+                        className="text-muted-foreground"
+                    >
                         Released on {latest.releaseDate}
-                    </Typography>
+                    </BetterTypography>
                 </div>
 
                 <div className="space-y-2">
-                    <Typography variant="body-sm" weight="semibold">
+                    <BetterTypography
+                        variant="sm"
+                        weight="semibold"
+                    >
                         What's new
-                    </Typography>
+                    </BetterTypography>
 
                     <ul className="list-disc pl-5 space-y-1">
                         {latest.notes.map((note, index) => (
                             <li key={index}>
-                                <Typography variant="body-sm">
+                                <BetterTypography variant="xs">
                                     {note}
-                                </Typography>
+                                </BetterTypography>
                             </li>
                         ))}
                     </ul>
@@ -84,21 +91,20 @@ export default function UpdateAvailableModal({
                         className="w-full"
                     >
                         <DownloadIcon size={16} />
-                        <Typography variant="body-sm">
+                        <BetterTypography variant="sm">
                             Download Update
-                        </Typography>
+                        </BetterTypography>
                     </Button>
 
-                    {/* Added button to view the full release page on GitHub */}
                     <Button
                         variant="success"
                         onClick={openReleasePage}
                         className="w-full"
                     >
                         <ExternalLinkIcon size={16} />
-                        <Typography variant="body-sm">
+                        <BetterTypography variant="sm">
                             View Release Page
-                        </Typography>
+                        </BetterTypography>
                     </Button>
                 </div>
             </div>

@@ -1,10 +1,10 @@
-import { Typography } from "@/components/common/Typography"
+import { BetterTypography } from "@/components/common/BetterTypography"
 import { ChooseTheme } from "@/components/wizard/components/ChooseTheme"
 import { useTheme } from "@/hooks/useTheme"
 import { useSettingsStore } from "@/stores"
+import AccentSection from "./AccentSection"
 import BlurSection from "./BlurSection"
 import { WallpapersSection } from "./WallpapersSection"; // Adjust path if needed
-import AccentSection from "./AccentSection"
 
 
 
@@ -24,9 +24,9 @@ export default function PreferencesTabDetails() {
             {/* --- Theme Section --- */}
             <div className="flex flex-col gap-y-2">
                 <label htmlFor="theme">
-                    <Typography variant="h3">
+                    <BetterTypography as="h3" variant="md" weight="medium">
                         Choose Theme
-                    </Typography>
+                    </BetterTypography>
                 </label>
 
 

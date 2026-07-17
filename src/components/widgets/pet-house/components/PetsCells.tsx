@@ -1,4 +1,4 @@
-import { Typography } from '../../../common/Typography'
+import { BetterTypography } from '@/components/common/BetterTypography'
 import { usePetHouse } from '../hooks/usePetHouse'
 import PetWithCell from './PetWithCell'
 
@@ -13,9 +13,9 @@ export default function PetsCells() {
         return (
             <div className="flex-1 min-h-0 flex-center rounded-b-3xl">
 
-                <Typography variant='caption'>
+                <BetterTypography variant="sm">
                     Make born your first pet
-                </Typography>
+                </BetterTypography>
 
             </div>
         )

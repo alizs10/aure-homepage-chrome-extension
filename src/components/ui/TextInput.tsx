@@ -1,8 +1,8 @@
-import React, { forwardRef, type InputHTMLAttributes } from 'react';
-import { Input as BaseInput } from '@base-ui/react/input';
 import { Field } from '@base-ui/react/field';
-import { Typography } from '../common/Typography';
+import { Input as BaseInput } from '@base-ui/react/input';
+import React, { forwardRef, type InputHTMLAttributes } from 'react';
 import { cn } from '../../lib/util';
+import { BetterTypography } from '../common/BetterTypography';
 
 interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
     error?: string;
@@ -39,9 +39,12 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 
                 {/* Your existing visual error rendering */}
                 {error && (
-                    <Typography variant="caption-xs" className="text-destructive">
+                    <BetterTypography
+                        variant="xs"
+                        className="text-destructive"
+                    >
                         {error}
-                    </Typography>
+                    </BetterTypography>
                 )}
             </Field.Root>
         );

@@ -1,8 +1,8 @@
+import { BetterTypography } from "@/components/common/BetterTypography";
+import Popup from "@/components/ui/Popup";
 import { ChartNoAxesColumnIcon } from "lucide-react";
 import Button from "../../../ui/Button";
-import { Typography } from "../../../common/Typography";
 import { usePetHouse } from "../hooks/usePetHouse";
-import Popup from "@/components/ui/Popup";
 
 export default function StatsPopup() {
     const { data: pets, alivePets, catPets, dogPets } = usePetHouse();
@@ -34,12 +34,12 @@ export default function StatsPopup() {
             <ul className="flex flex-col gap-y-2">
                 {stats.map((stat) => (
                     <li key={stat.label} className="flex justify-between items-center">
-                        <Typography variant="caption-xs" className="text-muted-foreground">
+                        <BetterTypography variant="xs" className="text-muted-foreground">
                             {stat.label}
-                        </Typography>
-                        <Typography variant="caption-xs" weight="semibold">
+                        </BetterTypography>
+                        <BetterTypography variant="xs" weight="semibold">
                             {stat.value}
-                        </Typography>
+                        </BetterTypography>
                     </li>
                 ))}
             </ul>

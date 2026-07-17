@@ -1,6 +1,6 @@
-import { Typography } from "../../common/Typography";
-import PetRulesPopup from "./components/PetRulesPopup";
+import { BetterTypography } from "@/components/common/BetterTypography";
 import NewPetPopup from "./components/NewPetPopup";
+import PetRulesPopup from "./components/PetRulesPopup";
 import PetsCells from "./components/PetsCells";
 import StatsPopup from "./components/StatsPopup";
 
@@ -14,9 +14,10 @@ export default function PetHouse() {
             <div className="flex-center-between p-5">
 
 
-                <Typography className='capitalize' variant="h2">
+                <BetterTypography className='capitalize text-nowrap' variant='14-16-20' weight='semibold' as="h3">
+
                     pet house
-                </Typography>
+                </BetterTypography>
 
 
                 <div className="flex-row-center gap-x-1">

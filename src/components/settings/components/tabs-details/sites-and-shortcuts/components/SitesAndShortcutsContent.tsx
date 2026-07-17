@@ -1,53 +1,52 @@
-import Toggle from '@/components/ui/Toggle'
-import { Typography } from '@/components/common/Typography'
-import AddNewFavorite from './AddNewFavorite'
-import FavoritesList from './FavoritesList'
-import { useSettingsStore } from '@/stores'
-import { useEffect } from 'react'
-import Button from '@/components/ui/Button'
-import { useForm, Controller } from 'react-hook-form'
-import { toast } from 'sonner'
+import Toggle from "@/components/ui/Toggle";
+import AddNewFavorite from "./AddNewFavorite";
+import FavoritesList from "./FavoritesList";
+import { useSettingsStore } from "@/stores";
+import { useEffect } from "react";
+import Button from "@/components/ui/Button";
+import { useForm, Controller } from "react-hook-form";
+import { toast } from "sonner";
+import { BetterTypography } from "@/components/common/BetterTypography";
 
 interface FormValues {
-    show_top_sites: boolean
-    show_favorites: boolean
+    show_top_sites: boolean;
+    show_favorites: boolean;
 }
 
 export default function SitesAndShortcutsContent() {
-    const { settings, update } = useSettingsStore()
+    const { settings, update } = useSettingsStore();
 
     const {
         control,
         handleSubmit,
         reset,
-        formState: { isDirty, isSubmitting, isValid }
+        formState: { isDirty, isSubmitting, isValid },
     } = useForm<FormValues>({
         defaultValues: {
             show_top_sites: settings?.show_top_sites ?? false,
             show_favorites: settings?.show_favorites ?? false,
-        }
-    })
+        },
+    });
 
-    // Reset form when settings change externally
     useEffect(() => {
         reset({
             show_top_sites: settings?.show_top_sites ?? false,
             show_favorites: settings?.show_favorites ?? false,
-        })
-    }, [settings, reset])
+        });
+    }, [settings, reset]);
 
     const onSubmit = async (data: FormValues) => {
-        // Handle form submission - update settings
-        await update(data)
-        toast.success("Settings updated!")
-        reset(data) // Reset form state after successful submission
-    }
+        await update(data);
+        toast.success("Settings updated!");
+        reset(data);
+    };
 
     return (
-        <div className='h-fit flex-1 flex flex-col gap-y-2'>
-
-            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-y-2'>
-
+        <div className="h-fit flex-1 flex flex-col gap-y-2">
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-col gap-y-2"
+            >
                 <Controller
                     name="show_top_sites"
                     control={control}
@@ -56,9 +55,12 @@ export default function SitesAndShortcutsContent() {
                             checked={value}
                             onCheckedChange={onChange}
                             leftLabel={
-                                <Typography variant="body" weight="medium">
+                                <BetterTypography
+                                    variant="sm"
+                                    weight="medium"
+                                >
                                     Show top sites?
-                                </Typography>
+                                </BetterTypography>
                             }
                         />
                     )}
@@ -72,9 +74,13 @@ export default function SitesAndShortcutsContent() {
                             checked={value}
                             onCheckedChange={onChange}
                             leftLabel={
-                                <Typography variant="body" weight="medium">
-                                    Show Your Favorite websites instead of top sites?
-                                </Typography>
+                                <BetterTypography
+                                    variant="sm"
+                                    weight="medium"
+                                >
+                                    Show Your Favorite websites instead of top
+                                    sites?
+                                </BetterTypography>
                             }
                         />
                     )}
@@ -85,22 +91,24 @@ export default function SitesAndShortcutsContent() {
                         type="submit"
                         disabled={!isDirty || !isValid || isSubmitting}
                         variant="primary-active"
-                        size="md"
+                        size="sm"
                     >
-                        <Typography variant="caption">Save Changes</Typography>
+                        <BetterTypography variant="sm">
+                            Save Changes
+                        </BetterTypography>
                     </Button>
                 </div>
             </form>
 
             <div className="flex-center-between mt-4 pt-6 border-t border-border">
-                <Typography variant="h3">
+                <BetterTypography variant="md" weight="medium">
                     Favorites websites
-                </Typography>
+                </BetterTypography>
 
                 <AddNewFavorite />
             </div>
 
             <FavoritesList />
         </div>
-    )
+    );
 }

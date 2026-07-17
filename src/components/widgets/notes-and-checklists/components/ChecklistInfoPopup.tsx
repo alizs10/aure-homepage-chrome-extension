@@ -1,7 +1,7 @@
+import { BetterTypography } from "@/components/common/BetterTypography";
+import Popup from "@/components/ui/Popup";
 import { CircleQuestionMarkIcon } from "lucide-react";
 import Button from "../../../ui/Button";
-import { Typography } from "../../../common/Typography";
-import Popup from "@/components/ui/Popup";
 
 export default function ChecklistInfoPopup() {
     return (
@@ -17,9 +17,9 @@ export default function ChecklistInfoPopup() {
             )}
             className="py-3 px-4 w-60"
         >
-            <Typography variant="caption-xs">
+            <BetterTypography variant="xs">
                 To create a checklist item, start your line with <strong>[]</strong> followed by a space.
-            </Typography>
+            </BetterTypography>
         </Popup>
     );
 }

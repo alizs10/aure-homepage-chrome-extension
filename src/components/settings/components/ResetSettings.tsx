@@ -1,10 +1,10 @@
+import { BetterTypography } from '@/components/common/BetterTypography';
 import Button from '@/components/ui/Button';
-import { Typography } from '@/components/common/Typography';
+import ConfirmDialog from '@/components/ui/Dialog';
 import { useSettingsStore } from '@/stores';
 import { RotateCcwIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
-import ConfirmDialog from '@/components/ui/Dialog';
 
 export default function ResetSettings() {
     const { clear } = useSettingsStore();
@@ -31,9 +31,12 @@ export default function ResetSettings() {
                 size="md"
             >
                 <RotateCcwIcon className="size-5" />
-                <Typography className="w-full text-start" variant="caption">
+                <BetterTypography
+                    className="w-full text-start"
+                    variant="sm"
+                >
                     Reset Settings
-                </Typography>
+                </BetterTypography>
             </Button>
 
             {/* 🎉 Clean, flat, and highly readable props! */}
