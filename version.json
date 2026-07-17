@@ -2,7 +2,7 @@
     "latestVersion": "0.0.2",
     "minimumSupportedVersion": "0.0.1",
     "releaseDate": "2026-07-20",
-    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.2/aure-homepage-v0.0.2.zip",
+    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.2/aure-homepage-extension-v0.0.2.zip",
     "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.2",
     "notes": [
         "Added command support to the search bar.",
