@@ -3,6 +3,7 @@ import { commands } from "@/lib/commands";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BetterTypography } from "../common/BetterTypography";
+import { sliceText } from "@/helpers";
 
 export interface Suggestion {
   id: string | number;
@@ -220,17 +221,17 @@ export default function Suggestions({
                       variant="xs"
                       className="text-muted-foreground line-clamp-1"
                     >
-                      {s.source === "command" && s.description ? s.description : s.url}
+                      {sliceText(s.source === "command" && s.description ? s.description : s.url, 50)}
                     </BetterTypography>
                   </div>
 
                   <BetterTypography
                     variant="xs"
                     className={`px-2 py-0.5 text-nowrap rounded-3xl ${s.source === "top-sites"
-                        ? "bg-success text-success-foreground"
-                        : s.source === "command"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-secondary text-foreground"
+                      ? "bg-success text-success-foreground"
+                      : s.source === "command"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-secondary text-foreground"
                       }`}
                   >
                     {s.source === "google"
