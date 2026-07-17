@@ -1,17 +1,26 @@
 import { BetterTypography } from '@/components/common/BetterTypography';
-import { addMonths, format, subMonths } from 'date-fns';
+import Button from '@/components/ui/Button';
+import Dropdown from '@/components/ui/Dropdown';
+import { addMonths, format, getYear, setYear, subMonths } from 'date-fns';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useMemo } from 'react';
 import { DayPicker } from 'react-day-picker';
-import Button from '../../../ui/Button';
 import DayButton from '../DayButton';
 import { useCalendar } from '../hooks/useCalendar';
 import AttachedNote from './AttachedNote';
 import NewCalendarNote from './NewCalendarNote';
 
 export default function CalendarContent() {
+    const { today, isTodaySelected, selectedDay, selectSelectedDay, month, selectMonth, getNoteForDay } = useCalendar();
 
-    const { today, isTodaySelected, selectedDay, selectSelectedDay, month, selectMonth, getNoteForDay } = useCalendar()
+    // Generate 81 years (40 past, current, 40 future)
+    const years = useMemo(() => {
+        const current = getYear(today);
+        return Array.from({ length: 81 }, (_, i) => ({
+            label: String(current - 40 + i),
+            value: current - 40 + i,
+        }));
+    }, [today]);
 
     const hasAttachedNote = useMemo(() => {
         if (!selectedDay) return false;
@@ -35,10 +44,7 @@ export default function CalendarContent() {
                                 selectMonth(today);
                             }}
                         >
-                            <BetterTypography
-                                variant="xs"
-                                weight="medium"
-                            >
+                            <BetterTypography variant="xs" weight="medium">
                                 Today
                             </BetterTypography>
                         </Button>
@@ -50,7 +56,6 @@ export default function CalendarContent() {
             </div>
 
             <div className="flex-1 min-h-0 w-full">
-
                 <div className="flex items-center justify-between mb-4">
                     <Button
                         variant="ghost"
@@ -60,13 +65,25 @@ export default function CalendarContent() {
                         <ChevronLeftIcon className="size-4" />
                     </Button>
 
-                    <BetterTypography
-                        as="span"
-                        variant="md"
-                        weight='medium'
-                    >
-                        {format(month, "MMMM yyyy")}
-                    </BetterTypography>
+                    <div className="flex-row-center gap-x-1">
+                        {/* Full month and year displayed as plain typography */}
+                        <BetterTypography
+                            as="span"
+                            variant="md"
+                            weight="medium"
+                        >
+                            {format(month, "MMMM yyyy")}
+                        </BetterTypography>
+
+                        {/* Icon-only dropdown trigger seamlessly attached to the typography */}
+                        <Dropdown<number>
+                            value={getYear(month)}
+                            options={years}
+                            triggerVariant="ghost"
+                            hideLabel
+                            onValueChange={(year) => selectMonth(setYear(month, year))}
+                        />
+                    </div>
 
                     <Button
                         variant="ghost"
@@ -84,41 +101,25 @@ export default function CalendarContent() {
                     mode="single"
                     selected={selectedDay}
                     onSelect={selectSelectedDay}
-                    components={{
-                        DayButton: DayButton,
-
-                    }}
+                    components={{ DayButton }}
                     className="text-sm"
                     classNames={{
                         root: "w-full",
-
                         months: "w-full",
                         month: "w-full space-y-4",
-
                         month_caption: "hidden",
                         caption_label: "text-lg font-semibold",
-
                         nav: "flex items-center gap-2",
-
-                        // button_previous: buttonClass("ghost", "icon-sm"),
-                        // button_next: buttonClass("ghost", "icon-sm"),
-
                         weekdays: "grid grid-cols-7",
-                        weekday:
-                            "flex justify-center text-xs font-medium text-muted-foreground uppercase",
-
+                        weekday: "flex justify-center text-xs font-medium text-muted-foreground uppercase",
                         month_grid: "w-full border-separate",
-
                         week: "grid grid-cols-7",
-
                         day: "flex justify-center",
                     }}
                 />
             </div>
 
-
             <AttachedNote />
-
         </div>
-    )
+    );
 }
