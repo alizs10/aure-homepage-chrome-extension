@@ -1,4 +1,4 @@
-import { Typography } from "@/components/common/Typography";
+import { BetterTypography } from "@/components/common/BetterTypography";
 import { useEffect, useState } from "react";
 
 export default function NetworkStatus() {
@@ -31,9 +31,9 @@ export default function NetworkStatus() {
                     }`}
             />
 
-            <Typography variant="body-sm" weight="medium">
+            <BetterTypography variant="12-14" weight="medium">
                 {isOnline ? "Online" : "Offline"}
-            </Typography>
+            </BetterTypography>
         </div>
     );
 }

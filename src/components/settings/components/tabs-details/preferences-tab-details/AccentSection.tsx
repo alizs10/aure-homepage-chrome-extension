@@ -1,5 +1,5 @@
-import Button from "@/components/common/Button";
-import { Typography } from "@/components/common/Typography";
+import { BetterTypography } from "@/components/common/BetterTypography";
+import Button from "@/components/ui/Button";
 import { useTheme } from "@/hooks/useTheme";
 import { useSettingsStore } from "@/stores";
 import { accentOptions } from "@/types";
@@ -35,7 +35,9 @@ export default function AccentSection() {
 
     return (
         <div className="flex flex-col gap-y-2">
-            <Typography variant="h3">Accent</Typography>
+            <BetterTypography as="h3" variant="md" weight="medium">
+                Accent
+            </BetterTypography>
 
             <div className="flex flex-wrap gap-2">
                 {accentOptions.map(({ id, label, light, dark }) => (

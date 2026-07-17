@@ -37,15 +37,15 @@ export const MOODS_OPTIONS: {
 export const getMoodBgColor = (mood: MoodType) => {
     switch (mood) {
         case 'great':
-            return 'bg-indigo-600 dark:bg-indigo-500';
+            return 'bg-indigo-400 dark:bg-indigo-500';
         case 'good':
-            return 'bg-success';
+            return 'bg-lime-400 dark:bg-lime-500';
         case 'okay':
-            return 'bg-muted';
+            return 'bg-gray-300 dark:bg-gray-400';
         case 'meh':
-            return 'bg-warning';
+            return 'bg-yellow-300 dark:bg-yellow-400';
         case 'bad':
-            return 'bg-destructive';
+            return 'bg-red-400 dark:bg-red-500';
         default:
             return '';
     }
@@ -56,11 +56,11 @@ export const getMoodTextColor = (mood: MoodType, foreground = true) => {
         case 'great':
             return foreground ? 'text-white' : 'text-indigo-600 dark:text-indigo-500';
         case 'good':
-            return foreground ? 'text-success-foreground' : 'text-success';
+            return foreground ? 'text-black' : 'text-success';
         case 'okay':
-            return foreground ? 'text-foreground' : 'text-muted-foreground';
+            return foreground ? 'text-black' : 'text-muted-foreground';
         case 'meh':
-            return foreground ? 'text-warning-foreground' : 'text-warning';
+            return foreground ? 'text-black' : 'text-warning';
         case 'bad':
             return foreground ? 'text-destructive-foreground' : 'text-destructive';
         default:
@@ -87,22 +87,22 @@ export const getMoodIcon = (mood: MoodType) => {
 
 export const getWeekColor = (score: number) => {
     if (score >= 4) {
-        return "bg-indigo-600 dark:bg-indigo-500 text-white";
+        return "bg-indigo-400 dark:bg-indigo-500 text-white";
     }
 
     if (score >= 3) {
-        return "bg-success text-success-foreground";
+        return "bg-lime-400 dark:bg-lime-500 text-black";
     }
 
     if (score >= 2) {
-        return "bg-muted text-muted-foreground";
+        return "bg-gray-300 dark:bg-gray-400 text-black";
     }
 
     if (score >= 1) {
-        return "bg-warning text-warning-foreground";
+        return "bg-yellow-300 dark:bg-yellow-400 text-black ";
     }
 
-    return "bg-destructive text-destructive-foreground";
+    return "bg-red-400 dark:bg-red-500 text-destructive-foreground";
 };
 
 export const getScoreIcon = (score: number) => {

@@ -2,7 +2,6 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { ImagePlusIcon } from "lucide-react";
 import { useState } from "react";
 
-import { Typography } from "@/components/common/Typography";
 import WallpaperCard from "@/components/common/WallpaperCard";
 import AddWallpaperModal from "@/components/settings/components/tabs-details/preferences-tab-details/modals/AddWallpaperModal";
 import { db } from "@/lib/db";
@@ -10,6 +9,7 @@ import { db } from "@/lib/db";
 // Import default wallpapers 
 import defaultDark1 from "@/assets/background/default-dark.webp";
 import defaultLight from "@/assets/background/default-light.webp";
+import { BetterTypography } from "@/components/common/BetterTypography";
 import type { Wallpaper } from "@/types";
 
 // 🚨 IMPORTANT: Ensure this path matches the exact same path you use in db.ts!
@@ -81,10 +81,10 @@ export function ChooseWallpaper({
                         onClick={() => setOpen(true)}
                         className="aspect-video rounded-3xl bg-secondary/50 border-2 border-border hover:border-primary transition-colors flex flex-col items-center justify-center gap-y-4 cursor-pointer overflow-hidden relative"
                     >
-                        <ImagePlusIcon className="size-6 lg:size-10 text-muted-foreground" />
-                        <Typography className="text-nowrap" variant="caption-xxs" weight="medium">
+                        <ImagePlusIcon className="size-6 xl:size-10 text-muted-foreground" />
+                        <BetterTypography className="text-nowrap" variant="14-12-10-12-14" weight="medium">
                             Add Your Own Wallpaper
-                        </Typography>
+                        </BetterTypography>
                     </div>
                 </div>
             </div>

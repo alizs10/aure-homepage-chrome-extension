@@ -1,5 +1,5 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { Typography } from "@/components/common/Typography";
+import { BetterTypography } from "@/components/common/BetterTypography";
+import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon } from "lucide-react";
 import { STEPS } from "../constants/steps";
 
@@ -62,9 +62,9 @@ export function WizardStepper({ currentStep }: { currentStep: number }) {
                                     }}
                                     className="w-full flex items-center justify-center px-2"
                                 >
-                                    <Typography className="text-nowrap capitalize" variant="body" weight="medium">
+                                    <BetterTypography className="text-nowrap capitalize" variant="sm" weight="medium">
                                         {step.id}. {step.label}
-                                    </Typography>
+                                    </BetterTypography>
                                 </motion.div>
                             ) : (
                                 <motion.div
@@ -75,9 +75,9 @@ export function WizardStepper({ currentStep }: { currentStep: number }) {
                                     transition={{ duration: 0.25, ease: "easeInOut" }}
                                     className="flex items-center justify-center"
                                 >
-                                    <Typography variant="body" weight="medium">
+                                    <BetterTypography variant="sm" weight="medium">
                                         {i + 1}
-                                    </Typography>
+                                    </BetterTypography>
                                 </motion.div>
                             )}
                         </AnimatePresence>

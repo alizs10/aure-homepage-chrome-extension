@@ -1,16 +1,16 @@
-import { useEffect, useState, type MouseEvent } from 'react';
+import { useEffect, useState } from 'react';
 
-import Button from '@/components/common/Button';
-import { Typography } from '@/components/common/Typography';
-import ModalHeader from '@/components/modal/ModalHeader';
-import ModalWrapper from '@/components/modal/ModalWrapper';
-import { useForm } from 'react-hook-form';
-import { favoriteSchema, type FavoriteFormValues } from '../validation/favorite-schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import TextInput from '@/components/Form/TextInput';
-import { useFavorites } from '../hooks/useFavorites';
-import { toast } from 'sonner';
+import { BetterTypography } from '@/components/common/BetterTypography';
+import Button from '@/components/ui/Button';
+import ModalHeader from '@/components/ui/modal/ModalHeader';
+import ModalWrapper from '@/components/ui/modal/ModalWrapper';
+import TextInput from '@/components/ui/TextInput';
 import { getTopSites } from '@/lib/chrome/top-sites';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { useFavorites } from '../hooks/useFavorites';
+import { favoriteSchema, type FavoriteFormValues } from '../validation/favorite-schema';
 
 interface FavoriteModalProps {
     open: boolean;
@@ -82,14 +82,11 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
         setValue('url', site.url, { shouldValidate: true, shouldDirty: true });
     }
 
-    function stopPropagation(e: MouseEvent<HTMLDivElement>) {
-        e.stopPropagation();
-    }
+
 
     return (
         <ModalWrapper open={open} onClose={onClose}>
             <div
-                onClick={stopPropagation}
                 className="app_container bg-background p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none"
             >
                 <ModalHeader
@@ -115,9 +112,12 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
                     {/* 👇 Top Sites Selection UI */}
                     {topSites.length > 0 && !editing && (
                         <div className="flex flex-col gap-2 pt-2 border-t border-border/50">
-                            <Typography variant="caption-xs" className="text-muted-foreground">
+                            <BetterTypography
+                                variant="xs"
+                                className="text-muted-foreground"
+                            >
                                 Or choose from your Top Sites
-                            </Typography>
+                            </BetterTypography>
                             <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto scrollbar-none px-1">
                                 {topSites.map((site) => (
                                     <button
@@ -126,9 +126,13 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
                                         onClick={() => handleTopSiteClick(site)}
                                         className="app_container bg-background hover:bg-secondary transition-colors px-3 py-1.5 rounded-full flex items-center gap-2 group col-span-1"
                                     >
-                                        <Typography variant="caption-xs" className="text-nowrap line-clamp-1 group-hover:text-primary transition-colors text-ellipsis">
+
+                                        <BetterTypography
+                                            variant="xs"
+                                            className="text-nowrap line-clamp-1 group-hover:text-primary transition-colors text-ellipsis"
+                                        >
                                             {site.title || site.url}
-                                        </Typography>
+                                        </BetterTypography>
                                     </button>
                                 ))}
                             </div>
@@ -141,7 +145,9 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
                         variant="primary-active"
                         size="sm"
                     >
-                        <Typography variant="caption">{editing ? "Save" : "Add Favorite"}</Typography>
+                        <BetterTypography variant="sm">
+                            {editing ? "Save" : "Add Favorite"}
+                        </BetterTypography>
                     </Button>
                 </form>
             </div>

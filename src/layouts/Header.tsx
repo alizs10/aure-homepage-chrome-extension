@@ -1,12 +1,12 @@
-import Button from '@/components/common/Button'
+import Button from '@/components/ui/Button'
 import ThemeToggle from '@/components/common/ThemeToggle'
-import { Typography } from '@/components/common/Typography'
 import Focus from '@/components/features/focus/Focus'
 import { useSettingsStore } from '@/stores'
 import { MoveLeftIcon, SettingsIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import Moment from 'react-moment'
 import { useLocation } from 'react-router-dom'
+import { BetterTypography } from '@/components/common/BetterTypography'
 
 export default function Header() {
 
@@ -48,9 +48,9 @@ export default function Header() {
                 )}
 
                 <div className="hidden sm:flex app_container app_gradient app-blur h-10 md:h-full px-4 md:px-6 lg:px-12 w-fit flex-center">
-                    <Typography className="text-nowrap" variant="h4">
+                    <BetterTypography className="text-nowrap" variant="12-12-20-24" weight='semibold' as="h2">
                         Hey, {settings?.name}
-                    </Typography>
+                    </BetterTypography>
                 </div>
 
 
@@ -63,15 +63,18 @@ export default function Header() {
                 )}
             </div>
 
-            <div className="flex-row-center gap-x-1.5 md:gap-x-2">
+            <div className="flex-row-center gap-x-0.5 sm:gap-x-1.5 md:gap-x-2">
                 {!isSettingsPath && (
                     <Focus />
                 )}
 
-                <div className="h-full app_container app_gradient app-blur w-32 md:w-36 lg:w-48 flex-center">
-                    <Typography className='text-xs md:text-sm lg:text-xl' variant="h3">
+                <div className="h-full app_container app_gradient app-blur w-14 sm:w-32 md:w-36 lg:w-48 flex-center">
+                    <BetterTypography variant='12-12-16-20' className='hidden sm:block text-nowrap' weight='medium' as="h3">
                         <Moment date={now} format="MMM D, HH:mm:ss" />
-                    </Typography>
+                    </BetterTypography>
+                    <BetterTypography variant='12-12-16-20' className='sm:hidden text-nowrap' weight='medium' as="h3">
+                        <Moment date={now} format="HH:mm" />
+                    </BetterTypography>
                 </div>
 
 

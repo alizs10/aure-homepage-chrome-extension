@@ -1,6 +1,6 @@
 import { CalendarPlusIcon } from 'lucide-react';
 import { useState } from 'react';
-import Button from '../../../common/Button';
+import Button from '../../../ui/Button';
 import CalendarNoteModal from '../modals/CalendarNoteModal';
 
 export default function NewCalendarNote() {

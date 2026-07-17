@@ -1,8 +1,8 @@
-import Button from "@/components/common/Button";
-import { Typography } from "@/components/common/Typography";
+import { BetterTypography } from "@/components/common/BetterTypography";
+import Button from "@/components/ui/Button";
 import { useState } from "react";
-import UpdateAvailableModal from "./modals/UpdateAvailableModal";
 import { toast } from "sonner";
+import UpdateAvailableModal from "./modals/UpdateAvailableModal";
 
 // Updated interface to match the new JSON structure
 interface VersionInfo {
@@ -71,9 +71,9 @@ export default function CheckForUpdate() {
                 variant="primary"
                 loading={loading}
             >
-                <Typography variant="caption-xs">
-                    {loading ? 'checking...' : 'Check for update'}
-                </Typography>
+                <BetterTypography variant="xs">
+                    {loading ? "checking..." : "Check for update"}
+                </BetterTypography>
             </Button>
 
             {(open && update) && (

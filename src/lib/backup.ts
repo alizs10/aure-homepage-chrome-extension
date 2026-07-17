@@ -13,18 +13,13 @@ import type { Wallpaper } from '@/types';
 // Helper to fetch all Chrome Storage data
 async function getAllChromeStorageData() {
     const data: Record<string, unknown> = {};
+    const keys = Object.values(STORAGE_KEYS); // This already includes 'settings'
 
-    const keys = Object.values(STORAGE_KEYS);
     for (const key of keys) {
         const value = await storage.get<unknown>(key);
         if (value !== undefined && value !== null) {
             data[key] = value;
         }
-    }
-
-    const settings = await storage.get<unknown>("settings");
-    if (settings !== undefined && settings !== null) {
-        data["settings"] = settings;
     }
 
     return data;
@@ -44,12 +39,12 @@ async function clearAllData() {
         }
     );
 
+    // Object.values(STORAGE_KEYS) already includes 'settings', so one loop is enough
     const keys = Object.values(STORAGE_KEYS);
     await Promise.all(keys.map(key => storage.remove(key)));
-    await storage.remove("settings");
 }
 
-export async function exportUserData() {
+export async function exportUserData(username?: string) {
     const wallpapers = await db.wallpapers.toArray();
     const moods = await db.moods.toArray();
     const pets = await db.pets.toArray();
@@ -73,10 +68,11 @@ export async function exportUserData() {
     const jsonString = JSON.stringify(payload, null, 2);
     const blob = new Blob([jsonString], { type: "application/json" });
     const url = URL.createObjectURL(blob);
+    const filename = `${username ? username.toLowerCase().split(" ").join("-") : 'aure-homepage'}-backup-${new Date().toISOString().split('T')[0]}`
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `aure-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `${filename}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

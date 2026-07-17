@@ -1,6 +1,6 @@
-import Button from '@/components/common/Button'
-import { Typography } from '@/components/common/Typography'
-import TextInput from '@/components/Form/TextInput'
+import Button from '@/components/ui/Button'
+import { BetterTypography } from '@/components/common/BetterTypography'
+import TextInput from '@/components/ui/TextInput'
 import { copyToClipboard } from '@/helpers'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CopyCheckIcon, CopyIcon, HeartIcon, MailIcon, SendIcon } from 'lucide-react'
@@ -8,78 +8,57 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 export default function AboutTabDetails() {
-
     const [copied, setCopied] = useState(false)
 
     async function handleCopy() {
         if (copied) return
 
-
         await copyToClipboard(import.meta.env.VITE_WALLET_ADDRESS)
         setCopied(true)
-        toast.success("Copied!")
+        toast.success('Copied!')
 
         setTimeout(() => {
-
             setCopied(false)
-
         }, 2000)
-
     }
 
     return (
-        <div className='h-fit flex-1 flex flex-col gap-y-10'>
-
-
-
+        <div className="h-fit flex-1 flex flex-col gap-y-10">
             <div className="flex flex-col gap-y-2 p-5 bg-background app_container">
+                <BetterTypography variant="sm">
+                    App Name: <span className="font-semibold">{`"${import.meta.env.VITE_APP_NAME}"`}</span>
+                </BetterTypography>
 
-                <Typography variant='body'>
-                    App Name: <span className='font-semibold'>{`"${import.meta.env.VITE_APP_NAME}"`}</span>
-                </Typography>
-                <Typography variant='body'>
-                    Version: <span className='font-semibold'>{import.meta.env.VITE_APP_VERSION}</span>
-                </Typography>
-                <Typography variant='body'>
-                    Release: <span className='text-primary font-semibold'>"{import.meta.env.VITE_VERSION_NAME}"</span>
-                </Typography>
-                <Typography variant='body'>
-                    Last Updated: <span className='font-semibold'>{import.meta.env.VITE_VERSION_DATE}</span>
-                </Typography>
-                <Typography variant='body'>
-                    Developer: <span className='font-semibold'>{import.meta.env.VITE_DEVELOPER}</span>
-                </Typography>
+                <BetterTypography variant="sm">
+                    Version: <span className="font-semibold">{import.meta.env.VITE_APP_VERSION}</span>
+                </BetterTypography>
+
+                <BetterTypography variant="sm">
+                    Release:{' '}
+                    <span className="text-primary font-semibold">
+                        "{import.meta.env.VITE_VERSION_NAME}"
+                    </span>
+                </BetterTypography>
+
+                <BetterTypography variant="sm">
+                    Last Updated:{' '}
+                    <span className="font-semibold">{import.meta.env.VITE_VERSION_DATE}</span>
+                </BetterTypography>
+
+                <BetterTypography variant="sm">
+                    Developer: <span className="font-semibold">{import.meta.env.VITE_DEVELOPER}</span>
+                </BetterTypography>
             </div>
 
             <div className="flex flex-col gap-y-2">
-
-                <Typography variant="h2">
+                <BetterTypography variant="lg" weight='semibold' as="h2">
                     Let's Connect
-                </Typography>
+                </BetterTypography>
 
-                <Typography variant="body" className="text-muted-foreground">
+                <BetterTypography variant="sm" className="text-muted-foreground">
                     Whether you'd like to collaborate, report a bug, suggest a feature,
                     or just say hello, I'd love to hear from you.
-                </Typography>
-
-                {/* <div className="flex-row-center gap-x-1.5">
-                    <HandshakeIcon className='size-5' />
-                    <Typography variant='body' weight='medium'>
-                        Collaborate
-                    </Typography>
-                </div>
-                <div className="flex-row-center gap-x-1.5">
-                    <BugIcon className='size-5' />
-                    <Typography variant='body' weight='medium'>
-                        Report a Bug
-                    </Typography>
-                </div>
-                <div className="flex-row-center gap-x-1.5">
-                    <MessageCircleIcon className='size-5' />
-                    <Typography variant='body' weight='medium'>
-                        Get in Touch
-                    </Typography>
-                </div> */}
+                </BetterTypography>
 
                 <div className="mt-4 flex flex-wrap gap-2">
                     <Button
@@ -87,46 +66,45 @@ export default function AboutTabDetails() {
                         className="bg-[#229ED9] hover:bg-[#1d8fc4] text-white border-0"
                         leftIcon={<SendIcon className="size-5" />}
                     >
-                        <Typography variant='caption'>
+                        <BetterTypography variant="sm" weight="semibold">
                             @alizs10
-                        </Typography>
+                        </BetterTypography>
                     </Button>
+
                     <Button
                         href="mailto:alizswork@gmail.com"
                         className="bg-[#EA4335] hover:bg-[#D93025] text-white border-0"
                         leftIcon={<MailIcon className="size-5" />}
                     >
-                        <Typography variant='caption'>
+                        <BetterTypography variant="sm" weight="semibold">
                             alizswork@gmail.com
-                        </Typography>
+                        </BetterTypography>
                     </Button>
                 </div>
-
             </div>
 
             <div className="flex flex-col gap-y-2">
-
                 <div className="flex-row-center gap-x-2">
-                    <HeartIcon className='size-7 text-destructive' />
-                    <Typography variant='h2'>
+                    <HeartIcon className="size-7 text-destructive" />
+
+                    <BetterTypography variant="lg" weight='semibold' as="h2">
                         Support the Project
-                    </Typography>
+                    </BetterTypography>
                 </div>
 
-                <Typography variant="body" className="text-muted-foreground">
+                <BetterTypography variant="sm" className="text-muted-foreground">
                     Enjoying the extension? Your support helps fund future features and improvements.
-                </Typography>
-
-
+                </BetterTypography>
 
                 <div className="mt-4 flex flex-col gap-y-1 w-full">
-                    <Typography variant="label" className="">
+                    <BetterTypography variant="sm" weight="medium">
                         {import.meta.env.VITE_WALLET_NETWORK}
-                    </Typography>
+                    </BetterTypography>
+
                     <div className="flex-row-center gap-x-1">
                         <div className="w-full max-w-md">
                             <TextInput
-                                className='text-sm md:text-base lg:text-lg w-full text-muted-foreground'
+                                className="text-sm md:text-base lg:text-lg w-full text-muted-foreground"
                                 value={import.meta.env.VITE_WALLET_ADDRESS}
                                 readOnly
                             />
@@ -134,43 +112,36 @@ export default function AboutTabDetails() {
 
                         <Button
                             onClick={handleCopy}
-                            variant='success' size='icon' className='h-full overflow-clip'>
+                            variant="success"
+                            size="icon"
+                            className="h-full overflow-clip"
+                        >
                             <AnimatePresence mode="wait" initial={false}>
                                 {copied ? (
                                     <motion.div
-                                        key={'copy-check'}
+                                        key="copy-check"
                                         initial={{ y: -25 }}
                                         animate={{ y: 0 }}
                                         exit={{ y: 25 }}
-                                        transition={{
-                                            ease: "linear",
-                                            duration: .1
-                                        }}
+                                        transition={{ ease: 'linear', duration: 0.1 }}
                                     >
-                                        <CopyCheckIcon
-
-                                            className="size-5 text-success" />
+                                        <CopyCheckIcon className="size-5 text-success" />
                                     </motion.div>
                                 ) : (
                                     <motion.div
-                                        key={'copy'}
+                                        key="copy"
                                         initial={{ y: -25 }}
                                         animate={{ y: 0 }}
                                         exit={{ y: 25 }}
-                                        transition={{
-                                            ease: "linear",
-                                            duration: .1
-                                        }}
+                                        transition={{ ease: 'linear', duration: 0.1 }}
                                     >
-
-                                        <CopyIcon className={`size-5`} />
+                                        <CopyIcon className="size-5" />
                                     </motion.div>
                                 )}
                             </AnimatePresence>
                         </Button>
                     </div>
                 </div>
-
             </div>
         </div>
     )

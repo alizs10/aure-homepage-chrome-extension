@@ -1,16 +1,18 @@
-import Button from "@/components/common/Button";
-import { Typography } from "@/components/common/Typography";
+import { BetterTypography } from "@/components/common/BetterTypography";
+import Button from "@/components/ui/Button";
+import { exportUserData, importUserData } from "@/lib/backup";
+import { useSettingsStore } from "@/stores";
 import { DownloadIcon, UploadIcon } from "lucide-react";
 import { useRef } from "react";
-import { exportUserData, importUserData } from "@/lib/backup";
 import { toast } from "sonner";
 
 export default function DataBackup() {
+    const username = useSettingsStore(s => s.settings?.name)
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleExport = async () => {
         try {
-            await exportUserData();
+            await exportUserData(username);
             toast.success("Data exported successfully!");
         } catch (error) {
             console.error("Export failed:", error);
@@ -56,12 +58,16 @@ export default function DataBackup() {
     return (
         <div className="flex flex-col gap-4">
             <div className="space-y-1">
-                <Typography variant="body" weight="semibold">
+                <BetterTypography variant="md" weight="semibold">
                     Backup & Restore
-                </Typography>
-                <Typography variant="body-sm" className="text-muted-foreground">
+                </BetterTypography>
+
+                <BetterTypography
+                    variant="sm"
+                    className="text-muted-foreground"
+                >
                     Export your settings, widgets, and data to a file, or restore from a previous backup.
-                </Typography>
+                </BetterTypography>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
@@ -71,7 +77,9 @@ export default function DataBackup() {
                     onClick={handleExport}
                     size="sm"
                 >
-                    <Typography variant="body-sm">Export Data</Typography>
+                    <BetterTypography variant="sm">
+                        Export Data
+                    </BetterTypography>
                 </Button>
 
                 <Button
@@ -80,7 +88,9 @@ export default function DataBackup() {
                     onClick={handleImportClick}
                     size="sm"
                 >
-                    <Typography variant="body-sm">Import Data</Typography>
+                    <BetterTypography variant="sm">
+                        Import Data
+                    </BetterTypography>
                 </Button>
             </div>
 

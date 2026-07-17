@@ -1,5 +1,5 @@
 import { ChevronDownIcon, ChevronUpIcon, Monitor, Moon, Sun } from "lucide-react";
-import Button from "./Button";
+import Button from "../ui/Button";
 import { useSettingsStore } from "@/stores";
 import { useState } from "react";
 import useClickOutside from "@/hooks/useOutsideClick";
@@ -19,8 +19,8 @@ export default function ThemeToggle() {
 
     if (loading || !theme) {
         return (
-            <div className="flex items-center gap-1 p-1 app_container app_gradient app-blur h-10 md:h-16">
-                <div className="h-full aspect-square rounded-full bg-muted animate-pulse" />
+            <div className="flex items-center gap-1 p-1 app_container app_gradient app-blur h-full">
+                <div className="hidden lg:block h-full aspect-square rounded-full bg-muted animate-pulse" />
                 <div className="h-full aspect-square rounded-full bg-muted animate-pulse" />
                 <div className="h-full aspect-square rounded-full bg-muted animate-pulse" />
             </div>

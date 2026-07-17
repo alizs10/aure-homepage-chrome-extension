@@ -1,17 +1,21 @@
-import { motion } from "framer-motion";
-import { useEffect, useState, useCallback, useRef } from 'react'; // Added useRef
-import { Typography } from '../common/Typography';
 import { getTopSites } from "@/lib/chrome/top-sites";
+import { commands } from "@/lib/commands";
+import { motion } from "framer-motion";
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { BetterTypography } from "../common/BetterTypography";
+import { sliceText } from "@/helpers";
 
 export interface Suggestion {
   id: string | number;
   url: string;
   label: string;
-  source: "google" | "top-sites"
+  description?: string; // Added for command descriptions
+  source: "google" | "top-sites" | "command";
 }
 
 interface SuggestionsProps {
   searchValue: string;
+  isCommandMode: boolean;
   isNavigating?: boolean;
   onSuggestionSelect?: (suggestion: Suggestion) => void;
   onSearchUpdate?: (value: string) => void;
@@ -19,6 +23,7 @@ interface SuggestionsProps {
 
 export default function Suggestions({
   searchValue,
+  isCommandMode,
   isNavigating = false,
   onSuggestionSelect,
   onSearchUpdate
@@ -30,16 +35,39 @@ export default function Suggestions({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
-  // Fetch top sites once on component mount
+  const commandSuggestions = useMemo(() => {
+    if (!isCommandMode) return [];
+
+    const query = searchValue.slice(1).toLowerCase().trim();
+    if (!query) return commands;
+
+    return commands.filter(cmd => cmd.keywords.includes(query));
+  }, [searchValue, isCommandMode]);
+
   useEffect(() => {
     getTopSites().then(setTopSites);
   }, []);
 
-  // Fetch Google suggestions and filter top sites when searchValue changes
   useEffect(() => {
     if (isNavigating) return;
 
     const fetchSuggestions = async () => {
+      // 🌟 1. COMMAND MODE: ONLY show commands, skip Google/Top Sites entirely
+      if (isCommandMode) {
+
+        const formattedCommands: Suggestion[] = commandSuggestions.map(cmd => ({
+          id: cmd.id,
+          url: '#',
+          label: cmd.label, // Show exactly what the user typed
+          description: cmd.description,
+          source: "command" as const
+        }));
+        setSuggestions(formattedCommands);
+        setSelectedIndex(-1);
+        return; // Exit early
+      }
+
+      // 🌟 2. NORMAL SEARCH MODE
       let googleSuggestions: string[] = [];
 
       if (searchValue.trim().length > 0) {
@@ -93,22 +121,14 @@ export default function Suggestions({
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchValue, topSites, isNavigating]);
+  }, [searchValue, topSites, isNavigating, isCommandMode, commandSuggestions]);
 
   useEffect(() => {
     if (selectedIndex >= 0) {
       if (selectedIndex === 0) {
-        // Force scroll the container to the very top
-        scrollContainerRef.current?.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+        scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (itemRefs.current[selectedIndex]) {
-        // For all other items, use nearest scroll
-        itemRefs.current[selectedIndex]?.scrollIntoView({
-          block: 'nearest',
-          behavior: 'smooth'
-        });
+        itemRefs.current[selectedIndex]?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }
     }
   }, [selectedIndex]);
@@ -125,34 +145,23 @@ export default function Suggestions({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setSelectedIndex(prev =>
-          prev < suggestions.length - 1 ? prev + 1 : prev
-        );
+        setSelectedIndex(prev => prev < suggestions.length - 1 ? prev + 1 : prev);
         break;
-
       case 'ArrowUp':
         e.preventDefault();
         setSelectedIndex(prev => prev > 0 ? prev - 1 : prev);
         break;
-
       case 'Enter':
         if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
           e.preventDefault();
-          const selectedSuggestion = suggestions[selectedIndex];
-          handleSuggestionClick(selectedSuggestion);
+          handleSuggestionClick(suggestions[selectedIndex]);
         }
         break;
-
       case 'Escape':
         e.preventDefault();
         setSelectedIndex(-1);
         break;
-
-      // 🌟 RESTORED DEFAULT CASE
       default:
-        // NO e.preventDefault() here! We want the keypress to pass through 
-        // to the input so the user can actually type the letter.
-        // But we DO reset the index so we instantly exit navigation mode.
         setSelectedIndex(-1);
         break;
     }
@@ -160,15 +169,12 @@ export default function Suggestions({
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
   useEffect(() => {
     if (selectedIndex >= 0 && selectedIndex < suggestions.length && onSearchUpdate) {
-      const selectedSuggestion = suggestions[selectedIndex];
-      onSearchUpdate(selectedSuggestion.label);
+      onSearchUpdate(suggestions[selectedIndex].label);
     }
   }, [selectedIndex, suggestions, onSearchUpdate]);
 
@@ -184,49 +190,56 @@ export default function Suggestions({
       <div className="app_container app_gradient rounded-3xl overflow-clip">
         <div ref={scrollContainerRef} className="flex flex-col max-h-100 overflow-y-scroll rounded-3xl scrollbar-none">
           <div className="app_gradient app-blur p-5 sticky top-0">
-            <Typography className='' variant='h4' weight='medium'>
-              Suggestions
-            </Typography>
+            <BetterTypography variant="lg" weight="medium">
+              {isCommandMode ? "Commands" : "Suggestions"}
+            </BetterTypography>
           </div>
 
           <ul className='flex flex-col overflow-clip'>
             {suggestions.map((s, index) => (
               <li
                 key={s.id}
-                // 🌟 NEW: Assign the ref to each list item
                 ref={(el) => { itemRefs.current[index] = el; }}
               >
                 <a
                   href={s.url}
-                  target="_blank"
+                  target={s.source === 'command' ? '_self' : "_blank"}
                   rel="noopener noreferrer"
                   onClick={(e) => {
                     e.preventDefault();
                     handleSuggestionClick(s);
                   }}
-                  className={`flex justify-between items-start py-2.5 px-5 transition-colors duration-200 ${selectedIndex === index
-                    ? 'bg-secondary'
-                    : 'bg-background hover:bg-secondary'
+                  className={`flex justify-between items-start py-2.5 px-5 transition-colors duration-200 ${selectedIndex === index ? 'bg-secondary' : 'bg-background hover:bg-secondary'
                     }`}
                 >
                   <div className="flex flex-col gap-y-1">
-                    <Typography variant='body' weight='medium'>
+                    <BetterTypography variant="md" weight="medium">
                       {s.label}
-                    </Typography>
-                    <Typography variant='caption-xs' className='text-muted-foreground line-clamp-1'>
-                      {s.url}
-                    </Typography>
+                    </BetterTypography>
+
+                    <BetterTypography
+                      variant="xs"
+                      className="text-muted-foreground line-clamp-1"
+                    >
+                      {sliceText(s.source === "command" && s.description ? s.description : s.url, 50)}
+                    </BetterTypography>
                   </div>
 
-                  <Typography
-                    variant='caption-xxs'
-                    className={`px-2 py-0.5 ${s.source === 'top-sites'
-                      ? 'bg-success text-success-foreground'
-                      : "bg-secondary text-foreground"
-                      } text-nowrap rounded-3xl`}
+                  <BetterTypography
+                    variant="xs"
+                    className={`px-2 py-0.5 text-nowrap rounded-3xl ${s.source === "top-sites"
+                      ? "bg-success text-success-foreground"
+                      : s.source === "command"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-secondary text-foreground"
+                      }`}
                   >
-                    {s.source === 'google' ? "google search" : "Top Site"}
-                  </Typography>
+                    {s.source === "google"
+                      ? "Google Search"
+                      : s.source === "command"
+                        ? "Command"
+                        : "Top Site"}
+                  </BetterTypography>
                 </a>
               </li>
             ))}
@@ -234,5 +247,5 @@ export default function Suggestions({
         </div>
       </div>
     </motion.div>
-  )
+  );
 }

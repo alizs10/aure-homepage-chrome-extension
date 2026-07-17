@@ -3,10 +3,12 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 import type { Checklist, NoteAndChecklist } from './types';
 import { NotesRepository } from './db';
+import { useSettingsStore } from '@/stores';
 
 interface NotesAndChecklistsState {
     data: NoteAndChecklist[];
     loading: boolean;
+    showChecked: boolean;
     editable: NoteAndChecklist | undefined;
 
     // Actions
@@ -17,17 +19,28 @@ interface NotesAndChecklistsState {
     startEdit: (id: number) => void;
     updateItem: (content: string) => Promise<void>;
     cancelEdit: () => void;
+    setShowChecked: (value: boolean) => void; // <-- Added
 }
 
 export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, get) => ({
     data: [],
     loading: true,
     editable: undefined,
+    showChecked: false, // Default to true
 
     // Load data on app start
     initialize: async () => {
         const notes = await NotesRepository.getAll();
-        set({ data: notes, loading: false });
+
+        // Read the preference from the global settings store
+        const settings = useSettingsStore.getState().settings;
+        const savedShowChecked = settings?.widgetPreferences?.['notes-and-checklists']?.showChecked;
+
+        set({
+            data: notes,
+            loading: false,
+            showChecked: savedShowChecked !== undefined ? savedShowChecked : true
+        });
     },
 
     addItem: async (content) => {
@@ -101,5 +114,25 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
 
     cancelEdit: () => {
         set({ editable: undefined });
+    },
+
+
+    setShowChecked: async (value) => {
+        // 1. Optimistic UI: Update local store immediately for zero-lag feel
+        set({ showChecked: value });
+
+        // 2. Persist to Global Settings: Use the existing `update` method
+        const settings = useSettingsStore.getState().settings;
+        if (!settings) return;
+
+        await useSettingsStore.getState().update({
+            widgetPreferences: {
+                ...settings.widgetPreferences,
+                'notes-and-checklists': {
+                    ...settings.widgetPreferences?.['notes-and-checklists'],
+                    showChecked: value,
+                },
+            },
+        });
     }
 }));

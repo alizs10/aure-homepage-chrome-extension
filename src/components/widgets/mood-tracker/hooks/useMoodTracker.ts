@@ -10,12 +10,15 @@ export function useMoodTracker() {
     const loading = useMoodTrackerStore((state) => state.loading);
     const filter = useMoodTrackerStore((state) => state.filter);
     const today = useMoodTrackerStore((state) => state.today);
+    const showChart = useMoodTrackerStore((state) => state.showChart); // <-- Added
+
 
     // Select actions (Zustand actions are stable, so this is highly optimized)
     const addItem = useMoodTrackerStore((state) => state.addItem);
     const removeItem = useMoodTrackerStore((state) => state.removeItem);
     const updateItem = useMoodTrackerStore((state) => state.updateItem);
     const onFilterChange = useMoodTrackerStore((state) => state.onFilterChange);
+    const setShowChart = useMoodTrackerStore((state) => state.setShowChart); // <-- Added
     const initialize = useMoodTrackerStore((state) => state.initialize);
 
     // Compute derived state with useMemo, exactly like the old Provider
@@ -33,6 +36,8 @@ export function useMoodTracker() {
         loading,
         today,
         todayMood,
+        showChart,  // <-- Expose this
+        setShowChart, // <-- Expose this
         score,
         addItem,
         removeItem,

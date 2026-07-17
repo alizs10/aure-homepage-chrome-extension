@@ -1,12 +1,12 @@
 // components/notes-and-checklists/InputSection.tsx
+import { BetterTypography } from '@/components/common/BetterTypography';
 import { PenLineIcon, SendIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { sliceText } from '../../../../helpers';
-import TextInput from '../../../Form/TextInput';
-import Button from '../../../common/Button';
-import { Typography } from '../../../common/Typography';
-import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
 import { toast } from 'sonner';
+import { sliceText } from '../../../../helpers';
+import Button from '../../../ui/Button';
+import TextInput from '../../../ui/TextInput';
+import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
 
 export function InputSection() {
     const [input, setInput] = useState('');
@@ -91,9 +91,9 @@ export function InputSection() {
                         <PenLineIcon className='size-5' />
                     </div>
                     <div className="app_container app_gradient flex-1 app-blur px-4 py-2">
-                        <Typography className='' variant='body'>
-                            {sliceText(editableContent, 15)}
-                        </Typography>
+                        <BetterTypography variant="xs">
+                            {sliceText(editableContent, 20)}
+                        </BetterTypography>
                     </div>
                     <Button variant='destructive' size='icon' className='' onClick={cancelEdit}>
                         <XIcon className='size-5' />

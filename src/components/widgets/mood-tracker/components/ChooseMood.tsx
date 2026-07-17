@@ -1,9 +1,9 @@
-import { Typography } from '@/components/common/Typography'
+import { BetterTypography } from '@/components/common/BetterTypography'
+import Button from '@/components/ui/Button'
+import { toast } from 'sonner'
 import { MOODS_OPTIONS } from '../constants/moods'
-import Button from '@/components/common/Button'
 import { useMoodTracker } from '../hooks/useMoodTracker'
 import { moodMessages, type MoodType } from '../types'
-import { toast } from 'sonner'
 
 export default function ChooseMood() {
 
@@ -19,9 +19,9 @@ export default function ChooseMood() {
 
     return (
         <div className="flex-center flex-col gap-y-4 flex-1 min-h-0">
-            <Typography variant="body" weight="semibold">
+            <BetterTypography variant="md" weight="medium">
                 How do you feel today?
-            </Typography>
+            </BetterTypography>
 
             <div className="flex-center gap-x-2">
                 {MOODS_OPTIONS.map(mood => (

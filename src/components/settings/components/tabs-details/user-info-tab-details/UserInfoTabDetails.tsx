@@ -1,13 +1,13 @@
-import TextInput from '@/components/Form/TextInput';
-import Button from '@/components/common/Button';
-import { Typography } from '@/components/common/Typography';
+import { BetterTypography } from '@/components/common/BetterTypography';
+import Button from '@/components/ui/Button';
+import TextInput from '@/components/ui/TextInput';
 import { useSettingsStore } from '@/stores';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { userInfoSchema, type UserInfoFormValues } from './validation/user-info-schema';
 import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import DataBackup from '../../DataBackup';
+import { userInfoSchema, type UserInfoFormValues } from './validation/user-info-schema';
 
 export default function UserInfoTabDetails() {
 
@@ -48,9 +48,9 @@ export default function UserInfoTabDetails() {
 
                 <div className="col-span-1 flex flex-col gap-y-1">
                     <label htmlFor="name">
-                        <Typography variant='label'>
+                        <BetterTypography variant="sm">
                             Name
-                        </Typography>
+                        </BetterTypography>
                     </label>
                     <TextInput
                         {...register('name')}
@@ -67,7 +67,9 @@ export default function UserInfoTabDetails() {
                         variant="primary-active"
                         size="md"
                     >
-                        <Typography variant="caption">Save Changes</Typography>
+                        <BetterTypography variant="sm">
+                            Save Changes
+                        </BetterTypography>
                     </Button>
                 </div>
             </form>

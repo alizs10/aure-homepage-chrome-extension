@@ -1,13 +1,13 @@
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import type { WizardFormValues } from "./validation/wizard-schema";
 import type { Theme } from "@/types";
 import { useMemo } from "react";
-import { STEPS } from "./constants/steps";
-import { Typography } from "../common/Typography";
-import { EnterName } from "./components/EnterName";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { BetterTypography } from "../common/BetterTypography";
 import { ChooseTheme } from "./components/ChooseTheme";
-import { WizardNavigation } from "./components/WizardNavigation";
 import { ChooseWallpaper } from "./components/ChooseWallpaper";
+import { EnterName } from "./components/EnterName";
+import { WizardNavigation } from "./components/WizardNavigation";
+import { STEPS } from "./constants/steps";
+import type { WizardFormValues } from "./validation/wizard-schema";
 
 
 export function WizardContent({
@@ -38,9 +38,9 @@ export function WizardContent({
     return (
         <div className="flex flex-col gap-y-4 col-span-1 lg:col-span-3 flex-1 app_container app_gradient app-blur p-5 min-h-80 lg:min-h-100">
             {step && (
-                <Typography className="capitalize" variant="h2">
+                <BetterTypography className="capitalize" variant="lg" weight="semibold">
                     {`${step.id}. ${step.label}`}
-                </Typography>
+                </BetterTypography>
             )}
 
             {currentStep === 1 && (

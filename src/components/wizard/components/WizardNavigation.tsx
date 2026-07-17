@@ -1,6 +1,6 @@
 
-import Button from "@/components/common/Button";
-import { Typography } from "@/components/common/Typography";
+import { BetterTypography } from "@/components/common/BetterTypography";
+import Button from "@/components/ui/Button";
 import { STEPS } from "../constants/steps";
 
 export function WizardNavigation({
@@ -20,9 +20,9 @@ export function WizardNavigation({
                     variant="ghost"
                     size="lg"
                 >
-                    <Typography variant="h3">
+                    <BetterTypography variant="sm" weight="medium">
                         Prev
-                    </Typography>
+                    </BetterTypography>
                 </Button>
             )}
             <Button
@@ -30,9 +30,9 @@ export function WizardNavigation({
                 variant="primary"
                 size="lg"
             >
-                <Typography variant="h3">
+                <BetterTypography variant="sm" weight="medium">
                     {currentStep === STEPS.length ? "Finish" : "Next"}
-                </Typography>
+                </BetterTypography>
             </Button>
         </div>
     );

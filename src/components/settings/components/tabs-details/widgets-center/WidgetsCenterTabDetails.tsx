@@ -1,23 +1,23 @@
-import Button from '@/components/common/Button'
-import Toggle from '@/components/common/Toggle'
-import { Typography } from '@/components/common/Typography'
+import Button from '@/components/ui/Button'
+import Toggle from '@/components/ui/Toggle'
 
-import calendarMockupLightImg from "@/assets/mockups/calendar-light.webp"
 import calendarMockupDarkImg from "@/assets/mockups/calendar-dark.webp"
-import notesMockupLightImg from "@/assets/mockups/notes-light.webp"
-import notesMockupDarkImg from "@/assets/mockups/notes-dark.webp"
-import petHouseMockupLightImg from "@/assets/mockups/pet-house-light.webp"
-import petHouseMockupDarkImg from "@/assets/mockups/pet-house-dark.webp"
-import moodTrackerMockupLightImg from "@/assets/mockups/mood-tracker-light.webp"
+import calendarMockupLightImg from "@/assets/mockups/calendar-light.webp"
 import moodTrackerMockupDarkImg from "@/assets/mockups/mood-tracker-dark.webp"
+import moodTrackerMockupLightImg from "@/assets/mockups/mood-tracker-light.webp"
+import notesMockupDarkImg from "@/assets/mockups/notes-dark.webp"
+import notesMockupLightImg from "@/assets/mockups/notes-light.webp"
+import petHouseMockupDarkImg from "@/assets/mockups/pet-house-dark.webp"
+import petHouseMockupLightImg from "@/assets/mockups/pet-house-light.webp"
+import { BetterTypography } from '@/components/common/BetterTypography'
 import { useTheme } from '@/hooks/useTheme'
 import { useSettingsStore } from '@/stores'
-import { useForm, Controller } from 'react-hook-form'
-import { widgetsSchema, type WidgetsFormValues } from './validation/widgets-schema'
-import { zodResolver } from '@hookform/resolvers/zod'
 import type { WidgetId } from '@/types'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { widgetsSchema, type WidgetsFormValues } from './validation/widgets-schema'
 
 type WidgetItem = {
     id: WidgetId;
@@ -43,9 +43,13 @@ function WidgetItem({ item, statusValue, onChange }: WidgetItemProps) {
             <img src={theme === 'light' ? item.imgs.light : item.imgs.dark} className='object-cover w-full aspect-square' />
 
             <div className="flex-center-between px-4 pb-3">
-                <Typography className='capitalize text-nowrap' variant='body-sm' weight='medium'>
+                <BetterTypography
+                    variant="sm"
+                    weight="medium"
+                    className="capitalize text-nowrap"
+                >
                     {item.label}
-                </Typography>
+                </BetterTypography>
 
                 <Toggle size='sm' checked={statusValue} onCheckedChange={onChange} />
 
@@ -66,7 +70,7 @@ const widgets: WidgetItem[] = [
     {
         // Updated ID to match the key in defaultValues
         id: 'notes-and-checklists',
-        label: 'Notes & Checklists',
+        label: 'Notes & Tasks',
         imgs: {
             light: notesMockupLightImg,
             dark: notesMockupDarkImg,
@@ -155,7 +159,9 @@ export default function WidgetsCenterTabDetails() {
                     variant="primary-active"
                     size="md"
                 >
-                    <Typography variant="caption">Save Changes</Typography>
+                    <BetterTypography variant="sm">
+                        Save Changes
+                    </BetterTypography>
                 </Button>
             </div>
         </form>

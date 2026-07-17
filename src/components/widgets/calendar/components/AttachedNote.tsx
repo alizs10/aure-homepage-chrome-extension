@@ -1,11 +1,11 @@
+import { BetterTypography } from '@/components/common/BetterTypography';
 import { format } from 'date-fns';
-import { useMemo, useState } from 'react';
-import { Typography } from '../../../common/Typography';
-import { useCalendar } from '../hooks/useCalendar';
 import { PenIcon, StickyNoteIcon, TrashIcon } from 'lucide-react';
-import Button from '../../../common/Button';
-import CalendarNoteModal from '../modals/CalendarNoteModal';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import Button from '../../../ui/Button';
+import { useCalendar } from '../hooks/useCalendar';
+import CalendarNoteModal from '../modals/CalendarNoteModal';
 
 export default function AttachedNote() {
 
@@ -35,10 +35,13 @@ export default function AttachedNote() {
             <div className="app_container bg-background px-4 py-2 group relative">
                 {attachedNote ? (
                     <>
-                        <Typography className='line-clamp-2 wrap-break-word' variant="body">
-                            <StickyNoteIcon className='size-4.5 float-left mr-1 mt-0.75' />
+                        <BetterTypography
+                            variant="sm"
+                            className="line-clamp-2 wrap-break-word"
+                        >
+                            <StickyNoteIcon className="size-4.5 float-left mr-1 mt-0.75" />
                             {attachedNote.text}
-                        </Typography>
+                        </BetterTypography>
 
                         <div className="app_container  absolute inset-0 left-auto transition-all duration-200 w-0 group-hover:w-24 h-full flex-center gap-2 overflow-clip border-t-0!  app-blur rounded-l-none! z-20">
                             <Button
@@ -57,10 +60,13 @@ export default function AttachedNote() {
                         </div>
                     </>
 
-                ) : selectedDay ? (<Typography variant="body">
+                ) : selectedDay ? (<BetterTypography
+                    variant="sm"
+                    className="line-clamp-2 wrap-break-word"
+                >
                     <StickyNoteIcon className='size-4.5 float-left mr-1 mt-0.75' />
                     Attach a note for {formattedDate}
-                </Typography>) : null}
+                </BetterTypography>) : null}
 
 
 

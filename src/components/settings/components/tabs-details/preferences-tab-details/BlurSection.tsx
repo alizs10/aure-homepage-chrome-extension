@@ -1,5 +1,5 @@
-import Button from "@/components/common/Button";
-import { Typography } from "@/components/common/Typography";
+import { BetterTypography } from "@/components/common/BetterTypography";
+import Button from "@/components/ui/Button";
 import { useSettingsStore } from "@/stores";
 import { blurOptions } from "@/types";
 import { useEffect } from "react";
@@ -25,7 +25,7 @@ export default function BlurSection() {
 
     return (
         <div className="flex flex-col gap-y-2">
-            <Typography variant="h3">Blur</Typography>
+            <BetterTypography as="h3" variant="md" weight="medium">Blur</BetterTypography>
 
             <div className="flex flex-wrap gap-2">
                 {blurOptions.map(({ key, label }) => (

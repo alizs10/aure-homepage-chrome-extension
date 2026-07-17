@@ -1,15 +1,15 @@
+import { BetterTypography } from "@/components/common/BetterTypography";
+import { AnimatePresence, motion } from "framer-motion"; // 🌟 Added Framer Motion imports
 import { BoneIcon, CatIcon, SoupIcon } from "lucide-react";
 import { useMemo, useState, type PropsWithChildren } from "react";
-import { motion, AnimatePresence } from "framer-motion"; // 🌟 Added Framer Motion imports
-import Button from "../../../common/Button";
-import { Typography } from "../../../common/Typography";
+import { toast } from "sonner";
+import Button from "../../../ui/Button";
 import KillPetDialog from "../dialogs/KillPetDialog";
 import { getPetAgeLabel, getRemainingFoodToday } from "../helpers";
 import { usePetAgeTicker } from "../hooks/usePetAgeTicker";
 import { usePetHouse } from "../hooks/usePetHouse";
 import type { Pet } from "../types";
 import PetMovement from "./PetMovement";
-import { toast } from "sonner";
 
 export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }) {
     const { feedPet } = usePetHouse();
@@ -58,30 +58,39 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
                     <Button
                         onClick={handleFeedPet}
                         disabled={remainingFoodToday === 0}
-                        rightIcon={pet.type === 'cat' ? <SoupIcon className="size-4" /> : <BoneIcon className="size-4" />}
-                        variant="primary" size="xs">
-
+                        rightIcon={
+                            pet.type === "cat" ? (
+                                <SoupIcon className="size-4" />
+                            ) : (
+                                <BoneIcon className="size-4" />
+                            )
+                        }
+                        variant="primary"
+                        size="xs"
+                    >
                         {remainingFoodToday > 0 && (
-                            <Typography variant="caption-xxs">
+                            <BetterTypography variant="10">
                                 {remainingFoodToday}
-                            </Typography>
+                            </BetterTypography>
                         )}
                     </Button>
 
                     <div className="app_container app_gradient app-blur py-1 px-2 flex-row-center gap-x-0.5">
                         <CatIcon className="size-3.5" />
-                        <Typography variant="caption-xxs">
+
+                        <BetterTypography variant="10">
                             {ageLabel}
-                        </Typography>
+                        </BetterTypography>
                     </div>
                 </div>
             </div>
 
-            <Typography
+            <BetterTypography
+                variant="10"
                 className="absolute z-0 left-1/2 top-1/2 -translate-x-1/2 text-muted-foreground"
-                variant="caption-xxs" weight="medium">
+            >
                 {pet.name}
-            </Typography>
+            </BetterTypography>
 
             <PetMovement type={pet.type}>
                 {children}

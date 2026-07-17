@@ -1,12 +1,18 @@
 {
-    "latestVersion": "0.0.1",
+    "latestVersion": "0.0.2",
     "minimumSupportedVersion": "0.0.1",
-    "releaseDate": "2026-07-12",
-    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.1/aure-homepage-v0.0.1.zip",
-    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.1",
+    "releaseDate": "2026-07-20",
+    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.2/aure-homepage-v0.0.2.zip",
+    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.2",
     "notes": [
-        "First stable version",
-        "Available Widgets: Calendar, Notes & Checklists, Mood Tracker, Pet House",
-        "Available Features: Focus, Network Status"
+        "Added command support to the search bar.",
+        "Redesigned the Mood Tracker with a new chart view.",
+        "Added year picker for the Calendar widget.",
+        "Added settings for Notes & Checklists.",
+        "Data export by username.",
+        "Refined the application layout, animations, and responsiveness.",
+        "Rebuilt all UI components using Base UI.",
+        "Replaced Typography with BetterTypography.",
+        "Fixed various bugs and performance issues."
     ]
 }

@@ -1,8 +1,7 @@
-import { Typography } from '@/components/common/Typography';
+import { BetterTypography } from '@/components/common/BetterTypography';
 import { formatDate } from '@/helpers';
-import useClickOutside from '@/hooks/useOutsideClick';
 import { cn } from '@/lib/util';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Popover } from '@base-ui/react/popover'; // 🎯 Using Popover for interactive content
 import { useCallback, useState } from 'react';
 import { getMoodBgColor, getMoodIcon, getMoodTextColor } from '../constants/moods';
 import { useMoodTracker } from '../hooks/useMoodTracker';
@@ -14,98 +13,64 @@ interface MoodSquareProps {
 }
 
 export default function MoodSquare({ moodDayItem }: MoodSquareProps) {
+    const { today, filter } = useMoodTracker();
 
-    const { today } = useMoodTracker()
-
-    // const [isHovered, setIsHovered] = useState(false);
+    // 🎯 We keep `open` state to allow the "click to pin" behavior
     const [open, setOpen] = useState(false);
-    const [pinned, setPinned] = useState(false);
-
-    const containerRef = useClickOutside<HTMLDivElement>(() => {
-        setPinned(false);
-        setOpen(false);
-    });
-
-    // function handleMouseEnter() {
-    //     if (!pinned) {
-    //         setOpen(true);
-    //     }
-    // }
-
-    // function handleMouseLeave() {
-    //     if (!pinned) {
-    //         setOpen(false);
-    //     }
-    // }
-
-    function handleClick() {
-        if (pinned) {
-            setPinned(false);
-            setOpen(false);
-        } else {
-            setPinned(true);
-            setOpen(true);
-        }
-    }
 
     const moodTextColor = useCallback((mood: MoodType) => getMoodTextColor(mood), []);
     const moodBgColor = useCallback((mood: MoodType) => getMoodBgColor(mood), []);
     const moodIcon = useCallback((mood: MoodType) => getMoodIcon(mood), []);
 
-    const history = moodDayItem;
-
     const tooltipContent = useCallback((date: string) => {
-
         const formattedDate = formatDate(today);
-
-        if (formattedDate === date) return 'Today'
-
-        return date;
-
-
+        return formattedDate === date ? 'Today' : date;
     }, [today]);
 
-    if (!history) return null;
-
+    if (!moodDayItem) return null;
 
     return (
-        <div
-            ref={containerRef}
-            className="relative">
-            <div
-                role='button'
-                // onMouseEnter={handleMouseEnter}
-                // onMouseLeave={handleMouseLeave}
-                onClick={handleClick}
-                className={cn(
-                    "border border-border col-span-1 aspect-square rounded-sm flex-center cursor-pointer",
-                    moodTextColor(history.mood),
-                    moodBgColor(history.mood),
-                )} />
+        // 🎯 Popover.Root natively handles click-outside-to-close and Escape key
+        <Popover.Root open={open} onOpenChange={setOpen}>
+            <Popover.Trigger
+                render={(props) => (
+                    <div
+                        {...props}
+                        role="button"
+                        tabIndex={0} // 🎯 Makes the div focusable for keyboard users
+                        className={cn(
+                            "col-span-1 aspect-square flex-center cursor-pointer outline-none transition-all",
+                            filter === "thisWeek" ? "first:rounded-l-sm last:rounded-r-sm" : "first:rounded-tl-sm last:rounded-br-sm nth-of-type-15:rounded-tr-sm nth-of-type-16:rounded-bl-sm",
+                            filter === "thisWeek" ? "" : "nth-[-n+15]:border-b",
+                            "border-r nth-of-type-15:border-r-0 last:border-r-0 border-muted",
+                            moodTextColor(moodDayItem.mood),
+                            moodBgColor(moodDayItem.mood),
+                        )}
+                    />
+                )}
+            />
 
-
-            <AnimatePresence>
-                {open && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className={`flex absolute top-full mt-1 left-1/2 -translate-x-1/2 w-fit app_container ${moodTextColor(history.mood)} ${moodBgColor(history.mood)} px-2 py-1 z-20 flex-row-center gap-x-1`}>
-                        <div className="">
+            <Popover.Portal>
+                <Popover.Positioner side="bottom" sideOffset={4}>
+                    <Popover.Popup
+                        className={`flex app_container px-2 py-1 z-9999 flex-row-center gap-x-1
+                        data-state=closed:opacity-0 data-state=closed:scale-95
+                        data-state=open:opacity-100 data-state=open:scale-100
+                        transition-all duration-200 origin-var(--transform-origin)
+                        ${moodTextColor(moodDayItem.mood)} ${moodBgColor(moodDayItem.mood)}`}
+                    >
+                        <div className="shrink-0">
                             {moodIcon(moodDayItem.mood)}
                         </div>
-                        <Typography className='text-nowrap' variant='caption-xs'>
+                        <BetterTypography className="text-nowrap" variant="xs">
                             {tooltipContent(moodDayItem.date)}
-                        </Typography>
+                        </BetterTypography>
 
+                        {/* 🎯 Interactive element is now safely inside a Popover, not a Tooltip */}
                         <EditMood mood={moodDayItem} />
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-        </div>
-
-
-    )
+                    </Popover.Popup>
+                </Popover.Positioner>
+            </Popover.Portal>
+        </Popover.Root>
+    );
 }

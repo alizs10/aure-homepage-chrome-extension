@@ -1,15 +1,15 @@
-import { type MouseEvent, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import Button from '../../../common/Button';
-import { Typography } from '../../../common/Typography';
-import TextInput from '../../../Form/TextInput';
-import ModalHeader from '../../../modal/ModalHeader';
-import ModalWrapper from '../../../modal/ModalWrapper';
+import { BetterTypography } from '@/components/common/BetterTypography';
+import ModalHeader from '@/components/ui/modal/ModalHeader';
+import ModalWrapper from '@/components/ui/modal/ModalWrapper';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import Button from '../../../ui/Button';
+import TextInput from '../../../ui/TextInput';
 import { useCalendar } from '../hooks/useCalendar';
 import { calendarNoteSchema, type CalendarNoteFormValues } from '../validation/note-schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'sonner';
 
 interface CalendarNoteModalProps {
     open: boolean;
@@ -58,21 +58,16 @@ export default function CalendarNoteModal({ open, onClose, init_value = '', note
         onClose();
     }
 
-    function stopPropagation(e: MouseEvent<HTMLDivElement>) {
-        e.stopPropagation();
-    }
-
     return (
         <ModalWrapper open={open} onClose={onClose}>
             <div
-                onClick={stopPropagation}
                 className="app_container bg-background p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none"
             >
                 <ModalHeader title="New Calendar Note" onClose={onClose} />
 
-                <Typography variant="body">
-                    Note for {format(selectedDay!, 'MMMM dd')}
-                </Typography>
+                <BetterTypography variant="sm">
+                    Note for {format(selectedDay!, "MMMM dd")}
+                </BetterTypography>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
                     <TextInput
@@ -88,7 +83,9 @@ export default function CalendarNoteModal({ open, onClose, init_value = '', note
                         variant="primary-active"
                         size="sm"
                     >
-                        <Typography variant="caption">{editing ? "Update Note" : "Save Note"}</Typography>
+                        <BetterTypography variant="sm">
+                            {editing ? "Update Note" : "Save Note"}
+                        </BetterTypography>
                     </Button>
                 </form>
             </div>

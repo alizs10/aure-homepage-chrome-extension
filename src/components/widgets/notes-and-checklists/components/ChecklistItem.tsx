@@ -1,9 +1,9 @@
 // components/notes-and-checklists/ChecklistItem.tsx
-import Button from '@/components/common/Button';
-import { Typography } from '@/components/common/Typography';
+import { BetterTypography } from '@/components/common/BetterTypography';
+import Button from '@/components/ui/Button';
+import { AnimatePresence, motion } from 'framer-motion';
 import { CircleCheckIcon, CircleIcon } from 'lucide-react';
 import ItemFooter from './ItemFooter';
-import { AnimatePresence, motion } from 'framer-motion';
 
 
 interface ChecklistItemProps {
@@ -56,9 +56,9 @@ export function ChecklistItem({ item, onChange, date, edited }: ChecklistItemPro
                 </AnimatePresence>
             </Button>
             <div className="app_container bg-background  min-w-2/3 flex-1 px-4 py-2 flex flex-col gap-y-2">
-                <Typography className={`${item.status ? 'line-through' : ''}`} variant='body-sm'>
+                <BetterTypography className={`${item.status ? 'line-through' : ''}`} variant="sm">
                     {content}
-                </Typography>
+                </BetterTypography>
                 <ItemFooter date={date} edited={edited} />
 
             </div>
