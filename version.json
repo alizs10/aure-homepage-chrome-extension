@@ -5,14 +5,14 @@
     "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.2/aure-homepage-v0.0.2.zip",
     "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.2",
     "notes": [
-        "Added Commands to search input",
-        "Improved app layout, animations and responsiveness",
-        "Created export file from username",
-        "Rewrote all ui components using base ui",
-        "Replaced Typography with BetterTypography",
-        "Fixed bugs",
-        "Mood Tracker Redesigned & Added Chart View",
-        "Added Settings for Notes and Tasks",
-        "Added Pick Year for Calendar"
+        "Added command support to the search bar.",
+        "Redesigned the Mood Tracker with a new chart view.",
+        "Added year picker for the Calendar widget.",
+        "Added settings for Notes & Checklists.",
+        "Data export by username.",
+        "Refined the application layout, animations, and responsiveness.",
+        "Rebuilt all UI components using Base UI.",
+        "Replaced Typography with BetterTypography.",
+        "Fixed various bugs and performance issues."
     ]
 }
