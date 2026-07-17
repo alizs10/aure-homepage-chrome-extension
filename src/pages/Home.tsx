@@ -19,7 +19,7 @@ export default function Home() {
     return (
         <AppLayout>
 
-            <section className="flex-1 min-h-0 pb-14 md:pb-18 lg:pb-20 overflow-y-scroll scrollbar-none w-full max-w-6xl mx-auto gap-y-4 md:gap-y-8 mt-10 space-y-6">
+            <section className="flex-1 min-h-0 pb-14 md:pb-18 lg:pb-20 overflow-y-scroll scrollbar-none w-full max-w-6xl mx-auto gap-y-4 md:gap-y-8 mt-10 space-y-6 overflow-x-clip">
 
                 <div className="h-fit min-h-fit flex flex-col">
                     <div className="sticky top-0 z-40">

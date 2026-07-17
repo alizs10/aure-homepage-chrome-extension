@@ -39,6 +39,9 @@ export type WidgetPreferences = {
     "notes-and-checklists": {
         showChecked: boolean;
     };
+    "mood-tracker": {
+        showChart: boolean;
+    };
 
 };
 

@@ -11,7 +11,7 @@
         "Rewrote all ui components using base ui",
         "Replaced Typography with BetterTypography",
         "Fixed bugs",
-        "Mood Tracker Redesigned",
+        "Mood Tracker Redesigned & Added Chart View",
         "Added Settings for Notes and Tasks",
         "Added Pick Year for Calendar"
     ]

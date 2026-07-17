@@ -42,7 +42,7 @@ export default function Dropdown<T extends string | number>({
                         variant={triggerVariant}
                         // Refinement: Use icon-sm for perfect square centering when label is hidden
                         size={hideLabel ? "icon-sm" : "sm"}
-                        className={hideLabel ? "p-0" : "h-auto py-1 px-1 gap-x-1"}
+                        className={hideLabel ? "p-0" : "h-auto py-1 px-3 gap-x-1"}
                         rightIcon={
                             <Select.Icon className="transition-transform duration-200 data-popup-open:rotate-180">
                                 <ChevronDownIcon className="size-4" />

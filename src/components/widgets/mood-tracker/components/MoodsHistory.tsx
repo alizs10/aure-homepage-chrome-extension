@@ -5,9 +5,11 @@ import { useCallback } from "react";
 import { getMoodTextColor } from "../constants/moods";
 import Dropdown from "@/components/ui/Dropdown";
 import { BetterTypography } from "@/components/common/BetterTypography";
+import Score from "./Score";
+import MoodsChart from "./MoodsChart";
 
 export default function MoodsHistory() {
-    const { todayMood, filter, onFilterChange } = useMoodTracker();
+    const { todayMood, filter, onFilterChange, showChart } = useMoodTracker();
 
     const moodTextColor = useCallback(
         (mood: MoodType) => getMoodTextColor(mood, false),
@@ -38,21 +40,25 @@ export default function MoodsHistory() {
                 />
             </div>
 
-            <HistoryList />
+            {showChart ? <MoodsChart /> : <HistoryList />}
 
-            <div className="mt-auto app_container px-4 py-1.5 bg-background">
-                <BetterTypography variant="xs">
-                    You feel{" "}
-                    <BetterTypography
-                        as="span"
-                        variant="xs"
-                        weight="semibold"
-                        className={`${moodTextColor(todayMood.mood)} capitalize`}
-                    >
-                        {todayMood.mood}
-                    </BetterTypography>{" "}
-                    today!!!
-                </BetterTypography>
+            <div className="mt-auto flex-row-center gap-x-1">
+                <div className="flex-1 app_container px-4 py-1.5 bg-background">
+                    <BetterTypography variant="xs">
+                        You feel{" "}
+                        <BetterTypography
+                            as="span"
+                            variant="xs"
+                            weight="semibold"
+                            className={`${moodTextColor(todayMood.mood)} capitalize`}
+                        >
+                            {todayMood.mood}
+                        </BetterTypography>{" "}
+                        today!!!
+                    </BetterTypography>
+                </div>
+
+                <Score />
             </div>
         </div>
     );
