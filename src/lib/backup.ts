@@ -13,18 +13,13 @@ import type { Wallpaper } from '@/types';
 // Helper to fetch all Chrome Storage data
 async function getAllChromeStorageData() {
     const data: Record<string, unknown> = {};
+    const keys = Object.values(STORAGE_KEYS); // This already includes 'settings'
 
-    const keys = Object.values(STORAGE_KEYS);
     for (const key of keys) {
         const value = await storage.get<unknown>(key);
         if (value !== undefined && value !== null) {
             data[key] = value;
         }
-    }
-
-    const settings = await storage.get<unknown>("settings");
-    if (settings !== undefined && settings !== null) {
-        data["settings"] = settings;
     }
 
     return data;
@@ -44,9 +39,9 @@ async function clearAllData() {
         }
     );
 
+    // Object.values(STORAGE_KEYS) already includes 'settings', so one loop is enough
     const keys = Object.values(STORAGE_KEYS);
     await Promise.all(keys.map(key => storage.remove(key)));
-    await storage.remove("settings");
 }
 
 export async function exportUserData(username?: string) {

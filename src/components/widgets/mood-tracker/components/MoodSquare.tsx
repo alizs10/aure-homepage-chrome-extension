@@ -40,9 +40,9 @@ export default function MoodSquare({ moodDayItem }: MoodSquareProps) {
                         tabIndex={0} // 🎯 Makes the div focusable for keyboard users
                         className={cn(
                             "col-span-1 aspect-square flex-center cursor-pointer outline-none transition-all",
-                            filter === "thisWeek" ? "group-first:rounded-l-sm group-last:rounded-r-sm" : "group-first:rounded-tl-sm group-last:rounded-br-sm group-nth-of-type-15:rounded-tr-sm group-nth-of-type-16:rounded-bl-sm",
-                            filter === "thisWeek" ? "" : "group-nth-[-n+15]:border-b",
-                            "border-r group-nth-of-type-15:border-r-0 group-last:border-r-0 border-muted",
+                            filter === "thisWeek" ? "first:rounded-l-sm last:rounded-r-sm" : "first:rounded-tl-sm last:rounded-br-sm nth-of-type-15:rounded-tr-sm nth-of-type-16:rounded-bl-sm",
+                            filter === "thisWeek" ? "" : "nth-[-n+15]:border-b",
+                            "border-r nth-of-type-15:border-r-0 last:border-r-0 border-muted",
                             moodTextColor(moodDayItem.mood),
                             moodBgColor(moodDayItem.mood),
                         )}

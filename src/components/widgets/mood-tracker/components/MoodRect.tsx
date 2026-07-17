@@ -31,10 +31,10 @@ export default function MoodRect({ items, label, maxCount }: MoodRectProps) {
                         // 🎯 Added cursor-help to indicate it's a tooltip, and a subtle ring when open
                         className={cn(
                             "col-span-1 h-5 flex-center cursor-help transition-all",
-                            "border-r border-muted group-last-of-type:border-r-0",
-                            maxCount === 4 ? "group-nth-[-n+2]:border-b group-nth-of-type-2:border-r-0" : "group-nth-[-n+3]:border-b group-nth-of-type-3:border-r-0",
-                            "group-first:rounded-tl-sm group-last:rounded-br-sm",
-                            maxCount === 4 ? "group-nth-of-type-2:rounded-tr-sm group-nth-of-type-3:rounded-bl-sm" : "group-nth-of-type-3:rounded-tr-sm group-nth-of-type-4:rounded-bl-sm",
+                            "border-r border-muted last-of-type:border-r-0",
+                            maxCount === 4 ? "nth-[-n+2]:border-b nth-of-type-2:border-r-0" : "nth-[-n+3]:border-b nth-of-type-3:border-r-0",
+                            "first:rounded-tl-sm last:rounded-br-sm",
+                            maxCount === 4 ? "nth-of-type-2:rounded-tr-sm nth-of-type-3:rounded-bl-sm" : "nth-of-type-3:rounded-tr-sm nth-of-type-4:rounded-bl-sm",
                             weekColor
                         )}
                     />

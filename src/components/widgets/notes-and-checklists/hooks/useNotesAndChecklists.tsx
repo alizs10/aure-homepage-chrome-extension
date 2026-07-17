@@ -8,6 +8,7 @@ export function useNotesAndChecklists() {
     const data = useNotesAndChecklistsStore((state) => state.data);
     const loading = useNotesAndChecklistsStore((state) => state.loading);
     const editable = useNotesAndChecklistsStore((state) => state.editable);
+    const showChecked = useNotesAndChecklistsStore((state) => state.showChecked); // <-- Added
 
     // Select actions
     const addItem = useNotesAndChecklistsStore((state) => state.addItem);
@@ -16,6 +17,7 @@ export function useNotesAndChecklists() {
     const startEdit = useNotesAndChecklistsStore((state) => state.startEdit);
     const updateItem = useNotesAndChecklistsStore((state) => state.updateItem);
     const cancelEdit = useNotesAndChecklistsStore((state) => state.cancelEdit);
+    const setShowChecked = useNotesAndChecklistsStore((state) => state.setShowChecked); // <-- Added
     const initialize = useNotesAndChecklistsStore((state) => state.initialize);
 
     // Compute derived state with useMemo
@@ -31,11 +33,20 @@ export function useNotesAndChecklists() {
         return data.filter((p) => (p.content.startsWith("[] ") && (p as Checklist).status)).length;
     }, [data]);
 
-    // Return the exact same object shape as the old Context
+    // NEW: Filtered data based on the showChecked setting
+    const filteredData = useMemo(() => {
+        if (showChecked) return data;
+        // If showChecked is false, hide items that start with "[] " AND have status true
+        return data.filter((p) => !(p.content.startsWith("[] ") && (p as Checklist).status));
+    }, [data, showChecked]);
+
     return {
         data,
+        filteredData, // <-- Expose this for your list component to use!
         loading,
         editable,
+        showChecked,  // <-- Expose this
+        setShowChecked, // <-- Expose this
         addItem,
         removeItem,
         toggleCheckbox,
@@ -45,6 +56,6 @@ export function useNotesAndChecklists() {
         notesCount,
         itemsCount,
         checkedItemsCount,
-        initialize // Exposed so the root component can trigger data loading
+        initialize
     };
 }

@@ -7,16 +7,16 @@ import { Item } from './Item';
 
 export function ItemsList() {
     const containerRef = useRef<HTMLDivElement>(null);
-    const { data, toggleCheckbox } = useNotesAndChecklists();
+    const { filteredData, data, toggleCheckbox } = useNotesAndChecklists();
 
-    useScrollToBottom(containerRef, data.length);
+    useScrollToBottom(containerRef, filteredData.length);
 
     return (
         <div
             ref={containerRef}
             className="flex-1 min-h-0 overflow-y-scroll scrollbar-none w-full flex flex-col gap-y-2 pb-14"
         >
-            {data.map((d, index) => (
+            {filteredData.map((d, index) => (
                 <Item key={d.id} item={d} index={index} onChange={toggleCheckbox} />
             ))}
 
@@ -24,6 +24,13 @@ export function ItemsList() {
                 <div className="flex-1 flex-center">
                     <BetterTypography variant="sm">
                         add your first note or check list
+                    </BetterTypography>
+                </div>
+            )}
+            {(filteredData.length === 0 && data.length > 0) && (
+                <div className="flex-1 flex-center">
+                    <BetterTypography variant="sm">
+                        Everything is checked off.
                     </BetterTypography>
                 </div>
             )}

@@ -34,6 +34,14 @@ export type WidgetId =
 
 export type WidgetSettings = Record<WidgetId, boolean>;
 
+// NEW: Tracks internal preferences for each specific widget
+export type WidgetPreferences = {
+    "notes-and-checklists": {
+        showChecked: boolean;
+    };
+
+};
+
 //accent
 export const accentOptions = [
     {
@@ -83,6 +91,8 @@ export interface Settings {
     wallpaper: "default" | string
     blur: BlurSize
     widgets: WidgetSettings
+    // NEW: Optional, so it doesn't break existing users' settings
+    widgetPreferences?: Partial<WidgetPreferences>;
     accent: Accent
     show_top_sites: boolean
     show_favorites: boolean
