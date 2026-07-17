@@ -30,10 +30,10 @@ export const commands: Command[] = [
         },
     },
     {
-        id: 'todo',
-        label: '/todo',
-        description: 'Create a checklist item',
-        keywords: ['t', 'todo'],
+        id: 'task',
+        label: '/task',
+        description: 'Create a task item',
+        keywords: ['t', 'task'],
         handler: (args) => {
             if (!args.trim()) {
                 toast.error('Please provide task content');

@@ -70,7 +70,7 @@ const widgets: WidgetItem[] = [
     {
         // Updated ID to match the key in defaultValues
         id: 'notes-and-checklists',
-        label: 'Notes & Checklists',
+        label: 'Notes & Tasks',
         imgs: {
             light: notesMockupLightImg,
             dark: notesMockupDarkImg,

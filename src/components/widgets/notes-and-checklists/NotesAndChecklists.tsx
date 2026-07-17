@@ -10,7 +10,7 @@ function NotesAndChecklistsContent() {
         <div className="sm:col-span-1 app_container app_gradient app-blur flex flex-col gap-y-4 p-5 max-h-110 lg:max-h-130 lg:row-span-2">
             <div className="flex-center-between">
                 <BetterTypography className='capitalize text-nowrap' variant='14-16-20' weight='semibold' as="h3">
-                    notes & checklists
+                    notes & tasks
                 </BetterTypography>
 
                 <div className="flex-row-center gap-x-1">

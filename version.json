@@ -6,11 +6,11 @@
     "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.2",
     "notes": [
         "Added Commands to search input",
-        "Improve app layout, animations and responsiveness",
-        "Create export file from username",
-        "Rewrite all ui components using base ui",
-        "Replace Typography with BetterTypography",
-        "Fix bugs",
-        "Mood Tracker Redesign"
+        "Improved app layout, animations and responsiveness",
+        "Created export file from username",
+        "Rewrote all ui components using base ui",
+        "Replaced Typography with BetterTypography",
+        "Fixed bugs",
+        "Mood Tracker Redesigned"
     ]
 }
