@@ -5,6 +5,7 @@ export type SettingsTab =
     | "user-information"
     | "sites-and-shortcuts"
     | "preferences"
+    | "commands"
     | "widgets-center";
 
 export interface SettingsTabsContextValue {

@@ -115,7 +115,7 @@ export const commands: Command[] = [
         id: 'calendar',
         label: '/cal',
         description: 'Add a note to a specific date (YYYY-MM-DD)',
-        keywords: ['c', 'cal', 'event'],
+        keywords: ['c', 'cal'],
         handler: (args) => {
             const parts = args.trim().split(' ');
             const dateStr = parts[0].toLowerCase();

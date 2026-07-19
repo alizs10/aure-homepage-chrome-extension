@@ -1,7 +1,7 @@
 import { getTopSites } from "@/lib/chrome/top-sites";
 import { commands } from "@/lib/commands";
 import { motion } from "framer-motion";
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { BetterTypography } from "../common/BetterTypography";
 import { sliceText } from "@/helpers";
 
@@ -35,15 +35,6 @@ export default function Suggestions({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
-  const commandSuggestions = useMemo(() => {
-    if (!isCommandMode) return [];
-
-    const query = searchValue.slice(1).toLowerCase().trim();
-    if (!query) return commands;
-
-    return commands.filter(cmd => cmd.keywords.includes(query));
-  }, [searchValue, isCommandMode]);
-
   useEffect(() => {
     getTopSites().then(setTopSites);
   }, []);
@@ -54,6 +45,28 @@ export default function Suggestions({
     const fetchSuggestions = async () => {
       // 🌟 1. COMMAND MODE: ONLY show commands, skip Google/Top Sites entirely
       if (isCommandMode) {
+
+        const query = searchValue.slice(1).toLowerCase().trim();
+
+        // 🌟 FIX: Properly update state when query is empty
+        if (!query) {
+          const formattedCommands: Suggestion[] = commands.map(cmd => ({
+            id: cmd.id,
+            url: '#',
+            label: cmd.label,
+            description: cmd.description,
+            source: "command" as const
+          }));
+          setSuggestions(formattedCommands);
+          setSelectedIndex(-1);
+          return;
+        }
+
+        // 🌟 Use .some() to check if ANY keyword includes the query
+        const commandSuggestions = commands.filter(cmd =>
+          cmd.keywords.some(keyword => keyword.includes(query)) ||
+          cmd.label.toLowerCase().includes(query)
+        );
 
         const formattedCommands: Suggestion[] = commandSuggestions.map(cmd => ({
           id: cmd.id,
@@ -121,7 +134,7 @@ export default function Suggestions({
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchValue, topSites, isNavigating, isCommandMode, commandSuggestions]);
+  }, [searchValue, topSites, isNavigating, isCommandMode]);
 
   useEffect(() => {
     if (selectedIndex >= 0) {

@@ -1,4 +1,4 @@
-import { AppWindowIcon, InfoIcon, LayoutDashboardIcon, SwatchBookIcon, UserPenIcon } from "lucide-react";
+import { AppWindowIcon, InfoIcon, LayoutDashboardIcon, SwatchBookIcon, TerminalIcon, UserPenIcon } from "lucide-react";
 
 export const TABS = [
     {
@@ -20,6 +20,11 @@ export const TABS = [
         id: "user-information",
         label: "User Information",
         Icon: UserPenIcon
+    },
+    {
+        id: "commands",
+        label: "Commands",
+        Icon: TerminalIcon
     },
     {
         id: "about",
