@@ -3,11 +3,14 @@ import { getMonthWeekBuckets, groupHistoryByBuckets } from '../helpers/history';
 import { useMoodTracker } from '../hooks/useMoodTracker';
 import MoodRect from './MoodRect';
 import EmptyRect from './EmptyRect';
+import { parseISO } from 'date-fns';
 
 export default function HistoryWeeksList() {
-    const { data, today } = useMoodTracker()
+    // 🌟 FIX: Destructure todayStr
+    const { data, todayStr } = useMoodTracker();
 
-    const buckets = useMemo(() => getMonthWeekBuckets(today), [today]);
+    // 🌟 FIX: Use parseISO(todayStr) for perfect synchronization
+    const buckets = useMemo(() => getMonthWeekBuckets(parseISO(todayStr)), [todayStr]);
 
     // This already contains ALL weeks (including empty ones)
     const weeksData = useMemo(() => {

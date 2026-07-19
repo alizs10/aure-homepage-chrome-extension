@@ -1,13 +1,13 @@
 // hooks/useCalendar.ts
 import { useMemo } from 'react';
-import { isSameDay } from 'date-fns';
+import { isSameDay, parseISO } from 'date-fns';
 import { useCalendarNotesStore } from '../store';
+import { useCurrentDateString } from '@/hooks/useCurrentDateString';
 
 export function useCalendar() {
     // Select state slices
     const data = useCalendarNotesStore((state) => state.data);
     const loading = useCalendarNotesStore((state) => state.loading);
-    const today = useCalendarNotesStore((state) => state.today);
     const month = useCalendarNotesStore((state) => state.month);
     const selectedDay = useCalendarNotesStore((state) => state.selectedDay);
 
@@ -20,7 +20,14 @@ export function useCalendar() {
     const getNoteForDay = useCalendarNotesStore((state) => state.getNoteForDay);
     const initialize = useCalendarNotesStore((state) => state.initialize);
 
-    // Compute derived state with useMemo
+    // 🌟 1. Get the reactive, auto-updating date string
+    const todayStr = useCurrentDateString();
+
+    // 🌟 2. Convert it to a Date object for date-fns compatibility
+    // This is memoized, so it only creates a new Date object when the day actually changes
+    const today = useMemo(() => parseISO(todayStr), [todayStr]);
+
+    // 🌟 3. Now `isTodaySelected` will automatically recalculate when `today` rolls over
     const isTodaySelected = useMemo(() => {
         return selectedDay ? isSameDay(selectedDay, today) : undefined;
     }, [selectedDay, today]);

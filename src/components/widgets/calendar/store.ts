@@ -7,7 +7,6 @@ import { CalendarRepository } from './db';
 interface CalendarNotesState {
     data: CalendarNote[];
     loading: boolean;
-    today: Date;
     month: Date;
     selectedDay: Date;
 
@@ -24,7 +23,6 @@ interface CalendarNotesState {
 export const useCalendarNotesStore = create<CalendarNotesState>((set, get) => ({
     data: [],
     loading: true,
-    today: new Date(), // Created once when the store initializes
     month: new Date(),
     selectedDay: new Date(), // Initialized to today
 

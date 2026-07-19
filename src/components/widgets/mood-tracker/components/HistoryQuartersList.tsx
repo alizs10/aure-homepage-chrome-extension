@@ -3,11 +3,14 @@ import { getQuarterBuckets, groupHistoryByBuckets } from '../helpers/history';
 import { useMoodTracker } from '../hooks/useMoodTracker';
 import MoodRect from './MoodRect';
 import EmptyRect from './EmptyRect';
+import { parseISO } from 'date-fns';
 
 export default function HistoryQuartersList() {
-    const { data, today } = useMoodTracker()
+    // 🌟 FIX: Destructure todayStr
+    const { data, todayStr } = useMoodTracker();
 
-    const buckets = useMemo(() => getQuarterBuckets(today), [today]);
+    // 🌟 FIX: Use parseISO(todayStr) for perfect synchronization
+    const buckets = useMemo(() => getQuarterBuckets(parseISO(todayStr)), [todayStr]);
 
     // This already contains ALL 4 quarters
     const quartersData = useMemo(() => {

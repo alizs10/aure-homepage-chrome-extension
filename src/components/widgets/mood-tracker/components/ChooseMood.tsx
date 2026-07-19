@@ -7,11 +7,11 @@ import { moodMessages, type MoodType } from '../types'
 
 export default function ChooseMood() {
 
-    const { todayMood, today, addItem } = useMoodTracker()
+    const { todayMood, addItem } = useMoodTracker()
 
     function handleMoodSelect(mood: MoodType) {
 
-        addItem(mood, today)
+        addItem(mood, new Date())
         toast.success(moodMessages[mood]);
     }
 

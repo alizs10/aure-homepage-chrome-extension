@@ -9,7 +9,6 @@ interface MoodTrackerState {
     data: MoodHistory[];
     loading: boolean;
     filter: typeof filters[number]['value'];
-    today: Date;
     showChart: boolean, // Default to true
 
 
@@ -28,7 +27,6 @@ export const useMoodTrackerStore = create<MoodTrackerState>((set, get) => ({
     data: [],
     loading: true,
     filter: "last30days",
-    today: new Date(), // Created once when the store initializes
     showChart: false, // Default to true
 
 

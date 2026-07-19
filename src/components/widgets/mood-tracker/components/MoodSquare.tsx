@@ -1,5 +1,4 @@
 import { BetterTypography } from '@/components/common/BetterTypography';
-import { formatDate } from '@/helpers';
 import { cn } from '@/lib/util';
 import { Popover } from '@base-ui/react/popover'; // 🎯 Using Popover for interactive content
 import { useCallback, useState } from 'react';
@@ -13,7 +12,7 @@ interface MoodSquareProps {
 }
 
 export default function MoodSquare({ moodDayItem }: MoodSquareProps) {
-    const { today, filter } = useMoodTracker();
+    const { filter, todayStr } = useMoodTracker();
 
     // 🎯 We keep `open` state to allow the "click to pin" behavior
     const [open, setOpen] = useState(false);
@@ -23,9 +22,8 @@ export default function MoodSquare({ moodDayItem }: MoodSquareProps) {
     const moodIcon = useCallback((mood: MoodType) => getMoodIcon(mood), []);
 
     const tooltipContent = useCallback((date: string) => {
-        const formattedDate = formatDate(today);
-        return formattedDate === date ? 'Today' : date;
-    }, [today]);
+        return todayStr === date ? 'Today' : date;
+    }, [todayStr]);
 
     if (!moodDayItem) return null;
 

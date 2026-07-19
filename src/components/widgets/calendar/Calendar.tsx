@@ -5,7 +5,5 @@ export default function Calendar() {
 
     return (
         <CalendarContent />
-        // <CalendarNotesProvider>
-        // </CalendarNotesProvider>
     );
 }
