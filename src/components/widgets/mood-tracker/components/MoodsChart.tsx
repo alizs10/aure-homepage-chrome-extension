@@ -137,8 +137,6 @@ export default function MoodsChart() {
             });
     }, [filteredData, filter, today]);
 
-    console.log(chartData)
-
     const xDomain = useMemo(() => {
         if (chartData.length === 0) return [new Date(), new Date()] as [Date, Date];
         const ext = extent(chartData, (d: ChartPoint) => d.date) as [Date, Date];
