@@ -48,7 +48,7 @@ export default function MoodModal({ open, onClose, mood }: MoodModalProps) {
 
                     <div className="flex-center gap-x-2">
                         {MOODS_OPTIONS.map(mood => (
-                            <Button key={mood.id} className="hover:scale-125" variant="none" size="icon"
+                            <Button key={mood.id} className="hover:scale-125 transition-all" variant="none" size="icon"
                                 onClick={() => handleMoodSelect(mood.id)}
                             >
                                 {mood.icon}
