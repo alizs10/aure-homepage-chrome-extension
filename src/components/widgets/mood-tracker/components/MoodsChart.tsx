@@ -32,7 +32,7 @@ import type { MoodHistory, MoodType } from "../types";
 const margin = {
     top: 5,
     right: 5,
-    bottom: 0,
+    bottom: 6,
     left: 5,
 };
 
@@ -137,6 +137,8 @@ export default function MoodsChart() {
             });
     }, [filteredData, filter, today]);
 
+    console.log(chartData)
+
     const xDomain = useMemo(() => {
         if (chartData.length === 0) return [new Date(), new Date()] as [Date, Date];
         const ext = extent(chartData, (d: ChartPoint) => d.date) as [Date, Date];
@@ -163,7 +165,7 @@ export default function MoodsChart() {
     });
 
     const yScale = scaleLinear({
-        domain: [1, 5],
+        domain: [0, 5],
         range: [innerHeight, 0],
     });
 
