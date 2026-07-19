@@ -77,10 +77,10 @@ export default function Cat({ age, color, isDead }: CatProps) {
 
             {/* Tail */}
             <div
-                className={`absolute ${colorClass} rounded-full -rotate-45 origin-left`}
+                className={`absolute ${colorClass} rounded-full -rotate-75 origin-left`}
                 style={{
-                    right: 0,
-                    bottom: u * 4,
+                    right: u * -2,
+                    bottom: u * 3.5,
                     width: u * 4,
                     height: u,
                 }}
