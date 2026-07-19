@@ -5,7 +5,7 @@ import { useMemo, useState, type PropsWithChildren } from "react";
 import { toast } from "sonner";
 import Button from "../../../ui/Button";
 import KillPetDialog from "../dialogs/KillPetDialog";
-import { getPetAgeLabel, getRemainingFoodToday } from "../helpers";
+import { getPetAgeLabel, getRemainingFoodToday, isPetDead } from "../helpers";
 import { usePetAgeTicker } from "../hooks/usePetAgeTicker";
 import { usePetHouse } from "../hooks/usePetHouse";
 import type { Pet } from "../types";
@@ -48,32 +48,38 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
     usePetAgeTicker(pet.createdAt);
     const ageLabel = getPetAgeLabel(pet);
 
+    const isDead = isPetDead(pet)
+
     return (
         <div className="relative border-2 nth-[1]:border-t-0 nth-[1]:border-l-0 nth-[2]:border-t-0 nth-[2]:border-r-0 nth-[3]:border-b-0 nth-[3]:border-l-0 nth-[4]:border-b-0 nth-[4]:border-r-0 border-muted overflow-hidden">
 
-            <div className="flex-center-between px-3 py-1 z-10 relative">
-                <KillPetDialog pet={pet} />
+            <div className={`w-full flex-center-between px-3 py-1 z-10 relative ${isDead ? 'justify-end' : ''}`}>
+                {!isDead && (
+                    <KillPetDialog pet={pet} />
+                )}
 
                 <div className="flex-row-center gap-x-1">
-                    <Button
-                        onClick={handleFeedPet}
-                        disabled={remainingFoodToday === 0}
-                        rightIcon={
-                            pet.type === "cat" ? (
-                                <SoupIcon className="size-4" />
-                            ) : (
-                                <BoneIcon className="size-4" />
-                            )
-                        }
-                        variant="primary"
-                        size="xs"
-                    >
-                        {remainingFoodToday > 0 && (
-                            <BetterTypography variant="10">
-                                {remainingFoodToday}
-                            </BetterTypography>
-                        )}
-                    </Button>
+                    {!isDead && (
+                        <Button
+                            onClick={handleFeedPet}
+                            disabled={remainingFoodToday === 0}
+                            rightIcon={
+                                pet.type === "cat" ? (
+                                    <SoupIcon className="size-4" />
+                                ) : (
+                                    <BoneIcon className="size-4" />
+                                )
+                            }
+                            variant="primary"
+                            size="xs"
+                        >
+                            {remainingFoodToday > 0 && (
+                                <BetterTypography variant="10">
+                                    {remainingFoodToday}
+                                </BetterTypography>
+                            )}
+                        </Button>
+                    )}
 
                     <div className="app_container app_gradient app-blur py-1 px-2 flex-row-center gap-x-0.5">
                         <CatIcon className="size-3.5" />
@@ -87,9 +93,9 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
 
             <BetterTypography
                 variant="10"
-                className="absolute z-0 left-1/2 top-1/2 -translate-x-1/2 text-muted-foreground"
+                className="absolute z-0 left-1/2 top-1/2 -translate-x-1/2 text-muted-foreground text-nowrap"
             >
-                {pet.name}
+                {isDead ? `${pet.name}'s ghost` : pet.name}
             </BetterTypography>
 
             <PetMovement type={pet.type}>

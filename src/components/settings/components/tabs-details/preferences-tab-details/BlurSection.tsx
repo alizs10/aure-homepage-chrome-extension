@@ -2,26 +2,10 @@ import { BetterTypography } from "@/components/common/BetterTypography";
 import Button from "@/components/ui/Button";
 import { useSettingsStore } from "@/stores";
 import { blurOptions } from "@/types";
-import { useEffect } from "react";
 
 export default function BlurSection() {
-
     const { settings, update } = useSettingsStore();
-
     const selectedBlur = settings?.blur ?? 'md';
-
-    useEffect(() => {
-        const blur = blurOptions.find(
-            option => option.key === settings?.blur
-        );
-
-        if (blur) {
-            document.documentElement.style.setProperty(
-                "--app-blur",
-                blur.value
-            );
-        }
-    }, [settings?.blur]);
 
     return (
         <div className="flex flex-col gap-y-2">

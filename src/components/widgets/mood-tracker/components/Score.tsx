@@ -8,7 +8,7 @@ export default function Score() {
 
     return (
         <div className="app_container bg-background px-4 py-1.5 text-nowrap">
-            <BetterTypography variant="xs">
+            <BetterTypography variant="12-12-14-12-14">
                 Score: {score}/5
             </BetterTypography>
         </div>

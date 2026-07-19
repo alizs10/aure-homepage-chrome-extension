@@ -16,6 +16,7 @@ export default function SearchInput() {
     const isCommandMode = searchValue.startsWith('/');
 
     const handleSuggestionSelect = (suggestion: Suggestion) => {
+
         if (suggestion.source === "command") {
             const command = commands.find(c => c.id === suggestion.id);
             if (command) {
@@ -31,7 +32,12 @@ export default function SearchInput() {
                 setShowSuggestions(false);
             }
         } else {
-            window.location.href = suggestion.url;
+            // 🌟 FIX: Safety check before navigating
+            if (suggestion.url && suggestion.url !== '#' && suggestion.url !== 'undefined') {
+                window.location.href = suggestion.url;
+            } else {
+                console.warn("Attempted to navigate to invalid URL:", suggestion.url);
+            }
         }
     };
 
@@ -52,6 +58,7 @@ export default function SearchInput() {
     }
 
     function handleSearch() {
+
         // 1. Handle Command Mode Execution
         if (isCommandMode) {
             const query = searchValue.slice(1).trim();

@@ -2,12 +2,12 @@ import { useMemo } from "react";
 import { useMoodTracker } from "../hooks/useMoodTracker";
 import { filterHistoryByRange } from "../helpers/history";
 import { parseDate } from "@/helpers";
-import { eachDayOfInterval, format, startOfWeek, endOfWeek, subDays } from "date-fns";
+import { eachDayOfInterval, format, startOfWeek, endOfWeek, subDays, parseISO } from "date-fns";
 import MoodSquare from "./MoodSquare";
 import EmptySquare from "./EmptySquare";
 
 export default function HistoryDaysList() {
-    const { data, filter, today } = useMoodTracker();
+    const { data, filter, todayStr } = useMoodTracker();
 
     const filteredData = useMemo(() => {
         return filterHistoryByRange(data, filter);
@@ -15,17 +15,20 @@ export default function HistoryDaysList() {
 
     // Generate the exact chronological days we want to display
     const displayDays = useMemo(() => {
+        // 🌟 FIX: Use dynamic current date
+        const now = parseISO(todayStr);
+
         if (filter === 'thisWeek') {
             return eachDayOfInterval({
-                start: startOfWeek(today, { weekStartsOn: 1 }),
-                end: endOfWeek(today, { weekStartsOn: 1 })
+                start: startOfWeek(now, { weekStartsOn: 1 }),
+                end: endOfWeek(now, { weekStartsOn: 1 })
             });
         }
         return eachDayOfInterval({
-            start: subDays(today, 29),
-            end: today
+            start: subDays(now, 29),
+            end: now
         });
-    }, [filter, today]);
+    }, [filter, todayStr]);
 
     // Create a Map for O(1) lookup to avoid nested loops
     const dataMap = useMemo(() => {

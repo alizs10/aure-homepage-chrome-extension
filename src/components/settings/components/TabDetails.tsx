@@ -8,6 +8,7 @@ import PreferencesTabDetails from "./tabs-details/preferences-tab-details/Prefer
 import SitesAndShortcutsTabDetails from "./tabs-details/sites-and-shortcuts/SitesAndShortcutsTabDetails";
 import UserInfoTabDetails from "./tabs-details/user-info-tab-details/UserInfoTabDetails";
 import WidgetsCenterTabDetails from "./tabs-details/widgets-center/WidgetsCenterTabDetails";
+import CommandsTabDetails from "./tabs-details/commands-tab-details/CommandsTabDetails";
 
 export default function TabDetails() {
 
@@ -54,6 +55,9 @@ export default function TabDetails() {
             )}
             {activeTab === 'widgets-center' && (
                 <WidgetsCenterTabDetails />
+            )}
+            {activeTab === 'commands' && (
+                <CommandsTabDetails />
             )}
             {activeTab === 'about' && (
                 <AboutTabDetails />

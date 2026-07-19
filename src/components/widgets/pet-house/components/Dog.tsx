@@ -3,9 +3,10 @@ import type { DogColor } from "../types";
 type DogProps = {
     age: number;
     color: DogColor;
+    isDead: boolean
 };
 
-export default function Dog({ age, color }: DogProps) {
+export default function Dog({ age, color, isDead }: DogProps) {
     // Grow smoothly from age 0 to 15
     const maxAge = 15;
     const u = 2 + (Math.min(age, maxAge) / maxAge) * 2;
@@ -24,6 +25,7 @@ export default function Dog({ age, color }: DogProps) {
             style={{
                 width: `${u * 13}px`,
                 height: `${u * 8}px`,
+                opacity: isDead ? 0.2 : 1
             }}
         >
             {/* Body */}

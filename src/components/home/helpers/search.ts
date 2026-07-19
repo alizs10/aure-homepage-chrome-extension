@@ -1,23 +1,19 @@
-export function getDestination(input: string): string {
-    const value = input.trim();
+export function getDestination(query: string): string {
+    // 1. If it's empty, do nothing
+    if (!query || !query.trim()) return "";
 
-    if (!value) return "";
+    const trimmed = query.trim();
 
-    // Already a valid URL
-    try {
-        return new URL(value).toString();
-    } catch (error) {
-        console.log(error)
+    // 2. Check if it already looks like a valid URL with a protocol
+    if (/^https?:\/\//i.test(trimmed)) {
+        return trimmed;
     }
 
-    // Looks like a domain
-    if (
-        /^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+([/?#].*)?$/.test(value) &&
-        !value.includes(" ")
-    ) {
-        return `https://${value}`;
+    // 3. Check if it looks like a domain (e.g., "google.com" or "localhost:3000")
+    if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(trimmed)) {
+        return `https://${trimmed}`;
     }
 
-    // Google search
-    return `https://www.google.com/search?q=${encodeURIComponent(value)}`;
+    // 4. Fallback: Treat it as a Google search query
+    return `https://www.google.com/search?q=${encodeURIComponent(trimmed)}`;
 }

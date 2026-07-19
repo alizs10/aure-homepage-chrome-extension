@@ -14,7 +14,13 @@ export function usePetHouse() {
 
     // Compute derived state with useMemo
     const alivePets = useMemo(() => {
-        return data.filter(p => !isPetDead(p) && (p.deletedAt === null || p.deletedAt === undefined));
+        return data.filter(p => !isPetDead(p));
+    }, [data]);
+
+    const deadPets = useMemo(() => {
+        return data
+            .filter(p => isPetDead(p))
+            .sort((a, b) => b.createdAt - a.createdAt); // 🌟 Sorts ascending (oldest first)
     }, [data]);
 
     const catPets = useMemo(() => {
@@ -30,6 +36,7 @@ export function usePetHouse() {
         data,
         loading,
         alivePets,
+        deadPets,
         catPets,
         dogPets,
         addItem,

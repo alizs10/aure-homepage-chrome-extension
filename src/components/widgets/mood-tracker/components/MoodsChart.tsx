@@ -32,7 +32,7 @@ import type { MoodHistory, MoodType } from "../types";
 const margin = {
     top: 5,
     right: 5,
-    bottom: 0,
+    bottom: 6,
     left: 5,
 };
 
@@ -69,7 +69,7 @@ const getSvgColorFromScore = (score: number, theme: string) => {
 
 export default function MoodsChart() {
     const { resolvedTheme: theme } = useTheme();
-    const { data, filter, today } = useMoodTracker();
+    const { data, filter, todayStr } = useMoodTracker();
     const containerRef = useRef<HTMLDivElement>(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -89,8 +89,11 @@ export default function MoodsChart() {
     }, [data, filter]);
 
     const chartData = useMemo<ChartPoint[]>(() => {
+
+        const now = parseISO(todayStr);
+
         if (filter === 'thisMonth') {
-            const buckets = getMonthWeekBuckets(today);
+            const buckets = getMonthWeekBuckets(now);
             const grouped = groupHistoryByBuckets(filteredData, buckets);
 
             return grouped
@@ -105,7 +108,7 @@ export default function MoodsChart() {
         }
 
         if (filter === 'thisYear') {
-            const buckets = getQuarterBuckets(today);
+            const buckets = getQuarterBuckets(now);
             const grouped = groupHistoryByBuckets(filteredData, buckets);
 
             return grouped
@@ -125,7 +128,7 @@ export default function MoodsChart() {
             .map((item) => {
                 const date = parseISO(item.date);
                 // Match MoodSquare logic: show "Today" if it matches the current day
-                const isToday = format(date, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd');
+                const isToday = format(date, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
 
                 return {
                     date: date,
@@ -135,7 +138,7 @@ export default function MoodsChart() {
                     items: [item]
                 };
             });
-    }, [filteredData, filter, today]);
+    }, [filteredData, filter, todayStr]);
 
     const xDomain = useMemo(() => {
         if (chartData.length === 0) return [new Date(), new Date()] as [Date, Date];
@@ -163,7 +166,7 @@ export default function MoodsChart() {
     });
 
     const yScale = scaleLinear({
-        domain: [1, 5],
+        domain: [0, 5],
         range: [innerHeight, 0],
     });
 

@@ -13,6 +13,7 @@
     },
     "host_permissions": [
         "https://suggestqueries.google.com/*",
+        "https://*.gstatic.com/*",
         "https://www.google.com/s2/*",
         "https://raw.githubusercontent.com/alizs10/*"
     ],

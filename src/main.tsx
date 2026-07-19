@@ -1,9 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import Wrappers from './Wrappers.tsx'
 import App from './App.tsx'
-import Layout from './layouts/Layout.tsx'
-import { ThemeProvider } from './providers/ThemeProvider.tsx'
+import './index.css'
 
 // FIX: Check for chrome://newtab/ specifically, because its pathname is just '/'
 const isNewTabPage = window.location.href.startsWith('chrome://newtab') ||
@@ -21,11 +20,9 @@ if (isNewTabPage && window.location.search !== "?focused") {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider>
-      <Layout>
-        <App />
+    <Wrappers>
 
-      </Layout>
-    </ThemeProvider>
+      <App />
+    </Wrappers>
   </StrictMode>,
 )

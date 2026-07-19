@@ -1,15 +1,14 @@
 // hooks/useMoodTracker.ts
 import { useMemo } from 'react';
-import { format } from 'date-fns';
 import { calculateMoodScore } from '../helpers/history';
 import { useMoodTrackerStore } from '../store';
+import { useCurrentDateString } from '@/hooks/useCurrentDateString';
 
 export function useMoodTracker() {
     // Select only the state slices we need (prevents unnecessary re-renders)
     const data = useMoodTrackerStore((state) => state.data);
     const loading = useMoodTrackerStore((state) => state.loading);
     const filter = useMoodTrackerStore((state) => state.filter);
-    const today = useMoodTrackerStore((state) => state.today);
     const showChart = useMoodTrackerStore((state) => state.showChart); // <-- Added
 
 
@@ -21,11 +20,14 @@ export function useMoodTracker() {
     const setShowChart = useMoodTrackerStore((state) => state.setShowChart); // <-- Added
     const initialize = useMoodTrackerStore((state) => state.initialize);
 
-    // Compute derived state with useMemo, exactly like the old Provider
+
+    // 🌟 Reactive date string that auto-updates
+    const todayStr = useCurrentDateString();
+
     const todayMood = useMemo(() => {
-        const formattedToday = format(today, "yyyy-MM-dd");
-        return data.find(item => item.date === formattedToday) ?? null;
-    }, [data, today]);
+        return data.find(item => item.date === todayStr) ?? null;
+    }, [data, todayStr]);
+
 
     const score = useMemo(() => {
         return calculateMoodScore(data);
@@ -34,7 +36,7 @@ export function useMoodTracker() {
     return {
         data,
         loading,
-        today,
+        todayStr,
         todayMood,
         showChart,  // <-- Expose this
         setShowChart, // <-- Expose this
