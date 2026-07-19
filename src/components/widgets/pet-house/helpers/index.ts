@@ -75,7 +75,7 @@ export function isPetDeadByStarvation(pet: Pet): boolean {
 
 export function isPetDead(pet: Pet): boolean {
 
-    return isPetDeadByAge(pet) || isPetDeadByStarvation(pet);
+    return isPetDeadByAge(pet) || isPetDeadByStarvation(pet) || pet.deletedAt !== null;
 }
 
 /**
