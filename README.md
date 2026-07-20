@@ -1,75 +1,144 @@
-# React + TypeScript + Vite
+# Aure Homepage
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern and customizable Chrome New Tab extension built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+Aure Homepage replaces Chrome's default new tab with a clean, fast, and privacy-friendly dashboard designed to help you stay organized and productive.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Screenshots
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+<p align="center">
+  <img src="./screenshots/light.png" alt="Home" width="48%">
+  <img src="./screenshots/dark.png" alt="Settings" width="48%">
+</p>
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Search
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Fast Google search
+- Command support
+- Search suggestions
+- Direct URL navigation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Widgets
 
+- Calendar
+- Notes & Tasks
+- Mood Tracker
+- Pet House
+
+### Features
+
+- Focus Timer
+- Favorite Sites
+- Chrome Top Sites
+- Network Status
+
+### Personalization
+
+- Light, Dark and System themes
+- Multiple accent colors
+- Wallpaper support
+- Adjustable background blur
+- Configurable widgets
+
+### Data
+
+- Local-first storage
+- Import and export data
+- Automatic update checking
+
+---
+
+## Installation
+
+1. Download the latest release from the **Releases** page.
+2. Extract the ZIP file.
+3. Open `chrome://extensions`.
+4. Enable **Developer mode**.
+5. Click **Load unpacked**.
+6. Select the extracted extension folder.
+
+---
+
+## Updating
+
+1. Download the latest release.
+2. Extract the ZIP file.
+3. Open `chrome://extensions`.
+4. Click **Load unpacked**.
+5. Select the newly extracted extension folder.
+
+Your data will be preserved as long as the extension ID remains the same.
+
+---
+
+## Tech Stack
+
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS v4
+- Zustand
+- Dexie (IndexedDB)
+- Framer Motion
+- React Hook Form
+- Zod
+
+---
+
+## Development
+
+Clone the repository:
+
+```bash
+git clone https://github.com/alizs10/aure-homepage-chrome-extension.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Install dependencies:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+bun install
 ```
+
+Start the development server:
+
+```bash
+bun run dev
+```
+
+Build the extension:
+
+```bash
+bun run build
+```
+
+---
+
+## Storage
+
+Aure Homepage stores all data locally.
+
+- IndexedDB (Dexie) is used for widgets and user content.
+- Chrome Storage is used for application settings and the focus timer.
+
+No user data is sent to external servers.
+
+---
+
+## Roadmap
+
+- Chrome Web Store release
+- Additional widgets
+- More themes and wallpapers
+- Widget customization
+
+---
+
+## License
+
+MIT
