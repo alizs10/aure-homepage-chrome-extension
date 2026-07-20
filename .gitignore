@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 dist.pem
+.mimocode
 
 # Editor directories and files
 .vscode/*
