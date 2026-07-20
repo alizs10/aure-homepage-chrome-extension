@@ -6,7 +6,7 @@ Aure Homepage replaces Chrome's default new tab with a clean, fast, and privacy-
 
 ---
 
-## Screenshots
+## Screenshot
 
 <p align="center">
   <img src="./screenshots/mockup.png" alt="Home" width="100%">
@@ -30,7 +30,7 @@ Aure Homepage replaces Chrome's default new tab with a clean, fast, and privacy-
 - Mood Tracker
 - Pet House
 
-### Features
+### Productivity
 
 - Focus Timer
 - Favorite Sites
@@ -115,17 +115,6 @@ Build the extension:
 ```bash
 bun run build
 ```
-
----
-
-## Storage
-
-Aure Homepage stores all data locally.
-
-- IndexedDB (Dexie) is used for widgets and user content.
-- Chrome Storage is used for application settings and the focus timer.
-
-No user data is sent to external servers.
 
 ---
 
