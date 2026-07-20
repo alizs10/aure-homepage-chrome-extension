@@ -183,8 +183,8 @@ export default function MoodsChart() {
                 <Group left={margin.left} top={margin.top}>
                     <AreaClosed
                         data={chartData}
-                        x={(d) => xScale(getX(d))}
-                        y={(d) => yScale(getY(d))}
+                        x={(d: ChartPoint) => xScale(getX(d))}
+                        y={(d: ChartPoint) => yScale(getY(d))}
                         yScale={yScale}
                         curve={curveMonotoneX}
                         fill="url(#area-gradient)"
@@ -192,8 +192,8 @@ export default function MoodsChart() {
                     />
                     <LinePath
                         data={chartData}
-                        x={(d) => xScale(getX(d))}
-                        y={(d) => yScale(getY(d))}
+                        x={(d: ChartPoint) => xScale(getX(d))}
+                        y={(d: ChartPoint) => yScale(getY(d))}
                         curve={curveMonotoneX}
                         stroke="var(--app-primary)"
                         strokeWidth={2}
@@ -221,7 +221,7 @@ export default function MoodsChart() {
                                 <Tooltip.Trigger
                                     delay={100}
                                     closeDelay={100}
-                                    render={(props) => (
+                                    render={(props: React.SVGProps<SVGCircleElement>) => (
                                         <circle
                                             {...props}
                                             cx={xScale(point.date)}
