@@ -9,8 +9,7 @@ Aure Homepage replaces Chrome's default new tab with a clean, fast, and privacy-
 ## Screenshots
 
 <p align="center">
-  <img src="./screenshots/light.png" alt="Home" width="48%">
-  <img src="./screenshots/dark.png" alt="Settings" width="48%">
+  <img src="./screenshots/mockup.png" alt="Home" width="100%">
 </p>
 
 ---
