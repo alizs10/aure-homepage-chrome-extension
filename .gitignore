@@ -13,6 +13,7 @@ dist-ssr
 *.local
 dist.pem
 .mimocode
+PROJECT_LOGIC.md
 
 # Editor directories and files
 .vscode/*
