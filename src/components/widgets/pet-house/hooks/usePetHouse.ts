@@ -9,8 +9,10 @@ export function usePetHouse() {
     const loading = usePetHouseStore((state) => state.loading);
     const addItem = usePetHouseStore((state) => state.addItem);
     const removeItem = usePetHouseStore((state) => state.removeItem);
+    const hardDeleteItem = usePetHouseStore((state) => state.hardDeleteItem);
     const feedPet = usePetHouseStore((state) => state.feedPet);
     const initialize = usePetHouseStore((state) => state.initialize);
+
 
     // Compute derived state with useMemo
     const alivePets = useMemo(() => {
@@ -41,6 +43,7 @@ export function usePetHouse() {
         dogPets,
         addItem,
         removeItem,
+        hardDeleteItem,
         feedPet,
         initialize // Exposed so the root component can trigger data loading
     };

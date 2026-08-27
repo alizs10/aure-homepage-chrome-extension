@@ -12,6 +12,7 @@ interface PetHouseState {
     initialize: () => Promise<void>;
     addItem: (name: string, color: PetColor, type: PetType) => Promise<void>;
     removeItem: (id: number) => Promise<void>;
+    hardDeleteItem: (id: number) => Promise<void>; // 🌟 NEW
     feedPet: (id: number) => Promise<void>;
 }
 
@@ -19,14 +20,12 @@ export const usePetHouseStore = create<PetHouseState>((set, get) => ({
     data: [],
     loading: true,
 
-    // Load data on app start
     initialize: async () => {
         const pets = await PetRepository.getAll();
         set({ data: pets, loading: false });
     },
 
     addItem: async (name, color, type) => {
-        // Compute alive pets on the fly using get() to check the limit
         const currentData = get().data;
         const alivePets = currentData.filter(
             p => !isPetDead(p) && (p.deletedAt === null || p.deletedAt === undefined)
@@ -56,7 +55,6 @@ export const usePetHouseStore = create<PetHouseState>((set, get) => ({
 
         const now = Date.now();
 
-        // Keeping your exact logic: increments feed count and sets deletedAt
         const updated: Pet = {
             ...pet,
             hasBeenFeedCount: pet.hasBeenFeedCount + 1,
@@ -67,6 +65,25 @@ export const usePetHouseStore = create<PetHouseState>((set, get) => ({
         await PetRepository.put(updated);
         set((state) => ({
             data: state.data.map((p) => (p.id === id ? updated : p))
+        }));
+    },
+
+    // 🌟 NEW: Hard delete action
+    hardDeleteItem: async (id) => {
+        const pet = get().data.find((p) => p.id === id);
+
+        // Safety guard: Only allow hard deletion if the pet is already dead/removed
+        if (!pet || !isPetDead(pet)) {
+            console.warn("Cannot hard delete a living pet!");
+            return;
+        }
+
+        // Permanently remove from Dexie DB
+        await PetRepository.remove(id);
+
+        // Remove from Zustand state
+        set((state) => ({
+            data: state.data.filter((p) => p.id !== id)
         }));
     },
 
