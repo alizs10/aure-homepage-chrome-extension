@@ -38,7 +38,7 @@ export default function FavoritesList() {
 
                     <div className="flex-row-center gap-x-1">
                         <Button
-                            className='hidden transition-all duration-200 group-hover:inline-flex'
+                            className='hidden transition-colors duration-200 group-hover:inline-flex'
                             onClick={() => sortUp(f.id)}
                             disabled={f.order === 0}
                             size='icon-sm'
@@ -48,7 +48,7 @@ export default function FavoritesList() {
                         </Button>
 
                         <Button
-                            className='hidden transition-all duration-200 group-hover:inline-flex'
+                            className='hidden transition-colors duration-200 group-hover:inline-flex'
                             onClick={() => sortDown(f.id)}
                             disabled={maxOrder === f.order}
                             size='icon-sm'

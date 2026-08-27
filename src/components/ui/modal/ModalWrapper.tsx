@@ -27,14 +27,14 @@ export default function Modal({ children, open, onClose, className }: ModalProps
                   to the actual backdrop, which prevents weird click-through bugs.
                 */}
                 <Dialog.Backdrop
-                    className="fixed inset-0 z-9999 bg-background/30 app-blur flex-center pointer-events-auto data-starting-style:opacity-0 data-open:opacity-100 transition-opacity duration-200"
+                    className="fixed inset-0 z-9999 bg-black/30 backdrop-blur-xs flex-center pointer-events-auto data-starting-style:opacity-0 data-open:opacity-100 transition-opacity duration-200"
                 >
                     <Dialog.Popup
                         className={cn(
                             "flex flex-col",
                             "data-starting-style:opacity-0 data-starting-style:scale-95",
                             "data-open:opacity-100 data-open:scale-100",
-                            "transition-all duration-200",
+                            "transition-colors duration-200",
                             "max-w-md w-full",
                             "max-h-[80vh] overflow-y-auto scrollbar-none",
                             className

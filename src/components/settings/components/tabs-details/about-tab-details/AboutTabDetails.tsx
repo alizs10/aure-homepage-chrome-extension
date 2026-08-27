@@ -24,7 +24,7 @@ export default function AboutTabDetails() {
 
     return (
         <div className="h-fit flex-1 flex flex-col gap-y-10">
-            <div className="flex flex-col gap-y-2 p-5 bg-background app_container">
+            <div className="flex flex-col gap-y-2 p-5 bg-background app_container app_shadow">
                 <BetterTypography variant="sm">
                     App Name: <span className="font-semibold">{`"${import.meta.env.VITE_APP_NAME}"`}</span>
                 </BetterTypography>
@@ -63,20 +63,20 @@ export default function AboutTabDetails() {
                 <div className="mt-4 flex flex-wrap gap-2">
                     <Button
                         href="https://t.me/alizs10"
-                        className="bg-[#229ED9] hover:bg-[#1d8fc4] text-white border-0"
-                        leftIcon={<SendIcon className="size-5" />}
+                        className="to-[#229ED9]/50 hover:to-[#229ED9]/70 text-foreground border-0"
+                        leftIcon={<SendIcon className="size-4" />}
                     >
-                        <BetterTypography variant="sm" weight="semibold">
+                        <BetterTypography variant="xs" weight="medium">
                             @alizs10
                         </BetterTypography>
                     </Button>
 
                     <Button
                         href="mailto:alizswork@gmail.com"
-                        className="bg-[#EA4335] hover:bg-[#D93025] text-white border-0"
-                        leftIcon={<MailIcon className="size-5" />}
+                        className="to-[#EA4335]/50 hover:to-[#EA4335]/70 text-foreground border-0"
+                        leftIcon={<MailIcon className="size-4" />}
                     >
-                        <BetterTypography variant="sm" weight="semibold">
+                        <BetterTypography variant="xs" weight="medium">
                             alizswork@gmail.com
                         </BetterTypography>
                     </Button>

@@ -47,7 +47,7 @@ export default function Header() {
                     </Button>
                 )}
 
-                <div className="hidden sm:flex app_container app_gradient app-blur h-10 md:h-full px-4 md:px-6 lg:px-12 w-fit flex-center">
+                <div className="hidden sm:flex app_container app_shadow app_gradient app-blur h-10 md:h-full px-4 md:px-6 lg:px-12 w-fit flex-center">
                     <BetterTypography className="text-nowrap" variant="12-12-20-24" weight='semibold' as="h2">
                         Hey, {settings?.name}
                     </BetterTypography>
@@ -68,7 +68,7 @@ export default function Header() {
                     <Focus />
                 )}
 
-                <div className="h-full app_container app_gradient app-blur w-14 sm:w-32 md:w-36 lg:w-48 flex-center">
+                <div className="h-full app_container app_shadow app_gradient app-blur w-14 sm:w-32 md:w-36 lg:w-48 flex-center">
                     <BetterTypography variant='12-12-16-20' className='hidden sm:block text-nowrap' weight='medium' as="h3">
                         <Moment date={now} format="MMM D, HH:mm:ss" />
                     </BetterTypography>

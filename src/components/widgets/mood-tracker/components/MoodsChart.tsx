@@ -229,7 +229,7 @@ export default function MoodsChart() {
                                             r={isDaily ? 5 : 6} // Slightly larger for aggregated points
                                             fill={circleFill}
                                             strokeWidth={0}
-                                            className="cursor-pointer transition-all hover:opacity-80"
+                                            className="cursor-pointer  hover:opacity-80"
                                         />
                                     )}
                                 />
@@ -237,7 +237,7 @@ export default function MoodsChart() {
                                     <Tooltip.Positioner side="top" sideOffset={8}>
                                         <Tooltip.Popup
                                             className={cn(
-                                                "app_container px-2 py-1 flex flex-row-center gap-x-1 z-9999 data-state=closed:opacity-0 data-state=closed:scale-95 data-state=open:opacity-100 data-state=open:scale-100 transition-all duration-200 origin-var(--transform-origin)",
+                                                "app_container app_shadow px-2 py-1 flex flex-row-center gap-x-1 z-9999 data-state=closed:opacity-0 data-state=closed:scale-95 data-state=open:opacity-100 data-state=open:scale-100 transition-colors duration-200 origin-var(--transform-origin)",
                                                 popupClasses
                                             )}
                                         >

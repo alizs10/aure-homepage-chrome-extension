@@ -6,7 +6,7 @@ import StatsPopup from "./components/StatsPopup";
 
 export default function PetHouse() {
     return (
-        <div className="w-full app_container app_gradient app-blur lg:col-span-1 flex flex-col min-h-60  max-h-full relative lg:row-span-1">
+        <div className="w-full app_container app_shadow app_gradient app-blur lg:col-span-1 flex flex-col min-h-60  max-h-full relative lg:row-span-1">
 
             <div id="pet-popup-root" className="absolute inset-0 pointer-events-none" />
 

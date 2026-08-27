@@ -26,7 +26,7 @@ export default function FavoritesSites() {
                                     <Link
                                         {...props}
                                         to={site.url}
-                                        className={`size-10 md:size-14 min-w-10 min-h-10 md:min-w-14 md:min-h-14 rounded-full border-t border-border bg-linear-to-b from-background/30 to-background app-blur flex-center group flex-row-center z-30`}
+                                        className={`size-10 md:size-14 min-w-10 min-h-10 md:min-w-14 md:min-h-14 rounded-full  bg-linear-to-b from-background/30 to-background app-blur flex-center group flex-row-center z-30`}
                                     >
                                         <div className="transition-transform duration-200 group-hover:rotate-12">
                                             <Favicon url={site.url} />
@@ -38,10 +38,10 @@ export default function FavoritesSites() {
                             <Tooltip.Portal>
                                 <Tooltip.Positioner side="bottom" sideOffset={8}>
                                     <Tooltip.Popup
-                                        className="app_container bg-background px-4 py-2 flex flex-col rounded-2xl z-9999
+                                        className="app_container app_shadow bg-background px-4 py-2 flex flex-col rounded-2xl z-9999
                                         data-closed:opacity-0 data-closed:scale-95
                                         data-open:opacity-100 data-open:scale-100
-                                        transition-all duration-200 origin-var(--transform-origin)"
+                                        transition-colors duration-200 origin-var(--transform-origin)"
                                     >
                                         <BetterTypography className="text-nowrap" variant="12-12-16" weight="semibold">
                                             {sliceText(site.title, 25)}

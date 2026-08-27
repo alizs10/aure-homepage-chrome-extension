@@ -83,14 +83,14 @@ export function InputSection() {
     };
 
     return (
-        <div className="fixed inset-0 top-auto flex flex-col gap-y-2 p-5">
+        <div className="absolute inset-x-0 bottom-0 flex flex-col gap-y-2 p-5">
             {(editable && editableContent) && (
                 <div className="flex-row-center gap-x-2">
 
-                    <div role='div' className='size-10 min-w-10 app_container app_gradient app-blur flex-center'>
+                    <div role='div' className='size-10 min-w-10 app_container app_shadow app_gradient app-blur flex-center'>
                         <PenLineIcon className='size-5' />
                     </div>
-                    <div className="app_container app_gradient flex-1 app-blur px-4 py-2">
+                    <div className="app_container app_shadow app_gradient app-blur flex-1 px-4 py-2">
                         <BetterTypography variant="xs">
                             {sliceText(editableContent, 20)}
                         </BetterTypography>
@@ -113,11 +113,11 @@ export function InputSection() {
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder='Type here...'
-                        className='placeholder:text-muted-foreground text-xs md:text-sm lg:text-base placeholder:text-base py-0 h-10'
+                        className='placeholder:text-muted-foreground text-xs md:text-sm lg:text-base placeholder:text-base py-0 h-10 app_gradient'
                     />
                 </div>
                 <Button size='icon' className='h-full' onClick={handler}>
-                    <SendIcon className='size-5' />
+                    <SendIcon className='size-4' />
                 </Button>
             </div>
         </div>

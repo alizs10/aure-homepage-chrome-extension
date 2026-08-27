@@ -20,7 +20,7 @@ export default function HistoryQuartersList() {
     const allBlocks = 4;
 
     return (
-        <div className={`grid grid-cols-2 gap-0`}>
+        <div className={`grid grid-cols-4 grid-row-1 flex-1 min-h-0 rounded-xl overflow-clip gap-0.5`}>
             {quartersData.map((quarter, i) => {
                 if (quarter.items.length > 0) {
                     return (
@@ -33,7 +33,7 @@ export default function HistoryQuartersList() {
                     );
                 }
                 // Empty placeholder rendered in its correct chronological slot
-                return <EmptyRect key={`empty-${i}`} maxCount={allBlocks} />;
+                return <EmptyRect key={`empty-${i}`} />;
             })}
         </div>
     )

@@ -11,7 +11,7 @@ interface NoteItemProps {
 export function NoteItem({ content, date, edited }: NoteItemProps) {
 
     return (
-        <div className="app_container bg-background min-w-1/2 px-4 py-2 flex flex-col gap-y-2">
+        <div className="app_container app_shadow bg-background min-w-1/2 px-4 py-2 flex flex-col gap-y-2">
             <BetterTypography className="wrap-break-word" variant="sm">
                 {content}
             </BetterTypography>
