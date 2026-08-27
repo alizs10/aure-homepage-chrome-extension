@@ -82,7 +82,7 @@ export default function NewPetModal({
 
     return (
         <Modal open={open} onClose={onClose}>
-            <div className="app_container bg-background p-5 flex flex-col gap-4">
+            <div className="app_container app_shadow bg-secondary p-5 flex flex-col gap-4">
                 <ModalHeader title="New Pet" onClose={onClose} />
 
                 <TextInput
@@ -105,7 +105,7 @@ export default function NewPetModal({
                     <div className="flex gap-2">
                         <Button
                             size="sm"
-                            variant={type === "cat" ? "primary" : "ghost"}
+                            variant={type === "cat" ? "primary-active" : "primary"}
                             onClick={() => setType("cat")}
                         >
                             <BetterTypography variant="sm">
@@ -115,7 +115,7 @@ export default function NewPetModal({
 
                         <Button
                             size="sm"
-                            variant={type === "dog" ? "primary" : "ghost"}
+                            variant={type === "dog" ? "primary-active" : "primary"}
                             onClick={() => setType("dog")}
                         >
                             <BetterTypography variant="sm">
@@ -132,22 +132,25 @@ export default function NewPetModal({
 
                     <div className="flex gap-3 flex-wrap">
                         {colors.map((c) => (
-                            <button
+                            <Button
                                 key={c.id}
                                 type="button"
+                                variant="none"
+                                size="icon"
                                 onClick={() => setColor(c.id)}
                                 aria-label={`Select ${c.id} color`}
                                 aria-pressed={color === c.id}
                                 className={`
-                                    size-8 rounded-full border-2 transition-all duration-200 outline-none
-                                    focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2
-                                    ${c.className}
+                                    border-2 p-0.5
                                     ${color === c.id
-                                        ? "border-primary scale-110 ring-2 ring-primary/20"
-                                        : "border-border hover:scale-105 hover:border-foreground/50"
+                                        ? "border-primary scale-110"
+                                        : "border-transparent hover:scale-105"
                                     }
                                 `}
-                            />
+                            >
+
+                                <div className={`h-full w-full rounded-full ${c.className}`} />
+                            </Button>
                         ))}
                     </div>
                 </div>

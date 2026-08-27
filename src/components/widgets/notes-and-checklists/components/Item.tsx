@@ -80,7 +80,7 @@ function WrapperWithOptions({ children, item, index }: PropsWithChildren & { ite
                     {open && (
                         <motion.div
                             layout
-                            className={`absolute ${index > 1 ? 'bottom-full mb-1' : "top-full mt-1"} right-0 transition-all duration-200 w-fit h-fit flex-col flex-center gap-1 app_container rounded-l-none! border-t-0!`}>
+                            className={`absolute ${index > 1 ? 'bottom-full mb-1' : "top-full mt-1"} right-0 w-fit h-fit flex-col flex-center gap-1 z-50`}>
                             <motion.div
                                 initial={{ x: 50 }}
                                 animate={{ x: 0 }}

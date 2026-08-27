@@ -100,7 +100,7 @@ export default function SitesAndShortcutsContent() {
                 </div>
             </form>
 
-            <div className="flex-center-between mt-4 pt-6 border-t border-border">
+            <div className="flex-center-between mt-4 pt-6 ">
                 <BetterTypography variant="md" weight="medium">
                     Favorites websites
                 </BetterTypography>

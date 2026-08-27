@@ -87,7 +87,7 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
     return (
         <ModalWrapper open={open} onClose={onClose}>
             <div
-                className="app_container bg-background p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none"
+                className="app_container app_shadow bg-secondary p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none"
             >
                 <ModalHeader
                     title={`${editing ? 'Update' : 'Add'} Favorite Website`}
@@ -111,7 +111,7 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
 
                     {/* 👇 Top Sites Selection UI */}
                     {topSites.length > 0 && !editing && (
-                        <div className="flex flex-col gap-2 pt-2 border-t border-border/50">
+                        <div className="flex flex-col gap-2 pt-2 /50">
                             <BetterTypography
                                 variant="xs"
                                 className="text-muted-foreground"
@@ -124,7 +124,7 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
                                         key={site.url}
                                         type="button" // Prevents accidental form submission
                                         onClick={() => handleTopSiteClick(site)}
-                                        className="app_container bg-background hover:bg-secondary transition-colors px-3 py-1.5 rounded-full flex items-center gap-2 group col-span-1"
+                                        className="app_container app_shadow bg-background hover:bg-secondary transition-colors px-3 py-1.5 rounded-full flex items-center gap-2 group col-span-1"
                                     >
 
                                         <BetterTypography

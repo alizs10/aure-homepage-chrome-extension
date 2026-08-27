@@ -68,8 +68,8 @@ export const accentOptions = [
     {
         id: "lime",
         label: "Lime",
-        light: "hsl(84 81% 44%)",
-        dark: "hsl(84 70% 50%)",
+        light: "hsl(85 85% 35%)",
+        dark: "hsl(84 81% 44%)",
     },
     {
         id: "ocean",

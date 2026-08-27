@@ -39,7 +39,7 @@ function WidgetItem({ item, statusValue, onChange }: WidgetItemProps) {
     const { resolvedTheme: theme } = useTheme()
 
     return (
-        <div className="col-span-1 w-full h-full app_container bg-background overflow-clip relative">
+        <div className="col-span-1 w-full h-full app_container app_shadow bg-background overflow-clip relative">
             <img src={theme === 'light' ? item.imgs.light : item.imgs.dark} className='object-cover w-full aspect-square' />
 
             <div className="flex-center-between px-4 pb-3">

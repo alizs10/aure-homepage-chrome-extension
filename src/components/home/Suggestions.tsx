@@ -200,7 +200,7 @@ export default function Suggestions({
       exit={{ y: -100, opacity: 0 }}
       className='absolute top-full left-0 right-0 px-4 md:px-8 lg:px-10 mt-4 z-20'
     >
-      <div className="app_container app_gradient rounded-3xl overflow-clip">
+      <div className="app_container app_shadow app_gradient rounded-3xl overflow-clip">
         <div ref={scrollContainerRef} className="flex flex-col max-h-100 overflow-y-scroll rounded-3xl scrollbar-none">
           <div className="app_gradient app-blur p-5 sticky top-0">
             <BetterTypography variant="lg" weight="medium">

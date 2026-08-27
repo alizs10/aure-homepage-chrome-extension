@@ -11,8 +11,8 @@ export default function Sidebar() {
     const { activeTab, setActiveTab } = useSettingsTabs();
 
     return (
-        <div className="w-full md:col-span-1 flex-1 md:min-h-0 h-fit app_container bg-background app-blur flex flex-col  md:overflow-y-scroll scrollbar-none overflow-x-auto">
-            <div className="flex-row-center gap-x-2 sticky top-0 z-10 app_gradient app-blur rounded-t-3xl  p-5">
+        <div className="w-full md:col-span-1 flex-1 md:min-h-0 app_container app_shadow bg-secondary dark:bg-background app-blur flex flex-col md:overflow-y-scroll scrollbar-none overflow-x-auto">
+            <div className="flex-row-center gap-x-2 z-10 rounded-t-3xl p-5">
                 <SettingsIcon className="size-6" />
                 <BetterTypography
                     as="h2"

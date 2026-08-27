@@ -74,7 +74,7 @@ export default function UserInfoTabDetails() {
                 </div>
             </form>
 
-            <div className="col-span-1 lg:col-span-2 mt-4 pt-6 border-t border-border">
+            <div className="col-span-1 lg:col-span-2 mt-4 pt-6 ">
                 <DataBackup />
             </div>
 

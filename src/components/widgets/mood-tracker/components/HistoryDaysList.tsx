@@ -41,7 +41,7 @@ export default function HistoryDaysList() {
     }, [filteredData]);
 
     return (
-        <div className="grid grid-cols-15 grid-rows-2 gap-0">
+        <div className={`grid ${filter === "thisWeek" ? "grid-cols-7 grid-rows-1" : "grid-cols-10 grid-rows-3"} flex-1 min-h-0 rounded-xl overflow-clip gap-0.5`}>
             {displayDays.map((day, i) => {
                 const dateStr = format(day, 'yyyy-MM-dd');
                 const history = dataMap.get(dateStr);
