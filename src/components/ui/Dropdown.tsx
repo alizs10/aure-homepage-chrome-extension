@@ -88,7 +88,7 @@ export default function Dropdown<T extends string | number>({
                 max-h-60
                 overflow-y-auto
                 scrollbar-hide
-                app_container app_shadow
+                rounded-3xl app_shadow
                 bg-background
                 z-9999
                 px-2

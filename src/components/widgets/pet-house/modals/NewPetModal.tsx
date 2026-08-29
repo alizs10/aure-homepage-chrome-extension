@@ -82,7 +82,7 @@ export default function NewPetModal({
 
     return (
         <Modal open={open} onClose={onClose}>
-            <div className="app_container app_shadow bg-secondary p-5 flex flex-col gap-4">
+            <div className="rounded-3xl app_shadow bg-secondary p-3 md:p-5 flex flex-col gap-4">
                 <ModalHeader title="New Pet" onClose={onClose} />
 
                 <TextInput

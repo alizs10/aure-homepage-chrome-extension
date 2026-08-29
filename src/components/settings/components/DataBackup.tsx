@@ -56,7 +56,7 @@ export default function DataBackup() {
     };
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2 md:gap-4">
             <div className="space-y-1">
                 <BetterTypography variant="md" weight="semibold">
                     Backup & Restore
@@ -70,7 +70,7 @@ export default function DataBackup() {
                 </BetterTypography>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-1 md:gap-3">
                 <Button
                     leftIcon={<DownloadIcon className="size-4" />}
                     variant="primary"

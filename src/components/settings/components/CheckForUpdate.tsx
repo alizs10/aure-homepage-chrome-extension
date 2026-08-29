@@ -3,6 +3,7 @@ import Button from "@/components/ui/Button";
 import { useState } from "react";
 import { toast } from "sonner";
 import UpdateAvailableModal from "./modals/UpdateAvailableModal";
+import { RefreshCwIcon } from "lucide-react";
 
 // Updated interface to match the new JSON structure
 interface VersionInfo {
@@ -69,7 +70,8 @@ export default function CheckForUpdate() {
                 onClick={checkForUpdate}
                 size="sm"
                 variant="primary"
-                loading={loading}
+                leftIcon={<RefreshCwIcon className="size-4" />}
+                disabled={loading}
             >
                 <BetterTypography variant="xs">
                     {loading ? "checking..." : "Check for update"}

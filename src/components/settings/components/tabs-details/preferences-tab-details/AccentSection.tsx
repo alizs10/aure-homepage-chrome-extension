@@ -29,11 +29,11 @@ export default function AccentSection() {
                                 style={{
                                     background: theme === 'light' ? light : dark
                                 }}
-                                className="size-4 rounded-full"
+                                className="size-3.5 md:size-4 rounded-full"
                             />
                         }
                     >
-                        {label}
+                        <BetterTypography variant="xs" weight="medium">{label}</BetterTypography>
                     </Button>
                 ))}
             </div>

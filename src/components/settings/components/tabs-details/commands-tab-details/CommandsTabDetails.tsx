@@ -21,7 +21,7 @@ export default function CommandsTabDetails() {
             <div className="flex flex-col gap-y-4">
 
                 {/* Note Command */}
-                <div className="flex flex-col gap-y-2 p-4 bg-background app_container app_shadow">
+                <div className="flex flex-col gap-y-2 p-4 bg-background rounded-3xl app_shadow">
                     <div className="flex-row-center gap-x-2">
                         <FileTextIcon className="size-5 text-primary" />
                         <BetterTypography variant="md" weight="semibold">
@@ -40,7 +40,7 @@ export default function CommandsTabDetails() {
                 </div>
 
                 {/* Task Command */}
-                <div className="flex flex-col gap-y-2 p-4 bg-background app_container app_shadow">
+                <div className="flex flex-col gap-y-2 p-4 bg-background rounded-3xl app_shadow">
                     <div className="flex-row-center gap-x-2">
                         <CheckSquareIcon className="size-5 text-primary" />
                         <BetterTypography variant="md" weight="semibold">
@@ -59,7 +59,7 @@ export default function CommandsTabDetails() {
                 </div>
 
                 {/* Focus Command */}
-                <div className="flex flex-col gap-y-2 p-4 bg-background app_container app_shadow">
+                <div className="flex flex-col gap-y-2 p-4 bg-background rounded-3xl app_shadow">
                     <div className="flex-row-center gap-x-2">
                         <TimerIcon className="size-5 text-primary" />
                         <BetterTypography variant="md" weight="semibold">
@@ -78,7 +78,7 @@ export default function CommandsTabDetails() {
                 </div>
 
                 {/* Mood Command */}
-                <div className="flex flex-col gap-y-2 p-4 bg-background app_container app_shadow">
+                <div className="flex flex-col gap-y-2 p-4 bg-background rounded-3xl app_shadow">
                     <div className="flex-row-center gap-x-2">
                         <SmileIcon className="size-5 text-primary" />
                         <BetterTypography variant="md" weight="semibold">
@@ -97,7 +97,7 @@ export default function CommandsTabDetails() {
                 </div>
 
                 {/* Calendar Command */}
-                <div className="flex flex-col gap-y-2 p-4 bg-background app_container app_shadow">
+                <div className="flex flex-col gap-y-2 p-4 bg-background rounded-3xl app_shadow">
                     <div className="flex-row-center gap-x-2">
                         <CalendarIcon className="size-5 text-primary" />
                         <BetterTypography variant="md" weight="semibold">
@@ -120,7 +120,7 @@ export default function CommandsTabDetails() {
                 </div>
 
                 {/* Theme Command */}
-                <div className="flex flex-col gap-y-2 p-4 bg-background app_container app_shadow">
+                <div className="flex flex-col gap-y-2 p-4 bg-background rounded-3xl app_shadow">
                     <div className="flex-row-center gap-x-2">
                         <PaletteIcon className="size-5 text-primary" />
                         <BetterTypography variant="md" weight="semibold">

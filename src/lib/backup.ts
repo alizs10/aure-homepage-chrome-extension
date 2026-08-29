@@ -3,7 +3,7 @@ import { storage } from "@/lib/storage";
 import { STORAGE_KEYS } from "@/constants/storage_keys";
 
 // ✅ Import types for strict casting during import
-import type { Favorite } from '@/components/settings/components/tabs-details/sites-and-shortcuts/types';
+import type { Favorite, Folder } from '@/components/settings/components/tabs-details/sites-and-folders/types';
 import type { CalendarNote } from '@/components/widgets/calendar/types';
 import type { MoodHistory } from '@/components/widgets/mood-tracker/types';
 import type { NoteAndChecklist } from '@/components/widgets/notes-and-checklists/types';
@@ -28,7 +28,8 @@ async function getAllChromeStorageData() {
 // Helper to safely wipe all data before restoring
 async function clearAllData() {
     await db.transaction('rw',
-        [db.wallpapers, db.moods, db.pets, db.calendar, db.notes, db.favorites],
+        // 🌟 Added db.folders to the transaction scope
+        [db.wallpapers, db.moods, db.pets, db.calendar, db.notes, db.favorites, db.folders],
         async () => {
             await db.wallpapers.clear();
             await db.moods.clear();
@@ -36,6 +37,7 @@ async function clearAllData() {
             await db.calendar.clear();
             await db.notes.clear();
             await db.favorites.clear();
+            await db.folders.clear(); // 🌟 Clear folders
         }
     );
 
@@ -51,6 +53,7 @@ export async function exportUserData(username?: string) {
     const calendar = await db.calendar.toArray();
     const notes = await db.notes.toArray();
     const favorites = await db.favorites.toArray();
+    const folders = await db.folders.toArray(); // 🌟 Fetch folders
 
     const chromeStorage = await getAllChromeStorageData();
 
@@ -61,7 +64,8 @@ export async function exportUserData(username?: string) {
             appName: import.meta.env.VITE_APP_NAME,
             appVersion: import.meta.env.VITE_APP_VERSION,
         },
-        indexedDB: { wallpapers, moods, pets, calendar, notes, favorites },
+        // 🌟 Added folders to the exported payload
+        indexedDB: { wallpapers, moods, pets, calendar, notes, favorites, folders },
         chromeStorage,
     };
 
@@ -109,7 +113,8 @@ export async function importUserData(file: File) {
     const storageData = backup.chromeStorage as Record<string, unknown>;
 
     // ✅ 3. Deep validate IndexedDB tables
-    const expectedTables = ['wallpapers', 'moods', 'pets', 'calendar', 'notes', 'favorites'];
+    // 🌟 Added 'folders' to the expected tables list
+    const expectedTables = ['wallpapers', 'moods', 'pets', 'calendar', 'notes', 'favorites', 'folders'];
     for (const table of expectedTables) {
         const tableData = dbData[table];
         if (tableData !== undefined) {
@@ -131,7 +136,8 @@ export async function importUserData(file: File) {
     await clearAllData();
 
     await db.transaction('rw',
-        [db.wallpapers, db.moods, db.pets, db.calendar, db.notes, db.favorites],
+        // 🌟 Added db.folders to the transaction scope
+        [db.wallpapers, db.moods, db.pets, db.calendar, db.notes, db.favorites, db.folders],
         async () => {
             if (Array.isArray(dbData.wallpapers) && dbData.wallpapers.length)
                 await db.wallpapers.bulkPut(dbData.wallpapers as Wallpaper[]);
@@ -145,6 +151,10 @@ export async function importUserData(file: File) {
                 await db.notes.bulkPut(dbData.notes as NoteAndChecklist[]);
             if (Array.isArray(dbData.favorites) && dbData.favorites.length)
                 await db.favorites.bulkPut(dbData.favorites as Favorite[]);
+
+            // 🌟 Restore folders data
+            if (Array.isArray(dbData.folders) && dbData.folders.length)
+                await db.folders.bulkPut(dbData.folders as Folder[]);
         }
     );
 

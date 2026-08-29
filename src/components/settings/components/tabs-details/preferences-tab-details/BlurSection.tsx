@@ -11,7 +11,7 @@ export default function BlurSection() {
         <div className="flex flex-col gap-y-2">
             <BetterTypography as="h3" variant="md" weight="medium">Blur</BetterTypography>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gao-1 md:gap-2">
                 {blurOptions.map(({ key, label }) => (
                     <Button
                         key={key}
@@ -21,7 +21,7 @@ export default function BlurSection() {
                             update({ blur: key });
                         }}
                     >
-                        {label}
+                        <BetterTypography variant="xs" weight="medium">{label}</BetterTypography>
                     </Button>
                 ))}
             </div>

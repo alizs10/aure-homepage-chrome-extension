@@ -1,22 +1,45 @@
-import { Globe } from "lucide-react";
-import { useFavicon } from "@/hooks/useFavicon";
+import { Globe } from 'lucide-react';
+import { useState, type HTMLAttributes } from 'react';
 
-export default function Favicon({ url }: { url: string }) {
-    const { data: faviconSrc, isLoading } = useFavicon(url);
+import { getFaviconUrl } from '@/lib/favicon';
+import { cn } from '@/lib/util';
 
-    if (!faviconSrc) {
-        return <Globe className="min-w-6 md:min-w-10 size-6 md:size-10 text-muted-foreground" />;
-    }
+interface FaviconProps {
+    url: string;
+    className?: HTMLAttributes<HTMLDivElement>['className'];
+}
 
-    if (isLoading) {
-        return <Globe className="min-w-6 md:min-w-10 size-6 md:size-10 text-muted-foreground animate-pulse" />;
+export default function Favicon({
+    url,
+    className,
+}: FaviconProps) {
+    const faviconSrc = getFaviconUrl(url, 128);
+
+    const [failedSrc, setFailedSrc] = useState<string | null>(null);
+
+    if (failedSrc === faviconSrc) {
+        return (
+            <div className={cn(className)}>
+                <Globe className="size-full text-muted-foreground" />
+            </div>
+        );
     }
 
     return (
-        <img
-            src={faviconSrc}
-            className="min-w-6 md:min-w-10 size-6 md:size-10 rounded-full"
-            alt="Website favicon"
-        />
+        <div
+            className={cn(
+                className,
+                'relative overflow-clip'
+            )}
+        >
+            <img
+                src={faviconSrc}
+                className="size-full object-cover object-center"
+                alt=""
+                onError={() => {
+                    setFailedSrc(faviconSrc);
+                }}
+            />
+        </div>
     );
 }

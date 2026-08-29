@@ -5,8 +5,9 @@ import { useMoodTracker } from "./components/widgets/mood-tracker/hooks/useMoodT
 import { useCalendar } from "./components/widgets/calendar/hooks/useCalendar";
 import { usePetHouse } from "./components/widgets/pet-house/hooks/usePetHouse";
 import { useNotesAndChecklists } from "./components/widgets/notes-and-checklists/hooks/useNotesAndChecklists";
-import { useFavorites } from "./components/settings/components/tabs-details/sites-and-shortcuts/hooks/useFavorites";
+import { useFavorites } from "./components/settings/components/tabs-details/sites-and-folders/components/favorites/hooks/useFavorites";
 import { accentOptions, blurOptions } from "@/types"; // 🌟 Import these
+import { useFolders } from "./components/settings/components/tabs-details/sites-and-folders/components/folders/hooks/useFolders";
 
 type AppLoaderProps = {
     children: React.ReactNode;
@@ -22,8 +23,9 @@ export default function AppLoader({ children }: AppLoaderProps) {
     const { initialize: initPetHouse, loading: isPetHouseLoading } = usePetHouse();
     const { initialize: initNotes, loading: isNotesLoading } = useNotesAndChecklists();
     const { initialize: initFavorites, loading: isFavoritesLoading } = useFavorites();
+    const { initialize: initFolders, loading: isFoldersLoading } = useFolders();
 
-    const isLoading = loading || isFavoritesLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading;
+    const isLoading = loading || isFavoritesLoading || isFoldersLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading;
     const location = useLocation();
 
     useEffect(() => {
@@ -33,7 +35,8 @@ export default function AppLoader({ children }: AppLoaderProps) {
         initCalendar();
         initPetHouse();
         initFavorites();
-    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites]);
+        initFolders();
+    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders]);
 
     // 🌟 NEW: Apply global CSS variables as soon as settings are loaded
     useEffect(() => {

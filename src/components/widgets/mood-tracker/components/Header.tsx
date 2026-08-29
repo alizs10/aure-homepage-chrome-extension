@@ -18,7 +18,7 @@ export default function Header() {
 
 
             <div className="flex-row-center gap-x-0.5">
-                <div className="app_container app_shadow bg-background flex-row-center gap-x-0.5">
+                <div className="rounded-3xl app_shadow bg-background flex-row-center gap-x-0.5">
                     <Button size='icon-sm'
                         className=''
                         variant={!showChart ? 'primary-active' : 'ghost'}

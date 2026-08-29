@@ -1,3 +1,4 @@
+import FavoritesSites from "@/components/home/FavoritesSitesAndFolders";
 import SearchInput from "@/components/home/SearchInput";
 import { useSettingsStore } from "@/stores";
 import TopSites from "../components/home/TopSites";
@@ -6,7 +7,6 @@ import MoodTracker from "../components/widgets/mood-tracker/MoodTracker";
 import NotesAndChecklists from "../components/widgets/notes-and-checklists/NotesAndChecklists";
 import PetHouse from "../components/widgets/pet-house/PetHouse";
 import AppLayout from "../layouts/AppLayout";
-import FavoritesSites from "@/components/home/FavoritesSites";
 
 
 
@@ -23,7 +23,6 @@ export default function Home() {
 
                 <div className="h-fit min-h-fit flex flex-col">
                     <div className="sticky top-0 z-40">
-
                         <SearchInput />
                     </div>
 
@@ -33,6 +32,8 @@ export default function Home() {
                     {settings?.show_favorites && (
                         <FavoritesSites />
                     )}
+
+
                 </div>
 
                 <div className="w-full flex-1 min-h-0 flex flex-col gap-y-4 px-4 md:px-8 lg:px-10">

@@ -17,10 +17,10 @@ interface BetterTypographyProps {
 // 🎯 The predefined variants are now just aliases for the dynamic scale!
 const PREDEFINED_SCALES: Record<PredefinedVariant, string> = {
     xxs: "8-10-12",
-    xs: "12-14",
+    xs: "10-12-14",
     sm: "12-14-16",
-    md: "14-16-20",
-    lg: "16-18-24",
+    md: "12-16-20",
+    lg: "14-18-24",
     xl: "20-24-30",
     "2xl": "24-30-36",
     "3xl": "30-36-48",

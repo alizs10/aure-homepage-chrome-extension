@@ -5,8 +5,22 @@
     "version": "0.0.3",
     "description": "Custom New Tab",
     "permissions": [
+        "favicon",
         "storage",
         "topSites"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "_favicon/*"
+            ],
+            "matches": [
+                "<all_urls>"
+            ],
+            "extension_ids": [
+                "*"
+            ]
+        }
     ],
     "background": {
         "service_worker": "background.js"

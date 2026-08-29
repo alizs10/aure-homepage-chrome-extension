@@ -1,19 +1,19 @@
+import { BetterTypography } from "@/components/common/BetterTypography";
+import Button from "@/components/ui/Button";
 import Toggle from "@/components/ui/Toggle";
-import AddNewFavorite from "./AddNewFavorite";
-import FavoritesList from "./FavoritesList";
 import { useSettingsStore } from "@/stores";
 import { useEffect } from "react";
-import Button from "@/components/ui/Button";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { BetterTypography } from "@/components/common/BetterTypography";
+import FavoritesContent from "./favorites/FavoritesContent";
+import FoldersContent from "./folders/FoldersContent";
 
 interface FormValues {
     show_top_sites: boolean;
     show_favorites: boolean;
 }
 
-export default function SitesAndShortcutsContent() {
+export default function SitesAndFoldersContent() {
     const { settings, update } = useSettingsStore();
 
     const {
@@ -78,7 +78,7 @@ export default function SitesAndShortcutsContent() {
                                     variant="sm"
                                     weight="medium"
                                 >
-                                    Show Your Favorite websites instead of top
+                                    Show Your Favorite websites and Folders instead of top
                                     sites?
                                 </BetterTypography>
                             }
@@ -100,15 +100,8 @@ export default function SitesAndShortcutsContent() {
                 </div>
             </form>
 
-            <div className="flex-center-between mt-4 pt-6 ">
-                <BetterTypography variant="md" weight="medium">
-                    Favorites websites
-                </BetterTypography>
-
-                <AddNewFavorite />
-            </div>
-
-            <FavoritesList />
+            <FavoritesContent />
+            <FoldersContent />
         </div>
     );
 }

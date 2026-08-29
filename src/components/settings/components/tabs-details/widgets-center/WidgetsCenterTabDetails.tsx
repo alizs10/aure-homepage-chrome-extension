@@ -39,7 +39,7 @@ function WidgetItem({ item, statusValue, onChange }: WidgetItemProps) {
     const { resolvedTheme: theme } = useTheme()
 
     return (
-        <div className="col-span-1 w-full h-full app_container app_shadow bg-background overflow-clip relative">
+        <div className="col-span-1 w-full h-full rounded-3xl app_shadow bg-background overflow-clip relative">
             <img src={theme === 'light' ? item.imgs.light : item.imgs.dark} className='object-cover w-full aspect-square' />
 
             <div className="flex-center-between px-4 pb-3">
@@ -135,7 +135,7 @@ export default function WidgetsCenterTabDetails() {
     return (
         // Wrapped in a form tag to handle submission
         <form onSubmit={handleSubmit(onSubmit)} className="h-fit flex-1 flex flex-col gap-y-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                 {widgets.map(w => (
                     <Controller
                         key={w.id}

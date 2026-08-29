@@ -23,15 +23,15 @@ const sizeClasses: Record<
     }
 > = {
     sm: {
-        track: "w-10 h-6",
+        track: "w-10 min-w-10 h-6",
         thumb: "size-4",
     },
     md: {
-        track: "w-12 h-7",
+        track: "w-12 min-w-12 h-7",
         thumb: "size-5",
     },
     lg: {
-        track: "w-14 h-8",
+        track: "w-14 min-w-14 h-8",
         thumb: "size-6",
     },
 };
