@@ -1,4 +1,4 @@
-import SitesAndShortcutsContent from "./components/SitesAndShortcutsContent";
+import SitesAndShortcutsContent from "./components/SitesAndFoldersContent";
 
 export default function SitesAndShortcutsTabDetails() {
     return (

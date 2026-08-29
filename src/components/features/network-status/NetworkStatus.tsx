@@ -78,7 +78,7 @@ export default function NetworkStatus() {
 
     return (
         <div
-            className="app_container app_shadow app_gradient app-blur flex-row-center gap-x-1.5 px-4 py-1.5 cursor-pointer select-none transition-opacity hover:opacity-80 active:opacity-70"
+            className="rounded-3xl app_shadow app_gradient app-blur flex-row-center gap-x-1.5 px-4 py-1.5 cursor-pointer select-none transition-opacity hover:opacity-80 active:opacity-70"
             onClick={checkConnection}
             title="Click to check connection"
         >

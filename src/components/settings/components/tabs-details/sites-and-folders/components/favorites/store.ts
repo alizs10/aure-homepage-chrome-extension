@@ -1,6 +1,6 @@
 // stores/favoritesStore.ts
 import { create } from 'zustand';
-import type { Favorite } from './types';
+import type { Favorite } from '../../types';
 import { FavoritesRepository } from './db';
 
 interface FavoritesState {

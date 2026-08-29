@@ -84,7 +84,7 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
                         </Button>
                     )}
 
-                    <div className="app_container app_shadow app_gradient app-blur py-1 px-2 flex-row-center gap-x-0.5">
+                    <div className="rounded-3xl app_shadow app_gradient app-blur py-1 px-2 flex-row-center gap-x-0.5">
                         <CatIcon className="size-3.5" />
                         <BetterTypography variant="10">
                             {ageLabel}

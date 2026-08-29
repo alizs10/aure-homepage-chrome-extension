@@ -15,7 +15,7 @@ export default function ThemeToggle() {
 
     if (loading || !theme) {
         return (
-            <div className="flex items-center gap-1 p-1 app_container app_shadow app_gradient app-blur h-full">
+            <div className="flex items-center gap-1 p-1 rounded-3xl app_shadow app_gradient app-blur h-full">
                 <div className="hidden lg:block h-full aspect-square rounded-full bg-muted animate-pulse" />
                 <div className="h-full aspect-square rounded-full bg-muted animate-pulse" />
                 <div className="h-full aspect-square rounded-full bg-muted animate-pulse" />
@@ -24,7 +24,7 @@ export default function ThemeToggle() {
     }
 
     return (
-        <div ref={containerRef} className="p-1 h-full app_container app_shadow app_gradient app-blur flex-row-center gap-x-1 relative z-50">
+        <div ref={containerRef} className="p-1 h-full rounded-3xl app_shadow app_gradient app-blur flex-row-center gap-x-1 relative z-50">
             <Button
                 onClick={(e) => triggerThemeTransition("light", e, update)}
                 size="icon-sm"
@@ -62,7 +62,7 @@ export default function ThemeToggle() {
             </Button>
 
             {open && (
-                <ul className="lg:hidden flex flex-col gap-y-0.5 p-1 md:p-2 absolute z-9999 top-full right-0 w-fit app_container app_shadow bg-background mt-1">
+                <ul className="lg:hidden flex flex-col gap-y-0.5 p-1 md:p-2 absolute z-9999 top-full right-0 w-fit rounded-3xl app_shadow bg-background mt-1">
                     <Button
                         onClick={(e) => {
                             triggerThemeTransition("light", e, update);

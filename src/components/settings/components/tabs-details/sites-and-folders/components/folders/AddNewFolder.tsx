@@ -1,28 +1,26 @@
 import Button from '@/components/ui/Button'
-import { StarPlusIcon } from 'lucide-react'
+import { FolderPlusIcon } from 'lucide-react'
 import { useState } from 'react'
-import FavoriteModal from '../modals/FavoriteModal'
+import FolderModal from './modals/FolderModal'
 
-export default function AddNewFavorite() {
-
+export default function AddNewFolder() {
     const [open, setOpen] = useState(false)
 
     function toggle() {
         setOpen(prev => !prev)
     }
 
-
     return (
         <>
             <Button
-                leftIcon={<StarPlusIcon className="size-4" />}
+                leftIcon={<FolderPlusIcon className="size-4" />}
                 onClick={toggle}
             >
-                Add Favorite Website
+                Add Folder
             </Button>
 
             {open && (
-                <FavoriteModal
+                <FolderModal
                     open={open}
                     onClose={() => setOpen(false)}
                 />

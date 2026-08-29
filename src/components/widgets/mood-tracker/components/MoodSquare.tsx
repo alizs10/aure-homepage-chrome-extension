@@ -48,7 +48,7 @@ export default function MoodSquare({ moodDayItem }: MoodSquareProps) {
             <Popover.Portal>
                 <Popover.Positioner side="bottom" sideOffset={4}>
                     <Popover.Popup
-                        className={`flex app_container app_shadow px-2 py-1 z-9999 flex-row-center gap-x-1
+                        className={`flex rounded-3xl app_shadow px-2 py-1 z-9999 flex-row-center gap-x-1
                         data-state=closed:opacity-0 data-state=closed:scale-95
                         data-state=open:opacity-100 data-state=open:scale-100
                         transition-colors duration-200 origin-var(--transform-origin)

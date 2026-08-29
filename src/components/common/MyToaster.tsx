@@ -1,10 +1,18 @@
+'use client';
+
+import { createPortal } from 'react-dom';
 import { Toaster } from 'sonner';
 
 export default function MyToaster() {
-    return (
+    if (typeof document === 'undefined') {
+        return null;
+    }
+
+    return createPortal(
         <Toaster
             position="bottom-center"
-        // No toastOptions or inline styles needed anymore!
-        />
+            className="z-99999999"
+        />,
+        document.body,
     );
 }

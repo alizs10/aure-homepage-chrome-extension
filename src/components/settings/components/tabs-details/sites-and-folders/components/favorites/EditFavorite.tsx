@@ -1,8 +1,8 @@
 import Button from '@/components/ui/Button'
 import { PenIcon } from 'lucide-react'
 import { useState } from 'react'
-import FavoriteModal from '../modals/FavoriteModal'
-import type { Favorite } from '../types'
+import FavoriteModal from './modals/FavoriteModal'
+import type { Favorite } from '../../types'
 
 interface EditFavoriteProps {
     favorite: Favorite

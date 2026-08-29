@@ -1,4 +1,4 @@
-import type { Favorite } from '@/components/settings/components/tabs-details/sites-and-shortcuts/types';
+import type { Favorite, Folder } from '@/components/settings/components/tabs-details/sites-and-folders/types';
 import type { CalendarNote } from '@/components/widgets/calendar/types';
 import type { MoodHistory } from '@/components/widgets/mood-tracker/types';
 import type { NoteAndChecklist } from '@/components/widgets/notes-and-checklists/types';
@@ -14,19 +14,21 @@ export class NewTabDB extends Dexie {
     calendar!: Table<CalendarNote, number>;
     notes!: Table<NoteAndChecklist, number>;
     favorites!: Table<Favorite, number>;
+    folders!: Table<Folder, number>;
 
     constructor() {
         super('newtab-db');
 
         // 2. Declarative Schema Definition
         // 'id' is the primary key. 'date' is a secondary index!
-        this.version(9).stores({
+        this.version(11).stores({
             wallpapers: 'id',
             moods: 'id',
             pets: 'id',
             calendar: 'id, date', // 'date' is automatically indexed
             notes: 'id',
             favorites: 'id',
+            folders: 'id',
         });
 
         // 3. Future migrations are incredibly easy

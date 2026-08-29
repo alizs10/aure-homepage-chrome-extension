@@ -11,9 +11,9 @@ export default function Sidebar() {
     const { activeTab, setActiveTab } = useSettingsTabs();
 
     return (
-        <div className="w-full md:col-span-1 flex-1 md:min-h-0 app_container app_shadow bg-secondary dark:bg-background app-blur flex flex-col md:overflow-y-scroll scrollbar-none overflow-x-auto">
-            <div className="flex-row-center gap-x-2 z-10 rounded-t-3xl p-5">
-                <SettingsIcon className="size-6" />
+        <div className="w-full md:col-span-1 flex-1 md:min-h-0 rounded-3xl app_shadow app_gradient app-blur flex flex-col md:overflow-y-scroll scrollbar-none overflow-x-auto">
+            <div className="flex-row-center gap-x-2 z-10 rounded-t-3xl px-5 py-3 md:py-5 md:px-8">
+                <SettingsIcon className="size-4 md:size-6" />
                 <BetterTypography
                     as="h2"
                     className="capitalize"
@@ -40,10 +40,10 @@ export default function Sidebar() {
 
                             {/* {tab.icon} */}
                             {tab?.Icon && (
-                                <tab.Icon className="size-5" />
+                                <tab.Icon className="size-5 min-w-5" />
                             )}
                             <BetterTypography
-                                className="w-full text-start"
+                                className="w-full text-start text-nowrap text-ellipsis overflow-x-hidden"
                                 variant="sm"
                             >
                                 {tab.label}
@@ -53,7 +53,7 @@ export default function Sidebar() {
                 ))}
             </ul>
 
-            <div className="mt-auto w-full p-5">
+            <div className="mt-auto w-full p-3 md:p-5">
                 <ResetSettings />
             </div>
         </div>

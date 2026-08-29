@@ -32,7 +32,7 @@ export default function AttachedNote() {
 
     return (
         <>
-            <div className="app_container app_shadow bg-background px-4 py-2 group relative">
+            <div className="rounded-3xl app_shadow bg-background px-4 py-2 group relative">
                 {attachedNote ? (
                     <>
                         <BetterTypography

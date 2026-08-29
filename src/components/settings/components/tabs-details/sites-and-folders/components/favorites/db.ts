@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import type { Favorite } from "./types";
+import type { Favorite } from "../../types";
 
 export const FavoritesRepository = {
     getAll() {
