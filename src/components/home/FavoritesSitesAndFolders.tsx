@@ -12,7 +12,7 @@ export default function FavoritesSitesAndFolders() {
 
     return (
         <Tooltip.Provider>
-            <div className="py-2 md:py-4 flex justify-center z-30 relative w-full max-w-6xl px-4 md:px-8 lg:px-10">
+            <div className="flex justify-center z-30 relative w-full max-w-6xl px-4 md:px-8 lg:px-10">
 
                 {/* Fade gradients for small screens */}
                 {/* <div className="hidden max-[467px]:block absolute inset-0 right-auto bg-linear-to-r from-background to-transparent w-4 h-full z-40 pointer-events-none" />

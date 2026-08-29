@@ -1,4 +1,5 @@
 import { BetterTypography } from "@/components/common/BetterTypography";
+import Button from "@/components/ui/Button";
 import { useEffect, useState, useCallback, useRef } from "react";
 
 // OPTION 1: Your own backend endpoint (Highly Recommended)
@@ -77,22 +78,25 @@ export default function NetworkStatus() {
     }, [checkConnection]);
 
     return (
-        <div
-            className="rounded-3xl app_shadow app_gradient app-blur flex-row-center gap-x-1.5 px-4 py-1.5 cursor-pointer select-none transition-opacity hover:opacity-80 active:opacity-70"
+        <Button
+            variant="ghost"
+            size="xs"
+            className="gap-x-1"
             onClick={checkConnection}
-            title="Click to check connection"
-        >
-            <div
-                className={`size-2 rounded-full transition-colors duration-300 ${isChecking
+            disabled={isChecking}
+            leftIcon={<div
+                className={`size-1.5 rounded-full transition-colors duration-300 ${isChecking
                     ? "bg-gray-400 animate-pulse"
                     : isOnline
                         ? "bg-success"
                         : "bg-destructive"
                     }`}
-            />
-            <BetterTypography variant="12-14" weight="medium">
+            />}
+        >
+
+            <BetterTypography variant="12" weight="medium">
                 {isChecking ? "Checking..." : isOnline ? "Online" : "Offline"}
             </BetterTypography>
-        </div>
+        </Button>
     );
 }
