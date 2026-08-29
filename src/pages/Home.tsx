@@ -19,10 +19,10 @@ export default function Home() {
     return (
         <AppLayout>
 
-            <section className="flex-1 min-h-0 pb-14 md:pb-18 lg:pb-20 overflow-y-scroll scrollbar-none w-full max-w-6xl mx-auto gap-y-4 md:gap-y-8 mt-10 space-y-6 overflow-x-clip">
+            <section className="w-full max-w-6xl m-auto gap-y-4 md:gap-y-8 flex-center flex-col py-10 space-y-6 overflow-x-clip">
 
-                <div className="h-fit min-h-fit flex flex-col">
-                    <div className="sticky top-0 z-40">
+                <div className="h-fit min-h-fit w-full flex flex-col gap-y-2 md:gap-y-4">
+                    <div className="sticky top-10 z-40">
                         <SearchInput />
                     </div>
 
@@ -36,7 +36,7 @@ export default function Home() {
 
                 </div>
 
-                <div className="w-full flex-1 min-h-0 flex flex-col gap-y-4 px-4 md:px-8 lg:px-10">
+                <div className="w-full flex flex-col gap-y-4 px-4 md:px-8 lg:px-10">
 
                     <div className="w-full flex flex-col sm:grid sm:grid-cols-2 lg:grid-rows-2 lg:grid-cols-3 gap-4 max-h-fit">
                         {widgetsSettings?.["notes-and-checklists"] && (

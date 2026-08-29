@@ -34,7 +34,7 @@ export default function NewHeader() {
     }, [])
 
     return (
-        <header className="flex justify-between h-8 px-4 md:px-8 lg:px-10 app_shadow app_gradient app-blur">
+        <header className="sticky top-0 flex justify-between h-8 px-4 md:px-8 lg:px-10 app_shadow app_gradient app-blur z-50">
 
             <div className="flex-row-center gap-x-4">
 
