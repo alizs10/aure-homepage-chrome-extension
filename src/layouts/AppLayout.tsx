@@ -1,17 +1,19 @@
 import type { PropsWithChildren } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
+// import Header from "./Header";
+// import Footer from "./Footer";
+import NewHeader from "./NewHeader";
 
 
 export default function AppLayout({ children }: PropsWithChildren) {
     return (
-        <main className="flex flex-col w-full h-screen max-h-screen overflow-y-scroll scrollbar-none pt-4 md:pt-8 lg:pt-10 max-w-dvw overflow-x-clip">
+        <main className="flex flex-col w-full h-screen max-h-screen overflow-y-scroll scrollbar-none max-w-dvw overflow-x-clip">
 
-            <Header />
+            {/* <Header /> */}
+            <NewHeader />
 
             {children}
 
-            <Footer />
+            {/* <Footer /> */}
 
         </main>
     )
