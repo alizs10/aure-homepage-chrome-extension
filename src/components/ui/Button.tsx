@@ -41,21 +41,27 @@ type ButtonProps = LinkButtonProps | NativeButtonProps;
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)] hover:to-primary/30",
+    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-primary/30",
   "primary-active":
-    "bg-gradient-to-b from-background/30 from-30% to-primary/30 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)] hover:to-primary/20 dark:hover:to-primary/40",
+    "bg-gradient-to-b from-background/30 from-30% to-primary/30 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-primary/20 dark:hover:to-primary/40",
   ghost:
-    "bg-gradient-to-b from-transparent from-30% to-transparent hover:from-secondary/30 hover:to-background/60 transition-shadow hover:app-blur hover:shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] hover:dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)] text-foreground",
+    "bg-gradient-to-b from-transparent from-30% to-transparent " +
+    "hover:from-secondary/30 hover:to-background/60 " +
+    "transition-shadow duration-200 ease-out " +
+    "hover:app-blur " +
+    "hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),inset_0_0_20px_rgba(255,255,255,0.55)] " +
+    "dark:hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] " +
+    "text-foreground",
   success:
-    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)] hover:to-success/30",
+    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-success/30",
   "success-active":
-    "bg-gradient-to-b from-background/30 from-30% to-success/50 dark:to-success/30 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)] hover:to-success/40",
+    "bg-gradient-to-b from-background/30 from-30% to-success/50 dark:to-success/30 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-success/40",
   destructive:
-    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)] hover:to-destructive/10 dark:hover:to-destructive/30",
+    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-destructive/10 dark:hover:to-destructive/30",
   "ghost-destructive":
-    "bg-none hover:bg-gradient-to-b from-background/30 from-30% to-destructive/20 dark:to-destructive/30 hover:app-blur hover:shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] hover:dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)] hover:to-destructive/30 dark:hover:to-destructive/40",
+    "bg-none hover:bg-gradient-to-b from-background/30 from-30% to-destructive/20 dark:to-destructive/30 hover:app-blur hover:shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] hover:dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-destructive/30 dark:hover:to-destructive/40",
   warning:
-    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)] hover:to-warning/30 dark:hover:to-warning/40",
+    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-warning/30 dark:hover:to-warning/40",
   none: "",
 };
 

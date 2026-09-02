@@ -1,8 +1,8 @@
-import { useFocusTimerStore } from '@/components/features/focus/store';
 import { useCalendarNotesStore } from '@/components/widgets/calendar/store';
 import { useMoodTrackerStore } from '@/components/widgets/mood-tracker/store';
 import { moodMessages, type MoodType } from '@/components/widgets/mood-tracker/types';
 import { useNotesAndChecklistsStore } from '@/components/widgets/notes-and-checklists/store';
+import { usePomodoroStore } from '@/components/widgets/pomodoro/store';
 import { useSettingsStore } from '@/stores';
 import { toast } from 'sonner';
 
@@ -41,26 +41,6 @@ export const commands: Command[] = [
             }
             useNotesAndChecklistsStore.getState().addItem(`[] ${args.trim()}`);
             toast.success('Task added');
-        },
-    },
-    {
-        id: 'focus-toggle',
-        label: '/focus',
-        description: 'Timer actions: start, stop, reset',
-        keywords: ['f', 'focus'],
-        handler: (args) => {
-            const action = args.toLowerCase().trim();
-            const { start, stop, reset } = useFocusTimerStore.getState();
-
-            if (action === 'start') {
-                start();
-            } else if (action === 'stop') {
-                stop();
-            } else if (action === 'reset') {
-                reset();
-            } else {
-                toast.error(`Unknown action "${action}". Use start, stop, or reset.`);
-            }
         },
     },
     {
@@ -202,6 +182,116 @@ export const commands: Command[] = [
             // 3. Success feedback (capitalizes first letter: "Dark", "Light", "System")
             const themeName = action.charAt(0).toUpperCase() + action.slice(1);
             toast.success(`Theme changed to ${themeName}`);
+        },
+    },
+
+    {
+        id: 'pomo',
+        label: '/pomo',
+        description: 'Control Pomodoro: start, pause, resume, reset, break, focus, create',
+        keywords: ['p', 'pomo', 'pomodoro', 'timer', 'focus', 'break', 'create', 'task'],
+        handler: async (args) => {
+            const parts = args.trim().split(' ');
+            const action = parts[0]?.toLowerCase();
+            const rest = parts.slice(1).join(' ');
+
+            const validActions = ['start', 'pause', 'resume', 'reset', 'break', 'focus', 'reset-cycle', 'create', 'task'];
+
+            if (!action || !validActions.includes(action)) {
+                toast.error(`Invalid action. Use: ${validActions.join(', ')}`);
+                return;
+            }
+
+            const store = usePomodoroStore.getState();
+            const {
+                status, session, currentTaskId,
+                start, pause, resume, reset, resetCycle,
+                completeEarly, skipOvertime,
+                createTask, setCurrentTask
+            } = store;
+
+            switch (action) {
+                case 'create':
+                case 'task':
+                    if (!rest.trim()) {
+                        toast.error('Please provide a task name');
+                        return;
+                    }
+                    try {
+                        const newTaskId = await createTask(rest.trim());
+                        await setCurrentTask(newTaskId);
+                        toast.success(`Task "${rest.trim()}" created and selected`);
+                    } catch {
+                        toast.error('Failed to create task');
+                    }
+                    break;
+                case 'start':
+                    if (!currentTaskId) {
+                        toast.error('Please select a task first');
+                        return;
+                    }
+                    if (status === 'idle') {
+                        start();
+                        toast.success('Pomodoro started');
+                    } else {
+                        toast.error('Timer is already active');
+                    }
+                    break;
+                case 'pause':
+                    if (status === 'running') {
+                        pause();
+                        toast.success('Pomodoro paused');
+                    } else {
+                        toast.error('Timer is not running');
+                    }
+                    break;
+                case 'resume':
+                    if (status === 'paused') {
+                        resume();
+                        toast.success('Pomodoro resumed');
+                    } else {
+                        toast.error('Timer is not paused');
+                    }
+                    break;
+                case 'reset':
+                    reset();
+                    toast.success('Session reset');
+                    break;
+                case 'reset-cycle':
+                    resetCycle();
+                    toast.success('Cycle reset');
+                    break;
+                case 'break':
+                    if (session === 'focus') {
+                        if (status === 'running' || status === 'paused') {
+                            completeEarly();
+                            toast.success('Taking an early break!');
+                        } else if (status === 'overtime') {
+                            skipOvertime();
+                            toast.success('Skipping overtime, taking a break!');
+                        } else {
+                            toast.info('Start a focus session first');
+                        }
+                    } else {
+                        toast.error('You are already on a break!');
+                    }
+                    break;
+                case 'focus':
+                    if (session === 'short-break' || session === 'long-break') {
+                        if (status === 'running' || status === 'paused') {
+                            completeEarly();
+                            toast.success('Back to focus!');
+                        } else if (status === 'overtime') {
+                            skipOvertime();
+                            toast.success('Skipping overtime, back to focus!');
+                        } else {
+                            toast.info('Start a break session first');
+                        }
+                    } else {
+                        toast.error('You are already focusing!');
+                    }
+                    break;
+            }
         },
     },
 ];

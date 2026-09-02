@@ -1,11 +1,11 @@
 import { BetterTypography } from '@/components/common/BetterTypography';
 import {
-    FileTextIcon,
-    CheckSquareIcon,
-    TimerIcon,
-    SmileIcon,
     CalendarIcon,
-    PaletteIcon
+    CheckSquareIcon,
+    FileTextIcon,
+    PaletteIcon,
+    SmileIcon,
+    TimerIcon
 } from 'lucide-react';
 
 export default function CommandsTabDetails() {
@@ -55,25 +55,6 @@ export default function CommandsTabDetails() {
                     </div>
                     <div className="bg-muted/50 p-2 rounded-md font-mono text-xs text-muted-foreground">
                         Shorter Example: <span className="text-foreground">/t Finish the project report</span>
-                    </div>
-                </div>
-
-                {/* Focus Command */}
-                <div className="flex flex-col gap-y-2 p-4 bg-background rounded-3xl app_shadow">
-                    <div className="flex-row-center gap-x-2">
-                        <TimerIcon className="size-5 text-primary" />
-                        <BetterTypography variant="md" weight="semibold">
-                            <span className="font-mono text-primary">/focus</span> &lt;action&gt;
-                        </BetterTypography>
-                    </div>
-                    <BetterTypography variant="sm" className="text-muted-foreground">
-                        Controls the Focus Timer. Available actions: <span className="font-semibold text-foreground">start</span>, <span className="font-semibold text-foreground">stop</span>, or <span className="font-semibold text-foreground">reset</span>.
-                    </BetterTypography>
-                    <div className="bg-muted/50 p-2 rounded-md font-mono text-xs text-muted-foreground">
-                        Example: <span className="text-foreground">/focus start</span>
-                    </div>
-                    <div className="bg-muted/50 p-2 rounded-md font-mono text-xs text-muted-foreground">
-                        Shorter Example: <span className="text-foreground">/f start</span>
                     </div>
                 </div>
 
@@ -132,6 +113,33 @@ export default function CommandsTabDetails() {
                     </BetterTypography>
                     <div className="bg-muted/50 p-2 rounded-md font-mono text-xs text-muted-foreground">
                         Example: <span className="text-foreground">/theme dark</span>
+                    </div>
+                </div>
+
+                {/* Pomodoro Command */}
+                <div className="flex flex-col gap-y-2 p-4 bg-background rounded-3xl app_shadow">
+                    <div className="flex-row-center gap-x-2">
+                        <TimerIcon className="size-5 text-primary" />
+                        <BetterTypography variant="md" weight="semibold">
+                            <span className="font-mono text-primary">/pomo</span> &lt;action&gt;
+                        </BetterTypography>
+                    </div>
+                    <BetterTypography variant="sm" className="text-muted-foreground">
+                        Controls the Pomodoro timer. Valid actions: <span className="font-semibold text-foreground">start</span>, <span className="font-semibold text-foreground">pause</span>, <span className="font-semibold text-foreground">resume</span>, <span className="font-semibold text-foreground">reset</span>, <span className="font-semibold text-foreground">break</span>, <span className="font-semibold text-foreground">focus</span>, <span className="font-semibold text-foreground">reset-cycle</span>, <span className="font-semibold text-foreground">create</span>.
+                    </BetterTypography>
+                    <div className="bg-muted/50 p-2 rounded-md font-mono text-xs text-muted-foreground flex flex-col gap-y-1">
+                        <span><span className="text-foreground">/pomo start</span> - Starts the timer (requires selected task)</span>
+                        <span><span className="text-foreground">/pomo pause</span> - Pauses the timer</span>
+                        <span><span className="text-foreground">/pomo resume</span> - Resumes the timer</span>
+                        <span><span className="text-foreground">/pomo reset</span> - Resets current session</span>
+                        <span><span className="text-foreground">/pomo break</span> - Skips to break (or completes focus early)</span>
+                        <span><span className="text-foreground">/pomo focus</span> - Skips to focus (or completes break early)</span>
+                        <span><span className="text-foreground">/pomo create &lt;name&gt;</span> - Creates and selects a new task</span>
+                    </div>
+                    <div className="bg-muted/50 p-2 rounded-md font-mono text-xs text-muted-foreground flex flex-col gap-y-1">
+                        <span className="mb-1">Shorter Examples:</span>
+                        <span><span className="text-foreground">/p start</span></span>
+                        <span><span className="text-foreground">/p create Read a book</span></span>
                     </div>
                 </div>
 

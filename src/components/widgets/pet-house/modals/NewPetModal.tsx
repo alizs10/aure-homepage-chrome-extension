@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react"; // 🌟 Removed useEffect
 import Button from "@/components/ui/Button";
 import ModalHeader from "@/components/ui/modal/ModalHeader";
 import TextInput from "@/components/ui/TextInput";
@@ -7,19 +7,20 @@ import { usePetHouse } from "../hooks/usePetHouse";
 import type { CatColor, DogColor, PetType } from "../types";
 import Modal from "@/components/ui/modal/ModalWrapper";
 import { BetterTypography } from "@/components/common/BetterTypography";
+import ColorPicker, { type ColorOption } from "@/components/ui/ColorPicker";
 
-const cat_colors: { id: CatColor; className: string }[] = [
-    { id: "white", className: "bg-white" },
-    { id: "black", className: "bg-black" },
-    { id: "orange", className: "bg-warning" },
+const cat_colors: ColorOption<CatColor>[] = [
+    { id: "white", className: "bg-white", label: "White" },
+    { id: "black", className: "bg-black", label: "Black" },
+    { id: "orange", className: "bg-warning", label: "Orange" },
 ];
 
-const dog_colors: { id: DogColor; className: string }[] = [
-    { id: "black", className: "bg-black" },
-    { id: "gray", className: "bg-gray-600 dark:bg-gray-400" },
-    { id: "brown", className: "bg-amber-950 dark:bg-amber-900" },
-    { id: "golden", className: "bg-yellow-600 dark:bg-yellow-400" },
-    { id: "white", className: "bg-white" },
+const dog_colors: ColorOption<DogColor>[] = [
+    { id: "black", className: "bg-black", label: "Black" },
+    { id: "gray", className: "bg-gray-600 dark:bg-gray-400", label: "Gray" },
+    { id: "brown", className: "bg-amber-950 dark:bg-amber-900", label: "Brown" },
+    { id: "golden", className: "bg-yellow-600 dark:bg-yellow-400", label: "Golden" },
+    { id: "white", className: "bg-white", label: "White" },
 ];
 
 interface NewPetModalProps {
@@ -27,27 +28,25 @@ interface NewPetModalProps {
     onClose: () => void;
 }
 
-export default function NewPetModal({
-    open,
-    onClose,
-}: NewPetModalProps) {
+export default function NewPetModal({ open, onClose }: NewPetModalProps) {
     const { addItem } = usePetHouse();
 
     const [name, setName] = useState("");
     const [type, setType] = useState<PetType>("cat");
     const [color, setColor] = useState<CatColor | DogColor>("white");
 
-    useEffect(() => {
-        const clear = () => {
-            setName("");
-            setType("cat");
-            setColor("white");
-        };
+    // 🌟 FIX: Extract reset logic into a function called by event handlers
+    const clearForm = () => {
+        setName("");
+        setType("cat");
+        setColor("white");
+    };
 
-        if (!open) {
-            clear();
-        }
-    }, [open]);
+    // 🌟 FIX: Wrap onClose to clear the form before closing
+    const handleClose = () => {
+        clearForm();
+        onClose();
+    };
 
     const colors = useMemo(() => {
         return type === "cat" ? cat_colors : dog_colors;
@@ -73,17 +72,20 @@ export default function NewPetModal({
         };
 
         const typeMessages = messages[type];
-        const message =
-            typeMessages[Math.floor(Math.random() * typeMessages.length)];
+        const message = typeMessages[Math.floor(Math.random() * typeMessages.length)];
 
         toast.success(message);
+
+        // 🌟 FIX: Clear form directly in the submit event handler
+        clearForm();
         onClose();
     }
 
     return (
-        <Modal open={open} onClose={onClose}>
+        // 🌟 Pass handleClose to the Modal wrapper to catch backdrop clicks
+        <Modal open={open} onClose={handleClose}>
             <div className="rounded-3xl app_shadow bg-secondary p-3 md:p-5 flex flex-col gap-4">
-                <ModalHeader title="New Pet" onClose={onClose} />
+                <ModalHeader title="New Pet" onClose={handleClose} />
 
                 <TextInput
                     value={name}
@@ -108,9 +110,7 @@ export default function NewPetModal({
                             variant={type === "cat" ? "primary-active" : "primary"}
                             onClick={() => setType("cat")}
                         >
-                            <BetterTypography variant="sm">
-                                Cat
-                            </BetterTypography>
+                            <BetterTypography variant="sm">Cat</BetterTypography>
                         </Button>
 
                         <Button
@@ -118,9 +118,7 @@ export default function NewPetModal({
                             variant={type === "dog" ? "primary-active" : "primary"}
                             onClick={() => setType("dog")}
                         >
-                            <BetterTypography variant="sm">
-                                Dog
-                            </BetterTypography>
+                            <BetterTypography variant="sm">Dog</BetterTypography>
                         </Button>
                     </div>
                 </div>
@@ -130,29 +128,11 @@ export default function NewPetModal({
                         Color
                     </BetterTypography>
 
-                    <div className="flex gap-3 flex-wrap">
-                        {colors.map((c) => (
-                            <Button
-                                key={c.id}
-                                type="button"
-                                variant="none"
-                                size="icon"
-                                onClick={() => setColor(c.id)}
-                                aria-label={`Select ${c.id} color`}
-                                aria-pressed={color === c.id}
-                                className={`
-                                    border-2 p-0.5
-                                    ${color === c.id
-                                        ? "border-primary scale-110"
-                                        : "border-transparent hover:scale-105"
-                                    }
-                                `}
-                            >
-
-                                <div className={`h-full w-full rounded-full ${c.className}`} />
-                            </Button>
-                        ))}
-                    </div>
+                    <ColorPicker
+                        options={colors}
+                        selectedId={color}
+                        onSelect={(id) => setColor(id as CatColor | DogColor)}
+                    />
                 </div>
 
                 <Button

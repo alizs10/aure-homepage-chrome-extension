@@ -1,3 +1,5 @@
+import type { PomodoroSettings } from '@/components/widgets/pomodoro/types'; // 🌟 Import PomodoroSettings
+
 //theme
 export type Theme = 'dark' | 'light' | 'system'
 
@@ -30,7 +32,8 @@ export type WidgetId =
     | "notes-and-checklists"
     | "calendar"
     | "mood-tracker"
-    | "pet-house";
+    | "pet-house"
+    | "pomodoro"; // 🌟 Added pomodoro to WidgetId
 
 export type WidgetSettings = Record<WidgetId, boolean>;
 
@@ -42,7 +45,7 @@ export type WidgetPreferences = {
     "mood-tracker": {
         showChart: boolean;
     };
-
+    pomodoro: PomodoroSettings; // 🌟 Added pomodoro preferences
 };
 
 //accent
@@ -94,7 +97,6 @@ export interface Settings {
     wallpaper: "default" | string
     blur: BlurSize
     widgets: WidgetSettings
-    // NEW: Optional, so it doesn't break existing users' settings
     widgetPreferences?: Partial<WidgetPreferences>;
     accent: Accent
     show_top_sites: boolean

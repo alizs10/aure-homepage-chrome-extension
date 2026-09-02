@@ -71,7 +71,7 @@ const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
                         "relative rounded-full transition-colors duration-200 cursor-pointer",
                         "bg-linear-to-b from-background to-background/30",
                         "app-blur",
-                        "shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.08)]",
+                        "shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)]",
                         "data-checked:to-primary/30 data-checked:dark:to-primary/50",
                         styles.track,
                         className,

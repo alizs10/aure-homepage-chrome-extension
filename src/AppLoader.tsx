@@ -8,6 +8,7 @@ import { useNotesAndChecklists } from "./components/widgets/notes-and-checklists
 import { useFavorites } from "./components/settings/components/tabs-details/sites-and-folders/components/favorites/hooks/useFavorites";
 import { accentOptions, blurOptions } from "@/types"; // 🌟 Import these
 import { useFolders } from "./components/settings/components/tabs-details/sites-and-folders/components/folders/hooks/useFolders";
+import { usePomodoro } from "./components/widgets/pomodoro/hooks/usePomodoro";
 
 type AppLoaderProps = {
     children: React.ReactNode;
@@ -24,8 +25,9 @@ export default function AppLoader({ children }: AppLoaderProps) {
     const { initialize: initNotes, loading: isNotesLoading } = useNotesAndChecklists();
     const { initialize: initFavorites, loading: isFavoritesLoading } = useFavorites();
     const { initialize: initFolders, loading: isFoldersLoading } = useFolders();
+    const { initialize: initPomodoro, loading: isPomodoroLoading } = usePomodoro();
 
-    const isLoading = loading || isFavoritesLoading || isFoldersLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading;
+    const isLoading = loading || isFavoritesLoading || isFoldersLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading || isPomodoroLoading;
     const location = useLocation();
 
     useEffect(() => {
@@ -36,7 +38,8 @@ export default function AppLoader({ children }: AppLoaderProps) {
         initPetHouse();
         initFavorites();
         initFolders();
-    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders]);
+        initPomodoro();
+    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders, initPomodoro]);
 
     // 🌟 NEW: Apply global CSS variables as soon as settings are loaded
     useEffect(() => {

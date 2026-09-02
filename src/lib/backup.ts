@@ -8,12 +8,13 @@ import type { CalendarNote } from '@/components/widgets/calendar/types';
 import type { MoodHistory } from '@/components/widgets/mood-tracker/types';
 import type { NoteAndChecklist } from '@/components/widgets/notes-and-checklists/types';
 import type { Pet } from '@/components/widgets/pet-house/types';
+import type { PomodoroHistoryEntry, PomodoroTask, PomodoroActiveState } from '@/components/widgets/pomodoro/types'; // 🌟 Added Pomodoro types
 import type { Wallpaper } from '@/types';
 
 // Helper to fetch all Chrome Storage data
 async function getAllChromeStorageData() {
     const data: Record<string, unknown> = {};
-    const keys = Object.values(STORAGE_KEYS); // This already includes 'settings'
+    const keys = Object.values(STORAGE_KEYS);
 
     for (const key of keys) {
         const value = await storage.get<unknown>(key);
@@ -28,8 +29,11 @@ async function getAllChromeStorageData() {
 // Helper to safely wipe all data before restoring
 async function clearAllData() {
     await db.transaction('rw',
-        // 🌟 Added db.folders to the transaction scope
-        [db.wallpapers, db.moods, db.pets, db.calendar, db.notes, db.favorites, db.folders],
+        [
+            db.wallpapers, db.moods, db.pets, db.calendar,
+            db.notes, db.favorites, db.folders,
+            db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState // 🌟 Added Pomodoro tables
+        ],
         async () => {
             await db.wallpapers.clear();
             await db.moods.clear();
@@ -37,11 +41,13 @@ async function clearAllData() {
             await db.calendar.clear();
             await db.notes.clear();
             await db.favorites.clear();
-            await db.folders.clear(); // 🌟 Clear folders
+            await db.folders.clear();
+            await db.pomodoroHistory.clear(); // 🌟 Clear Pomodoro history
+            await db.pomodoroTasks.clear(); // 🌟 Clear Pomodoro tasks
+            await db.pomodoroActiveState.clear(); // 🌟 Clear active timer state
         }
     );
 
-    // Object.values(STORAGE_KEYS) already includes 'settings', so one loop is enough
     const keys = Object.values(STORAGE_KEYS);
     await Promise.all(keys.map(key => storage.remove(key)));
 }
@@ -53,7 +59,12 @@ export async function exportUserData(username?: string) {
     const calendar = await db.calendar.toArray();
     const notes = await db.notes.toArray();
     const favorites = await db.favorites.toArray();
-    const folders = await db.folders.toArray(); // 🌟 Fetch folders
+    const folders = await db.folders.toArray();
+
+    // 🌟 Fetch Pomodoro data
+    const pomodoroHistory = await db.pomodoroHistory.toArray();
+    const pomodoroTasks = await db.pomodoroTasks.toArray();
+    const pomodoroActiveState = await db.pomodoroActiveState.toArray();
 
     const chromeStorage = await getAllChromeStorageData();
 
@@ -64,8 +75,10 @@ export async function exportUserData(username?: string) {
             appName: import.meta.env.VITE_APP_NAME,
             appVersion: import.meta.env.VITE_APP_VERSION,
         },
-        // 🌟 Added folders to the exported payload
-        indexedDB: { wallpapers, moods, pets, calendar, notes, favorites, folders },
+        indexedDB: {
+            wallpapers, moods, pets, calendar, notes, favorites, folders,
+            pomodoroHistory, pomodoroTasks, pomodoroActiveState // 🌟 Added to payload
+        },
         chromeStorage,
     };
 
@@ -93,14 +106,12 @@ export async function importUserData(file: File) {
         throw new Error("The file is not a valid JSON.");
     }
 
-    // ✅ 1. Root must be a plain object (not an array or null)
     if (typeof data !== 'object' || data === null || Array.isArray(data)) {
         throw new Error("Invalid backup format: Root must be a JSON object.");
     }
 
     const backup = data as Record<string, unknown>;
 
-    // ✅ 2. Check for required root keys and ensure they are plain objects
     if (typeof backup.indexedDB !== 'object' || backup.indexedDB === null || Array.isArray(backup.indexedDB)) {
         throw new Error("Invalid backup format: Missing or malformed 'indexedDB' object.");
     }
@@ -112,17 +123,18 @@ export async function importUserData(file: File) {
     const dbData = backup.indexedDB as Record<string, unknown>;
     const storageData = backup.chromeStorage as Record<string, unknown>;
 
-    // ✅ 3. Deep validate IndexedDB tables
-    // 🌟 Added 'folders' to the expected tables list
-    const expectedTables = ['wallpapers', 'moods', 'pets', 'calendar', 'notes', 'favorites', 'folders'];
+    // 🌟 Added Pomodoro tables to the expected tables list
+    const expectedTables = [
+        'wallpapers', 'moods', 'pets', 'calendar', 'notes', 'favorites', 'folders',
+        'pomodoroHistory', 'pomodoroTasks', 'pomodoroActiveState'
+    ];
+
     for (const table of expectedTables) {
         const tableData = dbData[table];
         if (tableData !== undefined) {
-            // Must be an array
             if (!Array.isArray(tableData)) {
                 throw new Error(`Invalid backup format: 'indexedDB.${table}' must be an array.`);
             }
-            // Every item in the array must be a plain object (not a primitive, not an array)
             const hasInvalidItems = tableData.some(
                 (item: unknown) => typeof item !== 'object' || item === null || Array.isArray(item)
             );
@@ -136,8 +148,11 @@ export async function importUserData(file: File) {
     await clearAllData();
 
     await db.transaction('rw',
-        // 🌟 Added db.folders to the transaction scope
-        [db.wallpapers, db.moods, db.pets, db.calendar, db.notes, db.favorites, db.folders],
+        [
+            db.wallpapers, db.moods, db.pets, db.calendar,
+            db.notes, db.favorites, db.folders,
+            db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState // 🌟 Added to transaction scope
+        ],
         async () => {
             if (Array.isArray(dbData.wallpapers) && dbData.wallpapers.length)
                 await db.wallpapers.bulkPut(dbData.wallpapers as Wallpaper[]);
@@ -151,17 +166,20 @@ export async function importUserData(file: File) {
                 await db.notes.bulkPut(dbData.notes as NoteAndChecklist[]);
             if (Array.isArray(dbData.favorites) && dbData.favorites.length)
                 await db.favorites.bulkPut(dbData.favorites as Favorite[]);
-
-            // 🌟 Restore folders data
             if (Array.isArray(dbData.folders) && dbData.folders.length)
                 await db.folders.bulkPut(dbData.folders as Folder[]);
+
+            // 🌟 Restore Pomodoro data
+            if (Array.isArray(dbData.pomodoroHistory) && dbData.pomodoroHistory.length)
+                await db.pomodoroHistory.bulkPut(dbData.pomodoroHistory as PomodoroHistoryEntry[]);
+            if (Array.isArray(dbData.pomodoroTasks) && dbData.pomodoroTasks.length)
+                await db.pomodoroTasks.bulkPut(dbData.pomodoroTasks as PomodoroTask[]);
+            if (Array.isArray(dbData.pomodoroActiveState) && dbData.pomodoroActiveState.length)
+                await db.pomodoroActiveState.bulkPut(dbData.pomodoroActiveState as PomodoroActiveState[]);
         }
     );
 
     for (const [key, value] of Object.entries(storageData)) {
         await storage.set(key, value);
     }
-
-    // ✅ Removed window.location.reload() from here. 
-    // We let the UI component handle the success toast and the delayed reload.
 }
