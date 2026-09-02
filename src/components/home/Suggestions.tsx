@@ -202,7 +202,7 @@ export default function Suggestions({
     >
       <div className="rounded-3xl app_shadow app_gradient rounded-3xl overflow-clip">
         <div ref={scrollContainerRef} className="flex flex-col max-h-100 overflow-y-scroll rounded-3xl scrollbar-none">
-          <div className="app_gradient app-blur p-5 sticky top-0">
+          <div className="liquid-glass p-5 sticky top-0">
             <BetterTypography variant="lg" weight="medium">
               {isCommandMode ? "Commands" : "Suggestions"}
             </BetterTypography>

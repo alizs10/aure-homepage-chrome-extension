@@ -29,7 +29,7 @@ export default function CycleIndicator({ session, cyclePosition, longBreakInterv
         let colorClass, sizeClass;
 
         if (isFocus) {
-            colorClass = state === 'pending' ? 'bg-primary/30' : 'bg-primary';
+            colorClass = state === 'pending' ? 'bg-indigo-600/30 dark:bg-indigo-500/30' : 'bg-indigo-600 dark:bg-indigo-500';
             sizeClass = 'w-4 h-2'; // Wider capsule for Focus
         } else if (isLongBreak) {
             colorClass = state === 'pending' ? 'bg-warning/30' : 'bg-warning';

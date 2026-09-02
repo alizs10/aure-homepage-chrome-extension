@@ -17,8 +17,8 @@ export default function Header() {
             </BetterTypography>
 
 
-            <div className="flex-row-center gap-x-0.5">
-                <div className="rounded-3xl app_shadow bg-background flex-row-center gap-x-0.5">
+            <div className="flex-row-center gap-x-1 h-9">
+                <div className="rounded-3xl liquid-glass flex-row-center p-0.5 gap-x-0.5">
                     <Button size='icon-sm'
                         className=''
                         variant={!showChart ? 'primary-active' : 'ghost'}
@@ -42,6 +42,7 @@ export default function Header() {
                     onValueChange={(newValue) => {
                         onFilterChange(newValue);
                     }}
+                    triggerVariant='ghost'
                 />
             </div>
 

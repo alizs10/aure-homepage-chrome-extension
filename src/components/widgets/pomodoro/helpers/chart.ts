@@ -15,7 +15,8 @@ export function filterHistoryByDays(
 ): PomodoroHistoryEntry[] {
     const cutoff = subDays(new Date(), days);
     return history.filter(entry => {
-        const entryDate = new Date(entry.completedAt);
+        // 🌟 FIX: Filter by when the session STARTED, not when it ended
+        const entryDate = new Date(entry.startedAt);
         return entryDate >= cutoff;
     });
 }
@@ -24,7 +25,9 @@ export function groupHistoryByDay(history: PomodoroHistoryEntry[]): DayBucket[] 
     const buckets = new Map<string, DayBucket>();
 
     history.forEach(entry => {
-        const date = new Date(entry.completedAt);
+        // 🌟 FIX: Group by when the session STARTED, not when it ended
+        // Note: date-fns `format` safely uses local time, avoiding UTC timezone shifts
+        const date = new Date(entry.startedAt);
         const dateKey = format(date, 'yyyy-MM-dd');
         const label = format(date, 'EEE, MMM d');
 

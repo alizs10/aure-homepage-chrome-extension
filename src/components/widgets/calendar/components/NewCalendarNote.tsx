@@ -17,7 +17,7 @@ export default function NewCalendarNote() {
             <Button
                 size="icon-sm"
                 className="h-full"
-                variant="primary"
+                variant="ghost"
                 onClick={toggle}
             >
                 <CalendarPlusIcon className="size-4" />

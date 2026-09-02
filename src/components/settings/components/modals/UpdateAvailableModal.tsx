@@ -36,7 +36,7 @@ export default function UpdateAvailableModal({
 
     return (
         <ModalWrapper open={open} onClose={onClose}>
-            <div className="rounded-3xl app_shadow bg-secondary p-3 md:p-5 flex flex-col gap-5 w-full max-h-[80vh] overflow-y-auto scrollbar-none">
+            <div className="rounded-3xl liquid-glass p-3 md:p-5 flex flex-col gap-5 w-full max-h-[80vh] overflow-y-auto scrollbar-none">
                 <ModalHeader
                     title="Update Available"
                     onClose={onClose}

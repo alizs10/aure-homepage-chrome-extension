@@ -15,7 +15,14 @@ export type ButtonVariant =
   | "warning"
   | "none";
 
-type ButtonSize = "icon" | "icon-sm" | "icon-xs" | "xs" | "sm" | "md" | "lg";
+type ButtonSize =
+  | "icon"
+  | "icon-sm"
+  | "icon-xs"
+  | "xs"
+  | "sm"
+  | "md"
+  | "lg";
 
 type SharedProps = {
   variant?: ButtonVariant;
@@ -41,27 +48,28 @@ type ButtonProps = LinkButtonProps | NativeButtonProps;
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-primary/30",
+    "liquid-glass-sm hover:bg-primary/30",
+
   "primary-active":
-    "bg-gradient-to-b from-background/30 from-30% to-primary/30 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-primary/20 dark:hover:to-primary/40",
+    "liquid-glass-sm bg-primary/30! hover:bg-primary/60!",
+
   ghost:
-    "bg-gradient-to-b from-transparent from-30% to-transparent " +
-    "hover:from-secondary/30 hover:to-background/60 " +
-    "transition-shadow duration-200 ease-out " +
-    "hover:app-blur " +
-    "hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),inset_0_0_20px_rgba(255,255,255,0.55)] " +
-    "dark:hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] " +
-    "text-foreground",
+    "bg-transparent hover:bg-background/30",
+
   success:
-    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-success/30",
+    "liquid-glass-sm hover:bg-success/30!",
+
   "success-active":
-    "bg-gradient-to-b from-background/30 from-30% to-success/50 dark:to-success/30 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-success/40",
+    "liquid-glass-sm bg-success/30! hover:bg-success/60!",
+
   destructive:
-    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-destructive/10 dark:hover:to-destructive/30",
+    "liquid-glass-sm hover:bg-destructive/30!",
+
   "ghost-destructive":
-    "bg-none hover:bg-gradient-to-b from-background/30 from-30% to-destructive/20 dark:to-destructive/30 hover:app-blur hover:shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] hover:dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-destructive/30 dark:hover:to-destructive/40",
-  warning:
-    "bg-gradient-to-b from-background/30 from-30% to-background/60 app-blur text-foreground shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)] hover:to-warning/30 dark:hover:to-warning/40",
+    "bg-transparent hover:bg-destructive/30",
+
+  "warning":
+    "liquid-glass-sm hover:bg-warning/60!",
   none: "",
 };
 
@@ -88,17 +96,15 @@ export default function Button(props: ButtonProps) {
   } = props;
 
   const classes = cn(
-    "relative z-0 inline-flex items-center justify-center gap-x-2 rounded-3xl font-medium transition-colors duration-200",
-    "active:opacity-80 active:scale-97",
-    "disabled:grayscale-100 disabled:pointer-event-none disabled:text-foreground/30",
+    "relative inline-flex items-center justify-center gap-x-2 rounded-3xl font-medium",
+    "transition-[background,box-shadow,transform,opacity] duration-200",
+    "active:scale-97 active:opacity-80",
+    "disabled:pointer-events-none disabled:grayscale disabled:text-foreground/30",
     variantClasses[variant],
     sizeClasses[size],
     className,
   );
 
-  // REFACTORED: The original logic would render multiple <Loader2> spinners
-  // simultaneously if loading=true and multiple icons/children were present.
-  // This cleanly swaps the entire content for a single spinner when loading.
   const content = loading ? (
     <Loader2 className="size-4 animate-spin" />
   ) : (
@@ -109,8 +115,6 @@ export default function Button(props: ButtonProps) {
     </>
   );
 
-  // Base UI officially recommends styling links directly rather than using
-  // the Button component for links, to preserve proper semantic <a> behavior.
   if ("href" in props && props.href) {
     return (
       <Link to={props.href} className={classes}>
@@ -124,8 +128,6 @@ export default function Button(props: ButtonProps) {
       {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
       disabled={loading || props.disabled}
       className={classes}
-      // Base UI feature: Keeps the button focusable when disabled,
-      // preventing focus from being lost during loading states.
       focusableWhenDisabled={!!loading}
     >
       {content}

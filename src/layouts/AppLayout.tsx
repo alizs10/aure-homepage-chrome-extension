@@ -1,14 +1,13 @@
-import type { PropsWithChildren } from "react";
+import { Outlet } from "react-router-dom";
 import Header from "./Header";
 
-
-export default function AppLayout({ children }: PropsWithChildren) {
+export default function AppLayout() {
     return (
-        <main className="flex flex-col w-full min-h-screen max-w-dvw overflow-x-clip">
-
+        <main className="relative z-10 flex-1 min-h-0 flex flex-col w-full overflow-y-auto scrollbar-none max-w-dvw overflow-x-clip">
             <Header />
 
-            {children}
+            {/* Outlet renders the active page (Home or Settings) */}
+            <Outlet />
         </main>
     )
 }

@@ -47,9 +47,9 @@ export default function Popup({
                 <Popover.Positioner side={side} align={align} sideOffset={sideOffset}>
                     <Popover.Popup
                         className={`
-                            rounded-3xl app_shadow bg-background z-50
+                            rounded-3xl liquid-glass bg-background/50! z-50
                             data-starting-style:opacity-0 data-starting-style:scale-95
-                            data-open:opacity-100 data-open:scale-100
+                            data-open:opacity-100 data-open:scale-100 border-none
                             transition-colors duration-200 origin-var(--popover-transform-origin)
                             ${className || ''}
                         `}

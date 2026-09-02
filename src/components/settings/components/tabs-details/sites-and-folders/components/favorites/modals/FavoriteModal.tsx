@@ -87,7 +87,7 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
     return (
         <ModalWrapper open={open} onClose={onClose}>
             <div
-                className="rounded-3xl app_shadow bg-secondary p-3 md:p-5 flex flex-col gap-4 w-full max-h-[80vh] overflow-y-scroll scrollbar-none"
+                className="rounded-3xl liquid-glass p-3 md:p-5 flex flex-col gap-4 w-full max-h-[80vh] overflow-y-scroll scrollbar-none"
             >
                 <ModalHeader
                     title={`${editing ? 'Update' : 'Add'} Favorite Website`}

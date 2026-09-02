@@ -15,7 +15,7 @@ export default function DayList({ days, onSelectDay, formatDuration }: DayListPr
             <BetterTypography variant="xs" weight="semibold" className="text-muted-foreground">
                 Daily Overview
             </BetterTypography>
-            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-none flex flex-col gap-0 rounded-3xl app_gradient app-blur py-1.5 divide-y divide-border">
+            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-none flex flex-col gap-0 rounded-3xl liquid-glass py-1.5 divide-y divide-border">
                 {days.map((day) => (
                     <button
                         key={day.dateKey}

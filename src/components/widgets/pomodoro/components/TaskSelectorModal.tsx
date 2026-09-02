@@ -83,7 +83,7 @@ export default function TaskSelectorModal({ open, onClose }: TaskSelectorModalPr
 
     return (
         <ModalWrapper open={open} onClose={handleClose}>
-            <div className="rounded-3xl app_shadow bg-secondary p-3 md:p-5 flex flex-col gap-4 w-full max-h-[80vh] overflow-y-scroll scrollbar-none">
+            <div className="rounded-3xl liquid-glass p-3 md:p-5 flex flex-col gap-4 w-full max-h-[80vh] overflow-y-scroll scrollbar-none">
                 <ModalHeader title="Select Task" onClose={handleClose} />
 
                 {/* Existing Tasks */}

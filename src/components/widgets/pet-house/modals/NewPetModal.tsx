@@ -84,7 +84,7 @@ export default function NewPetModal({ open, onClose }: NewPetModalProps) {
     return (
         // 🌟 Pass handleClose to the Modal wrapper to catch backdrop clicks
         <Modal open={open} onClose={handleClose}>
-            <div className="rounded-3xl app_shadow bg-secondary p-3 md:p-5 flex flex-col gap-4">
+            <div className="rounded-3xl liquid-glass p-3 md:p-5 flex flex-col gap-4">
                 <ModalHeader title="New Pet" onClose={handleClose} />
 
                 <TextInput

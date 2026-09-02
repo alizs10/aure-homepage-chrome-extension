@@ -98,7 +98,7 @@ export default function DayDetailModal({ open, onClose, day, formatDuration }: D
 
                         <div className="w-full flex-center">
                             <div
-                                className="flex flex-col items-center justify-center rounded-full p-10 app_shadow app_gradient app-blur aspect-square">
+                                className="flex flex-col items-center justify-center rounded-full p-10 liquid-glass aspect-square">
                                 <BetterTypography
                                     variant="2xl"
                                     weight="bold"

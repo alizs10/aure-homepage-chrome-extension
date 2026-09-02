@@ -64,7 +64,7 @@ export default function DayDetail({ day, onBack, formatDuration }: DayDetailProp
             </div>
 
             <div className="flex-row-center gap-1">
-                <StatBlock label="Focus" count={stats.focusCount} duration={stats.focusTime} color="text-primary" formatDuration={formatDuration} />
+                <StatBlock label="Focus" count={stats.focusCount} duration={stats.focusTime} color="text-indigo-600 dark:text-indigo-500" formatDuration={formatDuration} />
                 <StatBlock label="Short" count={stats.shortBreakCount} duration={stats.shortBreakTime} color="text-success" formatDuration={formatDuration} />
                 <StatBlock label="Long" count={stats.longBreakCount} duration={stats.longBreakTime} color="text-warning" formatDuration={formatDuration} />
             </div>

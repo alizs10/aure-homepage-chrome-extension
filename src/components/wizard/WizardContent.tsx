@@ -36,7 +36,7 @@ export function WizardContent({
     }, [currentStep]);
 
     return (
-        <div className="flex flex-col gap-y-4 col-span-1 lg:col-span-3 flex-1 rounded-3xl app_shadow app_gradient app-blur p-5 min-h-80 lg:min-h-100">
+        <div className="flex flex-col gap-y-4 col-span-1 lg:col-span-3 flex-1 rounded-3xl liquid-glass p-5 min-h-80 lg:min-h-100">
             {step && (
                 <BetterTypography className="capitalize" variant="lg" weight="semibold">
                     {`${step.id}. ${step.label}`}

@@ -16,7 +16,7 @@ export default function Slider({ value, onChange, min, max, step }: CustomSlider
     return (
         <div className="relative w-full h-5 flex items-center">
             {/* Track Background & Grid */}
-            <div className="absolute inset-x-0 h-4 rounded-3xl app_gradient app-blur overflow-hidden">
+            <div className="absolute inset-x-0 h-4 rounded-3xl liquid-glass overflow-hidden">
                 <div
                     className="absolute inset-0 grid pointer-events-none"
                     // 🌟 Apply dynamic grid columns via inline style
@@ -55,7 +55,7 @@ export default function Slider({ value, onChange, min, max, step }: CustomSlider
                 style={{ left: `${percent}%` }}
             >
                 {/* 🌟 Removed redundant 'rounded-3xl' since 'rounded-full' already creates the perfect pill shape */}
-                <div className="h-8 w-10 rounded-full app_container app_gradient app-blur -translate-x-1/2 flex-center">
+                <div className="h-8 w-10 rounded-full liquid-glass -translate-x-1/2 flex-center">
                     <div className="h-2.5 w-px bg-primary" />
                 </div>
             </div>

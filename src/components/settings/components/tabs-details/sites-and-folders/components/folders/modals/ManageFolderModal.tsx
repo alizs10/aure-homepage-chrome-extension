@@ -84,7 +84,7 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
 
     return (
         <ModalWrapper className='max-w-4/5 sm:max-w-xl' open={open} onClose={handleClose}>
-            <div className="rounded-3xl app_shadow bg-secondary p-3 md:p-5 flex flex-col gap-4 w-full max-h-[80vh] overflow-y-scroll scrollbar-none">
+            <div className="rounded-3xl liquid-glass p-3 md:p-5 flex flex-col gap-4 w-full max-h-[80vh] overflow-y-scroll scrollbar-none">
                 <ModalHeader title={`Manage ${folder.title}'s Folder`} onClose={handleClose} />
 
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 pb-3 border-b border-border">

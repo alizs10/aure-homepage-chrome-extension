@@ -1,68 +1,43 @@
 import FavoritesSites from "@/components/home/FavoritesSitesAndFolders";
 import SearchInput from "@/components/home/SearchInput";
+import Pomodoro from "@/components/widgets/pomodoro/Pomodoro";
 import { useSettingsStore } from "@/stores";
 import TopSites from "../components/home/TopSites";
 import Calendar from "../components/widgets/calendar/Calendar";
 import MoodTracker from "../components/widgets/mood-tracker/MoodTracker";
 import NotesAndChecklists from "../components/widgets/notes-and-checklists/NotesAndChecklists";
 import PetHouse from "../components/widgets/pet-house/PetHouse";
-import AppLayout from "../layouts/AppLayout";
-import Pomodoro from "@/components/widgets/pomodoro/Pomodoro";
-
-
 
 export default function Home() {
-
     const { settings } = useSettingsStore()
     const widgetsSettings = settings?.widgets;
 
-
     return (
-        <AppLayout>
+        <section className="w-full max-w-6xl m-auto gap-y-4 md:gap-y-8 flex-center flex-col py-10 space-y-6 overflow-x-clip">
+            <div className="h-fit min-h-fit w-full flex flex-col gap-y-2 md:gap-y-4 sticky top-10 z-40">
+                <SearchInput />
+                {(settings?.show_top_sites && !settings?.show_favorites) || (settings?.show_favorites) && (
 
-            <section className="w-full max-w-6xl m-auto gap-y-4 md:gap-y-8 flex-center flex-col py-10 space-y-6 overflow-x-clip">
-
-                <div className="h-fit min-h-fit w-full flex flex-col gap-y-2 md:gap-y-4">
-                    <div className="sticky top-10 z-40">
-                        <SearchInput />
+                    <div className="flex flex-col gap-y-2 md:gap-y-4">
+                        {(settings?.show_top_sites && !settings?.show_favorites) && (
+                            <TopSites />
+                        )}
+                        {settings?.show_favorites && (
+                            <FavoritesSites />
+                        )}
                     </div>
+                )}
+            </div>
 
-                    {(settings?.show_top_sites && !settings?.show_favorites) && (
-                        <TopSites />
-                    )}
-                    {settings?.show_favorites && (
-                        <FavoritesSites />
-                    )}
-
-
+            <div className="w-full flex flex-col gap-y-4 px-4 md:px-8 lg:px-10">
+                <div className="w-full flex flex-col sm:grid sm:grid-cols-2 lg:grid-rows-2 lg:grid-cols-3 gap-4 max-h-fit">
+                    {widgetsSettings?.["notes-and-checklists"] && <NotesAndChecklists />}
+                    {widgetsSettings?.["calendar"] && <Calendar />}
+                    {widgetsSettings?.["pomodoro"] && <Pomodoro />}
+                    {widgetsSettings?.["mood-tracker"] && <MoodTracker />}
+                    {widgetsSettings?.["pet-house"] && <PetHouse />}
                 </div>
-
-                <div className="w-full flex flex-col gap-y-4 px-4 md:px-8 lg:px-10">
-
-                    <div className="w-full flex flex-col sm:grid sm:grid-cols-2 lg:grid-rows-2 lg:grid-cols-3 gap-4 max-h-fit">
-                        {widgetsSettings?.["notes-and-checklists"] && (
-                            <NotesAndChecklists />
-                        )}
-                        {widgetsSettings?.["calendar"] && (
-                            <Calendar />
-                        )}
-                        {widgetsSettings?.["pomodoro"] && (
-                            <Pomodoro />
-                        )}
-                        {widgetsSettings?.["mood-tracker"] && (
-                            <MoodTracker />
-                        )}
-                        {widgetsSettings?.["pet-house"] && (
-                            <PetHouse />
-                        )}
-
-
-                    </div>
-
-                </div>
-            </section>
-
-
-        </AppLayout>
+            </div>
+        </section>
     )
 }
