@@ -9,6 +9,8 @@ import notesMockupDarkImg from "@/assets/mockups/notes-dark.webp"
 import notesMockupLightImg from "@/assets/mockups/notes-light.webp"
 import petHouseMockupDarkImg from "@/assets/mockups/pet-house-dark.webp"
 import petHouseMockupLightImg from "@/assets/mockups/pet-house-light.webp"
+import pomodoroMockupDarkImg from "@/assets/mockups/pomodoro-dark.webp"
+import pomodoroMockupLightImg from "@/assets/mockups/pomodoro-light.webp"
 import { BetterTypography } from '@/components/common/BetterTypography'
 import { useTheme } from '@/hooks/useTheme'
 import { useSettingsStore } from '@/stores'
@@ -39,7 +41,7 @@ function WidgetItem({ item, statusValue, onChange }: WidgetItemProps) {
     const { resolvedTheme: theme } = useTheme()
 
     return (
-        <div className="col-span-1 w-full h-full rounded-3xl app_shadow bg-background overflow-clip relative">
+        <div className="col-span-1 w-full h-full rounded-3xl app_shadow app_gradient app-blur overflow-clip relative">
             <img src={theme === 'light' ? item.imgs.light : item.imgs.dark} className='object-cover w-full aspect-square' />
 
             <div className="flex-center-between px-4 pb-3">
@@ -59,12 +61,13 @@ function WidgetItem({ item, statusValue, onChange }: WidgetItemProps) {
 }
 
 const widgets: WidgetItem[] = [
+
     {
-        id: 'calendar',
-        label: 'Calendar',
+        id: 'pomodoro',
+        label: 'Pomodoro',
         imgs: {
-            light: calendarMockupLightImg,
-            dark: calendarMockupDarkImg,
+            light: pomodoroMockupLightImg,
+            dark: pomodoroMockupDarkImg,
         }
     },
     {
@@ -77,11 +80,11 @@ const widgets: WidgetItem[] = [
         }
     },
     {
-        id: 'pet-house',
-        label: 'Pet House',
+        id: 'calendar',
+        label: 'Calendar',
         imgs: {
-            light: petHouseMockupLightImg,
-            dark: petHouseMockupDarkImg,
+            light: calendarMockupLightImg,
+            dark: calendarMockupDarkImg,
         }
     },
     {
@@ -92,6 +95,15 @@ const widgets: WidgetItem[] = [
             dark: moodTrackerMockupDarkImg,
         }
     },
+    {
+        id: 'pet-house',
+        label: 'Pet House',
+        imgs: {
+            light: petHouseMockupLightImg,
+            dark: petHouseMockupDarkImg,
+        }
+    },
+
 ]
 
 export default function WidgetsCenterTabDetails() {
@@ -112,6 +124,7 @@ export default function WidgetsCenterTabDetails() {
                 "calendar": settingsWidgets?.['calendar'] ?? true,
                 "notes-and-checklists": settingsWidgets?.['notes-and-checklists'] ?? true,
                 "pet-house": settingsWidgets?.['pet-house'] ?? true,
+                "pomodoro": settingsWidgets?.['pomodoro'] ?? true,
             }
         },
         mode: 'onChange', // validates on change for immediate feedback

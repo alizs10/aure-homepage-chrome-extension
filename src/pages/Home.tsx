@@ -7,6 +7,7 @@ import MoodTracker from "../components/widgets/mood-tracker/MoodTracker";
 import NotesAndChecklists from "../components/widgets/notes-and-checklists/NotesAndChecklists";
 import PetHouse from "../components/widgets/pet-house/PetHouse";
 import AppLayout from "../layouts/AppLayout";
+import Pomodoro from "@/components/widgets/pomodoro/Pomodoro";
 
 
 
@@ -44,6 +45,9 @@ export default function Home() {
                         )}
                         {widgetsSettings?.["calendar"] && (
                             <Calendar />
+                        )}
+                        {widgetsSettings?.["pomodoro"] && (
+                            <Pomodoro />
                         )}
                         {widgetsSettings?.["mood-tracker"] && (
                             <MoodTracker />

@@ -7,7 +7,9 @@
     "permissions": [
         "favicon",
         "storage",
-        "topSites"
+        "topSites",
+        "notifications",
+        "alarms"
     ],
     "web_accessible_resources": [
         {

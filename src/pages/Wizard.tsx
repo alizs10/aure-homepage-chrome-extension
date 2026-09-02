@@ -70,6 +70,7 @@ export default function Wizard() {
                 "calendar": true,
                 "notes-and-checklists": true,
                 "pet-house": true,
+                "pomodoro": true,
             },
             accent: "default",
             show_top_sites: true,
