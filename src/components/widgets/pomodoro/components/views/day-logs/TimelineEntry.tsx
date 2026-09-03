@@ -85,7 +85,7 @@ export default function TimelineEntry({ log, formatDuration }: TimelineEntryProp
 
             {/* Duration */}
             <div className="shrink-0 pl-2 flex flex-col items-end">
-                <BetterTypography variant="md" weight="bold" className={cn("tabular-nums", getSessionTextColor(log.type))}>
+                <BetterTypography variant="12-16-16-14-16" weight="bold" className={cn("tabular-nums", getSessionTextColor(log.type))}>
                     {formatDuration(log.duration)}
                 </BetterTypography>
             </div>

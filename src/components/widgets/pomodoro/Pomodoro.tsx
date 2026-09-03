@@ -8,21 +8,8 @@ export default function Pomodoro() {
     const { currentView } = usePomodoro();
 
     return (
-        <div
-            className="
-                relative
-                sm:col-span-1
-                rounded-3xl
-                liquid-glass
-                flex
-                flex-col
-                gap-y-4
-                p-5
-                min-h-124
-                max-h-124
-                lg:row-span-2
-            "
-        >
+        // 🌟 row-span-2 makes it exactly 31rem
+        <div className="relative sm:col-span-1 row-span-2 rounded-3xl liquid-glass flex flex-col gap-y-4 p-5 h-full">
             <Header />
 
             {currentView === "timer" && <TimerView />}

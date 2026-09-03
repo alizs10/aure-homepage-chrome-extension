@@ -1,4 +1,3 @@
-import FavoritesSites from "@/components/home/FavoritesSitesAndFolders";
 import SearchInput from "@/components/home/SearchInput";
 import Pomodoro from "@/components/widgets/pomodoro/Pomodoro";
 import { useSettingsStore } from "@/stores";
@@ -7,30 +6,41 @@ import Calendar from "../components/widgets/calendar/Calendar";
 import MoodTracker from "../components/widgets/mood-tracker/MoodTracker";
 import NotesAndChecklists from "../components/widgets/notes-and-checklists/NotesAndChecklists";
 import PetHouse from "../components/widgets/pet-house/PetHouse";
+import Favorites from "@/components/home/favorites/Favorites";
+import Folders from "@/components/home/folders/Folders";
+import { Tooltip } from "@base-ui/react/tooltip";
 
 export default function Home() {
-    const { settings } = useSettingsStore()
+    const { settings } = useSettingsStore();
     const widgetsSettings = settings?.widgets;
+
+    const showTopSites = settings?.show_top_sites;
+    const showFavorites = settings?.show_favorites;
+    const showFolders = settings?.show_folders ?? true;
+    const showSitesRow = showTopSites || showFavorites || showFolders;
 
     return (
         <section className="w-full max-w-6xl m-auto gap-y-4 md:gap-y-8 flex-center flex-col py-10 space-y-6 overflow-x-clip">
-            <div className="h-fit min-h-fit w-full flex flex-col gap-y-2 md:gap-y-4 sticky top-10 z-40">
+            <div className="sticky top-10 z-40 h-fit min-h-fit w-full flex flex-col gap-y-2 md:gap-y-4">
                 <SearchInput />
-                {(settings?.show_top_sites && !settings?.show_favorites) || (settings?.show_favorites) && (
 
-                    <div className="flex flex-col gap-y-2 md:gap-y-4">
-                        {(settings?.show_top_sites && !settings?.show_favorites) && (
-                            <TopSites />
-                        )}
-                        {settings?.show_favorites && (
-                            <FavoritesSites />
-                        )}
-                    </div>
+                {showSitesRow && (
+                    <Tooltip.Provider>
+                        <div className="flex flex-wrap justify-center gap-1 md:gap-2 z-30 w-full px-4 md:px-8">
+                            {showTopSites && <TopSites />}
+                            {showFavorites && <Favorites />}
+                            {showFolders && <Folders />}
+                        </div>
+                    </Tooltip.Provider>
                 )}
             </div>
 
             <div className="w-full flex flex-col gap-y-4 px-4 md:px-8 lg:px-10">
-                <div className="w-full flex flex-col sm:grid sm:grid-cols-2 lg:grid-rows-2 lg:grid-cols-3 gap-4 max-h-fit">
+                {/* 🌟 Dynamic Grid: 
+                    auto-rows-[15rem] sets the base unit height (h-60). 
+                    grid-flow-dense automatically packs short widgets into gaps left by tall widgets. 
+                */}
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-60 grid-flow-dense">
                     {widgetsSettings?.["notes-and-checklists"] && <NotesAndChecklists />}
                     {widgetsSettings?.["calendar"] && <Calendar />}
                     {widgetsSettings?.["pomodoro"] && <Pomodoro />}
@@ -39,5 +49,5 @@ export default function Home() {
                 </div>
             </div>
         </section>
-    )
+    );
 }

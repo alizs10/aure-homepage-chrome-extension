@@ -30,6 +30,11 @@
     --liquid-glass-shadow-size: 5px;
 
     background: var(--liquid-glass-background);
+    
+    /* 🌟 Glass Edge: Simulates physical thickness and light catching the border */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top-color: rgba(255, 255, 255, 0.35);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
 
     /* Fallback */
     backdrop-filter:
@@ -46,16 +51,39 @@
         saturate(180%)
         url("#liquid-glass");
 
+    /* 🌟 Inner Bevel & Depth: Top highlight, bottom shadow, and soft outer drop shadow */
     box-shadow:
         inset 0 1px 1px var(--liquid-glass-highlight),
-        inset 0 0 var(--liquid-glass-shadow-size)
-            var(--liquid-glass-shadow) !important;
+        inset 0 -1px 1px rgba(0, 0, 0, 0.06),
+        inset 0 0 var(--liquid-glass-shadow-size) var(--liquid-glass-shadow),
+        0 8px 24px -4px rgba(0, 0, 0, 0.06) !important;
+        
+    /* 🌟 Specular Shine: Diagonal light reflection across the glass */
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.12) 0%,
+            rgba(255, 255, 255, 0.04) 25%,
+            transparent 45%
+        );
+        pointer-events: none;
+        z-index: 1;
+    }
 }
 
 @utility liquid-glass-sm {
     --liquid-glass-shadow-size: 1px;
 
     background: var(--liquid-glass-background-sm);
+    
+    /* 🌟 Thinner glass edge for small components */
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    border-top-color: rgba(255, 255, 255, 0.25);
+    border-bottom-color: rgba(255, 255, 255, 0.04);
 
     /* Fallback */
     backdrop-filter:
@@ -73,7 +101,23 @@
         url("#liquid-glass");
 
     box-shadow:
-        inset 0 1px 1px var(--liquid-glass-highlight),
-        inset 0 0 var(--liquid-glass-shadow-size)
-            var(--liquid-glass-shadow) !important;
+        inset 0 0.5px 0.5px var(--liquid-glass-highlight),
+        inset 0 -0.5px 0.5px rgba(0, 0, 0, 0.04),
+        inset 0 0 var(--liquid-glass-shadow-size) var(--liquid-glass-shadow),
+        0 4px 12px -2px rgba(0, 0, 0, 0.04) !important;
+        
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.03) 25%,
+            transparent 45%
+        );
+        pointer-events: none;
+        z-index: 1;
+    }
 }

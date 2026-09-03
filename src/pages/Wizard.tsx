@@ -72,7 +72,8 @@ export default function Wizard() {
             },
             accent: "default",
             show_top_sites: true,
-            show_favorites: false,
+            show_favorites: true,
+            show_folders: true,
         };
 
         await save(settingsToSave);

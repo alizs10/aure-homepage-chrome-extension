@@ -101,4 +101,5 @@ export interface Settings {
     accent: Accent
     show_top_sites: boolean
     show_favorites: boolean
+    show_folders: boolean
 }
