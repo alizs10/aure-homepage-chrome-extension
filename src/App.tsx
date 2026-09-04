@@ -3,7 +3,7 @@ import AppLoader from "./AppLoader";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import Wizard from "./pages/Wizard";
-import UiShowcase from "./pages/UiShowcase"; // 🌟 New Showcase Page
+// import UiShowcase from "./pages/UiShowcase"; // 🌟 New Showcase Page
 import Layout from "./layouts/Layout";
 import AppLayout from "./layouts/AppLayout";
 
@@ -22,7 +22,7 @@ export default function App() {
             <Route element={<AppLayout />}>
               <Route path="/" element={<Home />} />
               <Route path="/settings" element={<Settings />} />
-              <Route path="/ui" element={<UiShowcase />} />
+              {/* <Route path="/ui" element={<UiShowcase />} /> */}
             </Route>
 
           </Route>
