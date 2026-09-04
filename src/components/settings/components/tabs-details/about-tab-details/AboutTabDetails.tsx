@@ -24,7 +24,7 @@ export default function AboutTabDetails() {
 
     return (
         <div className="h-fit flex-1 flex flex-col gap-y-10">
-            <div className="flex flex-col gap-y-2 p-5 bg-background rounded-3xl app_shadow">
+            <div className="flex flex-col gap-y-1">
                 <BetterTypography variant="sm">
                     App Name: <span className="font-semibold">{`"${import.meta.env.VITE_APP_NAME}"`}</span>
                 </BetterTypography>
@@ -62,8 +62,9 @@ export default function AboutTabDetails() {
 
                 <div className="mt-4 flex flex-wrap gap-2">
                     <Button
+                        variant='primary'
+                        size='sm'
                         href="https://t.me/alizs10"
-                        className="to-[#229ED9]/50 hover:to-[#229ED9]/70 text-foreground border-0"
                         leftIcon={<SendIcon className="size-4" />}
                     >
                         <BetterTypography variant="xs" weight="medium">
@@ -72,8 +73,9 @@ export default function AboutTabDetails() {
                     </Button>
 
                     <Button
+                        variant='destructive'
+                        size='sm'
                         href="mailto:alizswork@gmail.com"
-                        className="to-[#EA4335]/50 hover:to-[#EA4335]/70 text-foreground border-0"
                         leftIcon={<MailIcon className="size-4" />}
                     >
                         <BetterTypography variant="xs" weight="medium">

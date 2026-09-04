@@ -27,8 +27,15 @@ export default function LogsView() {
 
     const groupedLogs = useMemo(() => {
         return logs.reduce((acc, log) => {
-            const dateObj = new Date(log.completedAt);
-            const dateKey = dateObj.toISOString().split('T')[0];
+            // 🌟 Group by when the session STARTED, not when it ended
+            const dateObj = new Date(log.startedAt);
+
+            // 🌟 Use local time formatting to prevent UTC timezone shifting bugs
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const dayNum = String(dateObj.getDate()).padStart(2, '0');
+            const dateKey = `${year}-${month}-${dayNum}`;
+
             const displayDate = dateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 
             if (!acc[dateKey]) {
@@ -77,7 +84,7 @@ export default function LogsView() {
 
     return (
         <div
-            className="flex-1 min-h-0 flex flex-col gap-2"
+            className="flex-1 flex flex-col gap-4 overflow-y-auto scrollbar-none pr-1 -mr-1"
         >
             {!selectedDay ? (
                 <DayList days={daysArray} onSelectDay={setSelectedDate} formatDuration={formatDuration} />

@@ -11,6 +11,7 @@ import FoldersContent from "./folders/FoldersContent";
 interface FormValues {
     show_top_sites: boolean;
     show_favorites: boolean;
+    show_folders: boolean;
 }
 
 export default function SitesAndFoldersContent() {
@@ -23,15 +24,17 @@ export default function SitesAndFoldersContent() {
         formState: { isDirty, isSubmitting, isValid },
     } = useForm<FormValues>({
         defaultValues: {
-            show_top_sites: settings?.show_top_sites ?? false,
-            show_favorites: settings?.show_favorites ?? false,
+            show_top_sites: settings?.show_top_sites ?? true,
+            show_favorites: settings?.show_favorites ?? true,
+            show_folders: settings?.show_folders ?? true,
         },
     });
 
     useEffect(() => {
         reset({
-            show_top_sites: settings?.show_top_sites ?? false,
-            show_favorites: settings?.show_favorites ?? false,
+            show_top_sites: settings?.show_top_sites ?? true,
+            show_favorites: settings?.show_favorites ?? true,
+            show_folders: settings?.show_folders ?? true,
         });
     }, [settings, reset]);
 
@@ -55,10 +58,7 @@ export default function SitesAndFoldersContent() {
                             checked={value}
                             onCheckedChange={onChange}
                             leftLabel={
-                                <BetterTypography
-                                    variant="sm"
-                                    weight="medium"
-                                >
+                                <BetterTypography variant="sm" weight="medium">
                                     Show top sites?
                                 </BetterTypography>
                             }
@@ -74,12 +74,24 @@ export default function SitesAndFoldersContent() {
                             checked={value}
                             onCheckedChange={onChange}
                             leftLabel={
-                                <BetterTypography
-                                    variant="sm"
-                                    weight="medium"
-                                >
-                                    Show Your Favorite websites and Folders instead of top
-                                    sites?
+                                <BetterTypography variant="sm" weight="medium">
+                                    Show favorite websites?
+                                </BetterTypography>
+                            }
+                        />
+                    )}
+                />
+
+                <Controller
+                    name="show_folders"
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                        <Toggle
+                            checked={value}
+                            onCheckedChange={onChange}
+                            leftLabel={
+                                <BetterTypography variant="sm" weight="medium">
+                                    Show folders?
                                 </BetterTypography>
                             }
                         />

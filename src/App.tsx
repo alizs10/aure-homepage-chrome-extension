@@ -3,28 +3,30 @@ import AppLoader from "./AppLoader";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import Wizard from "./pages/Wizard";
-// import { useMoodTracker } from "./components/widgets/mood-tracker/hooks/useMoodTracker";
-// import { useEffect } from "react";
-// import { useCalendar } from "./components/widgets/calendar/hooks/useCalendar";
-// import { usePetHouse } from "./components/widgets/pet-house/hooks/usePetHouse";
-// import { useNotesAndChecklists } from "./components/widgets/notes-and-checklists/hooks/useNotesAndChecklists";
-// import { useFavorites } from "./components/settings/components/tabs-details/sites-and-shortcuts/hooks/useFavorites";
-
+import UiShowcase from "./pages/UiShowcase"; // 🌟 New Showcase Page
+import Layout from "./layouts/Layout";
+import AppLayout from "./layouts/AppLayout";
 
 export default function App() {
-
-
-
   return (
     <HashRouter>
       <AppLoader>
-
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/wizard" element={<Wizard />} />
-          <Route path="/settings" element={<Settings />} />
-        </Routes>
+          {/* Root Layout wraps EVERYTHING */}
+          <Route element={<Layout />}>
 
+            {/* Wizard has NO header, renders directly in Root Layout */}
+            <Route path="/wizard" element={<Wizard />} />
+
+            {/* AppLayout wraps Home, Settings, and UI Showcase */}
+            <Route element={<AppLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/ui" element={<UiShowcase />} />
+            </Route>
+
+          </Route>
+        </Routes>
       </AppLoader>
     </HashRouter>
   )

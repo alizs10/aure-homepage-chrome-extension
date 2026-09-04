@@ -18,7 +18,7 @@ export default function Skeleton({
         <div
             aria-hidden="true"
             className={cn(
-                "relative overflow-hidden rounded-3xl app_shadow app_gradient app-blur",
+                "relative overflow-hidden rounded-3xl liquid-glass",
                 "rounded-3xl",
                 className,
             )}

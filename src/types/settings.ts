@@ -18,11 +18,11 @@ export const blurOptions = [
     { key: "none", label: "Off", value: "0px" },
     { key: "xs", label: "Very Low", value: "2px" },
     { key: "sm", label: "Low", value: "4px" },
-    { key: "md", label: "Medium", value: "12px" },
-    { key: "lg", label: "High", value: "16px" },
-    { key: "xl", label: "Very High", value: "24px" },
-    { key: "2xl", label: "Ultra", value: "40px" },
-    { key: "3xl", label: "Maximum", value: "64px" },
+    { key: "md", label: "Medium", value: "8px" },
+    { key: "lg", label: "High", value: "12px" },
+    { key: "xl", label: "Very High", value: "16px" },
+    { key: "2xl", label: "Ultra", value: "24px" },
+    { key: "3xl", label: "Maximum", value: "32px" },
 ] as const;
 
 export type BlurSize = typeof blurOptions[number]["key"];
@@ -101,4 +101,5 @@ export interface Settings {
     accent: Accent
     show_top_sites: boolean
     show_favorites: boolean
+    show_folders: boolean
 }

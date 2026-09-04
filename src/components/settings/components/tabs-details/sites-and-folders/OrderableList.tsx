@@ -36,7 +36,7 @@ export function OrderableList<T extends OrderableItem>({
 }: OrderableListProps<T>) {
     if (items.length === 0) {
         return (
-            <div className='rounded-3xl app_shadow app_gradient app-blur flex-center py-10'>
+            <div className='rounded-3xl liquid-glass flex-center py-10'>
                 <BetterTypography variant='xs' className='text-secondary-foreground' weight='medium'>
                     {emptyMessage}
                 </BetterTypography>

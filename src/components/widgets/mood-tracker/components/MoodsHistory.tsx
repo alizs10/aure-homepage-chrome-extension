@@ -42,7 +42,7 @@ export default function MoodsHistory() {
             {showChart ? <MoodsChart /> : <HistoryList />}
 
             <div className="mt-auto flex-row-center gap-x-1">
-                <div className="flex-1 rounded-3xl app_shadow px-4 py-1.5 bg-background">
+                <div className="flex-1 rounded-3xl liquid-glass px-4 py-1.5">
                     <BetterTypography className="text-nowrap" variant="12-12-14-12-14">
                         You feel{" "}
                         <BetterTypography

@@ -31,7 +31,7 @@ export default function Header() {
                 </BetterTypography>
 
                 <div className="flex-row-center gap-x-1 h-9">
-                    <div className="rounded-3xl app_shadow app_gradient app-blur flex-row-center p-0.5 gap-x-0.5">
+                    <div className="rounded-3xl liquid-glass flex-row-center p-0.5 gap-x-0.5">
                         {tabs.map((tab) => (
                             <Button
                                 key={tab.id}

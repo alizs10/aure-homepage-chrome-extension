@@ -89,7 +89,7 @@ export default function PomodoroSettingsPopup({ open, onClose }: PomodoroSetting
 
     return (
         <ModalWrapper open={open} onClose={onClose}>
-            <div className="rounded-3xl app_shadow bg-secondary p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none">
+            <div className="rounded-3xl liquid-glass p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none">
                 <ModalHeader title="Pomodoro Settings" onClose={onClose} />
 
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">

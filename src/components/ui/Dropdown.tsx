@@ -52,6 +52,7 @@ export default function Dropdown<T extends string | number>({
                     <Button
                         variant={triggerVariant}
                         size={hideLabel ? "icon-sm" : "sm"}
+                        className="h-full py-0"
                         rightIcon={
                             !icon ? <Select.Icon className="transition-transform duration-200 data-popup-open:rotate-180">
                                 <ChevronDownIcon className="size-4" />
@@ -88,8 +89,8 @@ export default function Dropdown<T extends string | number>({
                 max-h-60
                 overflow-y-auto
                 scrollbar-hide
-                rounded-3xl app_shadow
-                bg-background
+                liquid-glass
+                bg-background/50!
                 z-9999
                 px-2
                 py-1.5

@@ -17,7 +17,7 @@ export default function ProgressBar({
     return (
         <div className="relative w-full h-5 flex items-center">
             {/* Track */}
-            <div className="absolute inset-x-0 h-4 rounded-3xl app_gradient app-blur overflow-hidden">
+            <div className="absolute inset-x-0 h-4 rounded-3xl liquid-glass overflow-hidden">
                 {/* Fill */}
                 <div
                     className={cn(
@@ -36,7 +36,7 @@ export default function ProgressBar({
                         left: `clamp(22px, ${percent}%, calc(100% - 22px))`,
                     }}
                 >
-                    <div className="h-8 w-11 rounded-full app_container app_gradient app-blur flex-center shadow-lg -translate-x-1/2">
+                    <div className="h-8 w-11 rounded-full liquid-glass flex-center shadow-lg -translate-x-1/2">
                         <BetterTypography
                             variant="12"
                             weight="medium"

@@ -1,22 +1,14 @@
 import TabDetails from '@/components/settings/components/TabDetails';
 import { SettingsTabsProvider } from '@/components/settings/provider/SettingsTabsProvider';
 import Sidebar from '@/components/settings/components/Sidebar';
-import AppLayout from '@/layouts/AppLayout';
 
 export default function Settings() {
-
-
     return (
         <SettingsTabsProvider>
-
-            <AppLayout>
-                <div className="flex-1 min-h-0 flex flex-col md:grid md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full max-w-6xl mx-auto mt-4 md:mt-10 overflow-y-scroll scrollbar-none pb-14 md:pb-18 lg:pb-20 px-4 md:px-8 lg:px-10">
-
-                    <Sidebar />
-                    <TabDetails />
-
-                </div>
-            </AppLayout>
+            <div className="flex-1 min-h-0 flex flex-col md:grid md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full max-w-6xl mx-auto mt-4 md:mt-10 overflow-y-auto scrollbar-none pb-14 md:pb-18 lg:pb-20 px-4 md:px-8 lg:px-10">
+                <Sidebar />
+                <TabDetails />
+            </div>
         </SettingsTabsProvider>
     )
 }

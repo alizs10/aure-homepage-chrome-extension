@@ -55,7 +55,7 @@ export default function AppLoader({ children }: AppLoaderProps) {
         // 2. Apply Blur
         const blur = blurOptions.find(option => option.key === settings.blur);
         if (blur) {
-            document.documentElement.style.setProperty("--app-blur", blur.value);
+            document.documentElement.style.setProperty("--liquid-glass-blur", blur.value);
         }
     }, [settings]); // Only runs when settings object changes
 

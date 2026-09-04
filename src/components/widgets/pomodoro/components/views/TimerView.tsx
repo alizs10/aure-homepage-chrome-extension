@@ -50,7 +50,7 @@ export default function TimerView() {
                 </BetterTypography>
 
                 <BetterTypography
-                    variant="48-56-72"
+                    variant="48-56-72-48-72"
                     weight="bold"
                     className={`tabular-nums tracking-tight leading-tight ${isOvertime ? 'text-warning animate-pulse' : ''}`}
                 >
@@ -90,7 +90,7 @@ export default function TimerView() {
                         <>
                             <Button
                                 onClick={start}
-                                variant="primary-active"
+                                variant="primary"
                                 size="sm"
                                 className="flex-1"
                                 leftIcon={<PlayIcon className="size-4" />}
@@ -142,7 +142,7 @@ export default function TimerView() {
 
                     {status === 'paused' && (
                         <>
-                            <Button onClick={resume} variant="primary-active" size="sm" className="flex-1" leftIcon={<PlayIcon className="size-4" />}>
+                            <Button onClick={resume} variant="primary" size="sm" className="flex-1" leftIcon={<PlayIcon className="size-4" />}>
                                 <BetterTypography variant='xs' weight='medium'>
                                     Resume
                                 </BetterTypography>
@@ -168,7 +168,7 @@ export default function TimerView() {
                         <>
                             <Button
                                 onClick={includeOvertime}
-                                variant="primary-active"
+                                variant="primary"
                                 size="sm"
                                 className="flex-1"
                                 leftIcon={<ClockPlusIcon className="size-4" />}

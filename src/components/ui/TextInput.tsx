@@ -1,8 +1,8 @@
-import { Field } from '@base-ui/react/field';
-import { Input as BaseInput } from '@base-ui/react/input';
-import React, { forwardRef, type InputHTMLAttributes } from 'react';
-import { cn } from '../../lib/util';
-import { BetterTypography } from '../common/BetterTypography';
+import { Field } from "@base-ui/react/field";
+import { Input as BaseInput } from "@base-ui/react/input";
+import React, { forwardRef, type InputHTMLAttributes } from "react";
+import { cn } from "../../lib/util";
+import { BetterTypography } from "../common/BetterTypography";
 
 interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
     error?: string;
@@ -12,32 +12,31 @@ interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
 const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     ({ error, children, className, ...props }, ref) => {
         return (
-            // Field.Root manages the validation state for all children
-            <Field.Root invalid={!!error} className="flex flex-col gap-y-0.5 h-full">
-                <div className="relative overflow-clip h-full">
+            <Field.Root
+                invalid={!!error}
+                className="flex h-full flex-col gap-y-0.5"
+            >
+                <div className="relative h-full overflow-clip">
                     <BaseInput
                         ref={ref}
                         {...props}
                         className={cn(
-                            "bg-background/50 app-blur flex-1 w-full rounded-3xl px-4 py-2 md:py-2.5 focus:ring-0 focus:outline-0 text-xs md:text-sm lg:text-base text-foreground placeholder:text-foreground",
-                            // Base UI automatically adds 'data-invalid' to the input when Field.Root is invalid
+                            "liquid-glass flex-1 w-full rounded-3xl px-4 py-2 md:py-2.5",
+                            "text-xs md:text-sm lg:text-base text-foreground",
+                            "placeholder:text-foreground",
+                            "focus:outline-none focus:ring-0",
                             "data-invalid:border-destructive data-invalid:text-destructive",
-                            "text-foreground",
-                            "shadow-[inset_0_1px_1px_rgba(255,255,255,1),inset_0_0_20px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_0_20px_rgba(255,255,255,0.16)]",
-                            className
+                            className,
                         )}
                     />
+
                     {children}
                 </div>
 
-                {/* Field.Error automatically shows/hides based on the invalid state */}
                 <Field.Error match="customError" className="sr-only">
-                    {/* We keep your Typography for visual rendering, but hide the native Field.Error visually 
-                        and let it handle the screen-reader announcement, OR you can just use your Typography 
-                        controlled by the Field state. */}
+                    {/* Accessible error announcement */}
                 </Field.Error>
 
-                {/* Your existing visual error rendering */}
                 {error && (
                     <BetterTypography
                         variant="xs"
@@ -48,8 +47,9 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
                 )}
             </Field.Root>
         );
-    }
+    },
 );
 
-TextInput.displayName = 'TextInput';
+TextInput.displayName = "TextInput";
+
 export default TextInput;

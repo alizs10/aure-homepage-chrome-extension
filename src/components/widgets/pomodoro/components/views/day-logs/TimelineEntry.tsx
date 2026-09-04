@@ -6,7 +6,7 @@ import type { PomodoroHistoryEntry, PomodoroSession } from '../../../types';
 
 const getSessionColor = (type: PomodoroSession) => {
     switch (type) {
-        case 'focus': return 'bg-primary';
+        case 'focus': return 'bg-indigo-600 dark:bg-indigo-500';
         case 'short-break': return 'bg-success';
         case 'long-break': return 'bg-warning';
     }
@@ -14,7 +14,7 @@ const getSessionColor = (type: PomodoroSession) => {
 
 const getSessionTextColor = (type: PomodoroSession) => {
     switch (type) {
-        case 'focus': return 'text-primary';
+        case 'focus': return 'text-indigo-600 dark:text-indigo-500';
         case 'short-break': return 'text-success';
         case 'long-break': return 'text-warning';
     }
@@ -22,7 +22,7 @@ const getSessionTextColor = (type: PomodoroSession) => {
 
 const getSessionBgColor = (type: PomodoroSession) => {
     switch (type) {
-        case 'focus': return 'text-primary';
+        case 'focus': return 'text-indigo-600 dark:text-indigo-500';
         case 'short-break': return 'text-success';
         case 'long-break': return 'text-warning';
     }
@@ -85,7 +85,7 @@ export default function TimelineEntry({ log, formatDuration }: TimelineEntryProp
 
             {/* Duration */}
             <div className="shrink-0 pl-2 flex flex-col items-end">
-                <BetterTypography variant="md" weight="bold" className={cn("tabular-nums", getSessionTextColor(log.type))}>
+                <BetterTypography variant="12-16-16-14-16" weight="bold" className={cn("tabular-nums", getSessionTextColor(log.type))}>
                     {formatDuration(log.duration)}
                 </BetterTypography>
             </div>

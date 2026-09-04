@@ -48,7 +48,7 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
     const isDead = isPetDead(pet);
 
     return (
-        <div className="relative border-2 nth-[1]:border-t-0 nth-[1]:border-l-0 nth-[2]:border-t-0 nth-[2]:border-r-0 nth-[3]:border-b-0 nth-[3]:border-l-0 nth-[4]:border-b-0 nth-[4]:border-r-0 border-muted overflow-hidden">
+        <div className="relative border-2 nth-[1]:border-t-0 nth-[1]:border-l-0 nth-[2]:border-t-0 nth-[2]:border-r-0 nth-[3]:border-l-0 nth-[4]:border-r-0 border-muted overflow-hidden">
 
             <div className={`w-full flex-center-between px-3 py-1 z-10 relative`}>
                 {/* 🌟 Show Kill Dialog ONLY if alive */}
@@ -84,7 +84,7 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
                         </Button>
                     )}
 
-                    <div className="rounded-3xl app_shadow app_gradient app-blur py-1 px-2 flex-row-center gap-x-0.5">
+                    <div className="rounded-3xl liquid-glass py-1 px-2 flex-row-center gap-x-0.5">
                         <CatIcon className="size-3.5" />
                         <BetterTypography variant="10">
                             {ageLabel}

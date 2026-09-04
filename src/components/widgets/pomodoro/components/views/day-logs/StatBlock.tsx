@@ -11,7 +11,7 @@ interface StatBlockProps {
 
 export default function StatBlock({ label, count, duration, color, formatDuration }: StatBlockProps) {
     return (
-        <div className="flex-1 flex flex-col gap-1 p-3 rounded-3xl app_shadow app_gradient app-blur">
+        <div className="flex-1 flex flex-col gap-1 p-3 rounded-3xl liquid-glass">
             <BetterTypography variant="xs" weight="medium" className={cn(color, "uppercase tracking-wide")}>
                 {label}
             </BetterTypography>

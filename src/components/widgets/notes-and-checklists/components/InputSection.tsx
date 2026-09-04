@@ -87,15 +87,15 @@ export function InputSection() {
             {(editable && editableContent) && (
                 <div className="flex-row-center gap-x-2">
 
-                    <div role='div' className='size-10 min-w-10 rounded-3xl app_shadow app_gradient app-blur flex-center'>
+                    <div role='div' className='size-10 min-w-10 rounded-3xl liquid-glass flex-center'>
                         <PenLineIcon className='size-5' />
                     </div>
-                    <div className="rounded-3xl app_shadow app_gradient app-blur flex-1 px-4 py-2">
+                    <div className="rounded-3xl liquid-glass flex-1 px-4 py-2">
                         <BetterTypography variant="xs">
                             {sliceText(editableContent, 20)}
                         </BetterTypography>
                     </div>
-                    <Button variant='destructive' size='icon' className='' onClick={cancelEdit}>
+                    <Button variant='ghost-destructive' size='icon' className='' onClick={cancelEdit}>
                         <XIcon className='size-5' />
                     </Button>
 

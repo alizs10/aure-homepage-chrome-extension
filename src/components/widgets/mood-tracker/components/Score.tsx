@@ -7,7 +7,7 @@ export default function Score() {
 
 
     return (
-        <div className="rounded-3xl app_shadow bg-background px-4 py-1.5 text-nowrap">
+        <div className="rounded-3xl liquid-glass px-4 py-1.5 text-nowrap">
             <BetterTypography variant="12-12-14-12-14">
                 Score: {score}/5
             </BetterTypography>
