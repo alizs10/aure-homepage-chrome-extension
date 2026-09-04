@@ -10,7 +10,7 @@ export default function MyToaster() {
 
     return createPortal(
         <Toaster
-            position="bottom-center"
+            position="bottom-right"
             className="z-99999999"
         />,
         document.body,

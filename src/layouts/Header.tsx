@@ -1,6 +1,7 @@
 import { BetterTypography } from '@/components/common/BetterTypography'
 import ThemeToggle from '@/components/common/ThemeToggle'
 import NetworkStatus from '@/components/features/network-status/NetworkStatus'
+import Updates from '@/components/features/updates/Updates'
 import Button from '@/components/ui/Button'
 import { useSettingsStore } from '@/stores'
 import { HomeIcon, SettingsIcon } from 'lucide-react'
@@ -97,7 +98,7 @@ export default function Header() {
                     </BetterTypography>
                 </div>
 
-
+                <Updates />
 
                 <ThemeToggle />
             </div>
