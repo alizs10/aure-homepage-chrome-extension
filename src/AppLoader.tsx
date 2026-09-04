@@ -6,7 +6,7 @@ import { useCalendar } from "./components/widgets/calendar/hooks/useCalendar";
 import { usePetHouse } from "./components/widgets/pet-house/hooks/usePetHouse";
 import { useNotesAndChecklists } from "./components/widgets/notes-and-checklists/hooks/useNotesAndChecklists";
 import { useFavorites } from "./components/settings/components/tabs-details/sites-and-folders/components/favorites/hooks/useFavorites";
-import { accentOptions, blurOptions } from "@/types"; // 🌟 Import these
+import { blurOptions } from "@/types";
 import { useFolders } from "./components/settings/components/tabs-details/sites-and-folders/components/folders/hooks/useFolders";
 import { usePomodoro } from "./components/widgets/pomodoro/hooks/usePomodoro";
 import { runMigrations } from "./lib/migrations";
@@ -51,25 +51,21 @@ export default function AppLoader({ children }: AppLoaderProps) {
         }
     }, [loading, settings, migrationsDone]);
 
-    // 🌟 NEW: Apply global CSS variables as soon as settings are loaded
+    // 🌟 Apply global CSS variables as soon as settings are loaded
     useEffect(() => {
         if (!settings) return;
 
-        // 1. Apply Accent
-        const accent = accentOptions.find(option => option.id === settings.accent);
-        if (accent) {
-            document.documentElement.style.setProperty("--app-primary", accent.light);
-            document.documentElement.style.setProperty("--app-primary-dark", accent.dark);
-        }
+        // 1. Apply Accent via data attribute (CSS handles the variable mapping)
+        document.documentElement.setAttribute('data-accent', settings.accent);
 
         // 2. Apply Blur
         const blur = blurOptions.find(option => option.key === settings.blur);
         if (blur) {
             document.documentElement.style.setProperty("--liquid-glass-blur", blur.value);
         }
-    }, [settings]); // Only runs when settings object changes
+    }, [settings]);
 
-    if (isLoading) {
+    if (isLoading || !migrationsDone) {
         return null;
     }
 

@@ -10,6 +10,7 @@ import ColorPicker from '@/components/ui/ColorPicker';
 import Popup from '@/components/ui/Popup';
 import ConfirmDialog from '@/components/ui/Dialog';
 import Skeleton from '@/components/ui/Skeleton';
+import Badge from '@/components/ui/Badge'; // 🌟 Added
 import { HomeIcon, SettingsIcon, SearchIcon, TrashIcon } from 'lucide-react';
 
 export default function UiShowcase() {
@@ -76,6 +77,48 @@ export default function UiShowcase() {
                         <Button rightIcon={<SettingsIcon className="size-4" />}>Right Icon</Button>
                         <Button loading>Loading</Button>
                         <Button disabled>Disabled</Button>
+                    </div>
+                </div>
+            </ShowcaseSection>
+
+            {/* 🌟 BADGES */}
+            <ShowcaseSection title="Badges">
+                <div className="flex flex-col gap-6">
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <Badge variant="default" withDot>Default (Primary)</Badge>
+                        <Badge variant="secondary" withDot>Secondary</Badge>
+                        <Badge variant="success" withDot>Success</Badge>
+                        <Badge variant="warning" withDot>Warning</Badge>
+                        <Badge variant="destructive" withDot>Destructive</Badge>
+                        <Badge variant="outline" withDot>Outline</Badge>
+                    </div>
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <Badge size="sm" variant="default" withDot>Small</Badge>
+                        <Badge size="md" variant="default" withDot>Medium</Badge>
+                        <Badge size="lg" variant="default" withDot>Large</Badge>
+                    </div>
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <Badge variant="success">No Dot</Badge>
+                        <Badge variant="destructive">Error</Badge>
+                        <Badge variant="default">Status: Active</Badge>
+                    </div>
+                </div>
+            </ShowcaseSection>
+
+            {/* 🌟 ACCENT BADGES */}
+            <ShowcaseSection title="Accent Badges">
+                <div className="flex flex-col gap-6">
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <Badge variant="cherry" withDot>Cherry</Badge>
+                        <Badge variant="tangerine" withDot>Tangerine</Badge>
+                        <Badge variant="lime" withDot>Lime</Badge>
+                        <Badge variant="ocean" withDot>Ocean</Badge>
+                        <Badge variant="orchid" withDot>Orchid</Badge>
+                    </div>
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <Badge variant="cherry">No Dot</Badge>
+                        <Badge variant="ocean" size="sm">Small Ocean</Badge>
+                        <Badge variant="orchid" size="lg">Large Orchid</Badge>
                     </div>
                 </div>
             </ShowcaseSection>
@@ -187,7 +230,7 @@ export default function UiShowcase() {
                 <div className="flex flex-wrap gap-4 items-center">
                     <Skeleton className="w-32 h-8" />
                     <Skeleton className="w-64 h-24" />
-                    <Skeleton className="size-16 !rounded-full" />
+                    <Skeleton className="size-16 rounded-full!" />
                 </div>
             </ShowcaseSection>
 
