@@ -5,12 +5,11 @@ import { OrderableList } from '../../OrderableList'
 import { BetterTypography } from '@/components/common/BetterTypography'
 
 export default function FoldersList() {
-    const { data, removeItem, sortUp, sortDown, maxOrder } = useFolders()
+    const { data, removeItem, sortUp, sortDown } = useFolders()
 
     return (
         <OrderableList
             items={data}
-            maxOrder={maxOrder}
             onSortUp={sortUp}
             onSortDown={sortDown}
             onRemove={removeItem}

@@ -5,7 +5,6 @@ import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import type { ReactNode } from 'react'
 
-// Ensures any item passed to this list has the required properties for reordering
 export interface OrderableItem {
     id: number
     order: number
@@ -13,7 +12,6 @@ export interface OrderableItem {
 
 interface OrderableListProps<T extends OrderableItem> {
     items: T[]
-    maxOrder: number
     onSortUp: (id: number) => void
     onSortDown: (id: number) => void
     onRemove: (id: number) => void
@@ -25,7 +23,6 @@ interface OrderableListProps<T extends OrderableItem> {
 
 export function OrderableList<T extends OrderableItem>({
     items,
-    maxOrder,
     onSortUp,
     onSortDown,
     onRemove,
@@ -63,7 +60,8 @@ export function OrderableList<T extends OrderableItem>({
                         <Button
                             className='hidden transition-colors duration-200 group-hover:inline-flex'
                             onClick={() => onSortUp(item.id)}
-                            disabled={item.order === 0}
+                            // 🌟 FIX: Use array index instead of order value
+                            disabled={i === 0}
                             size='icon-sm'
                             variant='destructive'
                         >
@@ -73,7 +71,8 @@ export function OrderableList<T extends OrderableItem>({
                         <Button
                             className='hidden transition-colors duration-200 group-hover:inline-flex'
                             onClick={() => onSortDown(item.id)}
-                            disabled={maxOrder === item.order}
+                            // 🌟 FIX: Use array index instead of order value
+                            disabled={i === items.length - 1}
                             size='icon-sm'
                             variant='destructive'
                         >

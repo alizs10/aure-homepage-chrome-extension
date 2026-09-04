@@ -1,5 +1,4 @@
 // hooks/useFavorites.ts
-import { useMemo } from 'react';
 import { useFavoritesStore } from '../store';
 
 export function useFavorites() {
@@ -15,11 +14,6 @@ export function useFavorites() {
     const sortDown = useFavoritesStore((state) => state.sortDown);
     const initialize = useFavoritesStore((state) => state.initialize);
 
-    // Compute derived state with useMemo
-    const maxOrder = useMemo(() => {
-        return data.reduce((max, f) => Math.max(max, f.order), -1);
-    }, [data]);
-
     // Return the exact same object shape as the old Context
     return {
         data,
@@ -29,7 +23,6 @@ export function useFavorites() {
         updateItem,
         sortUp,
         sortDown,
-        maxOrder,
         initialize // Exposed so the root component can trigger data loading
     };
 }

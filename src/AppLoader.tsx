@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useSettingsStore } from "./stores";
 import { useMoodTracker } from "./components/widgets/mood-tracker/hooks/useMoodTracker";
@@ -9,6 +9,7 @@ import { useFavorites } from "./components/settings/components/tabs-details/site
 import { accentOptions, blurOptions } from "@/types"; // 🌟 Import these
 import { useFolders } from "./components/settings/components/tabs-details/sites-and-folders/components/folders/hooks/useFolders";
 import { usePomodoro } from "./components/widgets/pomodoro/hooks/usePomodoro";
+import { runMigrations } from "./lib/migrations";
 
 type AppLoaderProps = {
     children: React.ReactNode;
@@ -18,6 +19,7 @@ export default function AppLoader({ children }: AppLoaderProps) {
     const loading = useSettingsStore((s) => s.loading);
     const settings = useSettingsStore((s) => s.settings);
     const load = useSettingsStore((s) => s.load);
+    const [migrationsDone, setMigrationsDone] = useState(false);
 
     const { initialize: initMoods, loading: isMoodsLoading } = useMoodTracker();
     const { initialize: initCalendar, loading: isCalendarLoading } = useCalendar();
@@ -40,6 +42,14 @@ export default function AppLoader({ children }: AppLoaderProps) {
         initFolders();
         initPomodoro();
     }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders, initPomodoro]);
+
+    useEffect(() => {
+        if (!loading && settings && !migrationsDone) {
+            runMigrations().then(() => {
+                setMigrationsDone(true);
+            });
+        }
+    }, [loading, settings, migrationsDone]);
 
     // 🌟 NEW: Apply global CSS variables as soon as settings are loaded
     useEffect(() => {

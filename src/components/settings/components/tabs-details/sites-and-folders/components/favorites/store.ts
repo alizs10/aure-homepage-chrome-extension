@@ -28,7 +28,6 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     },
 
     addItem: async ({ title, url }) => {
-        // Calculate maxOrder on the fly from the latest data
         const currentData = get().data;
         const maxOrder = currentData.reduce((max, f) => Math.max(max, f.order), -1);
 
@@ -37,7 +36,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
             id: now,
             title,
             url,
-            order: maxOrder + 1
+            order: maxOrder + 1  // ✅ This is correct
         };
 
         await FavoritesRepository.put(favorite);

@@ -93,7 +93,11 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
     addWebsiteToFolder: async (folderId, websiteData) => {
         const folder = get().data.find((f) => f.id === folderId);
         if (!folder) return;
-        const newWebsite: Website = { id: Date.now(), ...websiteData, order: folder.websites.length };
+
+        // 🌟 FIX: Calculate max order instead of using .length to prevent collisions
+        const maxOrder = folder.websites.reduce((max, w) => Math.max(max, w.order), -1);
+        const newWebsite: Website = { id: Date.now(), ...websiteData, order: maxOrder + 1 };
+
         const updatedFolder = { ...folder, websites: [...folder.websites, newWebsite] };
         await FoldersRepository.put(updatedFolder);
         set((state) => ({ data: state.data.map((n) => (n.id === folderId ? updatedFolder : n)) }));

@@ -9,6 +9,9 @@ import PetHouse from "../components/widgets/pet-house/PetHouse";
 import Favorites from "@/components/home/favorites/Favorites";
 import Folders from "@/components/home/folders/Folders";
 import { Tooltip } from "@base-ui/react/tooltip";
+import Button from "@/components/ui/Button";
+import { Link } from "react-router-dom";
+import { Settings2Icon } from "lucide-react";
 
 export default function Home() {
     const { settings } = useSettingsStore();
@@ -26,10 +29,19 @@ export default function Home() {
 
                 {showSitesRow && (
                     <Tooltip.Provider>
-                        <div className="flex flex-wrap justify-center gap-1 md:gap-2 z-30 w-full px-4 md:px-8">
+                        <div className="flex flex-wrap justify-center gap-1 md:gap-2 z-30 w-full px-4 md:px-8  group">
                             {showTopSites && <TopSites />}
                             {showFavorites && <Favorites />}
                             {showFolders && <Folders />}
+                            <Link className="transition-opacity duration-200 opacity-0 group-hover:opacity-100" to="/settings?tab=sites-and-folders">
+                                <Button
+                                    size='icon-sm'
+                                    variant='warning'
+                                    className="size-10 md:size-14 w-auto min-w-10 min-h-10 max-w-10 max-h-10 md:max-w-14 md:max-h-14 md:min-w-14 md:min-h-14 aspect-square h-auto group z-30 px-0 p-2.5 rounded-full"
+                                >
+                                    <Settings2Icon className="min-w-4 md:min-w-8 size-4 md:size-8" />
+                                </Button>
+                            </Link>
                         </div>
                     </Tooltip.Provider>
                 )}

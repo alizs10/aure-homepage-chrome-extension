@@ -15,7 +15,6 @@ import { websiteSchema, type WebsiteFormValues } from '../validation/website-sch
 import type { Folder, Website } from '../../../types'
 import EditWebsite from '../EditWebsite'
 import { OrderableList } from '../../../OrderableList'
-// 🌟 Use absolute path to prevent relative path resolution failures
 
 interface ManageFolderModalProps {
     open: boolean
@@ -28,17 +27,12 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
 
     const [editingWebsiteId, setEditingWebsiteId] = useState<number | null>(null)
 
-    // 🌟 FIX 1: Wrap in useMemo to prevent a new array reference on every render
     const websites = useMemo(() => folder.websites || [], [folder.websites])
 
     const editingWebsite = useMemo(() =>
         websites.find(w => w.id === editingWebsiteId),
         [websites, editingWebsiteId]
     )
-
-    const maxWebsiteOrder = useMemo(() => {
-        return websites.reduce((max, w) => Math.max(max, w.order), -1)
-    }, [websites])
 
     const {
         register,
@@ -51,8 +45,6 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
         mode: 'onChange',
     })
 
-    // 🌟 FIX 2: Handle state updates directly in event handlers (No useEffect needed!)
-
     const handleEdit = (website: Website) => {
         setEditingWebsiteId(website.id)
         reset({ title: website.title, url: website.url })
@@ -64,7 +56,7 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
     }
 
     const handleClose = () => {
-        handleCancelEdit() // Ensure clean state before closing
+        handleCancelEdit()
         onClose()
     }
 
@@ -79,7 +71,7 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
             await addWebsiteToFolder(folder.id, { title: data.title, url: data.url })
             toast.success('Website added to folder!')
         }
-        handleCancelEdit() // Reset form and clear editing state after successful submit
+        handleCancelEdit()
     }
 
     return (
@@ -129,8 +121,6 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
                         >
                             {editingWebsiteId ? 'Save Changes' : 'Add Website'}
                         </Button>
-
-
                     </div>
                 </form>
 
@@ -141,7 +131,6 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
 
                     <OrderableList
                         items={websites}
-                        maxOrder={maxWebsiteOrder}
                         onSortUp={(id) => sortWebsiteUp(folder.id, id)}
                         onSortDown={(id) => sortWebsiteDown(folder.id, id)}
                         onRemove={(id) => removeWebsiteFromFolder(folder.id, id)}
