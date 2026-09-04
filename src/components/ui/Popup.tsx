@@ -13,6 +13,9 @@ export interface PopupProps {
     /** The dynamic content to display inside the popup */
     children: ReactNode;
 
+    /** 🌟 Controlled open state */
+    open?: boolean;
+
     /** Positioning: Which side of the trigger to appear on */
     side?: 'top' | 'right' | 'bottom' | 'left';
 
@@ -32,6 +35,7 @@ export interface PopupProps {
 export default function Popup({
     trigger,
     children,
+    open, // 🌟 Added
     side = 'bottom',
     align = 'end',
     sideOffset = 8,
@@ -39,7 +43,7 @@ export default function Popup({
     onOpenChange,
 }: PopupProps) {
     return (
-        <Popover.Root onOpenChange={onOpenChange}>
+        <Popover.Root open={open} onOpenChange={onOpenChange}>
             {/* Base UI will pass the correct HTML props and state to your trigger function */}
             <Popover.Trigger render={trigger} />
 
