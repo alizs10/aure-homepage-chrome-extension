@@ -5,7 +5,7 @@ import type { Folder, Website } from "@/components/settings/components/tabs-deta
 import { DEFAULT_FOLDERS } from "@/components/wizard/constants/defaultFolders";
 
 // 🌟 Current schema version - increment when adding new migrations
-export const CURRENT_SCHEMA_VERSION = 1;
+export const CURRENT_SCHEMA_VERSION = 2;
 
 // 🌟 Migration definitions
 const migrations: Record<number, () => Promise<void>> = {
@@ -42,6 +42,29 @@ const migrations: Record<number, () => Promise<void>> = {
 
         // Refresh the folders store
         await useFoldersStore.getState().initialize();
+    },
+
+    // 🌟 Version 2: Ensure Pomodoro widget is enabled for all existing users
+    2: async () => {
+        const { settings, update } = useSettingsStore.getState();
+        if (settings) {
+            // Fallback in case the widgets object is somehow missing
+            const currentWidgets = settings.widgets || {
+                "mood-tracker": true,
+                "calendar": true,
+                "notes-and-checklists": true,
+                "pet-house": true,
+                "pomodoro": true,
+            };
+
+            await update({
+                schema_version: 2,
+                widgets: {
+                    ...currentWidgets,
+                    pomodoro: true, // Force enable Pomodoro
+                }
+            });
+        }
     },
 };
 
