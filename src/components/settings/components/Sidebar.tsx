@@ -1,14 +1,19 @@
 import { BetterTypography } from "@/components/common/BetterTypography";
 import { SettingsIcon } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import Button from "../../ui/Button";
 import { TABS } from "../constants/tabs";
-import { useSettingsTabs } from "../hooks/useSettingsTabs";
 import ResetSettings from "./ResetSettings";
 
-
-
 export default function Sidebar() {
-    const { activeTab, setActiveTab } = useSettingsTabs();
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    // 🌟 Read from URL, default to 'preferences'
+    const activeTab = searchParams.get("tab") || "preferences";
+
+    const setActiveTab = (tabId: string) => {
+        setSearchParams({ tab: tabId }, { replace: true });
+    };
 
     return (
         <div className="w-full md:col-span-1 flex-1 md:min-h-0 rounded-3xl liquid-glass flex flex-col md:overflow-y-scroll scrollbar-none overflow-x-auto">
@@ -37,8 +42,6 @@ export default function Sidebar() {
                             className="w-full"
                             onClick={() => setActiveTab(tab.id)}
                         >
-
-                            {/* {tab.icon} */}
                             {tab?.Icon && (
                                 <tab.Icon className="size-5 min-w-5" />
                             )}

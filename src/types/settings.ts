@@ -92,6 +92,7 @@ export type Accent = typeof accentOptions[number]["id"];
 
 //settings
 export interface Settings {
+    schema_version: number;
     name: string
     theme: Theme
     wallpaper: "default" | string

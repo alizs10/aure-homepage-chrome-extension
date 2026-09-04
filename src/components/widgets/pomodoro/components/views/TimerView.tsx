@@ -25,10 +25,10 @@ export default function TimerView() {
     const getSessionColor = () => {
         if (isOvertime) return 'text-warning';
         switch (session) {
-            case 'focus': return 'text-primary'
+            case 'focus': return 'text-indigo-600 dark:text-indigo-500'
             case 'short-break': return 'text-success'
             case 'long-break': return 'text-warning'
-            default: return 'text-primary'
+            default: return 'text-indigo-600 dark:text-indigo-500'
         }
     }
 

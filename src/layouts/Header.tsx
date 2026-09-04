@@ -20,6 +20,14 @@ export default function Header() {
 
     }, [location])
 
+    const isHomePath = useMemo(() => {
+
+        if (!location?.pathname) return false
+
+        return location?.pathname === '/'
+
+    }, [location])
+
     const { settings } = useSettingsStore();
 
 
@@ -39,7 +47,7 @@ export default function Header() {
             <div className="flex-row-center gap-x-4">
 
 
-                {isSettingsPath && (
+                {!isHomePath && (
                     <Button
                         variant="ghost"
                         href='/'

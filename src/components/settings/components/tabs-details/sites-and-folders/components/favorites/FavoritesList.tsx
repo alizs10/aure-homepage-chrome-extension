@@ -4,12 +4,13 @@ import { OrderableList } from '../../OrderableList'
 import { BetterTypography } from '@/components/common/BetterTypography'
 
 export default function FavoritesList() {
-    const { data, removeItem, sortUp, sortDown, maxOrder } = useFavorites()
+    // 🌟 Removed maxOrder from destructuring
+    const { data, removeItem, sortUp, sortDown } = useFavorites()
 
     return (
         <OrderableList
             items={data}
-            maxOrder={maxOrder}
+            // 🌟 Removed maxOrder prop
             onSortUp={sortUp}
             onSortDown={sortDown}
             onRemove={removeItem}
