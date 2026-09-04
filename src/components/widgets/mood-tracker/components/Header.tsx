@@ -24,14 +24,14 @@ export default function Header() {
                         variant={!showChart ? 'primary-active' : 'ghost'}
                         onClick={() => setShowChart(false)}
                     >
-                        <Grid2X2Icon className='size-4' />
+                        <Grid2X2Icon className='size-3.5' />
                     </Button>
                     <Button size='icon-sm'
                         className=''
                         variant={showChart ? 'primary-active' : 'ghost'}
                         onClick={() => setShowChart(true)}
                     >
-                        <ChartLineIcon className='size-4' />
+                        <ChartLineIcon className='size-3.5' />
                     </Button>
                 </div>
                 <Dropdown

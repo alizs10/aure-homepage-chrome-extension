@@ -21,7 +21,7 @@ export default function HistoryWeeksList() {
 
     const getGridClass = () => {
         const length = weeksData.length;
-        return length > 4 ? 'grid-cols-6' : 'grid-cols-4';
+        return length === 6 ? 'grid-cols-6' : length === 5 ? 'grid-cols-5' : 'grid-cols-4';
     }
 
     return (
