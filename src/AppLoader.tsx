@@ -1,12 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useSettingsStore } from "./stores";
 import { useMoodTracker } from "./components/widgets/mood-tracker/hooks/useMoodTracker";
 import { useCalendar } from "./components/widgets/calendar/hooks/useCalendar";
 import { usePetHouse } from "./components/widgets/pet-house/hooks/usePetHouse";
 import { useNotesAndChecklists } from "./components/widgets/notes-and-checklists/hooks/useNotesAndChecklists";
-import { useFavorites } from "./components/settings/components/tabs-details/sites-and-shortcuts/hooks/useFavorites";
-import { accentOptions, blurOptions } from "@/types"; // 🌟 Import these
+import { useFavorites } from "./components/settings/components/tabs-details/sites-and-folders/components/favorites/hooks/useFavorites";
+import { blurOptions } from "@/types";
+import { useFolders } from "./components/settings/components/tabs-details/sites-and-folders/components/folders/hooks/useFolders";
+import { usePomodoro } from "./components/widgets/pomodoro/hooks/usePomodoro";
+import { runMigrations } from "./lib/migrations";
 
 type AppLoaderProps = {
     children: React.ReactNode;
@@ -16,14 +19,17 @@ export default function AppLoader({ children }: AppLoaderProps) {
     const loading = useSettingsStore((s) => s.loading);
     const settings = useSettingsStore((s) => s.settings);
     const load = useSettingsStore((s) => s.load);
+    const [migrationsDone, setMigrationsDone] = useState(false);
 
     const { initialize: initMoods, loading: isMoodsLoading } = useMoodTracker();
     const { initialize: initCalendar, loading: isCalendarLoading } = useCalendar();
     const { initialize: initPetHouse, loading: isPetHouseLoading } = usePetHouse();
     const { initialize: initNotes, loading: isNotesLoading } = useNotesAndChecklists();
     const { initialize: initFavorites, loading: isFavoritesLoading } = useFavorites();
+    const { initialize: initFolders, loading: isFoldersLoading } = useFolders();
+    const { initialize: initPomodoro, loading: isPomodoroLoading } = usePomodoro();
 
-    const isLoading = loading || isFavoritesLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading;
+    const isLoading = loading || isFavoritesLoading || isFoldersLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading || isPomodoroLoading;
     const location = useLocation();
 
     useEffect(() => {
@@ -33,27 +39,33 @@ export default function AppLoader({ children }: AppLoaderProps) {
         initCalendar();
         initPetHouse();
         initFavorites();
-    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites]);
+        initFolders();
+        initPomodoro();
+    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders, initPomodoro]);
 
-    // 🌟 NEW: Apply global CSS variables as soon as settings are loaded
+    useEffect(() => {
+        if (!loading && settings && !migrationsDone) {
+            runMigrations().then(() => {
+                setMigrationsDone(true);
+            });
+        }
+    }, [loading, settings, migrationsDone]);
+
+    // 🌟 Apply global CSS variables as soon as settings are loaded
     useEffect(() => {
         if (!settings) return;
 
-        // 1. Apply Accent
-        const accent = accentOptions.find(option => option.id === settings.accent);
-        if (accent) {
-            document.documentElement.style.setProperty("--app-primary", accent.light);
-            document.documentElement.style.setProperty("--app-primary-dark", accent.dark);
-        }
+        // 1. Apply Accent via data attribute (CSS handles the variable mapping)
+        document.documentElement.setAttribute('data-accent', settings.accent);
 
         // 2. Apply Blur
         const blur = blurOptions.find(option => option.key === settings.blur);
         if (blur) {
-            document.documentElement.style.setProperty("--app-blur", blur.value);
+            document.documentElement.style.setProperty("--liquid-glass-blur", blur.value);
         }
-    }, [settings]); // Only runs when settings object changes
+    }, [settings]);
 
-    if (isLoading) {
+    if (isLoading || !migrationsDone) {
         return null;
     }
 

@@ -60,20 +60,23 @@ export default function Wizard() {
     const navigate = useNavigate();
 
     const onSubmit = async (data: WizardFormValues) => {
-
-        // Construct the full Settings object using the form data + your defaults
+        // 🌟 Save settings with schema_version: 0
+        // AppLoader will run migrations after navigation
         const settingsToSave: Settings = {
+            schema_version: 0,
             ...data,
-            blur: 'md',
+            blur: 'xs',
             widgets: {
                 "mood-tracker": true,
                 "calendar": true,
                 "notes-and-checklists": true,
                 "pet-house": true,
+                "pomodoro": true,
             },
             accent: "default",
             show_top_sites: true,
-            show_favorites: false,
+            show_favorites: true,
+            show_folders: true,
         };
 
         await save(settingsToSave);
@@ -82,9 +85,8 @@ export default function Wizard() {
     };
 
     return (
-        <div className="w-full flex-1 min-h-0 flex flex-col gap-y-4 overflow-y-scroll scrollbar-none px-4 md:px-8 lg:px-10 max-h-dvh py-10">
-
-            <section className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 max-w-6xl mx-auto my-auto overflow-y-scroll scrollbar-none min-h-fit">
+        <div className="relative z-10 w-full flex-1 min-h-0 flex flex-col gap-y-4 overflow-y-auto scrollbar-none px-4 md:px-8 lg:px-10 py-10">
+            <section className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 max-w-6xl mx-auto my-auto min-h-fit max-h-100">
                 <WizardIntro currentStep={currentStep} />
                 <WizardContent
                     currentStep={currentStep}
@@ -93,14 +95,10 @@ export default function Wizard() {
                     theme={theme}
                     wallpaper={wallpaper}
                     onThemeChange={(theme) =>
-                        setValue("theme", theme, {
-                            shouldDirty: true,
-                        })
+                        setValue("theme", theme, { shouldDirty: true })
                     }
                     onWallpaperChange={(id) =>
-                        setValue("wallpaper", id, {
-                            shouldDirty: true,
-                        })
+                        setValue("wallpaper", id, { shouldDirty: true })
                     }
                     onNext={next}
                     onPrev={prev}

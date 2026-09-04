@@ -11,7 +11,7 @@ export default function PetsCells() {
 
     if (data.length === 0) {
         return (
-            <div className="flex-1 min-h-0 flex-center rounded-b-3xl">
+            <div className="flex-1 min-h-0 flex-center">
 
                 <BetterTypography variant="sm">
                     Make born your first pet
@@ -22,7 +22,7 @@ export default function PetsCells() {
     }
 
     return (
-        <div className="flex-1 min-h-0 grid grid-cols-2 grid-rows-2 bg-secondary rounded-b-3xl">
+        <div className="flex-1 min-h-0 grid grid-cols-2 grid-rows-2">
             {alivePets.map(pet => (
                 <PetWithCell key={pet.id} pet={pet} />
             ))}

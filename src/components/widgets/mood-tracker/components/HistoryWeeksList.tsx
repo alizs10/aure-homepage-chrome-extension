@@ -21,11 +21,11 @@ export default function HistoryWeeksList() {
 
     const getGridClass = () => {
         const length = weeksData.length;
-        return length > 4 ? 'grid-cols-3' : 'grid-cols-2';
+        return length === 6 ? 'grid-cols-6' : length === 5 ? 'grid-cols-5' : 'grid-cols-4';
     }
 
     return (
-        <div className={`grid ${getGridClass()} gap-0`}>
+        <div className={`grid ${getGridClass()} grid-rows-1 flex-1 min-h-0 rounded-xl overflow-clip gap-0.5`}>
             {weeksData.map((week, i) => {
                 if (week.items.length > 0) {
                     return (
@@ -38,7 +38,7 @@ export default function HistoryWeeksList() {
                     );
                 }
                 // Empty placeholder rendered in its correct chronological slot
-                return <EmptyRect key={`empty-${i}`} maxCount={allBlocks} />;
+                return <EmptyRect key={`empty-${i}`} />;
             })}
         </div>
     )

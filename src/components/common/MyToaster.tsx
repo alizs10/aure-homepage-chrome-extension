@@ -1,19 +1,18 @@
-import { Toaster } from "sonner";
+'use client';
+
+import { createPortal } from 'react-dom';
+import { Toaster } from 'sonner';
 
 export default function MyToaster() {
-    return (
-        <Toaster
-            position='bottom-center'
-            toastOptions={{
-                style: {
-                    backgroundColor: 'var(--background)',
-                    color: 'var(--foreground)',
-                    borderColor: 'var(--border)',
-                    fontFamily: "var(--font-sans)",
-                    borderRadius: "var(--radius-3xl)"
-                },
+    if (typeof document === 'undefined') {
+        return null;
+    }
 
-            }}
-        />
-    )
+    return createPortal(
+        <Toaster
+            position="bottom-right"
+            className="z-99999999"
+        />,
+        document.body,
+    );
 }

@@ -12,7 +12,7 @@ interface MoodSquareProps {
 }
 
 export default function MoodSquare({ moodDayItem }: MoodSquareProps) {
-    const { filter, todayStr } = useMoodTracker();
+    const { todayStr } = useMoodTracker();
 
     // 🎯 We keep `open` state to allow the "click to pin" behavior
     const [open, setOpen] = useState(false);
@@ -37,10 +37,7 @@ export default function MoodSquare({ moodDayItem }: MoodSquareProps) {
                         role="button"
                         tabIndex={0} // 🎯 Makes the div focusable for keyboard users
                         className={cn(
-                            "col-span-1 aspect-square flex-center cursor-pointer outline-none transition-all",
-                            filter === "thisWeek" ? "first:rounded-l-sm last:rounded-r-sm" : "first:rounded-tl-sm last:rounded-br-sm nth-of-type-15:rounded-tr-sm nth-of-type-16:rounded-bl-sm",
-                            filter === "thisWeek" ? "" : "nth-[-n+15]:border-b",
-                            "border-r nth-of-type-15:border-r-0 last:border-r-0 border-muted",
+                            "col-span-1 row-span-1 h-full flex-center cursor-pointer outline-none",
                             moodTextColor(moodDayItem.mood),
                             moodBgColor(moodDayItem.mood),
                         )}
@@ -51,10 +48,10 @@ export default function MoodSquare({ moodDayItem }: MoodSquareProps) {
             <Popover.Portal>
                 <Popover.Positioner side="bottom" sideOffset={4}>
                     <Popover.Popup
-                        className={`flex app_container px-2 py-1 z-9999 flex-row-center gap-x-1
+                        className={`flex rounded-3xl app_shadow px-2 py-1 z-9999 flex-row-center gap-x-1
                         data-state=closed:opacity-0 data-state=closed:scale-95
                         data-state=open:opacity-100 data-state=open:scale-100
-                        transition-all duration-200 origin-var(--transform-origin)
+                        transition-colors duration-200 origin-var(--transform-origin)
                         ${moodTextColor(moodDayItem.mood)} ${moodBgColor(moodDayItem.mood)}`}
                     >
                         <div className="shrink-0">

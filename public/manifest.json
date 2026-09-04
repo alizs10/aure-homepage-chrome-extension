@@ -2,11 +2,28 @@
     "manifest_version": 3,
     "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqVSsWgHXNk5g1WZUuLpN/P+QgU36daupNUxHXkTCbCGhwDXXnksJ/PhXoUgJgZfLEzeNDiCmJSqqRjrTjbmxAGOb4kPgCplxUpC8nQAWOAZ+OLYE5XFqS3Sc65krb7SKxl33/ed4yq4R0Dna7lgwTwvOSxWxae8m+/MY6SZLpZ6jdUxN5hERgQmQUumMJhTx8hJ6Kdw1kscZT9w/vPtThsG3/ZfhXKdhx9R3BOlKqgZi8F5ji/+WHhU6gUw8AClJAZA8WE8vGRVxViXCcDO1oYP9/qdQlyJFKXbpricbT1iX/l7NHGYaIynJjuqhl+GpXyJlikAUrKNOAZ/MXmUMdwIDAQAB",
     "name": "Aure Homepage",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Custom New Tab",
     "permissions": [
+        "favicon",
         "storage",
-        "topSites"
+        "topSites",
+        "notifications",
+        "alarms",
+        "history"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "_favicon/*"
+            ],
+            "matches": [
+                "<all_urls>"
+            ],
+            "extension_ids": [
+                "*"
+            ]
+        }
     ],
     "background": {
         "service_worker": "background.js"
@@ -14,7 +31,6 @@
     "host_permissions": [
         "https://suggestqueries.google.com/*",
         "https://*.gstatic.com/*",
-        "https://www.google.com/s2/*",
         "https://raw.githubusercontent.com/alizs10/*"
     ],
     "chrome_url_overrides": {

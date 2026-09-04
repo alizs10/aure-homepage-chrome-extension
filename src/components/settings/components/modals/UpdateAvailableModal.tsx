@@ -36,13 +36,13 @@ export default function UpdateAvailableModal({
 
     return (
         <ModalWrapper open={open} onClose={onClose}>
-            <div className="app_container bg-background p-5 flex flex-col gap-5 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-auto scrollbar-none">
+            <div className="rounded-3xl liquid-glass p-3 md:p-5 flex flex-col gap-5 w-full max-h-[80vh] overflow-y-auto scrollbar-none">
                 <ModalHeader
                     title="Update Available"
                     onClose={onClose}
                 />
 
-                <div className="space-y-1">
+                <div className="flex flex-col gap-1">
                     <BetterTypography
                         variant="md"
                         weight="medium"

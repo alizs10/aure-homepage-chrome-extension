@@ -61,7 +61,7 @@ export default function CalendarNoteModal({ open, onClose, init_value = '', note
     return (
         <ModalWrapper open={open} onClose={onClose}>
             <div
-                className="app_container bg-background p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none"
+                className="rounded-3xl liquid-glass p-3 md:p-5 flex flex-col gap-4 w-full max-h-[80vh] overflow-y-scroll scrollbar-none"
             >
                 <ModalHeader title="New Calendar Note" onClose={onClose} />
 

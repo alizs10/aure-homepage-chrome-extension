@@ -1,15 +1,14 @@
-import { useMoodTracker } from "../hooks/useMoodTracker";
-import { filters, type MoodType } from "../types";
-import HistoryList from "./HistoryList";
+import { BetterTypography } from "@/components/common/BetterTypography";
 import { useCallback } from "react";
 import { getMoodTextColor } from "../constants/moods";
-import Dropdown from "@/components/ui/Dropdown";
-import { BetterTypography } from "@/components/common/BetterTypography";
-import Score from "./Score";
+import { useMoodTracker } from "../hooks/useMoodTracker";
+import { type MoodType } from "../types";
+import HistoryList from "./HistoryList";
 import MoodsChart from "./MoodsChart";
+import Score from "./Score";
 
 export default function MoodsHistory() {
-    const { todayMood, filter, onFilterChange, showChart } = useMoodTracker();
+    const { todayMood, showChart } = useMoodTracker();
 
     const moodTextColor = useCallback(
         (mood: MoodType) => getMoodTextColor(mood, false),
@@ -18,11 +17,11 @@ export default function MoodsHistory() {
 
     if (!todayMood) return null;
 
-    const currentFilter = filter || filters[0].value;
+    // const currentFilter = filter || filters[0].value;
 
     return (
-        <div className="flex-1 min-h-0 flex flex-col gap-y-2">
-            <div className="flex-center-between">
+        <div className="flex-1 min-h-0 flex flex-col gap-y-4">
+            {/* <div className="flex-center-between">
                 <BetterTypography
                     variant="sm"
                     weight="medium"
@@ -38,12 +37,12 @@ export default function MoodsHistory() {
                         onFilterChange(newValue);
                     }}
                 />
-            </div>
+            </div> */}
 
             {showChart ? <MoodsChart /> : <HistoryList />}
 
             <div className="mt-auto flex-row-center gap-x-1">
-                <div className="flex-1 app_container px-4 py-1.5 bg-background">
+                <div className="flex-1 rounded-3xl liquid-glass px-4 py-1.5">
                     <BetterTypography className="text-nowrap" variant="12-12-14-12-14">
                         You feel{" "}
                         <BetterTypography

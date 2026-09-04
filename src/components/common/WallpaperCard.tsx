@@ -19,7 +19,7 @@ export default function WallpaperCard({ lightVariant, darkVariant, name, isActiv
             className={`${isActive ? 'outline-primary' : 'outline-transparent hover:outline-primary'} outline-2  p-1 rounded-[28px]`}
         >
 
-            <div className="relative group aspect-video rounded-3xl overflow-hidden transition-all cursor-pointer">
+            <div className="relative group aspect-video rounded-3xl overflow-hidden  cursor-pointer">
 
                 <div
                     style={{

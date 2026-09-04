@@ -60,7 +60,7 @@ export default function NotesStatsPopup() {
                 </ul>
 
                 {itemsCount > 0 && (
-                    <div className="pt-2 mt-1 border-t border-border">
+                    <div className="pt-2 mt-1 ">
                         <div className="flex justify-between items-center mb-1.5">
                             <BetterTypography
                                 variant="xs"

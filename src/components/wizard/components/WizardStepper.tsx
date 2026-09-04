@@ -7,7 +7,7 @@ export function WizardStepper({ currentStep }: { currentStep: number }) {
     return (
         <motion.div
             layout
-            className="bg-secondary p-1.5 rounded-full overflow-clip flex flex-nowrap gap-x-1.5 mt-4 h-12"
+            className="liquid-glass p-1.5 rounded-full overflow-clip flex flex-nowrap gap-x-1.5 mt-4 h-12"
         >
             {STEPS.map((step, i) => {
                 const completed = step.id < currentStep;

@@ -32,7 +32,7 @@ export default function AttachedNote() {
 
     return (
         <>
-            <div className="app_container bg-background px-4 py-2 group relative">
+            <div className="rounded-3xl liquid-glass px-4 py-2 group relative">
                 {attachedNote ? (
                     <>
                         <BetterTypography
@@ -43,7 +43,7 @@ export default function AttachedNote() {
                             {attachedNote.text}
                         </BetterTypography>
 
-                        <div className="app_container  absolute inset-0 left-auto transition-all duration-200 w-0 group-hover:w-24 h-full flex-center gap-2 overflow-clip border-t-0!  app-blur rounded-l-none! z-20">
+                        <div className="absolute inset-0 left-auto w-0 group-hover:w-24 h-full flex-center gap-0.5 overflow-clip z-20">
                             <Button
                                 onClick={toggle}
                                 size='icon-sm' variant='warning'>

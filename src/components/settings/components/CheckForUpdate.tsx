@@ -3,6 +3,7 @@ import Button from "@/components/ui/Button";
 import { useState } from "react";
 import { toast } from "sonner";
 import UpdateAvailableModal from "./modals/UpdateAvailableModal";
+import { RefreshCwIcon } from "lucide-react";
 
 // Updated interface to match the new JSON structure
 interface VersionInfo {
@@ -28,6 +29,7 @@ export default function CheckForUpdate() {
         try {
             const res = await fetch(
                 "https://raw.githubusercontent.com/alizs10/aure-homepage-chrome-extension/main/version.json",
+                // "https://raw.githubusercontent.com/alizs10/aure-homepage-chrome-extension/refs/heads/dev/version.json",
                 {
                     cache: "no-store",
                 }
@@ -69,7 +71,8 @@ export default function CheckForUpdate() {
                 onClick={checkForUpdate}
                 size="sm"
                 variant="primary"
-                loading={loading}
+                leftIcon={<RefreshCwIcon className="size-4" />}
+                disabled={loading}
             >
                 <BetterTypography variant="xs">
                     {loading ? "checking..." : "Check for update"}

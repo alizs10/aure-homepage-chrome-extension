@@ -1,4 +1,4 @@
 export const STORAGE_KEYS = {
-    'settings': 'settings',
-    'focus': 'focus_timer',
+    settings: 'settings',
+    lastSeenChangelog: 'aure_last_seen_changelog',
 }

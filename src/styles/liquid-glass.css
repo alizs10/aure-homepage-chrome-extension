@@ -1,0 +1,123 @@
+/* ==========================================
+   Liquid Glass
+   ========================================== */
+
+:root {
+    --liquid-glass-highlight: rgba(255, 255, 255, 1);
+    --liquid-glass-shadow: rgba(255, 255, 255, 1);
+
+    --liquid-glass-background:
+        linear-gradient(
+            to bottom,
+            color-mix(in srgb, var(--background) 20%, transparent),
+            color-mix(in srgb, var(--background) 20%, transparent)
+        );
+
+    --liquid-glass-background-sm:
+        linear-gradient(
+            to bottom,
+            color-mix(in srgb, var(--background) 30%, transparent),
+            color-mix(in srgb, var(--background) 60%, transparent)
+        );
+}
+
+.dark {
+    --liquid-glass-highlight: rgba(255, 255, 255, 0.22);
+    --liquid-glass-shadow: rgba(255, 255, 255, 0.16);
+}
+
+@utility liquid-glass {
+    --liquid-glass-shadow-size: 5px;
+
+    background: var(--liquid-glass-background);
+    
+    /* 🌟 Glass Edge: Simulates physical thickness and light catching the border */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top-color: rgba(255, 255, 255, 0.35);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+
+    /* Fallback */
+    backdrop-filter:
+        blur(var(--liquid-glass-blur))
+        saturate(180%);
+
+    -webkit-backdrop-filter:
+        blur(var(--liquid-glass-blur))
+        saturate(180%);
+
+    /* Chromium liquid refraction */
+    backdrop-filter:
+        blur(var(--liquid-glass-blur))
+        saturate(180%)
+        url("#liquid-glass");
+
+    /* 🌟 Inner Bevel & Depth: Top highlight, bottom shadow, and soft outer drop shadow */
+    box-shadow:
+        inset 0 1px 1px var(--liquid-glass-highlight),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.06),
+        inset 0 0 var(--liquid-glass-shadow-size) var(--liquid-glass-shadow),
+        0 8px 24px -4px rgba(0, 0, 0, 0.06) !important;
+        
+    /* 🌟 Specular Shine: Diagonal light reflection across the glass */
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.12) 0%,
+            rgba(255, 255, 255, 0.04) 25%,
+            transparent 45%
+        );
+        pointer-events: none;
+        z-index: 1;
+    }
+}
+
+@utility liquid-glass-sm {
+    --liquid-glass-shadow-size: 1px;
+
+    background: var(--liquid-glass-background-sm);
+    
+    /* 🌟 Thinner glass edge for small components */
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    border-top-color: rgba(255, 255, 255, 0.25);
+    border-bottom-color: rgba(255, 255, 255, 0.04);
+
+    /* Fallback */
+    backdrop-filter:
+        blur(var(--liquid-glass-blur))
+        saturate(180%);
+
+    -webkit-backdrop-filter:
+        blur(var(--liquid-glass-blur))
+        saturate(180%);
+
+    /* Chromium liquid refraction */
+    backdrop-filter:
+        blur(var(--liquid-glass-blur))
+        saturate(180%)
+        url("#liquid-glass");
+
+    box-shadow:
+        inset 0 0.5px 0.5px var(--liquid-glass-highlight),
+        inset 0 -0.5px 0.5px rgba(0, 0, 0, 0.04),
+        inset 0 0 var(--liquid-glass-shadow-size) var(--liquid-glass-shadow),
+        0 4px 12px -2px rgba(0, 0, 0, 0.04) !important;
+        
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.03) 25%,
+            transparent 45%
+        );
+        pointer-events: none;
+        z-index: 1;
+    }
+}

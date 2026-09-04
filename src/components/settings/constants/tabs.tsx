@@ -12,8 +12,8 @@ export const TABS = [
         Icon: LayoutDashboardIcon
     },
     {
-        id: "sites-and-shortcuts",
-        label: "Sites & Shortcuts",
+        id: "sites-and-folders",
+        label: "Sites & Folders",
         Icon: AppWindowIcon
     },
     {

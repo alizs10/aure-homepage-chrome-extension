@@ -12,7 +12,7 @@ export default function ChecklistInfoPopup() {
                     variant={state.open ? "primary-active" : "ghost"}
                     size="icon-sm"
                 >
-                    <CircleQuestionMarkIcon className="size-5" />
+                    <CircleQuestionMarkIcon className="size-4" />
                 </Button>
             )}
             className="py-3 px-4 w-60"

@@ -1,11 +1,14 @@
 import { BetterTypography } from '@/components/common/BetterTypography'
 import Button from '@/components/ui/Button'
-import { ChartLineIcon, Grid2X2Icon } from 'lucide-react'
+import Dropdown from '@/components/ui/Dropdown'
+import { ChartLineIcon, FilterIcon, Grid2X2Icon } from 'lucide-react'
 import { useMoodTracker } from '../hooks/useMoodTracker'
+import { filters } from '../types'
 
 export default function Header() {
 
-    const { showChart, setShowChart } = useMoodTracker()
+    const { showChart, setShowChart, filter, onFilterChange, } = useMoodTracker()
+    const currentFilter = filter || filters[0].value;
 
     return (
         <div className="flex-center-between">
@@ -14,19 +17,33 @@ export default function Header() {
             </BetterTypography>
 
 
-            <div className="p-0.5 app_container bg-background flex-row-center gap-x-0.5">
-                <Button size='icon-sm'
-                    variant={!showChart ? 'primary-active' : 'ghost'}
-                    onClick={() => setShowChart(false)}
-                >
-                    <Grid2X2Icon className='size-4' />
-                </Button>
-                <Button size='icon-sm'
-                    variant={showChart ? 'primary-active' : 'ghost'}
-                    onClick={() => setShowChart(true)}
-                >
-                    <ChartLineIcon className='size-4' />
-                </Button>
+            <div className="flex-row-center gap-x-1 h-9">
+                <div className="rounded-3xl liquid-glass flex-row-center p-0.5 gap-x-0.5">
+                    <Button size='icon-sm'
+                        className=''
+                        variant={!showChart ? 'primary-active' : 'ghost'}
+                        onClick={() => setShowChart(false)}
+                    >
+                        <Grid2X2Icon className='size-3.5' />
+                    </Button>
+                    <Button size='icon-sm'
+                        className=''
+                        variant={showChart ? 'primary-active' : 'ghost'}
+                        onClick={() => setShowChart(true)}
+                    >
+                        <ChartLineIcon className='size-3.5' />
+                    </Button>
+                </div>
+                <Dropdown
+                    hideLabel
+                    icon={<FilterIcon className='size-4' />}
+                    value={currentFilter}
+                    options={filters}
+                    onValueChange={(newValue) => {
+                        onFilterChange(newValue);
+                    }}
+                    triggerVariant='ghost'
+                />
             </div>
 
         </div>

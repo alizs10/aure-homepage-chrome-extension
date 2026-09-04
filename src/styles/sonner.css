@@ -1,0 +1,45 @@
+/* ==========================================
+   Force Sonner Toast Styles
+   ========================================== */
+[data-sonner-toaster] [data-sonner-toast] {
+    /* 🌟 FIX: Added the missing semicolon! */
+    @apply liquid-glass;
+
+    /* 🌟 Force override Sonner's injected inline styles */
+    background: var(--liquid-glass-background) !important;
+    backdrop-filter: blur(var(--liquid-glass-blur)) saturate(180%) url("#liquid-glass") !important;
+    -webkit-backdrop-filter: blur(var(--liquid-glass-blur)) saturate(180%) url("#liquid-glass") !important;
+    box-shadow: inset 0 1px 1px var(--liquid-glass-highlight), inset 0 0 5px var(--liquid-glass-shadow) !important;
+
+    /* Base Styles */
+    border: none !important;
+    border-radius: 1.5rem !important; /* Equivalent to rounded-3xl */
+    color: var(--foreground) !important;
+    font-family: var(--font-sans) !important;
+    
+    /* Spacing adjustments */
+    padding: 14px 16px !important;
+    gap: 12px !important;
+}
+
+/* Ensure inner text elements inherit the correct color */
+[data-sonner-toaster] [data-sonner-toast] [data-title],
+[data-sonner-toaster] [data-sonner-toast] [data-description] {
+    color: var(--foreground) !important;
+}
+
+/* Style the close button (if enabled) to match the design system */
+[data-sonner-toaster] [data-sonner-toast] [data-close-button] {
+    @apply liquid-glass-sm;
+    border: none !important;
+    color: var(--foreground) !important;
+    border-radius: 9999px !important;
+}
+
+/* Adjust Sonner's default action buttons */
+[data-sonner-toaster] [data-sonner-toast] [data-button] {
+    @apply liquid-glass-sm;
+    border: none !important;
+    color: var(--foreground) !important;
+    border-radius: 9999px !important;
+}

@@ -1,10 +1,11 @@
 import { BetterTypography } from "@/components/common/BetterTypography";
-import { AnimatePresence, motion } from "framer-motion"; // 🌟 Added Framer Motion imports
+import { AnimatePresence, motion } from "framer-motion";
 import { BoneIcon, CatIcon, SoupIcon } from "lucide-react";
 import { useMemo, useState, type PropsWithChildren } from "react";
 import { toast } from "sonner";
 import Button from "../../../ui/Button";
 import KillPetDialog from "../dialogs/KillPetDialog";
+import HardDeletePetDialog from "../dialogs/HardDeletePetDialog"; // 🌟 NEW IMPORT
 import { getPetAgeLabel, getRemainingFoodToday, isPetDead } from "../helpers";
 import { usePetAgeTicker } from "../hooks/usePetAgeTicker";
 import { usePetHouse } from "../hooks/usePetHouse";
@@ -14,7 +15,6 @@ import PetMovement from "./PetMovement";
 export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }) {
     const { feedPet } = usePetHouse();
 
-    // 🌟 NEW: State to track active dropping food animations
     const [droppingFoods, setDroppingFoods] = useState<{ id: number, type: Pet['type'] }[]>([]);
 
     const remainingFoodToday = useMemo(() => {
@@ -35,11 +35,9 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
         const message = messages[remaining] || "Pet fed successfully.";
         toast.success(message);
 
-        // 🌟 TRIGGER DROP ANIMATION
         const id = Date.now() + Math.random();
         setDroppingFoods(prev => [...prev, { id, type: pet.type }]);
 
-        // Remove from state after animation finishes (800ms)
         setTimeout(() => {
             setDroppingFoods(prev => prev.filter(f => f.id !== id));
         }, 800);
@@ -47,15 +45,20 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
 
     usePetAgeTicker(pet.createdAt);
     const ageLabel = getPetAgeLabel(pet);
-
-    const isDead = isPetDead(pet)
+    const isDead = isPetDead(pet);
 
     return (
-        <div className="relative border-2 nth-[1]:border-t-0 nth-[1]:border-l-0 nth-[2]:border-t-0 nth-[2]:border-r-0 nth-[3]:border-b-0 nth-[3]:border-l-0 nth-[4]:border-b-0 nth-[4]:border-r-0 border-muted overflow-hidden">
+        <div className="relative border-2 nth-[1]:border-t-0 nth-[1]:border-l-0 nth-[2]:border-t-0 nth-[2]:border-r-0 nth-[3]:border-l-0 nth-[4]:border-r-0 border-muted overflow-hidden">
 
-            <div className={`w-full flex-center-between px-3 py-1 z-10 relative ${isDead ? 'justify-end' : ''}`}>
+            <div className={`w-full flex-center-between px-3 py-1 z-10 relative`}>
+                {/* 🌟 Show Kill Dialog ONLY if alive */}
                 {!isDead && (
                     <KillPetDialog pet={pet} />
+                )}
+
+                {/* 🌟 Show Hard Delete Dialog ONLY if dead */}
+                {isDead && (
+                    <HardDeletePetDialog pet={pet} />
                 )}
 
                 <div className="flex-row-center gap-x-1">
@@ -81,9 +84,8 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
                         </Button>
                     )}
 
-                    <div className="app_container app_gradient app-blur py-1 px-2 flex-row-center gap-x-0.5">
+                    <div className="rounded-3xl liquid-glass py-1 px-2 flex-row-center gap-x-0.5">
                         <CatIcon className="size-3.5" />
-
                         <BetterTypography variant="10">
                             {ageLabel}
                         </BetterTypography>
@@ -102,31 +104,27 @@ export default function Cell({ children, pet }: PropsWithChildren & { pet: Pet }
                 {children}
             </PetMovement>
 
-            {/* 🌟 DROPPING FOOD ANIMATIONS */}
             <AnimatePresence>
                 {droppingFoods.map((food) => {
-                    // Dynamically choose the icon based on the pet type
                     const Icon = food.type === 'cat' ? SoupIcon : BoneIcon;
 
                     return (
                         <motion.div
                             key={food.id}
                             className="absolute z-30 pointer-events-none"
-                            // Start near the top-right (approximate location of the Feed button)
                             initial={{ top: 40, left: "70%", opacity: 0, scale: 0.2, rotate: -30 }}
-                            // Drop to the center (where the pet is)
                             animate={{
                                 top: "60%",
                                 left: "50%",
-                                x: "-50%", // Keeps the icon perfectly centered horizontally at the end
-                                opacity: [0, 1, 1, 0], // Fades in, stays visible, fades out
-                                scale: [0.5, 1.2, 1, 0.5], // Pops in, shrinks slightly as it lands
+                                x: "-50%",
+                                opacity: [0, 1, 1, 0],
+                                scale: [0.5, 1.2, 1, 0.5],
                                 rotate: 10
                             }}
                             transition={{
                                 duration: 0.8,
                                 ease: "easeIn",
-                                times: [0, 0.2, 0.8, 1] // Controls the timing of the opacity/scale keyframes
+                                times: [0, 0.2, 0.8, 1]
                             }}
                         >
                             <Icon className={`size-6 drop-shadow-md ${food.type === 'cat' ? 'text-warning' : 'text-foreground'}`} />

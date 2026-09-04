@@ -53,7 +53,7 @@ export default function ConfirmDialog({
     return (
         <ModalWrapper open={open} onClose={onClose}>
             {/* 🎉 No more stopPropagation hack! Base UI handles click containment natively. */}
-            <div className="app_container bg-background p-5 flex flex-col w-full max-w-4/5 sm:max-w-md">
+            <div className="rounded-3xl liquid-glass bg-transparent! dark:bg-background/10! p-3 md:p-5 flex flex-col w-full">
 
                 {/* ModalHeader now handles its own close button via Base UI Dialog.Close */}
                 <ModalHeader title={title} onClose={onClose} />

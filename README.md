@@ -18,38 +18,56 @@ Aure Homepage replaces Chrome's default new tab with a clean, fast, and privacy-
 
 ### Search
 
-- Fast Google search
-- Command support
-- Search suggestions
-- Direct URL navigation
+* Fast Google search
+* Command support
+* Search suggestions
+* Direct URL navigation
+* Localhost and IP address support
 
 ### Widgets
 
-- Calendar
-- Notes & Tasks
-- Mood Tracker
-- Pet House
+* Calendar
+* Notes & Tasks
+* Mood Tracker
+* Pet House
+* Pomodoro Timer
+
+### Sites & Folders
+
+* Favorite Sites
+* Chrome Top Sites
+* Custom folders
+* Default Google and AI website folders
+* Automatic Chrome favicon fetching
+* Search suggestions from browsing history and folder websites
 
 ### Productivity
 
-- Focus Timer
-- Favorite Sites
-- Chrome Top Sites
-- Network Status
+* Pomodoro focus sessions
+* Focus notifications
 
 ### Personalization
 
-- Light, Dark and System themes
-- Multiple accent colors
-- Wallpaper support
-- Adjustable background blur
-- Configurable widgets
+* Light, Dark themes
+* Multiple accent colors
+* Wallpaper support
+* Curated special backgrounds
+* Adjustable background blur
+* Liquid Glass interface
+* Configurable widgets
+
+### Updates
+
+* In-app release changelog
+* Version history
+* New release indicators
 
 ### Data
 
-- Local-first storage
-- Import and export data
-- Automatic update checking
+* Local-first storage
+* Import and export data
+* Automatic update checking
+* No user data sent to external servers
 
 ---
 
@@ -78,15 +96,15 @@ Your data will be preserved as long as the extension ID remains the same.
 
 ## Tech Stack
 
-- React 19
-- TypeScript
-- Vite
-- Tailwind CSS v4
-- Zustand
-- Dexie (IndexedDB)
-- Framer Motion
-- React Hook Form
-- Zod
+* React 19
+* TypeScript
+* Vite
+* Tailwind CSS v4
+* Zustand
+* Dexie (IndexedDB)
+* Framer Motion
+* React Hook Form
+* Zod
 
 ---
 
@@ -122,8 +140,8 @@ bun run build
 
 Aure Homepage stores all user data locally.
 
-- IndexedDB (Dexie) is used for widgets and user content.
-- Chrome Storage is used for application settings, the focus timer, and cached website favicons.
+* IndexedDB (Dexie) is used for widgets and user content.
+* Chrome Storage is used for application settings.
 
 No user data is sent to external servers.
 
@@ -135,30 +153,38 @@ Aure Homepage requests only the permissions required for its features.
 
 ### Chrome Permissions
 
-| Permission | Purpose |
-| ---------- | ------- |
-| `storage` | Saves application settings, the focus timer, and cached website favicons. |
-| `topSites` | Displays your most frequently visited websites on the homepage. |
+| Permission      | Purpose                                                                   |
+| --------------- | ------------------------------------------------------------------------- |
+| `storage`       | Saves application settings.                                               |
+| `topSites`      | Displays your most frequently visited websites on the homepage.           |
+| `history`       | Provides browsing history data for search suggestions.                    |
+| `favicon`       | Retrieves website favicon information through Chrome's favicon API.       |
+| `notifications` | Displays notifications for supported features such as focus sessions.     |
+| `alarms`        | Schedules background events required by features such as the focus timer. |
 
 ### Host Permissions
 
-| Host | Purpose |
-| ---- | ------- |
-| `https://suggestqueries.google.com/*` | Retrieves Google search suggestions while typing. |
-| `https://www.google.com/s2/*` | Retrieves website favicons used throughout the extension. |
-| `https://*.gstatic.com/*` | Allows loading favicon assets returned by Google's favicon service. |
+| Host                                          | Purpose                                                                |
+| --------------------------------------------- | ---------------------------------------------------------------------- |
+| `https://suggestqueries.google.com/*`         | Retrieves Google search suggestions while typing.                      |
+| `https://*.gstatic.com/*`                     | Allows loading favicon assets returned by Google's services.           |
 | `https://raw.githubusercontent.com/alizs10/*` | Checks for extension updates by downloading the latest `version.json`. |
 
-Website favicons are cached locally after the first download to reduce loading time and network requests.
+Aure Homepage does **not** request access to all websites (`<all_urls>`). It only requests host access to the specific domains required for its functionality.
 
-Aure Homepage does **not** request access to all websites (`<all_urls>`). It only requests access to the specific domains required for its functionality. All requested permissions can be verified in the project's `manifest.json`.
+The favicon resources exposed through Chrome's `_favicon` API are made available to the extension through the required `web_accessible_resources` configuration.
+
+All requested permissions can be verified in the project's `manifest.json`.
+
+---
 
 ## Roadmap
 
-- Chrome Web Store release
-- Additional widgets
-- More themes and wallpapers
-- Widget customization
+* Chrome Web Store release
+* Additional widgets
+* More themes and wallpapers
+* Widget customization
+* Continued performance and UI improvements
 
 ---
 
@@ -175,7 +201,6 @@ TXN3jwjz3eyFEDmk3bpbrsW8eJnChNBuzS
 Support is completely optional, but every contribution is greatly appreciated.
 
 ---
-
 
 ## License
 

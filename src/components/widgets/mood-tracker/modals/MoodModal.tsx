@@ -34,7 +34,7 @@ export default function MoodModal({ open, onClose, mood }: MoodModalProps) {
         <ModalWrapper open={open} onClose={onClose}>
             <div
                 onClick={stopPropagation}
-                className="app_container bg-background p-5 flex flex-col gap-4 w-full max-w-4/5 sm:max-w-md max-h-[80vh] overflow-y-scroll scrollbar-none"
+                className="rounded-3xl liquid-glass p-3 md:p-5 flex flex-col gap-4 w-full max-h-[80vh] overflow-y-scroll scrollbar-none"
             >
                 <ModalHeader
                     title={"Edit Mood"}
@@ -48,7 +48,7 @@ export default function MoodModal({ open, onClose, mood }: MoodModalProps) {
 
                     <div className="flex-center gap-x-2">
                         {MOODS_OPTIONS.map(mood => (
-                            <Button key={mood.id} className="hover:scale-125 transition-all" variant="none" size="icon"
+                            <Button key={mood.id} className="hover:scale-125 " variant="none" size="icon"
                                 onClick={() => handleMoodSelect(mood.id)}
                             >
                                 {mood.icon}

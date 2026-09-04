@@ -12,7 +12,7 @@ interface MoodRectProps {
     maxCount: number;
 }
 
-export default function MoodRect({ items, label, maxCount }: MoodRectProps) {
+export default function MoodRect({ items, label }: MoodRectProps) {
     const score = useMemo(() => calculateMoodScore(items), [items]);
     const weekColor = useMemo(() => getWeekColor(score), [score]);
     const scoreIcon = useMemo(() => getScoreIcon(score), [score]);
@@ -30,11 +30,7 @@ export default function MoodRect({ items, label, maxCount }: MoodRectProps) {
                         {...props}
                         // 🎯 Added cursor-help to indicate it's a tooltip, and a subtle ring when open
                         className={cn(
-                            "col-span-1 h-5 flex-center cursor-help transition-all",
-                            "border-r border-muted last-of-type:border-r-0",
-                            maxCount === 4 ? "nth-[-n+2]:border-b nth-of-type-2:border-r-0" : "nth-[-n+3]:border-b nth-of-type-3:border-r-0",
-                            "first:rounded-tl-sm last:rounded-br-sm",
-                            maxCount === 4 ? "nth-of-type-2:rounded-tr-sm nth-of-type-3:rounded-bl-sm" : "nth-of-type-3:rounded-tr-sm nth-of-type-4:rounded-bl-sm",
+                            "col-span-1 row-span-1 h-full flex-center cursor-help",
                             weekColor
                         )}
                     />
@@ -45,7 +41,7 @@ export default function MoodRect({ items, label, maxCount }: MoodRectProps) {
                 <Tooltip.Positioner side="bottom" sideOffset={4}>
                     <Tooltip.Popup
                         className={cn(
-                            "app_container px-2 py-1 flex flex-row-center gap-x-1 z-9999 data-state=closed:opacity-0 data-state=closed:scale-95 data-state=open:opacity-100 data-state=open:scale-100 transition-all duration-200 origin-var(--transform-origin)",
+                            "rounded-3xl app_shadow_sm px-2 py-1 flex flex-row-center gap-x-1 z-9999 data-state=closed:opacity-0 data-state=closed:scale-95 data-state=open:opacity-100 data-state=open:scale-100 transition-colors duration-200 origin-var(--transform-origin)",
                             weekColor
                         )}
                     >

@@ -1,12 +1,13 @@
-import Button from '@/components/ui/Button'
+import { BetterTypography } from '@/components/common/BetterTypography'
 import ThemeToggle from '@/components/common/ThemeToggle'
-import Focus from '@/components/features/focus/Focus'
+import NetworkStatus from '@/components/features/network-status/NetworkStatus'
+import Updates from '@/components/features/updates/Updates'
+import Button from '@/components/ui/Button'
 import { useSettingsStore } from '@/stores'
-import { MoveLeftIcon, SettingsIcon } from 'lucide-react'
+import { HomeIcon, SettingsIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import Moment from 'react-moment'
 import { useLocation } from 'react-router-dom'
-import { BetterTypography } from '@/components/common/BetterTypography'
 
 export default function Header() {
 
@@ -17,6 +18,14 @@ export default function Header() {
         if (!location?.pathname) return false
 
         return location?.pathname === '/settings'
+
+    }, [location])
+
+    const isHomePath = useMemo(() => {
+
+        if (!location?.pathname) return false
+
+        return location?.pathname === '/'
 
     }, [location])
 
@@ -34,21 +43,27 @@ export default function Header() {
     }, [])
 
     return (
-        <header className="flex justify-between h-10 md:h-12 lg:h-14 px-4 md:px-8 lg:px-10">
+        <header className="sticky top-0 flex justify-between h-8 min-h-8 px-4 md:px-8 lg:px-10 liquid-glass-sm z-50">
 
-            <div className="flex-row-center gap-x-2">
+            <div className="flex-row-center gap-x-4">
 
 
-                {isSettingsPath && (
+                {!isHomePath && (
                     <Button
+                        variant="ghost"
                         href='/'
-                        size='icon' className="h-full">
-                        <MoveLeftIcon className="size-4 md:size-5 lg:size-6" />
+                        size='xs'
+                        className='gap-x-1'
+                        leftIcon={<HomeIcon className="size-3.5" />}
+                    >
+                        <BetterTypography className="text-nowrap" variant="12" weight='medium' as="span">
+                            Home
+                        </BetterTypography>
                     </Button>
                 )}
 
-                <div className="hidden sm:flex app_container app_gradient app-blur h-10 md:h-full px-4 md:px-6 lg:px-12 w-fit flex-center">
-                    <BetterTypography className="text-nowrap" variant="12-12-20-24" weight='semibold' as="h2">
+                <div className="hidden sm:flex h-full w-fit flex-center">
+                    <BetterTypography className="text-nowrap" variant="12" weight='semibold' as="h2">
                         Hey, {settings?.name}
                     </BetterTypography>
                 </div>
@@ -56,27 +71,34 @@ export default function Header() {
 
                 {!isSettingsPath && (
                     <Button
+                        variant="ghost"
                         href='/settings'
-                        size='icon' className="h-full">
-                        <SettingsIcon className="size-4 md:size-5 lg:size-6" />
+                        size='xs'
+                        className='gap-x-1'
+                        leftIcon={<SettingsIcon className="size-3.5" />}
+                    >
+                        <BetterTypography className="text-nowrap" variant="12" weight='medium' as="span">
+                            Settings
+                        </BetterTypography>
                     </Button>
                 )}
             </div>
 
-            <div className="flex-row-center gap-x-0.5 sm:gap-x-1.5 md:gap-x-2">
-                {!isSettingsPath && (
-                    <Focus />
-                )}
+            <div className="flex-row-center gap-x-4">
 
-                <div className="h-full app_container app_gradient app-blur w-14 sm:w-32 md:w-36 lg:w-48 flex-center">
-                    <BetterTypography variant='12-12-16-20' className='hidden sm:block text-nowrap' weight='medium' as="h3">
+                <NetworkStatus />
+
+
+                <div className="h-full flex-center">
+                    <BetterTypography variant='12' className='hidden sm:block text-nowrap' weight='medium' as="h3">
                         <Moment date={now} format="MMM D, HH:mm:ss" />
                     </BetterTypography>
-                    <BetterTypography variant='12-12-16-20' className='sm:hidden text-nowrap' weight='medium' as="h3">
+                    <BetterTypography variant='12' className='sm:hidden text-nowrap' weight='medium' as="h3">
                         <Moment date={now} format="HH:mm" />
                     </BetterTypography>
                 </div>
 
+                <Updates />
 
                 <ThemeToggle />
             </div>
