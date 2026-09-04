@@ -28,7 +28,7 @@ export default function CheckForUpdate() {
 
         try {
             const res = await fetch(
-                "https://raw.githubusercontent.com/alizs10/aure-homepage-chrome-extension/main/version.json",
+                "https://raw.githubusercontent.com/alizs10/aure-homepage-chrome-extension/dev/version.json",
                 {
                     cache: "no-store",
                 }

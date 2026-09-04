@@ -3,6 +3,7 @@ import { changelog, type ChangelogEntry } from '@/lib/changelog'
 import { ChevronRightIcon, XIcon } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 import Button from '@/components/ui/Button'
+import Badge from '@/components/ui/Badge'
 
 interface UpdatesPopupProps {
     onSelectEntry: (entry: ChangelogEntry) => void
@@ -52,9 +53,12 @@ export default function UpdatesPopupContent({ onSelectEntry, onOpenChange }: Upd
                                                     v{entry.version}
                                                 </span>
                                                 {index === 0 && (
-                                                    <span className="px-1.5 py-0.5 rounded-full bg-primary/15 text-primary text-[10px] font-medium leading-none">
+                                                    // <span className="px-1.5 py-0.5 rounded-full bg-primary/15 text-primary text-[10px] font-medium leading-none">
+                                                    //     Latest
+                                                    // </span>
+                                                    <Badge variant='default' size='xs'>
                                                         Latest
-                                                    </span>
+                                                    </Badge>
                                                 )}
                                             </div>
                                             {entry.date && (

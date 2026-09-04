@@ -11,7 +11,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLDivElement> {
     /**
      * The size of the badge. Automatically adjusts padding, gap, dot size, and typography.
      */
-    size?: 'sm' | 'md' | 'lg';
+    size?: 'xs' | 'sm' | 'md' | 'lg';
 
     /**
      * Optional dot indicator for status badges.
@@ -23,20 +23,28 @@ export interface BadgeProps extends HTMLAttributes<HTMLDivElement> {
 
 // 🌟 Configuration map mathematically aligned with BetterTypography scales
 const SIZE_CONFIG = {
+    xs: {
+        container: "px-2 py-0.75 gap-1", // 8px horiz, 2px vert, 4px gap
+        dot: "size-1",                    // 4px dot
+        typography: "xxs" as const,
+    },
+
     sm: {
         container: "px-2.5 py-1 gap-1", // 10px horiz, 4px vert, 4px gap
-        dot: "size-1.5",                // 6px dot
-        typography: "xs" as const,      // 10-12-14px scale
+        dot: "size-1.5",                 // 6px dot
+        typography: "xs" as const,
     },
+
     md: {
         container: "px-3.5 py-1.5 gap-1.5", // 14px horiz, 6px vert, 6px gap
-        dot: "size-2",                      // 8px dot
-        typography: "sm" as const,          // 12-14-16px scale
+        dot: "size-2",                       // 8px dot
+        typography: "sm" as const,
     },
+
     lg: {
         container: "px-4 py-2 gap-2", // 16px horiz, 8px vert, 8px gap
         dot: "size-2.5",              // 10px dot
-        typography: "md" as const,    // 12-16-20px scale
+        typography: "md" as const,
     },
 } as const;
 

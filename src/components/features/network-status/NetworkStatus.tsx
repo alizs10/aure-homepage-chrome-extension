@@ -95,7 +95,7 @@ export default function NetworkStatus() {
         >
 
             <BetterTypography variant="12" weight="medium">
-                {isChecking ? "Checking..." : isOnline ? "Online" : "Offline"}
+                {isChecking ? "checking..." : isOnline ? "online" : "offline"}
             </BetterTypography>
         </Button>
     );

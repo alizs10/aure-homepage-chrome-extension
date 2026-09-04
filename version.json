@@ -1,17 +1,26 @@
 {
-    "latestVersion": "0.0.3",
+    "latestVersion": "0.0.4",
     "minimumSupportedVersion": "0.0.1",
-    "releaseDate": "2026-07-20",
-    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.3/aure-homepage-extension-v0.0.3.zip",
-    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.3",
+    "releaseDate": "2026-09-05",
+    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.4/aure-homepage-extension-v0.0.4.zip",
+    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.4",
     "notes": [
-        "Added Commands help tab in Settings",
-        "Improved overall application performance and responsiveness.",
-        "Cached website logos to reduce loading time and network requests.",
-        "Improved the virtual pet cat appearance.",
-        "Dead pets are now displayed in the pet house.",
-        "Fixed mood tracker issues, including today's date calculation and various bugs.",
-        "Fixed mood option animations.",
-        "Fixed preference settings not being applied correctly on startup."
+        "Added Folders for organizing websites, including default Google and AI folders.",
+        "Added the Pomodoro Widget for tracking focus sessions.",
+        "Added the Updates feature with version history and new release indicators.",
+        "Added a Quick Access button for Sites & Folders settings.",
+        "Added new curated special backgrounds.",
+        "Improved Sites & Folders with independent toggles for Top Sites, Favorites, and Folders.",
+        "Added automatic Chrome favicon fetching.",
+        "Added browsing history and folder websites to search suggestions.",
+        "Improved command search support for localhost and IP addresses with optional ports and paths.",
+        "Improved network status detection and moved it from the footer to the header.",
+        "Redesigned the header and refreshed the overall UI/UX.",
+        "Enhanced the Liquid Glass interface.",
+        "Improved the Mood Tracker and Pet House interfaces.",
+        "Improved responsive layout and spacing across widgets.",
+        "Optimized rendering and reduced unnecessary re-renders.",
+        "Fixed various UI inconsistencies and search input edge cases.",
+        "Improved stability across all widgets."
     ]
 }

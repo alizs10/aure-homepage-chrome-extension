@@ -1,4 +1,5 @@
 import { BetterTypography } from '@/components/common/BetterTypography'
+import Badge from '@/components/ui/Badge'
 import ModalHeader from '@/components/ui/modal/ModalHeader'
 import ModalWrapper from '@/components/ui/modal/ModalWrapper'
 import type { ChangelogEntry } from '@/lib/changelog'
@@ -36,9 +37,10 @@ export default function UpdateDetailModal({ entry, onClose, isLatest }: UpdateDe
                     <>
                         <div className="flex items-center gap-2 flex-wrap">
                             {isLatest && (
-                                <span className="px-2 py-0.5 rounded-full bg-primary/15 text-primary text-[11px] font-medium">
+
+                                <Badge variant='default' size='sm'>
                                     Latest Release
-                                </span>
+                                </Badge>
                             )}
                             {entry.date && (
                                 <BetterTypography variant="xs" className="text-muted-foreground">

@@ -42,7 +42,7 @@ export default function UpdateAvailableModal({
                     onClose={onClose}
                 />
 
-                <div className="space-y-1">
+                <div className="flex flex-col gap-1">
                     <BetterTypography
                         variant="md"
                         weight="medium"
