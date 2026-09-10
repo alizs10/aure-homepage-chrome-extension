@@ -43,12 +43,24 @@ export default function AppLoader({ children }: AppLoaderProps) {
         initPomodoro();
     }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders, initPomodoro]);
 
+    // 🌟 Derived state: If there are no settings (new user), there is nothing to migrate.
+    // This completely eliminates the need for a synchronous setState!
+    const isReady = migrationsDone || !settings;
+
     useEffect(() => {
-        if (!loading && settings && !migrationsDone) {
-            runMigrations().then(() => {
+        // Only run migrations if settings exist, we are not loading, and migrations haven't run yet
+        if (loading || !settings || migrationsDone) return;
+
+        let cancelled = false;
+
+        // 🌟 Calling setState inside an async callback (.then) is the correct React pattern
+        runMigrations().then(() => {
+            if (!cancelled) {
                 setMigrationsDone(true);
-            });
-        }
+            }
+        });
+
+        return () => { cancelled = true; };
     }, [loading, settings, migrationsDone]);
 
     // 🌟 Apply global CSS variables as soon as settings are loaded
@@ -65,7 +77,7 @@ export default function AppLoader({ children }: AppLoaderProps) {
         }
     }, [settings]);
 
-    if (isLoading || !migrationsDone) {
+    if (isLoading || !isReady) {
         return null;
     }
 
