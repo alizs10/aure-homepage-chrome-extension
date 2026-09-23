@@ -13,29 +13,16 @@ export default function SearchInput() {
     const [searchValue, setSearchValue] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [isNavigating, setIsNavigating] = useState(false);
+    const [highlightedSuggestion, setHighlightedSuggestion] = useState<Suggestion | null>(null); // 🌟 Track keyboard selection
 
     const { width } = useWidth();
 
     const isCommandMode = searchValue.startsWith('/');
 
-    // 🌟 Close suggestions when clicking outside the wrapper
     const wrapperRef = useClickOutside(() => {
         setShowSuggestions(false);
     });
 
-    /*
-     * The button uses:
-     *
-     *   h-full
-     *   aspect-square
-     *   ml-2
-     *
-     * Therefore its total occupied horizontal space is:
-     *
-     *   default:  3rem + 0.5rem = 3.5rem
-     *   md:       3.5rem + 0.5rem = 4rem
-     *   lg:       4rem + 0.5rem = 4.5rem
-     */
     const buttonSpace =
         width >= 1024
             ? '4.5rem'
@@ -96,9 +83,35 @@ export default function SearchInput() {
         setSearchValue(newValue);
         setIsNavigating(false);
         setShowSuggestions(newValue.length > 0);
+        setHighlightedSuggestion(null); // 🌟 Clear highlight when user types
     }
 
     function handleSearch() {
+        // 🌟 FIX: If a website suggestion is highlighted via keyboard, navigate to its URL directly
+        // This prevents searching Google for the label (e.g. "GitHub") instead of going to the URL
+        if (
+            highlightedSuggestion &&
+            highlightedSuggestion.source !== 'command' &&
+            highlightedSuggestion.source !== 'google'
+        ) {
+            const dest = getDestination(highlightedSuggestion.url);
+            if (dest) {
+                window.location.href = dest;
+                setSearchValue('');
+                setShowSuggestions(false);
+                setIsNavigating(false);
+                setHighlightedSuggestion(null);
+                return;
+            }
+        }
+
+        // If a command is highlighted, execute it
+        if (highlightedSuggestion?.source === 'command') {
+            handleSuggestionSelect(highlightedSuggestion);
+            setHighlightedSuggestion(null);
+            return;
+        }
+
         // ---------------------------------------------------------
         // Command mode
         // ---------------------------------------------------------
@@ -153,18 +166,8 @@ export default function SearchInput() {
     }
 
     return (
-        // 🌟 Added ref={wrapperRef} to handle click outside
         <div ref={wrapperRef} className="relative flex h-12 w-full flex-nowrap px-4 md:h-14 md:px-8 lg:h-16 lg:px-10">
-            {/*
-             * The button is ALWAYS rendered.
-             *
-             * When there is no search value, the input occupies 100%
-             * of this container and the button is clipped.
-             *
-             * When a search value exists, the input shrinks by exactly
-             * the amount required by the button, revealing it.
-             */}
-            <div className="flex min-w-0 flex-1 flex-nowrap overflow-clip rounded-3xl">
+            <div className="flex min-w-0 flex-1 flex-nowrap overflow-clip rounded-3xl pointer-events-auto">
                 <motion.div
                     initial={false}
                     animate={{
@@ -188,7 +191,6 @@ export default function SearchInput() {
                         }
                         value={searchValue}
                         onChange={onChange}
-                        // 🌟 Re-open suggestions if user clicks back into input and there is text
                         onFocus={() => {
                             if (searchValue.length > 0) {
                                 setShowSuggestions(true);
@@ -216,14 +218,6 @@ export default function SearchInput() {
                     />
                 </motion.div>
 
-                {/*
-                 * Always rendered.
-                 *
-                 * Button:
-                 *   default = 3rem + ml-2 = 3.5rem
-                 *   md      = 3.5rem + ml-2 = 4rem
-                 *   lg      = 4rem + ml-2 = 4.5rem
-                 */}
                 <div className="z-30 shrink-0">
                     <Button
                         role="div"
@@ -247,6 +241,7 @@ export default function SearchInput() {
                     isNavigating={isNavigating}
                     onSuggestionSelect={handleSuggestionSelect}
                     onSearchUpdate={handleSearchUpdate}
+                    onHighlight={setHighlightedSuggestion} // 🌟 Pass state setter
                 />
             )}
         </div>

@@ -154,11 +154,11 @@ export default function Home() {
 
                 {showSitesRow && (
                     <Tooltip.Provider>
-                        <div className="flex flex-wrap justify-center gap-1 md:gap-2 z-30 w-full px-4 md:px-8 group/sites">
-                            {showTopSites && <TopSites />}
-                            {showFavorites && <Favorites />}
-                            {showFolders && <Folders />}
-                            <Link className="transition-opacity duration-200 opacity-0 group-hover/sites:opacity-100" to="/settings?tab=sites-and-folders">
+                        <div className="flex flex-wrap justify-center gap-1 md:gap-2 z-30 w-full px-4 md:px-8 group/sites pointer-events-none">
+                            {showTopSites && <TopSites />} {/* no limits*/}
+                            {showFavorites && <Favorites />} {/* 15 limits*/}
+                            {showFolders && <Folders />} {/* 5 limits*/}
+                            <Link className="transition-opacity duration-200 pointer-events-auto" to="/settings?tab=sites-and-folders">
                                 <Button
                                     size='icon-sm'
                                     variant='warning'
