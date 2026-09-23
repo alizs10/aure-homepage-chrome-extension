@@ -28,7 +28,7 @@ export default function FolderItem({ folder }: FolderItemProps) {
                     onClick={toggle}
                     size='icon-sm'
                     variant='primary'
-                    className="size-10 md:size-14 w-auto min-w-10 min-h-10 max-w-10 max-h-10 md:max-w-14 md:max-h-14 md:min-w-14 md:min-h-14 aspect-square h-auto group z-30 px-0 p-2.5 rounded-full"
+                    className="pointer-events-auto size-10 md:size-14 w-auto min-w-10 min-h-10 max-w-10 max-h-10 md:max-w-14 md:max-h-14 md:min-w-14 md:min-h-14 aspect-square h-auto group z-30 px-0 p-2.5 rounded-full"
                 >
                     <div className={`grid aspect-square ${websiteCount === 1 ? "grid-cols-1" : "grid-cols-2"} gap-0.5`}>
                         {folder.websites.slice(0, 3).map(w => (

@@ -75,7 +75,7 @@ export default function DayDetailModal({ open, onClose, day, formatDuration }: D
         <ModalWrapper open={open} onClose={onClose}>
 
             {/* 1. Outer Shell: Handles shadows and rounded corners without clipping them */}
-            <div ref={captureRef} className="rounded-3xl w-full max-w-4/5 sm:max-w-md max-h-[80vh] flex flex-col relative overflow-y-scroll">
+            <div ref={captureRef} className="rounded-3xl w-full max-w-4/5 sm:max-w-md max-h-[80vh] flex flex-col relative overflow-y-scroll scrollbar-none">
 
                 <div
                     style={{ backgroundImage: `url(${background})` }}

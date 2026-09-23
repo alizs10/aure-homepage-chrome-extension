@@ -47,16 +47,16 @@ export default function Home() {
 
     return (
         <section className="w-full max-w-6xl m-auto gap-y-4 md:gap-y-8 flex-center flex-col py-10 space-y-6 overflow-x-clip">
-            <div className="sticky top-10 z-40 h-fit min-h-fit w-full flex flex-col gap-y-2 md:gap-y-4">
+            <div className="sticky top-10 z-40 h-fit min-h-fit w-full flex flex-col gap-y-2 md:gap-y-4 pointer-events-none">
                 <SearchInput />
 
                 {showSitesRow && (
                     <Tooltip.Provider>
-                        <div className="flex flex-wrap justify-center gap-1 md:gap-2 z-30 w-full px-4 md:px-8  group/sites">
-                            {showTopSites && <TopSites />}
-                            {showFavorites && <Favorites />}
-                            {showFolders && <Folders />}
-                            <Link className="transition-opacity duration-200 opacity-0 group-hover/sites:opacity-100" to="/settings?tab=sites-and-folders">
+                        <div className="flex flex-wrap justify-center gap-1 md:gap-2 z-30 w-full px-4 md:px-8 group/sites pointer-events-none">
+                            {showTopSites && <TopSites />} {/* no limits*/}
+                            {showFavorites && <Favorites />} {/* 15 limits*/}
+                            {showFolders && <Folders />} {/* 5 limits*/}
+                            <Link className="transition-opacity duration-200 pointer-events-auto" to="/settings?tab=sites-and-folders">
                                 <Button
                                     size='icon-sm'
                                     variant='warning'

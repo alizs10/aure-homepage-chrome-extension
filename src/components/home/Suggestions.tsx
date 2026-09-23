@@ -2,7 +2,7 @@ import { getTopSites } from "@/lib/chrome/top-sites";
 import { commands } from "@/lib/commands";
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { BetterTypography } from "../common/BetterTypography";
-import Badge from "../ui/Badge"; // 🌟 Added Badge import
+import Badge from "../ui/Badge";
 import { sliceText } from "@/helpers";
 import { useFavoritesStore } from "@/components/settings/components/tabs-details/sites-and-folders/components/favorites/store";
 import { useFoldersStore } from "@/components/settings/components/tabs-details/sites-and-folders/components/folders/store";
@@ -17,7 +17,6 @@ export interface Suggestion {
   source: "google" | "top-sites" | "command" | "history" | "favorite" | "folder" | "direct";
 }
 
-// 🌟 Clean configuration map for Badge variants and labels
 const BADGE_CONFIG: Record<Suggestion['source'], { variant: ComponentProps<typeof Badge>['variant'], label: string }> = {
   google: { variant: 'lime', label: 'Google' },
   'top-sites': { variant: 'cherry', label: 'Top Site' },
@@ -34,6 +33,7 @@ interface SuggestionsProps {
   isNavigating?: boolean;
   onSuggestionSelect?: (suggestion: Suggestion) => void;
   onSearchUpdate?: (value: string) => void;
+  onHighlight?: (suggestion: Suggestion | null) => void;
 }
 
 export default function Suggestions({
@@ -41,7 +41,8 @@ export default function Suggestions({
   isCommandMode,
   isNavigating = false,
   onSuggestionSelect,
-  onSearchUpdate
+  onSearchUpdate,
+  onHighlight
 }: SuggestionsProps) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [topSites, setTopSites] = useState<chrome.topSites.MostVisitedURL[]>([]);
@@ -110,8 +111,7 @@ export default function Suggestions({
       }
 
       const filteredTopSites = topSites
-        .filter(site => site.title?.toLowerCase().includes(query) || site.url.toLowerCase().includes(query))
-        .slice(0, 3);
+        .filter(site => site.title?.toLowerCase().includes(query) || site.url.toLowerCase().includes(query));
 
       filteredTopSites.forEach((site, index) => {
         combinedSuggestions.push({
@@ -120,8 +120,7 @@ export default function Suggestions({
       });
 
       const filteredFavorites = favorites
-        .filter(fav => fav.title.toLowerCase().includes(query) || fav.url.toLowerCase().includes(query))
-        .slice(0, 3);
+        .filter(fav => fav.title.toLowerCase().includes(query) || fav.url.toLowerCase().includes(query));
 
       filteredFavorites.forEach((fav) => {
         combinedSuggestions.push({
@@ -130,8 +129,7 @@ export default function Suggestions({
       });
 
       const filteredFolderSites = folderWebsites
-        .filter(site => site.title.toLowerCase().includes(query) || site.url.toLowerCase().includes(query))
-        .slice(0, 3);
+        .filter(site => site.title.toLowerCase().includes(query) || site.url.toLowerCase().includes(query));
 
       filteredFolderSites.forEach((site, index) => {
         combinedSuggestions.push({
@@ -141,7 +139,8 @@ export default function Suggestions({
 
       if (query.length > 0) {
         try {
-          const historyItems = await chrome.history.search({ text: query, maxResults: 5 });
+          // 🌟 Updated limit to 10
+          const historyItems = await chrome.history.search({ text: query, maxResults: 10 });
           historyItems.forEach((item, index) => {
             if (item.url) {
               combinedSuggestions.push({
@@ -162,7 +161,8 @@ export default function Suggestions({
           const data = await response.json();
 
           if (Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
-            data[1].slice(0, 3).forEach((suggestion: string, index: number) => {
+            // 🌟 Updated limit to 10
+            data[1].slice(0, 10).forEach((suggestion: string, index: number) => {
               combinedSuggestions.push({
                 id: `google-${index}`,
                 url: `https://www.google.com/search?q=${encodeURIComponent(suggestion)}`,
@@ -176,7 +176,7 @@ export default function Suggestions({
         }
       }
 
-      setSuggestions(combinedSuggestions.slice(0, 10));
+      setSuggestions(combinedSuggestions);
       setSelectedIndex(-1);
     };
 
@@ -190,9 +190,9 @@ export default function Suggestions({
   useEffect(() => {
     if (selectedIndex >= 0) {
       if (selectedIndex === 0) {
-        scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' });
       } else if (itemRefs.current[selectedIndex]) {
-        itemRefs.current[selectedIndex]?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        itemRefs.current[selectedIndex]?.scrollIntoView({ block: 'nearest', behavior: 'instant' });
       }
     }
   }, [selectedIndex]);
@@ -237,12 +237,15 @@ export default function Suggestions({
   }, [handleKeyDown]);
 
   useEffect(() => {
-    if (selectedIndex >= 0 && selectedIndex < suggestions.length && onSearchUpdate) {
-      if (suggestions[selectedIndex].source !== 'direct') {
+    if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
+      onHighlight?.(suggestions[selectedIndex]);
+      if (onSearchUpdate && suggestions[selectedIndex].source !== 'direct') {
         onSearchUpdate(suggestions[selectedIndex].label);
       }
+    } else {
+      onHighlight?.(null);
     }
-  }, [selectedIndex, suggestions, onSearchUpdate]);
+  }, [selectedIndex, suggestions, onSearchUpdate, onHighlight]);
 
   if (suggestions.length === 0) return null;
 
@@ -252,7 +255,7 @@ export default function Suggestions({
     >
       <div className="rounded-3xl liquid-glass bg-background/80! overflow-clip">
         <div ref={scrollContainerRef} className="flex flex-col max-h-100 overflow-y-scroll rounded-3xl scrollbar-none">
-          <div className="p-4 sticky top-0 app-blur bg-background/30 z-10">
+          <div className="p-4 app-blur bg-background/30 z-10">
             <BetterTypography variant="md" weight="medium">
               {isCommandMode ? "Commands" : "Suggestions"}
             </BetterTypography>
@@ -272,7 +275,7 @@ export default function Suggestions({
                     e.preventDefault();
                     handleSuggestionClick(s);
                   }}
-                  className={`flex justify-between items-center py-2.5 px-5 transition-colors duration-200 ${selectedIndex === index ? 'bg-secondary/50' : 'bg-transparent hover:bg-secondary/30'}`}
+                  className={`flex justify-between items-center py-2.5 px-5 transition-colors duration-200 ${selectedIndex === index ? 'bg-muted' : 'bg-transparent hover:bg-muted'}`}
                 >
                   <div className="flex flex-col gap-y-0.5 min-w-0 flex-1 pr-4">
                     <BetterTypography variant="sm" weight="medium" className="line-clamp-1">
@@ -287,7 +290,6 @@ export default function Suggestions({
                     </BetterTypography>
                   </div>
 
-                  {/* 🌟 Replaced massive conditional string with clean Badge component */}
                   <Badge
                     variant={BADGE_CONFIG[s.source].variant}
                     size="sm"
