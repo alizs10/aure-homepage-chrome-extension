@@ -11,6 +11,8 @@ import petHouseMockupDarkImg from "@/assets/mockups/pet-house-dark.webp"
 import petHouseMockupLightImg from "@/assets/mockups/pet-house-light.webp"
 import pomodoroMockupDarkImg from "@/assets/mockups/pomodoro-dark.webp"
 import pomodoroMockupLightImg from "@/assets/mockups/pomodoro-light.webp"
+import countersMockupDarkImg from "@/assets/mockups/counters-dark.webp"
+import countersMockupLightImg from "@/assets/mockups/counters-light.webp"
 import { BetterTypography } from '@/components/common/BetterTypography'
 import { useTheme } from '@/hooks/useTheme'
 import { useSettingsStore } from '@/stores'
@@ -103,6 +105,14 @@ const widgets: WidgetItem[] = [
             dark: petHouseMockupDarkImg,
         }
     },
+    {
+        id: 'counters',
+        label: 'Counters',
+        imgs: {
+            light: countersMockupLightImg,
+            dark: countersMockupDarkImg,
+        }
+    },
 
 ]
 
@@ -125,6 +135,8 @@ export default function WidgetsCenterTabDetails() {
                 "notes-and-checklists": settingsWidgets?.['notes-and-checklists'] ?? true,
                 "pet-house": settingsWidgets?.['pet-house'] ?? true,
                 "pomodoro": settingsWidgets?.['pomodoro'] ?? true,
+                "counters": settingsWidgets?.['counters'] ?? true,
+
             }
         },
         mode: 'onChange', // validates on change for immediate feedback

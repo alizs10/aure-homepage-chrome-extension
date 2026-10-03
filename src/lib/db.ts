@@ -1,5 +1,6 @@
 import type { Favorite, Folder } from '@/components/settings/components/tabs-details/sites-and-folders/types';
 import type { CalendarNote } from '@/components/widgets/calendar/types';
+import type { Counter } from '@/components/widgets/counters/types';
 import type { MoodHistory } from '@/components/widgets/mood-tracker/types';
 import type { NoteAndChecklist } from '@/components/widgets/notes-and-checklists/types';
 import type { Pet } from '@/components/widgets/pet-house/types';
@@ -18,11 +19,12 @@ export class NewTabDB extends Dexie {
     pomodoroHistory!: Table<PomodoroHistoryEntry, number>;
     pomodoroTasks!: Table<PomodoroTask, number>; // 🌟 NEW
     pomodoroActiveState!: Table<PomodoroActiveState, string>; // 🌟 NEW
+    counters!: Table<Counter, number>; // 🌟 NEW
 
     constructor() {
         super('newtab-db');
 
-        this.version(13).stores({
+        this.version(14).stores({
             wallpapers: 'id',
             moods: 'id',
             pets: 'id',
@@ -33,6 +35,7 @@ export class NewTabDB extends Dexie {
             pomodoroHistory: '++id, type, completedAt, taskId', // Added taskId index
             pomodoroTasks: '++id, name, createdAt', // 🌟 NEW
             pomodoroActiveState: 'id', // 🌟 NEW (singleton)
+            counters: '++id, type, createdAt', // 🌟 NEW
         });
     }
 }

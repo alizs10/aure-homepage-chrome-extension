@@ -10,6 +10,7 @@ import { blurOptions } from "@/types";
 import { useFolders } from "./components/settings/components/tabs-details/sites-and-folders/components/folders/hooks/useFolders";
 import { usePomodoro } from "./components/widgets/pomodoro/hooks/usePomodoro";
 import { runMigrations } from "./lib/migrations";
+import { useCounters } from "./components/widgets/counters/hooks/useCounters";
 
 type AppLoaderProps = {
     children: React.ReactNode;
@@ -28,8 +29,9 @@ export default function AppLoader({ children }: AppLoaderProps) {
     const { initialize: initFavorites, loading: isFavoritesLoading } = useFavorites();
     const { initialize: initFolders, loading: isFoldersLoading } = useFolders();
     const { initialize: initPomodoro, loading: isPomodoroLoading } = usePomodoro();
+    const { initialize: initCounters, loading: isCountersLoading } = useCounters();
 
-    const isLoading = loading || isFavoritesLoading || isFoldersLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading || isPomodoroLoading;
+    const isLoading = loading || isFavoritesLoading || isFoldersLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading || isPomodoroLoading || isCountersLoading;
     const location = useLocation();
 
     useEffect(() => {
@@ -41,7 +43,8 @@ export default function AppLoader({ children }: AppLoaderProps) {
         initFavorites();
         initFolders();
         initPomodoro();
-    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders, initPomodoro]);
+        initCounters();
+    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders, initPomodoro, initCounters]);
 
     useEffect(() => {
         if (!loading && settings && !migrationsDone) {

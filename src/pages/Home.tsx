@@ -13,6 +13,7 @@ import Button from "@/components/ui/Button";
 import { Link } from "react-router-dom";
 import { Settings2Icon } from "lucide-react";
 import { useEffect } from "react";
+import Counters from "@/components/widgets/counters/Counters";
 
 export default function Home() {
     const { settings } = useSettingsStore();
@@ -81,6 +82,7 @@ export default function Home() {
                     {widgetsSettings?.["pomodoro"] && <Pomodoro />}
                     {widgetsSettings?.["mood-tracker"] && <MoodTracker />}
                     {widgetsSettings?.["pet-house"] && <PetHouse />}
+                    {widgetsSettings?.["counters"] && <Counters />} {/* 🌟 Added */}
                 </div>
             </div>
         </section>

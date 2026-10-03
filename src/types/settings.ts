@@ -33,7 +33,8 @@ export type WidgetId =
     | "calendar"
     | "mood-tracker"
     | "pet-house"
-    | "pomodoro"; // 🌟 Added pomodoro to WidgetId
+    | "pomodoro" // 🌟 Added pomodoro to WidgetId
+    | "counters"; // 🌟 Added counters
 
 export type WidgetSettings = Record<WidgetId, boolean>;
 
@@ -55,36 +56,42 @@ export const accentOptions = [
         label: "Default",
         light: "hsl(249.2 75.8% 58.6%)",
         dark: "hsl(243.6 85.5% 66.7%)",
+        foreground: { light: "hsl(0 0% 100%)", dark: "hsl(0 0% 100%)" }
     },
     {
         id: "cherry",
         label: "Cherry",
         light: "hsl(0 84% 60%)",
         dark: "hsl(0 72% 65%)",
+        foreground: { light: "hsl(0 0% 100%)", dark: "hsl(0 0% 100%)" }
     },
     {
         id: "tangerine",
         label: "Tangerine",
         light: "hsl(24 95% 53%)",
         dark: "hsl(24 90% 60%)",
+        foreground: { light: "hsl(0 0% 100%)", dark: "hsl(24 95% 15%)" } // Dark text in dark mode
     },
     {
         id: "lime",
         label: "Lime",
         light: "hsl(85 85% 35%)",
         dark: "hsl(84 81% 44%)",
+        foreground: { light: "hsl(0 0% 100%)", dark: "hsl(85 85% 10%)" } // Dark text always for Lime
     },
     {
         id: "ocean",
         label: "Ocean",
         light: "hsl(217 91% 60%)",
         dark: "hsl(217 91% 68%)",
+        foreground: { light: "hsl(0 0% 100%)", dark: "hsl(217 91% 15%)" }
     },
     {
         id: "orchid",
         label: "Orchid",
         light: "hsl(315 83% 57%)",
         dark: "hsl(315 83% 65%)",
+        foreground: { light: "hsl(0 0% 100%)", dark: "hsl(315 83% 15%)" }
     },
 ] as const;
 

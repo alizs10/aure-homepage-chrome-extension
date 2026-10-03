@@ -6,6 +6,7 @@ export interface ColorOption<T extends string = string> {
     id: T;
     className?: string;
     style?: React.CSSProperties;
+    foreground?: string; // 🌟 Added foreground color support
     label?: string;
 }
 
@@ -14,8 +15,6 @@ interface ColorPickerProps<T extends string = string> {
     selectedId: T;
     onSelect: (id: T) => void;
 }
-
-
 
 export default function ColorPicker<T extends string = string>({ options, selectedId, onSelect }: ColorPickerProps<T>) {
     return (
@@ -37,7 +36,8 @@ export default function ColorPicker<T extends string = string>({ options, select
                             style={option.style}
                         >
                             {isSelected && (
-                                <CheckIcon className="size-3.5 text-background" />
+                                // 🌟 Use option.foreground if provided, otherwise fallback to var(--background)
+                                <CheckIcon className="size-3.5" style={{ color: option.foreground || 'var(--background)' }} />
                             )}
                         </div>
                     </Button>

@@ -7,6 +7,7 @@ export const widgetsSchema = z.object({
         "mood-tracker": z.boolean(),
         "pet-house": z.boolean(),
         "pomodoro": z.boolean(),
+        "counters": z.boolean(),
     }),
 });
 

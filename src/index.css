@@ -82,6 +82,7 @@
     --color-input: var(--input);
     --color-ring: var(--ring);
 
+    
     --color-cherry: var(--accent-cherry);
     --color-tangerine: var(--accent-tangerine);
     --color-lime-accent: var(--accent-lime);
@@ -177,6 +178,8 @@
     --sidebar-foreground: hsl(240 10% 3.9%);
     --liquid-glass-blur: 2px;
 
+     /* 🌟 ADD THIS LINE: */
+    --accent-default: hsl(var(--accent-default-light));
       --accent-cherry: hsl(var(--accent-cherry-light));
     --accent-tangerine: hsl(var(--accent-tangerine-light));
     --accent-lime: hsl(var(--accent-lime-light));
@@ -211,6 +214,8 @@
     --sidebar-background: hsl(240 5.9% 10%);
     --sidebar-foreground: hsl(0 0% 98%);
 
+       /* 🌟 ADD THIS LINE: */
+    --accent-default: hsl(var(--accent-default-dark));
       --accent-cherry: hsl(var(--accent-cherry-dark));
     --accent-tangerine: hsl(var(--accent-tangerine-dark));
     --accent-lime: hsl(var(--accent-lime-dark));

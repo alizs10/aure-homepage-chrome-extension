@@ -11,6 +11,7 @@ import type { Pet } from '@/components/widgets/pet-house/types';
 import type { PomodoroHistoryEntry, PomodoroTask, PomodoroActiveState } from '@/components/widgets/pomodoro/types'; // 🌟 Added Pomodoro types
 import type { Wallpaper } from '@/types';
 import { CURRENT_SCHEMA_VERSION } from "./migrations";
+import type { Counter } from "@/components/widgets/counters/types";
 
 // Helper to fetch all Chrome Storage data
 async function getAllChromeStorageData() {
@@ -32,7 +33,7 @@ async function clearAllData() {
     await db.transaction('rw',
         [
             db.wallpapers, db.moods, db.pets, db.calendar,
-            db.notes, db.favorites, db.folders,
+            db.notes, db.favorites, db.folders, db.counters,
             db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState // 🌟 Added Pomodoro tables
         ],
         async () => {
@@ -46,6 +47,7 @@ async function clearAllData() {
             await db.pomodoroHistory.clear(); // 🌟 Clear Pomodoro history
             await db.pomodoroTasks.clear(); // 🌟 Clear Pomodoro tasks
             await db.pomodoroActiveState.clear(); // 🌟 Clear active timer state
+            await db.counters.clear();
         }
     );
 
@@ -61,6 +63,7 @@ export async function exportUserData(username?: string) {
     const notes = await db.notes.toArray();
     const favorites = await db.favorites.toArray();
     const folders = await db.folders.toArray();
+    const counters = await db.counters.toArray();
 
     // 🌟 Fetch Pomodoro data
     const pomodoroHistory = await db.pomodoroHistory.toArray();
@@ -77,7 +80,7 @@ export async function exportUserData(username?: string) {
             appVersion: import.meta.env.VITE_APP_VERSION,
         },
         indexedDB: {
-            wallpapers, moods, pets, calendar, notes, favorites, folders,
+            wallpapers, moods, pets, calendar, notes, favorites, folders, counters,
             pomodoroHistory, pomodoroTasks, pomodoroActiveState // 🌟 Added to payload
         },
         chromeStorage,
@@ -127,8 +130,7 @@ export async function importUserData(file: File) {
     // 🌟 Added Pomodoro tables to the expected tables list
     const expectedTables = [
         'wallpapers', 'moods', 'pets', 'calendar', 'notes', 'favorites', 'folders',
-        'pomodoroHistory', 'pomodoroTasks', 'pomodoroActiveState'
-    ];
+        'pomodoroHistory', 'pomodoroTasks', 'pomodoroActiveState', 'counters'];
 
     for (const table of expectedTables) {
         const tableData = dbData[table];
@@ -151,7 +153,7 @@ export async function importUserData(file: File) {
     await db.transaction('rw',
         [
             db.wallpapers, db.moods, db.pets, db.calendar,
-            db.notes, db.favorites, db.folders,
+            db.notes, db.favorites, db.folders, db.counters,
             db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState // 🌟 Added to transaction scope
         ],
         async () => {
@@ -169,6 +171,9 @@ export async function importUserData(file: File) {
                 await db.favorites.bulkPut(dbData.favorites as Favorite[]);
             if (Array.isArray(dbData.folders) && dbData.folders.length)
                 await db.folders.bulkPut(dbData.folders as Folder[]);
+
+            if (Array.isArray(dbData.counters) && dbData.counters.length)
+                await db.counters.bulkPut(dbData.counters as Counter[]);
 
             // 🌟 Restore Pomodoro data
             if (Array.isArray(dbData.pomodoroHistory) && dbData.pomodoroHistory.length)

@@ -20,7 +20,7 @@ function isLegacyChecklist(note: LegacyNote): note is Checklist {
 }
 
 // 🌟 Current schema version - increment when adding new migrations
-export const CURRENT_SCHEMA_VERSION = 2;
+export const CURRENT_SCHEMA_VERSION = 3; // 🌟 Bumped to 3
 
 // 🌟 Migration definitions
 const migrations: Record<number, () => Promise<void>> = {
@@ -110,6 +110,21 @@ const migrations: Record<number, () => Promise<void>> = {
         if (settings) {
             await update({
                 schema_version: 2,
+            });
+        }
+    },
+
+    // 🌟 Version 3: Add Counters widget to existing users' settings
+    3: async () => {
+        const { settings, update } = useSettingsStore.getState();
+        if (settings) {
+            await update({
+                schema_version: 3,
+                widgets: {
+                    ...settings.widgets,
+                    // Add "counters" and default it to true if it doesn't exist
+                    "counters": settings.widgets?.["counters"] ?? true,
+                },
             });
         }
     },

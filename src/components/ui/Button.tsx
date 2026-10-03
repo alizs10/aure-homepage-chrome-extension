@@ -12,6 +12,8 @@ export type ButtonVariant =
   | "success-active"
   | "destructive"
   | "ghost-destructive"
+  | "ghost-warning"
+  | "ghost-success"
   | "warning"
   | "none";
 
@@ -67,6 +69,10 @@ const variantClasses: Record<ButtonVariant, string> = {
 
   "ghost-destructive":
     "bg-transparent hover:bg-destructive/20",
+  "ghost-warning":
+    "bg-transparent hover:bg-warning/20",
+  "ghost-success":
+    "bg-transparent hover:bg-success/20",
 
   "warning":
     "liquid-glass-sm hover:bg-warning/60!",
