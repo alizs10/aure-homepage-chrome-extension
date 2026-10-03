@@ -10,6 +10,7 @@ import type { NoteAndChecklist } from '@/components/widgets/notes-and-checklists
 import type { Pet } from '@/components/widgets/pet-house/types';
 import type { PomodoroHistoryEntry, PomodoroTask, PomodoroActiveState } from '@/components/widgets/pomodoro/types'; // 🌟 Added Pomodoro types
 import type { Wallpaper } from '@/types';
+import { CURRENT_SCHEMA_VERSION } from "./migrations";
 
 // Helper to fetch all Chrome Storage data
 async function getAllChromeStorageData() {
@@ -70,7 +71,7 @@ export async function exportUserData(username?: string) {
 
     const payload = {
         meta: {
-            version: 1,
+            version: CURRENT_SCHEMA_VERSION,
             exportDate: new Date().toISOString(),
             appName: import.meta.env.VITE_APP_NAME,
             appVersion: import.meta.env.VITE_APP_VERSION,

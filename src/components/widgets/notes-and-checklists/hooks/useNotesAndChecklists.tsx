@@ -1,6 +1,6 @@
 // hooks/useNotesAndChecklists.ts
-import { useMemo } from 'react';
-import type { Checklist } from '../types';
+import { useCallback, useMemo } from 'react';
+import type { AdvancedNote, Checklist, NoteAndChecklist, TaskBlock } from '../types';
 import { useNotesAndChecklistsStore } from '../store';
 
 export function useNotesAndChecklists() {
@@ -8,54 +8,91 @@ export function useNotesAndChecklists() {
     const data = useNotesAndChecklistsStore((state) => state.data);
     const loading = useNotesAndChecklistsStore((state) => state.loading);
     const editable = useNotesAndChecklistsStore((state) => state.editable);
-    const showChecked = useNotesAndChecklistsStore((state) => state.showChecked); // <-- Added
+    const showChecked = useNotesAndChecklistsStore((state) => state.showChecked);
 
     // Select actions
     const addItem = useNotesAndChecklistsStore((state) => state.addItem);
     const removeItem = useNotesAndChecklistsStore((state) => state.removeItem);
     const toggleCheckbox = useNotesAndChecklistsStore((state) => state.toggleCheckbox);
+    const toggleAdvancedTask = useNotesAndChecklistsStore((state) => state.toggleAdvancedTask);
     const startEdit = useNotesAndChecklistsStore((state) => state.startEdit);
     const updateItem = useNotesAndChecklistsStore((state) => state.updateItem);
     const cancelEdit = useNotesAndChecklistsStore((state) => state.cancelEdit);
-    const setShowChecked = useNotesAndChecklistsStore((state) => state.setShowChecked); // <-- Added
+    const setShowChecked = useNotesAndChecklistsStore((state) => state.setShowChecked);
     const initialize = useNotesAndChecklistsStore((state) => state.initialize);
 
-    // Compute derived state with useMemo
-    const notesCount = useMemo(() => {
-        return data.filter(p => !p.content.startsWith("[] ")).length;
-    }, [data]);
+    // 🌟 Type guards for safe type narrowing
+    const isAdvanced = (item: NoteAndChecklist): item is AdvancedNote =>
+        'type' in item && item.type === 'advanced';
 
-    const itemsCount = useMemo(() => {
-        return data.length - notesCount;
-    }, [data, notesCount]);
+    const isChecklist = useCallback((item: NoteAndChecklist): item is Checklist =>
+        'status' in item && !isAdvanced(item), []);
 
-    const checkedItemsCount = useMemo(() => {
-        return data.filter((p) => (p.content.startsWith("[] ") && (p as Checklist).status)).length;
-    }, [data]);
+    // 🌟 Compute derived stats
+    const stats = useMemo(() => {
+        let notesCount = 0;
+        let itemsCount = 0;
+        let checkedItemsCount = 0;
 
-    // NEW: Filtered data based on the showChecked setting
+        data.forEach(item => {
+            if (isAdvanced(item)) {
+                const tasks = item.blocks.filter(b => b.type === 'task') as TaskBlock[];
+                if (tasks.length > 0) {
+                    // Advanced notes with tasks count towards task stats
+                    itemsCount += tasks.length;
+                    checkedItemsCount += tasks.filter(t => t.status).length;
+                } else {
+                    // Pure text advanced notes count as notes
+                    notesCount++;
+                }
+            } else if (isChecklist(item)) {
+                itemsCount++;
+                if (item.status) checkedItemsCount++;
+            } else {
+                notesCount++;
+            }
+        });
+
+        return { notesCount, itemsCount, checkedItemsCount };
+    }, [data, isChecklist]);
+
+    // 🌟 Filtered data based on the showChecked setting
     const filteredData = useMemo(() => {
         if (showChecked) return data;
-        // If showChecked is false, hide items that start with "[] " AND have status true
-        return data.filter((p) => !(p.content.startsWith("[] ") && (p as Checklist).status));
-    }, [data, showChecked]);
+
+        return data.filter(item => {
+            if (isChecklist(item)) {
+                return !item.status; // Hide checked flat checklists
+            }
+            if (isAdvanced(item)) {
+                const tasks = item.blocks.filter(b => b.type === 'task') as TaskBlock[];
+                if (tasks.length === 0) return true; // Show if no tasks
+
+                // Hide entire note if ALL tasks are completed
+                const allChecked = tasks.every(t => t.status);
+                return !allChecked;
+            }
+            return true; // Show flat notes
+        });
+    }, [data, showChecked, isChecklist]);
 
     return {
         data,
-        filteredData, // <-- Expose this for your list component to use!
+        filteredData,
         loading,
         editable,
-        showChecked,  // <-- Expose this
-        setShowChecked, // <-- Expose this
+        showChecked,
+        setShowChecked,
         addItem,
         removeItem,
         toggleCheckbox,
+        toggleAdvancedTask,
         startEdit,
         updateItem,
         cancelEdit,
-        notesCount,
-        itemsCount,
-        checkedItemsCount,
+        notesCount: stats.notesCount,
+        itemsCount: stats.itemsCount,
+        checkedItemsCount: stats.checkedItemsCount,
         initialize
     };
 }
