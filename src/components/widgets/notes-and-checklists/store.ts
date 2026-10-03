@@ -63,6 +63,9 @@ function isAdvancedContent(content: string): boolean {
     return content.includes('\n') && content.trim().split('\n').length > 1;
 }
 
+// 🌟 Type for cleanup actions
+type CleanupType = 'completed' | 'tasks' | 'notes' | 'all';
+
 interface NotesAndChecklistsState {
     data: NoteAndChecklist[];
     loading: boolean;
@@ -79,6 +82,7 @@ interface NotesAndChecklistsState {
     updateItem: (content: string) => Promise<void>;
     cancelEdit: () => void;
     setShowChecked: (value: boolean) => void;
+    cleanup: (type: CleanupType) => Promise<void>; // 🌟 NEW
 }
 
 export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, get) => ({
@@ -307,5 +311,98 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
                 },
             },
         });
+    },
+
+    // 🌟 Surgical Cleanup Action
+    cleanup: async (type) => {
+        const data = get().data;
+        const idsToDelete: number[] = [];
+        const notesToUpdate: AdvancedNote[] = [];
+
+        const isAdvanced = (item: NoteAndChecklist): item is AdvancedNote => 'type' in item && item.type === 'advanced';
+
+        // 🌟 FIX: Identify flat tasks strictly by their content prefix, NOT by the 'status' field
+        const isFlatTask = (item: NoteAndChecklist) =>
+            !isAdvanced(item) && (item.content.startsWith('[] ') || item.content.startsWith('[x] '));
+
+        for (const item of data) {
+            if (isAdvanced(item)) {
+                let updatedBlocks = [...item.blocks];
+
+                if (type === 'completed') {
+                    updatedBlocks = updatedBlocks.filter(b => !(b.type === 'task' && b.status));
+                } else if (type === 'tasks') {
+                    updatedBlocks = updatedBlocks.filter(b => b.type !== 'task');
+                } else if (type === 'notes') {
+                    updatedBlocks = updatedBlocks.filter(b => b.type !== 'text');
+                } else if (type === 'all') {
+                    idsToDelete.push(item.id);
+                    continue;
+                }
+
+                if (updatedBlocks.length === 0) {
+                    idsToDelete.push(item.id);
+                } else if (updatedBlocks.length !== item.blocks.length) {
+                    const updatedContent = blocksToContent(updatedBlocks);
+                    notesToUpdate.push({
+                        ...item,
+                        blocks: updatedBlocks,
+                        content: updatedContent,
+                        updatedAt: Date.now()
+                    });
+                }
+            } else if (isFlatTask(item)) {
+                // It's a flat checklist
+                // Check if it's completed by looking at the [x] prefix OR the legacy status field
+                const isChecked = item.content.startsWith('[x] ') || ('status' in item && (item as Checklist).status === true);
+
+                if (type === 'completed' && isChecked) {
+                    idsToDelete.push(item.id);
+                } else if (type === 'tasks' || type === 'all') {
+                    idsToDelete.push(item.id);
+                }
+            } else {
+                // It's a flat text note (no [] or [x] prefix)
+                if (type === 'notes' || type === 'all') {
+                    idsToDelete.push(item.id);
+                }
+            }
+        }
+
+        if (idsToDelete.length > 0 || notesToUpdate.length > 0) {
+            if (idsToDelete.length > 0) {
+                await NotesRepository.bulkDelete(idsToDelete);
+            }
+            if (notesToUpdate.length > 0) {
+                await NotesRepository.bulkPut(notesToUpdate as NoteAndChecklist[]);
+            }
+
+            set((state) => {
+                const newData = state.data
+                    .filter(n => !idsToDelete.includes(n.id))
+                    .map(n => {
+                        const updated = notesToUpdate.find(u => u.id === n.id);
+                        return updated ? updated : n;
+                    });
+
+                let newEditable = state.editable;
+                if (newEditable && idsToDelete.includes(newEditable.id)) {
+                    newEditable = undefined;
+                } else if (newEditable) {
+                    const updated = notesToUpdate.find(u => u.id === newEditable!.id);
+                    if (updated) newEditable = updated;
+                }
+
+                return { data: newData, editable: newEditable };
+            });
+        }
+
+        const messages = {
+            completed: 'Completed tasks cleared!',
+            tasks: 'All tasks cleared!',
+            notes: 'All notes cleared!',
+            all: 'All data wiped!'
+        };
+        toast.success(messages[type]);
     }
 }));

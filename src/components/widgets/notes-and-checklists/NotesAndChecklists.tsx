@@ -1,5 +1,5 @@
 import { BetterTypography } from '@/components/common/BetterTypography';
-import ChecklistInfoPopup from './components/ChecklistInfoPopup';
+import ChecklistInfoPopup from './components/InfoPopup';
 import { InputSection } from './components/InputSection';
 import { ItemsList } from './components/ItemsList';
 import NotesStatsPopup from './components/NotesStatsPopup';

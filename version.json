@@ -1,26 +1,11 @@
 {
-    "latestVersion": "0.0.4",
+    "latestVersion": "0.0.5",
     "minimumSupportedVersion": "0.0.1",
-    "releaseDate": "2026-09-05",
-    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.4/aure-homepage-extension-v0.0.4.zip",
-    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.4",
+    "releaseDate": "2026-10-10",
+    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.5/aure-homepage-extension-v0.0.5.zip",
+    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.5",
     "notes": [
-        "Added Folders for organizing websites, including default Google and AI folders.",
-        "Added the Pomodoro Widget for tracking focus sessions.",
-        "Added the Updates feature with version history and new release indicators.",
-        "Added a Quick Access button for Sites & Folders settings.",
-        "Added new curated special backgrounds.",
-        "Improved Sites & Folders with independent toggles for Top Sites, Favorites, and Folders.",
-        "Added automatic Chrome favicon fetching.",
-        "Added browsing history and folder websites to search suggestions.",
-        "Improved command search support for localhost and IP addresses with optional ports and paths.",
-        "Improved network status detection and moved it from the footer to the header.",
-        "Redesigned the header and refreshed the overall UI/UX.",
-        "Enhanced the Liquid Glass interface.",
-        "Improved the Mood Tracker and Pet House interfaces.",
-        "Improved responsive layout and spacing across widgets.",
-        "Optimized rendering and reduced unnecessary re-renders.",
-        "Fixed various UI inconsistencies and search input edge cases.",
-        "Improved stability across all widgets."
+        "Added Advanced Notes to the Notes & Tasks widget, allowing you to mix text paragraphs and checkboxes in a single entry using Shift + Enter.",
+        "Added a Cleanup Data menu to Notes & Tasks settings for surgically clearing completed tasks, all tasks, all notes, or wiping everything."
     ]
 }

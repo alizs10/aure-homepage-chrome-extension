@@ -195,7 +195,7 @@ export function InputSection() {
                             {sliceText(editableContent, 20)}
                         </BetterTypography>
                     </div>
-                    <Button variant='ghost-destructive' size='icon' className='' onClick={cancelEdit}>
+                    <Button variant='destructive' size='icon' className='' onClick={cancelEdit}>
                         <XIcon className='size-5' />
                     </Button>
                 </div>
