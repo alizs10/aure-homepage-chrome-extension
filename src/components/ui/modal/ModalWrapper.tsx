@@ -16,18 +16,11 @@ export default function Modal({ children, open, onClose, className }: ModalProps
                 if (!isOpen) onClose();
             }}
         >
-            {/* 
-              🎯 CRITICAL: Dialog.Portal moves this OUTSIDE the Layout div, 
-              completely escaping the "overflow-clip" rule. 
-            */}
             <Dialog.Portal>
-                {/* 
-                  🎯 CRITICAL: z-[9999] ensures this beats ANY Background or Toaster z-index.
-                  We also add pointer-events-none to the backdrop container, and pointer-events-auto 
-                  to the actual backdrop, which prevents weird click-through bugs.
-                */}
+                {/* 🌟 CRITICAL FIX: Explicitly set lower z-index via inline style */}
                 <Dialog.Backdrop
-                    className="fixed inset-0 z-999 bg-background/30 backdrop-blur-sm flex-center pointer-events-auto"
+                    className="fixed inset-0 bg-background/30 backdrop-blur-sm flex-center pointer-events-auto"
+                    style={{ zIndex: 999 }}
                 >
                     <Dialog.Popup
                         className={cn(
@@ -40,16 +33,12 @@ export default function Modal({ children, open, onClose, className }: ModalProps
                     >
                         {children}
                     </Dialog.Popup>
-
-
                 </Dialog.Backdrop>
-
             </Dialog.Portal>
         </Dialog.Root>
     );
 }
 
-// Helper if you don't have cn imported here
 function cn(...classes: (string | undefined | null | false)[]) {
     return classes.filter(Boolean).join(" ");
 }

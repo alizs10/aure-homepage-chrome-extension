@@ -90,7 +90,7 @@ export default function UiShowcase() {
                         <Badge variant="success" withDot>Success</Badge>
                         <Badge variant="warning" withDot>Warning</Badge>
                         <Badge variant="destructive" withDot>Destructive</Badge>
-                        <Badge variant="outline" withDot>Outline</Badge>
+                        <Badge variant="ghost" withDot>Outline</Badge>
                     </div>
                     <div className="flex flex-wrap gap-3 items-center">
                         <Badge size="sm" variant="default" withDot>Small</Badge>

@@ -1,8 +1,5 @@
-// components/notes-and-checklists/AdvancedNoteItem.tsx
-import { AnimatePresence, motion } from 'framer-motion';
-import { CircleCheckIcon, CircleIcon } from 'lucide-react';
 import { BetterTypography } from '@/components/common/BetterTypography';
-import Button from '@/components/ui/Button';
+import Checkbox from '@/components/ui/Checkbox';
 import ItemFooter from './ItemFooter';
 import type { AdvancedNote, TaskBlock } from '../types';
 import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
@@ -37,36 +34,11 @@ export function AdvancedNoteItem({ item, onToggleTask, date, edited }: AdvancedN
                     const task = block as TaskBlock;
                     return (
                         <div key={block.id} className="flex-row-center gap-x-2">
-                            <Button
-                                className='overflow-clip'
-                                variant='success'
-                                onClick={() => onToggleTask(item.id, task.id)}
-                                size='icon-sm'
-                            >
-                                <AnimatePresence mode="wait" initial={false}>
-                                    {task.status ? (
-                                        <motion.div
-                                            key={'circle-check'}
-                                            initial={{ y: -15 }}
-                                            animate={{ y: 0 }}
-                                            exit={{ y: 15 }}
-                                            transition={{ ease: "linear", duration: 0.1 }}
-                                        >
-                                            <CircleCheckIcon className='size-4 text-success' />
-                                        </motion.div>
-                                    ) : (
-                                        <motion.div
-                                            key={'circle'}
-                                            initial={{ y: -15 }}
-                                            animate={{ y: 0 }}
-                                            exit={{ y: 15 }}
-                                            transition={{ ease: "linear", duration: 0.1 }}
-                                        >
-                                            <CircleIcon className='size-4' />
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </Button>
+                            <Checkbox
+                                checked={!!task.status}
+                                onChange={() => onToggleTask(item.id, task.id)}
+                                size="md"
+                            />
                             <BetterTypography
                                 variant="sm"
                                 className={`flex-1 wrap-break-word ${task.status ? 'line-through text-muted-foreground' : ''}`}

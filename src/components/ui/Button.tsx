@@ -56,7 +56,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     "liquid-glass-sm bg-primary/30! hover:bg-primary/60!",
 
   ghost:
-    "bg-transparent hover:bg-background/30",
+    "bg-transparent hover:bg-muted/60 dark:hover:bg-secondary/80",
 
   success:
     "liquid-glass-sm hover:bg-success/30!",

@@ -12,6 +12,7 @@ import type { PomodoroHistoryEntry, PomodoroTask, PomodoroActiveState } from '@/
 import type { Wallpaper } from '@/types';
 import { CURRENT_SCHEMA_VERSION } from "./migrations";
 import type { Counter } from "@/components/widgets/counters/types";
+import type { Progress, ProgressLabel } from '@/components/widgets/progresses/types';
 
 // Helper to fetch all Chrome Storage data
 async function getAllChromeStorageData() {
@@ -34,7 +35,8 @@ async function clearAllData() {
         [
             db.wallpapers, db.moods, db.pets, db.calendar,
             db.notes, db.favorites, db.folders, db.counters,
-            db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState // 🌟 Added Pomodoro tables
+            db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState, // 🌟 Added Pomodoro tables
+            db.progresses, db.progressLabels // 🌟 Added Progress table
         ],
         async () => {
             await db.wallpapers.clear();
@@ -48,6 +50,8 @@ async function clearAllData() {
             await db.pomodoroTasks.clear(); // 🌟 Clear Pomodoro tasks
             await db.pomodoroActiveState.clear(); // 🌟 Clear active timer state
             await db.counters.clear();
+            await db.progresses.clear();
+            await db.progressLabels.clear();
         }
     );
 
@@ -64,6 +68,8 @@ export async function exportUserData(username?: string) {
     const favorites = await db.favorites.toArray();
     const folders = await db.folders.toArray();
     const counters = await db.counters.toArray();
+    const progresses = await db.progresses.toArray();
+    const progressLabels = await db.progressLabels.toArray(); // 🌟 Fetch Progress Labels
 
     // 🌟 Fetch Pomodoro data
     const pomodoroHistory = await db.pomodoroHistory.toArray();
@@ -80,7 +86,7 @@ export async function exportUserData(username?: string) {
             appVersion: import.meta.env.VITE_APP_VERSION,
         },
         indexedDB: {
-            wallpapers, moods, pets, calendar, notes, favorites, folders, counters,
+            wallpapers, moods, pets, calendar, notes, favorites, folders, counters, progresses, progressLabels,
             pomodoroHistory, pomodoroTasks, pomodoroActiveState // 🌟 Added to payload
         },
         chromeStorage,
@@ -130,7 +136,7 @@ export async function importUserData(file: File) {
     // 🌟 Added Pomodoro tables to the expected tables list
     const expectedTables = [
         'wallpapers', 'moods', 'pets', 'calendar', 'notes', 'favorites', 'folders',
-        'pomodoroHistory', 'pomodoroTasks', 'pomodoroActiveState', 'counters'];
+        'pomodoroHistory', 'pomodoroTasks', 'pomodoroActiveState', 'counters', 'progresses', 'progressLabels'];
 
     for (const table of expectedTables) {
         const tableData = dbData[table];
@@ -154,7 +160,8 @@ export async function importUserData(file: File) {
         [
             db.wallpapers, db.moods, db.pets, db.calendar,
             db.notes, db.favorites, db.folders, db.counters,
-            db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState // 🌟 Added to transaction scope
+            db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState, // 🌟 Added to transaction scope
+            db.progresses, db.progressLabels // 🌟 Added Progress and ProgressLabel tables
         ],
         async () => {
             if (Array.isArray(dbData.wallpapers) && dbData.wallpapers.length)
@@ -182,6 +189,10 @@ export async function importUserData(file: File) {
                 await db.pomodoroTasks.bulkPut(dbData.pomodoroTasks as PomodoroTask[]);
             if (Array.isArray(dbData.pomodoroActiveState) && dbData.pomodoroActiveState.length)
                 await db.pomodoroActiveState.bulkPut(dbData.pomodoroActiveState as PomodoroActiveState[]);
+            if (Array.isArray(dbData.progresses) && dbData.progresses.length)
+                await db.progresses.bulkPut(dbData.progresses as Progress[]);
+            if (Array.isArray(dbData.progressLabels) && dbData.progressLabels.length)
+                await db.progressLabels.bulkPut(dbData.progressLabels as ProgressLabel[]);
         }
     );
 

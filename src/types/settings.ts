@@ -34,7 +34,8 @@ export type WidgetId =
     | "mood-tracker"
     | "pet-house"
     | "pomodoro" // 🌟 Added pomodoro to WidgetId
-    | "counters"; // 🌟 Added counters
+    | "counters"
+    | "progresses"; // 🌟 Added
 
 export type WidgetSettings = Record<WidgetId, boolean>;
 

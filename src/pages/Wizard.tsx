@@ -73,6 +73,7 @@ export default function Wizard() {
                 "pet-house": true,
                 "pomodoro": true,
                 "counters": true, // 🌟 Added
+                "progresses": true,
             },
             accent: "default",
             show_top_sites: true,

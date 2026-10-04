@@ -17,8 +17,8 @@ export interface Counter {
 
 export const counterFilters = [
     { label: "All", icon: undefined, value: "all" },
-    { label: "Count Ups", icon: <ClockArrowUp className="size-4" />, value: "count_ups" },
-    { label: "Count Downs", icon: <ClockArrowDown className="size-4" />, value: "count_downs" },
+    { label: "Count Ups", icon: <ClockArrowUp className="size-3.5" />, value: "count_ups" },
+    { label: "Count Downs", icon: <ClockArrowDown className="size-3.5" />, value: "count_downs" },
 ] as const;
 
 export type CounterFilter = typeof counterFilters[number]["value"];

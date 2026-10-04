@@ -6,7 +6,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLDivElement> {
     /**
      * The visual style of the badge.
      */
-    variant?: 'default' | 'secondary' | 'destructive' | 'warning' | 'success' | 'outline' | 'cherry' | 'tangerine' | 'lime' | 'ocean' | 'orchid';
+    variant?: 'default' | 'secondary' | 'destructive' | 'warning' | 'success' | 'ghost' | 'cherry' | 'tangerine' | 'lime' | 'ocean' | 'orchid';
 
     /**
      * The size of the badge. Automatically adjusts padding, gap, dot size, and typography.
@@ -66,7 +66,7 @@ const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
                         "liquid-glass-sm bg-destructive/30! text-destructive": variant === 'destructive',
                         "liquid-glass-sm bg-warning/30! text-warning": variant === 'warning',
                         "liquid-glass-sm bg-success/30! text-success": variant === 'success',
-                        "bg-transparent border border-border text-foreground": variant === 'outline',
+                        "bg-muted/60 dark:bg-secondary/80 text-foreground": variant === 'ghost',
 
                         // 🌟 Accent Color Variants
                         "liquid-glass-sm bg-cherry/30! text-cherry": variant === 'cherry',
@@ -86,7 +86,7 @@ const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
                             config.dot,
                             {
                                 "bg-primary": variant === 'default',
-                                "bg-muted-foreground": variant === 'secondary' || variant === 'outline',
+                                "bg-muted-foreground": variant === 'secondary' || variant === 'ghost',
                                 "bg-destructive": variant === 'destructive',
                                 "bg-warning": variant === 'warning',
                                 "bg-success": variant === 'success',

@@ -35,7 +35,7 @@ export interface PopupProps {
 export default function Popup({
     trigger,
     children,
-    open, // 🌟 Added
+    open,
     side = 'bottom',
     align = 'end',
     sideOffset = 8,
@@ -48,13 +48,19 @@ export default function Popup({
             <Popover.Trigger render={trigger} />
 
             <Popover.Portal>
-                <Popover.Positioner side={side} align={align} sideOffset={sideOffset}>
+                {/* 🌟 CRITICAL FIX: Apply z-index to the Positioner to escape the Modal's stacking context */}
+                <Popover.Positioner
+                    side={side}
+                    align={align}
+                    sideOffset={sideOffset}
+                    className="z-9999"
+                >
                     <Popover.Popup
                         className={`
-                            rounded-3xl liquid-glass bg-background/50! z-50
+                            rounded-3xl liquid-glass bg-background/50!
                             data-starting-style:opacity-0 data-starting-style:scale-95
                             data-open:opacity-100 data-open:scale-100 border-none
-                            transition-colors duration-200 origin-var(--popover-transform-origin)
+                            transition-colors duration-200 origin-(--popover-transform-origin)
                             ${className || ''}
                         `}
                     >

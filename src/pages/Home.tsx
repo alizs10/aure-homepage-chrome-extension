@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { Settings2Icon } from "lucide-react";
 import { useEffect } from "react";
 import Counters from "@/components/widgets/counters/Counters";
+import Progresses from "@/components/widgets/progresses/Progresses";
 
 export default function Home() {
     const { settings } = useSettingsStore();
@@ -77,6 +78,7 @@ export default function Home() {
                     grid-flow-dense automatically packs short widgets into gaps left by tall widgets. 
                 */}
                 <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-60 grid-flow-dense">
+                    {widgetsSettings?.["progresses"] && <Progresses />}
                     {widgetsSettings?.["notes-and-checklists"] && <NotesAndChecklists />}
                     {widgetsSettings?.["calendar"] && <Calendar />}
                     {widgetsSettings?.["pomodoro"] && <Pomodoro />}

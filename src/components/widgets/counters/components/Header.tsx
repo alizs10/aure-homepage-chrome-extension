@@ -22,8 +22,7 @@ export default function Header({ onAdd }: HeaderProps) {
                     {counterFilters.map((f) => (
                         <Button
                             key={f.value}
-                            size='xs'
-                            className='px-2 h-7 text-[10px]'
+                            size='icon-sm'
                             variant={filter === f.value ? 'primary-active' : 'ghost'}
                             onClick={() => onFilterChange(f.value)}
                         >
@@ -37,7 +36,7 @@ export default function Header({ onAdd }: HeaderProps) {
                         </Button>
                     ))}
                 </div>
-                <Button size='icon-sm' variant='primary' onClick={onAdd}>
+                <Button size='icon-sm' className='h-full' variant='primary' onClick={onAdd}>
                     <PlusIcon className='size-4' />
                 </Button>
             </div>

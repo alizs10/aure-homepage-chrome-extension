@@ -5,6 +5,7 @@ import type { MoodHistory } from '@/components/widgets/mood-tracker/types';
 import type { NoteAndChecklist } from '@/components/widgets/notes-and-checklists/types';
 import type { Pet } from '@/components/widgets/pet-house/types';
 import type { PomodoroHistoryEntry, PomodoroTask, PomodoroActiveState } from '@/components/widgets/pomodoro/types';
+import type { Progress, ProgressLabel } from '@/components/widgets/progresses/types';
 import type { Wallpaper } from '@/types';
 import Dexie, { type Table } from 'dexie';
 
@@ -20,6 +21,8 @@ export class NewTabDB extends Dexie {
     pomodoroTasks!: Table<PomodoroTask, number>; // 🌟 NEW
     pomodoroActiveState!: Table<PomodoroActiveState, string>; // 🌟 NEW
     counters!: Table<Counter, number>; // 🌟 NEW
+    progresses!: Table<Progress, number>;
+    progressLabels!: Table<ProgressLabel, number>;
 
     constructor() {
         super('newtab-db');
@@ -36,6 +39,8 @@ export class NewTabDB extends Dexie {
             pomodoroTasks: '++id, name, createdAt', // 🌟 NEW
             pomodoroActiveState: 'id', // 🌟 NEW (singleton)
             counters: '++id, type, createdAt', // 🌟 NEW
+            progresses: '++id, completed, deadline', // 🌟 NEW
+            progressLabels: '++id, name', // 🌟 NEW
         });
     }
 }

@@ -113,6 +113,14 @@ const widgets: WidgetItem[] = [
             dark: countersMockupDarkImg,
         }
     },
+    {
+        id: 'progresses',
+        label: 'Progresses',
+        imgs: {
+            light: countersMockupLightImg,
+            dark: countersMockupDarkImg,
+        }
+    },
 
 ]
 
@@ -136,6 +144,7 @@ export default function WidgetsCenterTabDetails() {
                 "pet-house": settingsWidgets?.['pet-house'] ?? true,
                 "pomodoro": settingsWidgets?.['pomodoro'] ?? true,
                 "counters": settingsWidgets?.['counters'] ?? true,
+                "progresses": settingsWidgets?.['progresses'] ?? true,
 
             }
         },
