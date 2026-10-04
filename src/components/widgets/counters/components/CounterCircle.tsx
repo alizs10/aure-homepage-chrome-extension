@@ -3,7 +3,7 @@ import { useCounters } from '../hooks/useCounters';
 import { useTheme } from '@/hooks/useTheme';
 import { accentOptions } from '@/types';
 import type { Counter } from '../types';
-import { parseISO, differenceInDays } from 'date-fns';
+import { parseISO, differenceInCalendarDays } from 'date-fns'; // 🌟 Import differenceInCalendarDays
 
 interface CounterCircleProps {
     counter: Counter;
@@ -43,16 +43,20 @@ export default function CounterCircle({ counter, size = 56 }: CounterCircleProps
 
     let progress = 0;
     if (counter.type === 'count_down') {
-        // 🌟 Implicitly use the exact moment the counter was created as the start of the progress cycle
+        // 🎯 FIX: Use calendar days to completely ignore hours, minutes, and timezone offsets
         const start = new Date(counter.createdAt);
         const end = parseISO(counter.endDate!);
-        const totalDays = differenceInDays(end, start);
+        const now = new Date();
+
+        const totalDays = differenceInCalendarDays(end, start);
+        const elapsedDays = differenceInCalendarDays(now, start);
 
         if (totalDays > 0) {
-            const elapsed = totalDays - days;
-            progress = Math.max(0, Math.min(1, elapsed / totalDays));
+            const rawProgress = Math.max(0, Math.min(1, elapsedDays / totalDays));
+            progress = Math.round(rawProgress * 1000) / 1000;
         } else {
-            progress = days <= 0 ? 1 : 0;
+            // If the end date is the same day or in the past relative to creation
+            progress = elapsedDays >= totalDays ? 1 : 0;
         }
     }
 
