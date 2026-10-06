@@ -10,14 +10,22 @@ import CleanupModal from "./CleanupModal";
 export default function NotesSettingsPopup() {
     const { showChecked, setShowChecked } = useNotesAndChecklists();
     const [isCleanupOpen, setIsCleanupOpen] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+    const handleCleanupClick = () => {
+        setIsPopupOpen(false); // 🌟 Close the popup
+        setIsCleanupOpen(true); // Open the modal
+    };
 
     return (
         <>
             <Popup
-                trigger={(props, state) => (
+                open={isPopupOpen}
+                onOpenChange={setIsPopupOpen}
+                trigger={(props) => (
                     <Button
                         {...props}
-                        variant={state.open ? "primary-active" : "ghost"}
+                        variant={isPopupOpen ? "primary-active" : "ghost"}
                         size="icon-sm"
                     >
                         <SettingsIcon className="size-4" />
@@ -53,10 +61,7 @@ export default function NotesSettingsPopup() {
                         <Button
                             variant="ghost-destructive"
                             className="w-full justify-start gap-2 h-8"
-                            onClick={(e) => {
-                                e.stopPropagation(); // Prevent popup from closing immediately
-                                setIsCleanupOpen(true);
-                            }}
+                            onClick={handleCleanupClick}
                         >
                             <TrashIcon className="size-3.5" />
                             <BetterTypography variant="xs" weight="medium">
