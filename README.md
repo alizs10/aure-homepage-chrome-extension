@@ -32,6 +32,7 @@ Aure Homepage replaces Chrome's default new tab with a clean, fast, and privacy-
 * Pet House
 * Pomodoro Timer
 * Counters
+* Progresses
 
 ### Sites & Folders
 

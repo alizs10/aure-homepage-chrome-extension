@@ -13,6 +13,8 @@ import pomodoroMockupDarkImg from "@/assets/mockups/pomodoro-dark.webp"
 import pomodoroMockupLightImg from "@/assets/mockups/pomodoro-light.webp"
 import countersMockupDarkImg from "@/assets/mockups/counters-dark.webp"
 import countersMockupLightImg from "@/assets/mockups/counters-light.webp"
+import progressesMockupDarkImg from "@/assets/mockups/progresses-dark.webp"
+import progressesMockupLightImg from "@/assets/mockups/progresses-light.webp"
 import { BetterTypography } from '@/components/common/BetterTypography'
 import { useTheme } from '@/hooks/useTheme'
 import { useSettingsStore } from '@/stores'
@@ -119,6 +121,14 @@ const widgets: WidgetItem[] = [
         imgs: {
             light: countersMockupLightImg,
             dark: countersMockupDarkImg,
+        }
+    },
+    {
+        id: 'progresses',
+        label: 'Progresses',
+        imgs: {
+            light: progressesMockupLightImg,
+            dark: progressesMockupDarkImg,
         }
     },
 

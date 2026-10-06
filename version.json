@@ -8,6 +8,7 @@
         "Added Advanced Notes to the Notes & Tasks widget, allowing you to mix text paragraphs and checkboxes in a single entry using Shift + Enter.",
         "Added a Cleanup Data menu to Notes & Tasks settings for surgically clearing completed tasks, all tasks, all notes, or wiping everything.",
         "Introduced the new Counters widget to track days since or until important events, habits, and recurring chores.",
+        "Introduced the new Progresses widget to track multi-step goals and projects with linear or free-form checklists, custom labels, and visual progress bars.",
         "Updated the extension icon with a fresh new logo design."
     ]
 }
