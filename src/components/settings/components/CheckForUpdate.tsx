@@ -51,7 +51,7 @@ export default function CheckForUpdate() {
             } else {
                 // TODO: Show a toast:
                 // "You're already using the latest version."
-                console.log("Already up to date.");
+                // console.log("Already up to date.");
                 toast.info("Already up to date.")
             }
         } catch (error) {

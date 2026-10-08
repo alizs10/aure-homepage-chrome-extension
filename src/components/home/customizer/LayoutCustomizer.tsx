@@ -114,7 +114,7 @@ export default function LayoutCustomizer({
         canMoveOrSwap,
         canAddOrSwap,
         getAvailableWidgets,
-        hasEmptyPage,
+        canAddNewPage
     } = useWidgetLayout();
 
     const [activeWidget, setActiveWidget] = useState<{
@@ -147,7 +147,7 @@ export default function LayoutCustomizer({
     }, []);
 
     const availableWidgets = getAvailableWidgets();
-    const canAddPage = !hasEmptyPage();
+    const canAddPage = canAddNewPage();
 
     const gridContainerRef = useRef<HTMLDivElement>(null);
     const [gridHeight, setGridHeight] = useState<number | undefined>(undefined);
@@ -308,9 +308,9 @@ export default function LayoutCustomizer({
                 onDragEnd={handleDragEnd}
             >
                 {/* 🌟 Full height on mobile (100dvh), 90vh on desktop. Removed rounded corners on mobile for a cleaner full-screen look. */}
-                <div className="rounded-3xl liquid-glass bg-transparent! dark:bg-background/10! p-4 sm:p-5 flex flex-col gap-y-4 sm:gap-y-6 h-[90vh] md:max-h-[90vh] overflow-hidden">
+                <div className="rounded-3xl liquid-glass bg-transparent! dark:bg-background/10! p-4 sm:p-5 flex flex-col gap-y-4 sm:gap-y-6 h-[90vh] md:max-h-[90vh] lg:max-h-[80vh] overflow-hidden">
                     <ModalHeader
-                        title="Customize Layout"
+                        title="Organize Pages"
                         onClose={handleClose}
                     />
 

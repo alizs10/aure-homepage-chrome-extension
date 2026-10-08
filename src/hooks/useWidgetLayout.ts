@@ -24,6 +24,7 @@ type LayoutState = {
     getWidgetAtPosition: (page: number, column: number, row: number) => WidgetId | null;
     getAvailableWidgets: () => WidgetId[];
     hasEmptyPage: () => boolean;
+    canAddNewPage: () => boolean;
 };
 
 export function useWidgetLayout(): LayoutState {
@@ -50,9 +51,54 @@ export function useWidgetLayout(): LayoutState {
     }, [savedLayout]);
 
     const saveLayout = useCallback(async () => {
+        // Clean up multiple blank pages: keep only the first one
+        const pageWidgetCounts = new Map<number, number>();
+
+        // Count widgets per page
+        for (const pos of positions) {
+            pageWidgetCounts.set(pos.page, (pageWidgetCounts.get(pos.page) ?? 0) + 1);
+        }
+
+        // Find empty pages
+        const emptyPages: number[] = [];
+        for (let page = 1; page <= totalPages; page++) {
+            if ((pageWidgetCounts.get(page) ?? 0) === 0) {
+                emptyPages.push(page);
+            }
+        }
+
+        let cleanedPositions = positions;
+        let cleanedTotalPages = totalPages;
+
+        // If there are multiple empty pages, remove all but the first
+        if (emptyPages.length > 1) {
+            const pagesToRemove = emptyPages.slice(1); // Keep first empty page, remove rest
+
+            // Remove widgets from pages to be deleted
+            cleanedPositions = positions.filter(p => !pagesToRemove.includes(p.page));
+
+            // Update page numbers for remaining widgets
+            cleanedPositions = cleanedPositions.map(p => {
+                let newPage = p.page;
+                for (const removedPage of pagesToRemove) {
+                    if (p.page > removedPage) {
+                        newPage--;
+                    }
+                }
+                return { ...p, page: newPage };
+            });
+
+            // Update total pages
+            cleanedTotalPages = totalPages - pagesToRemove.length;
+        }
+
+        // 🌟 Update local state to reflect the cleanup immediately
+        setPositions(cleanedPositions);
+        setTotalPages(cleanedTotalPages);
+
         const newLayout: WidgetLayout = {
-            positions,
-            totalPages,
+            positions: cleanedPositions,
+            totalPages: cleanedTotalPages,
         };
 
         await update({
@@ -72,16 +118,25 @@ export function useWidgetLayout(): LayoutState {
         return false;
     }, [positions, totalPages]);
 
+    const canAddNewPage = useCallback((): boolean => {
+        // Get total number of available widget types
+        const totalWidgetTypes = Object.keys(WIDGET_WEIGHTS).length;
+
+        // Allow up to (total widget types + 1) pages
+        // Currently 7 widget types = up to 8 pages
+        return totalPages < totalWidgetTypes + 1;
+    }, [totalPages]);
+
     const addPage = useCallback((): boolean => {
-        if (hasEmptyPage()) {
+        if (!canAddNewPage()) {
             return false;
         }
 
         const newPageNumber = totalPages + 1;
         setTotalPages(newPageNumber);
-        setEditingPage(newPageNumber); // 🌟 Auto-select the newly created page
+        setEditingPage(newPageNumber);
         return true;
-    }, [hasEmptyPage, totalPages]);
+    }, [canAddNewPage, totalPages]);
 
     const clearPage = useCallback((page: number) => {
         setPositions(prev => prev.filter(p => p.page !== page));
@@ -170,7 +225,6 @@ export function useWidgetLayout(): LayoutState {
         return true;
     }, []);
 
-    // 🌟 UPDATED: Only searches the specific target page for relocation spots
     const findRelocationSpotsOnPage = useCallback((
         simulatedPositions: WidgetPosition[],
         displacedWidgets: WidgetPosition[],
@@ -183,7 +237,6 @@ export function useWidgetLayout(): LayoutState {
             let foundSpace = false;
             let newPos: WidgetPosition | null = null;
 
-            // Only search the target page
             for (let c = 0; c < GRID_DIMENSIONS.columns && !foundSpace; c++) {
                 for (let r = 0; r < GRID_DIMENSIONS.rows && !foundSpace; r++) {
                     const canPlace = canPlaceInPositions(
@@ -206,7 +259,7 @@ export function useWidgetLayout(): LayoutState {
             }
 
             if (!foundSpace || !newPos) {
-                return null; // No space on this page, fail the move
+                return null;
             }
 
             relocatedWidgets.push(newPos);
@@ -226,9 +279,6 @@ export function useWidgetLayout(): LayoutState {
         column: number,
         row: number
     ): boolean => {
-        console.log('➕ ========== ADD WIDGET START ==========');
-        console.log('📦 Adding widget:', widgetId, 'to', { page, column, row });
-
         const widgetSize = WIDGET_WEIGHTS[widgetId] as 1 | 2;
         const effectiveRow = widgetSize === 2 ? 0 : row;
 
@@ -236,11 +286,8 @@ export function useWidgetLayout(): LayoutState {
             p => p.page === page && p.column === column
         );
 
-        console.log('🎯 Widgets in target column:', widgetsInTargetColumn);
-
         if (widgetsInTargetColumn.length === 0) {
             if (!canPlaceWidget(widgetId, page, column, effectiveRow)) {
-                console.error('❌ Cannot place widget');
                 return false;
             }
 
@@ -255,8 +302,6 @@ export function useWidgetLayout(): LayoutState {
             setPositions(newPositions);
             setTotalPages(computeMaxPage(newPositions));
 
-            console.log('✅ Added to empty column');
-            console.log('➕ ========== ADD WIDGET END (SUCCESS) ==========');
             return true;
         }
 
@@ -264,13 +309,9 @@ export function useWidgetLayout(): LayoutState {
 
         if (widgetSize === 2) {
             widgetsToRemove = widgetsInTargetColumn;
-            console.log('⚠️ 2-unit widget dropped, removing entire column');
         } else {
             widgetsToRemove = widgetsInTargetColumn.filter(p => p.row === effectiveRow);
-            console.log('⚠️ 1-unit widget dropped at row', effectiveRow, '— removing only:', widgetsToRemove.map(w => w.widgetId));
         }
-
-        console.log('🗑️ Removing widgets:', widgetsToRemove.map(w => w.widgetId));
 
         const removeIds = new Set(widgetsToRemove.map(w => w.widgetId));
 
@@ -281,9 +322,6 @@ export function useWidgetLayout(): LayoutState {
         setPositions(newPositions);
         setTotalPages(computeMaxPage(newPositions));
 
-        console.log('📋 New positions:', newPositions);
-        console.log('✅ Add with swap-out completed');
-        console.log('➕ ========== ADD WIDGET END (SUCCESS) ==========');
         return true;
     }, [positions, canPlaceWidget, computeMaxPage]);
 
@@ -293,7 +331,6 @@ export function useWidgetLayout(): LayoutState {
         ));
     }, []);
 
-    // 🌟 UPDATED: Uses findRelocationSpotsOnPage to restrict relocation to the target page
     const moveWidget = useCallback((
         widgetId: WidgetId,
         fromPage: number,
@@ -301,11 +338,6 @@ export function useWidgetLayout(): LayoutState {
         column: number,
         row: number
     ): boolean => {
-        console.log('🔄 ========== MOVE WIDGET START ==========');
-        console.log('📦 Moving widget:', widgetId);
-        console.log('📍 From:', { page: fromPage });
-        console.log('🎯 To:', { page: toPage, column, row });
-
         const widgetSize = WIDGET_WEIGHTS[widgetId] as 1 | 2;
         const effectiveRow = widgetSize === 2 ? 0 : row;
 
@@ -314,7 +346,6 @@ export function useWidgetLayout(): LayoutState {
         );
 
         if (!originalPos) {
-            console.error('❌ Original position not found!');
             return false;
         }
 
@@ -322,11 +353,8 @@ export function useWidgetLayout(): LayoutState {
             p => p.page === toPage && p.column === column && p.widgetId !== widgetId
         );
 
-        console.log('🎯 Widgets in target column (excluding dragged):', widgetsInTargetColumn);
-
         if (widgetsInTargetColumn.length === 0) {
             if (!canPlaceWidget(widgetId, toPage, column, effectiveRow, widgetId)) {
-                console.error('❌ Cannot place widget at target');
                 return false;
             }
 
@@ -338,12 +366,9 @@ export function useWidgetLayout(): LayoutState {
             setPositions(newPositions);
             setTotalPages(computeMaxPage(newPositions));
 
-            console.log('✅ Normal move completed');
-            console.log('🔄 ========== MOVE WIDGET END (SUCCESS) ==========');
             return true;
         }
 
-        // Column occupied - try to relocate displaced widgets ON THE SAME PAGE
         const simulatedPositions = positions
             .filter(p => !(p.widgetId === widgetId && p.page === fromPage))
             .filter(p => !(p.page === toPage && p.column === column && p.widgetId !== widgetId))
@@ -352,8 +377,6 @@ export function useWidgetLayout(): LayoutState {
         const relocatedWidgets = findRelocationSpotsOnPage(simulatedPositions, widgetsInTargetColumn, toPage);
 
         if (!relocatedWidgets) {
-            console.error('❌ No space available on page', toPage, 'for displaced widgets');
-            console.log('🔄 ========== MOVE WIDGET END (FAILED - NO SPACE ON PAGE) ==========');
             return false;
         }
 
@@ -366,13 +389,9 @@ export function useWidgetLayout(): LayoutState {
         setPositions(newPositions);
         setTotalPages(computeMaxPage(newPositions));
 
-        console.log('📋 New positions:', newPositions);
-        console.log('✅ Move with relocation completed');
-        console.log('🔄 ========== MOVE WIDGET END (SUCCESS) ==========');
         return true;
     }, [positions, canPlaceWidget, findRelocationSpotsOnPage, computeMaxPage]);
 
-    // 🌟 UPDATED: Uses findRelocationSpotsOnPage
     const canMoveOrSwap = useCallback((
         widgetId: WidgetId,
         fromPage: number,
@@ -467,5 +486,6 @@ export function useWidgetLayout(): LayoutState {
         getWidgetAtPosition,
         getAvailableWidgets,
         hasEmptyPage,
+        canAddNewPage
     };
 }

@@ -98,19 +98,23 @@ export default function WidgetPalette({ availableWidgets, viewportSize = 'deskto
     const gapClass = numColumns === 3 ? 'gap-0.5' : 'gap-1';
 
     return (
-        <div className="h-full flex flex-col gap-y-3 p-4 rounded-3xl liquid-glass w-full max-w-full overflow-x-clip">
-            <BetterTypography variant="base" weight="semibold">
-                Available Widgets
-            </BetterTypography>
-            <BetterTypography variant="xs" className="text-muted-foreground">
-                Drag to the grid to place
-            </BetterTypography>
+        <div className="h-full flex flex-col p-4 rounded-3xl liquid-glass w-full max-w-full overflow-x-clip">
+            <div className="flex flex-col gap-y-1">
+                <BetterTypography variant="sm" weight="semibold">
+                    Available Widgets
+                </BetterTypography>
+                <BetterTypography variant="xs" className="text-muted-foreground">
+                    Drag to the grid to place
+                </BetterTypography>
+            </div>
 
-            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide mt-2">
+            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide mt-4">
                 {availableWidgets.length === 0 ? (
-                    <BetterTypography variant="sm" className="text-muted-foreground text-center py-4">
-                        All widgets are placed
-                    </BetterTypography>
+                    <div className="h-full flex-center">
+                        <BetterTypography variant="xs" className="text-muted-foreground text-center">
+                            All widgets are placed
+                        </BetterTypography>
+                    </div>
                 ) : (
                     <div className={`flex ${gapClass}`}>
                         {columns.map((col, idx) => (
