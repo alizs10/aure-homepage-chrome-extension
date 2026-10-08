@@ -2,7 +2,7 @@ import { CircleDashedCheckIcon, CircleDashedIcon } from "lucide-react";
 
 export type Priority = 'low' | 'medium' | 'high';
 export type InteractionMode = 'linear' | 'free';
-export type ProgressColor = 'default' | 'cherry' | 'tangerine' | 'lime' | 'ocean' | 'orchid';
+export type ProgressColor = 'default' | 'cherry' | 'tangerine' | 'lime' | 'ocean' | 'orchid' | 'golden';
 
 export interface ProgressStep {
     id: string;

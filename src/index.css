@@ -88,6 +88,7 @@
     --color-lime-accent: var(--accent-lime);
     --color-ocean: var(--accent-ocean);
     --color-orchid: var(--accent-orchid);
+    --color-golden: var(--accent-golden);
 
     --font-sans: "Ubuntu", "IRANSans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     --animate-skeleton-shimmer: skeleton-shimmer 1.5s ease-in-out infinite;
@@ -121,7 +122,8 @@
     --accent-orchid-light: 315 83% 57%;
     --accent-orchid-dark: 315 83% 65%;
 
-    
+    --accent-golden-light: 43 100% 48%;
+    --accent-golden-dark: 43 100% 65%;
 }
 
 /* Apply accents dynamically based on data-accent attribute */
@@ -148,6 +150,10 @@
 [data-accent="orchid"] {
     --app-primary: hsl(var(--accent-orchid-light));
     --app-primary-dark: hsl(var(--accent-orchid-dark));
+}
+[data-accent="golden"] {
+    --app-primary: hsl(var(--accent-golden-light));
+    --app-primary-dark: hsl(var(--accent-golden-dark));
 }
 
 :root {
@@ -185,6 +191,7 @@
     --accent-lime: hsl(var(--accent-lime-light));
     --accent-ocean: hsl(var(--accent-ocean-light));
     --accent-orchid: hsl(var(--accent-orchid-light));
+    --accent-golden: hsl(var(--accent-golden-light));
 }
 
 .dark {
@@ -221,6 +228,7 @@
     --accent-lime: hsl(var(--accent-lime-dark));
     --accent-ocean: hsl(var(--accent-ocean-dark));
     --accent-orchid: hsl(var(--accent-orchid-dark));
+    --accent-golden: hsl(var(--accent-golden-dark));
 }
 
 html,

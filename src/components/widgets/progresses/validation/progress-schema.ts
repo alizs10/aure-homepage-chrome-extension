@@ -5,7 +5,7 @@ export const progressSchema = z.object({
     label: z.string().trim().min(1, "Label is required"),
     priority: z.enum(['low', 'medium', 'high']),
     deadline: z.string().optional(),
-    color: z.enum(['default', 'cherry', 'tangerine', 'lime', 'ocean', 'orchid']),
+    color: z.enum(['default', 'cherry', 'tangerine', 'lime', 'ocean', 'orchid', 'golden']),
     interactionMode: z.enum(['linear', 'free']),
     steps: z.array(z.object({
         id: z.string(),

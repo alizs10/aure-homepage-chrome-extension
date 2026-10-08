@@ -92,6 +92,16 @@ export const accentOptions = [
         dark: "hsl(315 83% 65%)",
         foreground: { light: "hsl(0 0% 100%)", dark: "hsl(315 83% 15%)" }
     },
+    {
+        id: "golden",
+        label: "Golden",
+        light: "hsl(43 100% 48%)",
+        dark: "hsl(43 100% 65%)",
+        foreground: {
+            light: "hsl(42 100% 10%)",
+            dark: "hsl(42 100% 10%)"
+        }
+    },
 ] as const;
 
 export type Accent = typeof accentOptions[number]["id"];

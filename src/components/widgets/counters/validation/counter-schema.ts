@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const counterSchema = z.object({
     name: z.string().trim().min(1, "Name is required"),
     type: z.enum(['count_up', 'count_down']),
-    color: z.enum(['default', 'cherry', 'tangerine', 'lime', 'ocean', 'orchid']),
+    color: z.enum(['default', 'cherry', 'tangerine', 'lime', 'ocean', 'orchid', 'golden']),
     startDate: z.string().min(1, "Start date is required"),
     endDate: z.string().optional(),
     isRecurring: z.boolean().optional(),

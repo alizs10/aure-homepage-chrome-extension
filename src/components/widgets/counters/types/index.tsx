@@ -1,6 +1,6 @@
 import { ClockArrowDown, ClockArrowUp } from 'lucide-react';
 export type CounterType = 'count_up' | 'count_down';
-export type CounterColor = 'default' | 'cherry' | 'tangerine' | 'lime' | 'ocean' | 'orchid';
+export type CounterColor = 'default' | 'cherry' | 'tangerine' | 'lime' | 'ocean' | 'orchid' | 'golden';
 
 export interface Counter {
     id: number;
