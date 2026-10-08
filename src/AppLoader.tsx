@@ -50,11 +50,14 @@ export default function AppLoader({ children }: AppLoaderProps) {
     }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders, initPomodoro, initCounters, initProgresses]);
 
     useEffect(() => {
-        if (!loading && settings && !migrationsDone) {
-            runMigrations().then(() => {
-                setMigrationsDone(true);
-            });
-        }
+        // If still loading, already done, or no settings (fresh user), do nothing synchronously
+        if (loading || migrationsDone || !settings) return;
+
+        // Existing user - run migrations asynchronously. 
+        // Calling setState inside .then() is allowed by the React Compiler.
+        runMigrations().then(() => {
+            setMigrationsDone(true);
+        });
     }, [loading, settings, migrationsDone]);
 
     // 🌟 Apply global CSS variables as soon as settings are loaded
@@ -71,13 +74,25 @@ export default function AppLoader({ children }: AppLoaderProps) {
         }
     }, [settings]);
 
-    if (isLoading || !migrationsDone) {
+    // 1. Block rendering while initial data is loading
+    if (isLoading) {
         return null;
     }
 
-    if (!settings && location.pathname !== "/wizard") {
-        return <Navigate to="/wizard" replace />;
+    // 2. Handle fresh users (no settings yet)
+    if (!settings) {
+        if (location.pathname !== "/wizard") {
+            return <Navigate to="/wizard" replace />;
+        }
+        // Allow the Wizard to render even though migrationsDone is false
+        return <>{children}</>;
     }
 
+    // 3. Block rendering for existing users until migrations complete
+    if (!migrationsDone) {
+        return null;
+    }
+
+    // 4. Render the app normally
     return <>{children}</>;
 }

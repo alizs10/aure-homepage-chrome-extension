@@ -61,13 +61,25 @@ export default function Wizard() {
 
     const onSubmit = async (data: WizardFormValues) => {
         const settingsToSave: Settings = {
-            schema_version: 0,
+            schema_version: 3, // ✅ Fixed: match current migration version
             ...data,
             blur: 'xs',
             accent: "default",
             show_top_sites: true,
             show_favorites: true,
             show_folders: true,
+            widget_layout: { // ✅ Added: same default layout as migration
+                positions: [
+                    { widgetId: "notes-and-checklists", page: 1, column: 0, row: 0, size: 2 },
+                    { widgetId: "mood-tracker", page: 1, column: 1, row: 0, size: 2 },
+                    { widgetId: "counters", page: 1, column: 1, row: 1, size: 1 },
+                    { widgetId: "pomodoro", page: 1, column: 2, row: 0, size: 2 },
+                    { widgetId: "calendar", page: 2, column: 0, row: 0, size: 2 },
+                    { widgetId: "pet-house", page: 2, column: 1, row: 0, size: 1 },
+                    { widgetId: "progresses", page: 2, column: 2, row: 0, size: 2 },
+                ],
+                totalPages: 3,
+            },
         };
 
         await save(settingsToSave);

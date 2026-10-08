@@ -120,25 +120,25 @@ const migrations: Record<number, () => Promise<void>> = {
         const { settings, update } = useSettingsStore.getState();
         if (!settings) return;
 
-        // Cast to LegacySettings to safely access old properties
         const legacySettings = settings as LegacySettings;
-
-        // Initialize widget_layout if it doesn't exist
         let widgetLayout: WidgetLayout | undefined = legacySettings.widget_layout;
 
         if (!widgetLayout) {
-            // Create a default layout with main widgets on page 1
+            // Create a default layout with main widgets on pages 1-2, blank page 3
             widgetLayout = {
                 positions: [
                     { widgetId: "notes-and-checklists", page: 1, column: 0, row: 0, size: 2 },
-                    { widgetId: "calendar", page: 1, column: 1, row: 0, size: 2 },
+                    { widgetId: "mood-tracker", page: 1, column: 1, row: 0, size: 2 },
+                    { widgetId: "counters", page: 1, column: 1, row: 1, size: 1 },
                     { widgetId: "pomodoro", page: 1, column: 2, row: 0, size: 2 },
+                    { widgetId: "calendar", page: 2, column: 0, row: 0, size: 2 },
+                    { widgetId: "pet-house", page: 2, column: 1, row: 0, size: 1 },
+                    { widgetId: "progresses", page: 2, column: 2, row: 0, size: 2 },
                 ],
-                totalPages: 1,
+                totalPages: 3, // ✅ Fixed: pages 1, 2, and blank page 3
             };
         }
 
-        // Update settings with new schema
         await update({
             schema_version: 3,
             widget_layout: widgetLayout,
