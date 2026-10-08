@@ -60,21 +60,10 @@ export default function Wizard() {
     const navigate = useNavigate();
 
     const onSubmit = async (data: WizardFormValues) => {
-        // 🌟 Save settings with schema_version: 0
-        // AppLoader will run migrations after navigation
         const settingsToSave: Settings = {
             schema_version: 0,
             ...data,
             blur: 'xs',
-            widgets: {
-                "mood-tracker": true,
-                "calendar": true,
-                "notes-and-checklists": true,
-                "pet-house": true,
-                "pomodoro": true,
-                "counters": true, // 🌟 Added
-                "progresses": true,
-            },
             accent: "default",
             show_top_sites: true,
             show_favorites: true,

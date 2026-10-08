@@ -1,4 +1,4 @@
-import type { PomodoroSettings } from '@/components/widgets/pomodoro/types'; // 🌟 Import PomodoroSettings
+import type { PomodoroSettings } from '@/components/widgets/pomodoro/types';
 
 //theme
 export type Theme = 'dark' | 'light' | 'system'
@@ -33,11 +33,9 @@ export type WidgetId =
     | "calendar"
     | "mood-tracker"
     | "pet-house"
-    | "pomodoro" // 🌟 Added pomodoro to WidgetId
+    | "pomodoro"
     | "counters"
-    | "progresses"; // 🌟 Added
-
-export type WidgetSettings = Record<WidgetId, boolean>;
+    | "progresses";
 
 // NEW: Tracks internal preferences for each specific widget
 export type WidgetPreferences = {
@@ -47,7 +45,7 @@ export type WidgetPreferences = {
     "mood-tracker": {
         showChart: boolean;
     };
-    pomodoro: PomodoroSettings; // 🌟 Added pomodoro preferences
+    pomodoro: PomodoroSettings;
 };
 
 //accent
@@ -71,14 +69,14 @@ export const accentOptions = [
         label: "Tangerine",
         light: "hsl(24 95% 53%)",
         dark: "hsl(24 90% 60%)",
-        foreground: { light: "hsl(0 0% 100%)", dark: "hsl(24 95% 15%)" } // Dark text in dark mode
+        foreground: { light: "hsl(0 0% 100%)", dark: "hsl(24 95% 15%)" }
     },
     {
         id: "lime",
         label: "Lime",
         light: "hsl(85 85% 35%)",
         dark: "hsl(84 81% 44%)",
-        foreground: { light: "hsl(0 0% 100%)", dark: "hsl(85 85% 10%)" } // Dark text always for Lime
+        foreground: { light: "hsl(0 0% 100%)", dark: "hsl(85 85% 10%)" }
     },
     {
         id: "ocean",
@@ -98,6 +96,21 @@ export const accentOptions = [
 
 export type Accent = typeof accentOptions[number]["id"];
 
+// 🌟 Widget position in the grid
+export type WidgetPosition = {
+    widgetId: WidgetId;
+    page: number;
+    column: number;
+    row: number;
+    size: 1 | 2;
+};
+
+// 🌟 Complete layout configuration
+export type WidgetLayout = {
+    positions: WidgetPosition[];
+    totalPages: number;
+};
+
 //settings
 export interface Settings {
     schema_version: number;
@@ -105,10 +118,10 @@ export interface Settings {
     theme: Theme
     wallpaper: "default" | string
     blur: BlurSize
-    widgets: WidgetSettings
     widgetPreferences?: Partial<WidgetPreferences>;
     accent: Accent
     show_top_sites: boolean
     show_favorites: boolean
     show_folders: boolean
+    widget_layout?: WidgetLayout;
 }

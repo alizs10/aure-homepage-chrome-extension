@@ -8,8 +8,8 @@ export default function Pomodoro() {
     const { currentView } = usePomodoro();
 
     return (
-        // 🌟 row-span-2 makes it exactly 31rem
-        <div className="relative sm:col-span-1 row-span-2 rounded-3xl liquid-glass flex flex-col gap-y-4 p-5 h-full">
+        // Widget fills its parent container — parent controls grid span
+        <div className="relative h-full w-full rounded-3xl liquid-glass flex flex-col gap-y-4 p-5">
             <Header />
 
             {currentView === "timer" && <TimerView />}

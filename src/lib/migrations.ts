@@ -5,24 +5,28 @@ import type { Folder, Website } from "@/components/settings/components/tabs-deta
 import { DEFAULT_FOLDERS } from "@/components/wizard/constants/defaultFolders";
 import { NotesRepository } from "@/components/widgets/notes-and-checklists/db";
 import type { AdvancedNote, Block, NoteAndChecklist, Note, Checklist } from "@/components/widgets/notes-and-checklists/types";
+import type { Settings, WidgetLayout } from "@/types";
 
-// 🌟 Type for old notes before migration
 type LegacyNote = Note & { status?: boolean };
 
-// 🌟 Type guard to check if a note is already migrated
 function isAdvancedNote(note: NoteAndChecklist | LegacyNote): note is AdvancedNote {
     return 'type' in note && note.type === 'advanced';
 }
 
-// 🌟 Type guard to check if a legacy note is a checklist
 function isLegacyChecklist(note: LegacyNote): note is Checklist {
     return 'status' in note;
 }
 
-// 🌟 Current schema version - increment when adding new migrations
-export const CURRENT_SCHEMA_VERSION = 4; // 🌟 Bumped to 3
+export const CURRENT_SCHEMA_VERSION = 3;
 
-// 🌟 Migration definitions
+// Type for settings during migration (may have old properties)
+type LegacySettings = Settings & {
+    widget_layout?: WidgetLayout;
+    widgets?: Record<string, boolean>;
+    layout_mode?: string;
+    default_page?: number;
+};
+
 const migrations: Record<number, () => Promise<void>> = {
     // Version 1: Add default folders feature
     1: async () => {
@@ -46,7 +50,6 @@ const migrations: Record<number, () => Promise<void>> = {
             }
         }
 
-        // Update settings to include new fields
         const { settings, update } = useSettingsStore.getState();
         if (settings) {
             await update({
@@ -55,7 +58,6 @@ const migrations: Record<number, () => Promise<void>> = {
             });
         }
 
-        // Refresh the folders store
         await useFoldersStore.getState().initialize();
     },
 
@@ -84,7 +86,6 @@ const migrations: Record<number, () => Promise<void>> = {
                     status: status,
                 };
 
-                // 🌟 Update content to use [x] if the task was checked
                 updatedContent = prefix + legacyNote.content.substring(3);
             } else {
                 block = {
@@ -96,7 +97,7 @@ const migrations: Record<number, () => Promise<void>> = {
 
             const advancedNote: AdvancedNote = {
                 id: legacyNote.id,
-                content: updatedContent, // 🌟 Use updated content
+                content: updatedContent,
                 createdAt: legacyNote.createdAt,
                 updatedAt: legacyNote.updatedAt,
                 type: 'advanced',
@@ -114,47 +115,46 @@ const migrations: Record<number, () => Promise<void>> = {
         }
     },
 
-    // 🌟 Version 3: Add Counters widget to existing users' settings
+    // Version 3: Transition to customizer-based layout system
     3: async () => {
         const { settings, update } = useSettingsStore.getState();
-        if (settings) {
-            await update({
-                schema_version: 3,
-                widgets: {
-                    ...settings.widgets,
-                    // Add "counters" and default it to true if it doesn't exist
-                    "counters": settings.widgets?.["counters"] ?? true,
-                },
-            });
-        }
-    },
+        if (!settings) return;
 
-    // Add to migrations object:
-    4: async () => {
-        const { settings, update } = useSettingsStore.getState();
-        if (settings) {
-            await update({
-                schema_version: 4,
-                widgets: {
-                    ...settings.widgets,
-                    "progresses": settings.widgets?.["progresses"] ?? true,
-                },
-            });
+        // Cast to LegacySettings to safely access old properties
+        const legacySettings = settings as LegacySettings;
+
+        // Initialize widget_layout if it doesn't exist
+        let widgetLayout: WidgetLayout | undefined = legacySettings.widget_layout;
+
+        if (!widgetLayout) {
+            // Create a default layout with main widgets on page 1
+            widgetLayout = {
+                positions: [
+                    { widgetId: "notes-and-checklists", page: 1, column: 0, row: 0, size: 2 },
+                    { widgetId: "calendar", page: 1, column: 1, row: 0, size: 2 },
+                    { widgetId: "pomodoro", page: 1, column: 2, row: 0, size: 2 },
+                ],
+                totalPages: 1,
+            };
         }
+
+        // Update settings with new schema
+        await update({
+            schema_version: 3,
+            widget_layout: widgetLayout,
+        });
     },
 };
 
-// 🌟 Run all pending migrations
 export async function runMigrations(): Promise<void> {
     const { settings } = useSettingsStore.getState();
 
-    if (!settings) return; // No settings = wizard hasn't run yet
+    if (!settings) return;
 
     const currentVersion = settings.schema_version ?? 0;
 
-    if (currentVersion >= CURRENT_SCHEMA_VERSION) return; // Already up to date
+    if (currentVersion >= CURRENT_SCHEMA_VERSION) return;
 
-    // Run each migration in order
     for (let version = currentVersion + 1; version <= CURRENT_SCHEMA_VERSION; version++) {
         const migration = migrations[version];
         if (migration) {

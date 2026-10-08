@@ -34,7 +34,7 @@ export default function Counters() {
     };
 
     return (
-        <div className="w-full sm:col-span-1 row-span-1 flex flex-col p-5 rounded-3xl liquid-glass h-full gap-y-2">
+        <div className="w-full flex flex-col p-5 rounded-3xl liquid-glass h-full gap-y-2">
             <Header onAdd={handleAdd} />
 
             {/* 🌟 Pass onSelect instead of onEdit */}

@@ -1,15 +1,10 @@
-import { AppWindowIcon, InfoIcon, LayoutDashboardIcon, SwatchBookIcon, TerminalIcon, UserPenIcon } from "lucide-react";
+import { AppWindowIcon, InfoIcon, SwatchBookIcon, TerminalIcon, UserPenIcon } from "lucide-react";
 
 export const TABS = [
     {
         id: "preferences",
         label: "Preferences",
         Icon: SwatchBookIcon
-    },
-    {
-        id: "widgets-center",
-        label: "Widgets Center",
-        Icon: LayoutDashboardIcon
     },
     {
         id: "sites-and-folders",

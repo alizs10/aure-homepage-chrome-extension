@@ -36,7 +36,7 @@ export default function ProgressesContent() {
     ], [labels]);
 
     return (
-        <div className="relative sm:col-span-1 row-span-2 rounded-3xl liquid-glass flex flex-col gap-y-4 p-5 h-full">
+        <div className="relative h-full w-full rounded-3xl liquid-glass flex flex-col gap-y-4 p-5">
             <div className="flex flex-col gap-y-3">
                 <div className="flex-center-between">
                     <BetterTypography className='capitalize text-nowrap' variant='14-16-20' weight='semibold' as="h3">

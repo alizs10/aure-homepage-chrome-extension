@@ -6,12 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:watch": "tsc -b && vite build --watch",
+    "build:watch": "tsc -b && vite build --watch --mode watch",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^5.4.0",
     "@tailwindcss/vite": "^4.3.1",
     "@tanstack/react-query": "^5.101.2",
@@ -38,6 +41,7 @@
     "react-moment": "^2.0.2",
     "react-router": "^8.1.0",
     "react-router-dom": "^7.18.1",
+    "react-scan": "^0.5.7",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.1",

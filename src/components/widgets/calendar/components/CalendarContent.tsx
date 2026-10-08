@@ -28,7 +28,7 @@ export default function CalendarContent() {
     }, [selectedDay, getNoteForDay]);
 
     return (
-        <div className="sm:col-span-1 row-span-2 h-full rounded-3xl liquid-glass flex flex-col gap-y-4 p-5">
+        <div className="h-full rounded-3xl liquid-glass flex flex-col gap-y-4 p-5">
             <div className="flex-center-between">
                 <BetterTypography className='capitalize text-nowrap' variant='14-16-20' weight='semibold' as="h3">
                     Calendar
