@@ -4,7 +4,7 @@ import ModalHeader from '@/components/ui/modal/ModalHeader';
 import ModalWrapper from '@/components/ui/modal/ModalWrapper';
 import { RotateCcwIcon, Trash2Icon, PenIcon } from 'lucide-react';
 import { useCounters } from '../hooks/useCounters';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import type { Counter } from '../types';
 import ConfirmDialog from '@/components/ui/Dialog';
 import { useState } from 'react';

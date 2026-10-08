@@ -1,6 +1,6 @@
 import { Trash2Icon } from 'lucide-react';
 import Button from '../ui/Button';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 
 interface WallpaperCardProps {
     lightVariant?: string;

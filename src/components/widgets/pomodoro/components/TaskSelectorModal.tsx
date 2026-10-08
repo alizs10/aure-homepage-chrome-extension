@@ -1,6 +1,6 @@
 import { PencilIcon, PlusIcon, TrashIcon } from 'lucide-react'
 import { useState } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/stores/useToastStore'
 
 import { BetterTypography } from '@/components/common/BetterTypography'
 import Button from '@/components/ui/Button'

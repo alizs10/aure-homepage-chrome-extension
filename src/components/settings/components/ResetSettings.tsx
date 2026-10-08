@@ -4,7 +4,7 @@ import ConfirmDialog from '@/components/ui/Dialog';
 import { useSettingsStore } from '@/stores';
 import { RotateCcwIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 
 export default function ResetSettings() {
     const { clear } = useSettingsStore();

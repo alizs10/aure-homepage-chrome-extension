@@ -7,7 +7,7 @@ import { wizardSchema, type WizardFormValues } from "@/components/wizard/validat
 import { zodResolver } from "@hookform/resolvers/zod";
 import { WizardIntro } from "@/components/wizard/components/WizardIntro";
 import { WizardContent } from "@/components/wizard/WizardContent";
-import { toast } from "sonner";
+import { toast } from '@/stores/useToastStore';
 
 export default function Wizard() {
     const save = useSettingsStore((s) => s.save);

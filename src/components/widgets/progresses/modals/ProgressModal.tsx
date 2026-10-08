@@ -9,7 +9,7 @@ import ColorPicker from '@/components/ui/ColorPicker';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useProgresses } from '../hooks/useProgresses';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import type { Progress, Priority, ProgressColor, InteractionMode } from '../types';
 import { accentOptions } from '@/types/settings';
 import { useMemo } from 'react';

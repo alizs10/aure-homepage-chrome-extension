@@ -1,9 +1,10 @@
 import { BetterTypography } from "@/components/common/BetterTypography";
 import Button from "@/components/ui/Button";
 import { useState } from "react";
-import { toast } from "sonner";
+// import { toast } from '@/stores/useToastStore';
 import UpdateAvailableModal from "./modals/UpdateAvailableModal";
 import { RefreshCwIcon } from "lucide-react";
+import { toast } from "@/stores/useToastStore";
 
 // Updated interface to match the new JSON structure
 interface VersionInfo {

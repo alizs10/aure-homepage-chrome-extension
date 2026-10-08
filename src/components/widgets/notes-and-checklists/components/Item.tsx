@@ -10,7 +10,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { AdvancedNote, Checklist, NoteAndChecklist } from '../types';
 import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
 import useClickOutside from '@/hooks/useOutsideClick';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 
 interface ItemProps {
     item: NoteAndChecklist

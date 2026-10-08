@@ -8,7 +8,7 @@ import ColorPicker from '@/components/ui/ColorPicker';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCounters } from '../hooks/useCounters';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import type { Counter, CounterColor, CounterType } from '../types';
 import { accentOptions } from '@/types/settings';
 import { format } from 'date-fns';

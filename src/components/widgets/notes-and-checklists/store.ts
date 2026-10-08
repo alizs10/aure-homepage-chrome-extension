@@ -1,6 +1,6 @@
 // stores.ts
 import { create } from 'zustand';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import type { AdvancedNote, Block, Checklist, NoteAndChecklist, TaskBlock } from './types';
 import { NotesRepository } from './db';
 import { useSettingsStore } from '@/stores';

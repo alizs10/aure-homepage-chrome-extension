@@ -6,7 +6,7 @@ import ModalWrapper from '@/components/ui/modal/ModalWrapper';
 import TextInput from '@/components/ui/TextInput';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import { useFolders } from '../hooks/useFolders';
 import { folderSchema, type FolderFormValues } from '../validation/folder-schema';
 import type { Website } from '../../../types';

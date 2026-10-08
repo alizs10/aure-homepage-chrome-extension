@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import type { Pet } from '../types';
 import { usePetHouse } from '../hooks/usePetHouse';
 import Button from '@/components/ui/Button';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import ConfirmDialog from '@/components/ui/Dialog';
 
 export default function KillPetDialog({ pet }: { pet: Pet }) {

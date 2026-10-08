@@ -8,13 +8,12 @@ import type { CalendarNote } from '@/components/widgets/calendar/types';
 import type { MoodHistory } from '@/components/widgets/mood-tracker/types';
 import type { NoteAndChecklist } from '@/components/widgets/notes-and-checklists/types';
 import type { Pet } from '@/components/widgets/pet-house/types';
-import type { PomodoroHistoryEntry, PomodoroTask, PomodoroActiveState } from '@/components/widgets/pomodoro/types'; // 🌟 Added Pomodoro types
+import type { PomodoroHistoryEntry, PomodoroTask, PomodoroActiveState } from '@/components/widgets/pomodoro/types';
 import type { Wallpaper } from '@/types';
 import { CURRENT_SCHEMA_VERSION } from "./migrations";
 import type { Counter } from "@/components/widgets/counters/types";
 import type { Progress, ProgressLabel } from '@/components/widgets/progresses/types';
 
-// Helper to fetch all Chrome Storage data
 async function getAllChromeStorageData() {
     const data: Record<string, unknown> = {};
     const keys = Object.values(STORAGE_KEYS);
@@ -25,18 +24,17 @@ async function getAllChromeStorageData() {
             data[key] = value;
         }
     }
-
     return data;
 }
 
-// Helper to safely wipe all data before restoring
+// ✅ RESTORED: Safely wipe all data before restoring for a clean import
 async function clearAllData() {
     await db.transaction('rw',
         [
             db.wallpapers, db.moods, db.pets, db.calendar,
             db.notes, db.favorites, db.folders, db.counters,
-            db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState, // 🌟 Added Pomodoro tables
-            db.progresses, db.progressLabels // 🌟 Added Progress table
+            db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState,
+            db.progresses, db.progressLabels
         ],
         async () => {
             await db.wallpapers.clear();
@@ -46,9 +44,9 @@ async function clearAllData() {
             await db.notes.clear();
             await db.favorites.clear();
             await db.folders.clear();
-            await db.pomodoroHistory.clear(); // 🌟 Clear Pomodoro history
-            await db.pomodoroTasks.clear(); // 🌟 Clear Pomodoro tasks
-            await db.pomodoroActiveState.clear(); // 🌟 Clear active timer state
+            await db.pomodoroHistory.clear();
+            await db.pomodoroTasks.clear();
+            await db.pomodoroActiveState.clear();
             await db.counters.clear();
             await db.progresses.clear();
             await db.progressLabels.clear();
@@ -69,9 +67,8 @@ export async function exportUserData(username?: string) {
     const folders = await db.folders.toArray();
     const counters = await db.counters.toArray();
     const progresses = await db.progresses.toArray();
-    const progressLabels = await db.progressLabels.toArray(); // 🌟 Fetch Progress Labels
+    const progressLabels = await db.progressLabels.toArray();
 
-    // 🌟 Fetch Pomodoro data
     const pomodoroHistory = await db.pomodoroHistory.toArray();
     const pomodoroTasks = await db.pomodoroTasks.toArray();
     const pomodoroActiveState = await db.pomodoroActiveState.toArray();
@@ -87,7 +84,7 @@ export async function exportUserData(username?: string) {
         },
         indexedDB: {
             wallpapers, moods, pets, calendar, notes, favorites, folders, counters, progresses, progressLabels,
-            pomodoroHistory, pomodoroTasks, pomodoroActiveState // 🌟 Added to payload
+            pomodoroHistory, pomodoroTasks, pomodoroActiveState
         },
         chromeStorage,
     };
@@ -133,10 +130,10 @@ export async function importUserData(file: File) {
     const dbData = backup.indexedDB as Record<string, unknown>;
     const storageData = backup.chromeStorage as Record<string, unknown>;
 
-    // 🌟 Added Pomodoro tables to the expected tables list
     const expectedTables = [
         'wallpapers', 'moods', 'pets', 'calendar', 'notes', 'favorites', 'folders',
-        'pomodoroHistory', 'pomodoroTasks', 'pomodoroActiveState', 'counters', 'progresses', 'progressLabels'];
+        'pomodoroHistory', 'pomodoroTasks', 'pomodoroActiveState', 'counters', 'progresses', 'progressLabels'
+    ];
 
     for (const table of expectedTables) {
         const tableData = dbData[table];
@@ -153,15 +150,16 @@ export async function importUserData(file: File) {
         }
     }
 
-    // --- Proceed with Import ---
+    // ✅ 1. Clean slate: Wipe existing data first
     await clearAllData();
 
+    // ✅ 2. Write new data
     await db.transaction('rw',
         [
             db.wallpapers, db.moods, db.pets, db.calendar,
             db.notes, db.favorites, db.folders, db.counters,
-            db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState, // 🌟 Added to transaction scope
-            db.progresses, db.progressLabels // 🌟 Added Progress and ProgressLabel tables
+            db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState,
+            db.progresses, db.progressLabels
         ],
         async () => {
             if (Array.isArray(dbData.wallpapers) && dbData.wallpapers.length)
@@ -178,11 +176,8 @@ export async function importUserData(file: File) {
                 await db.favorites.bulkPut(dbData.favorites as Favorite[]);
             if (Array.isArray(dbData.folders) && dbData.folders.length)
                 await db.folders.bulkPut(dbData.folders as Folder[]);
-
             if (Array.isArray(dbData.counters) && dbData.counters.length)
                 await db.counters.bulkPut(dbData.counters as Counter[]);
-
-            // 🌟 Restore Pomodoro data
             if (Array.isArray(dbData.pomodoroHistory) && dbData.pomodoroHistory.length)
                 await db.pomodoroHistory.bulkPut(dbData.pomodoroHistory as PomodoroHistoryEntry[]);
             if (Array.isArray(dbData.pomodoroTasks) && dbData.pomodoroTasks.length)

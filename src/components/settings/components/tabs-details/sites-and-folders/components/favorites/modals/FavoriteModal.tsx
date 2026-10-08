@@ -8,7 +8,7 @@ import TextInput from '@/components/ui/TextInput';
 import { getTopSites } from '@/lib/chrome/top-sites';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import { useFavorites } from '../hooks/useFavorites';
 import { favoriteSchema, type FavoriteFormValues } from '../validation/favorite-schema';
 

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"; // 🌟 Removed useEffect
 import Button from "@/components/ui/Button";
 import ModalHeader from "@/components/ui/modal/ModalHeader";
 import TextInput from "@/components/ui/TextInput";
-import { toast } from "sonner";
+import { toast } from '@/stores/useToastStore';
 import { usePetHouse } from "../hooks/usePetHouse";
 import type { CatColor, DogColor, PetType } from "../types";
 import Modal from "@/components/ui/modal/ModalWrapper";

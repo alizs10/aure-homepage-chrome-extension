@@ -4,7 +4,7 @@ import ModalHeader from '@/components/ui/modal/ModalHeader';
 import ModalWrapper from '@/components/ui/modal/ModalWrapper';
 import { format } from 'date-fns';
 import { type MouseEvent } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import { MOODS_OPTIONS } from '../constants/moods';
 import { useMoodTracker } from '../hooks/useMoodTracker';
 import { moodMessages, type MoodHistory, type MoodType } from '../types';

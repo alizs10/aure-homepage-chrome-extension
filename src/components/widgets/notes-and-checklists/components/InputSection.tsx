@@ -2,7 +2,7 @@
 import { BetterTypography } from '@/components/common/BetterTypography';
 import { PenLineIcon, SendIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import { sliceText } from '../../../../helpers';
 import Button from '../../../ui/Button';
 import TextInput from '../../../ui/TextInput';

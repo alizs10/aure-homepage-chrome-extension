@@ -7,7 +7,7 @@ import type { DayLog } from '../../../types';
 import { useWallpaperBackground } from '@/hooks/useWallpaperBackground';
 import { toPng } from 'html-to-image';
 import { useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import Button from '@/components/ui/Button';
 import { ScanSquareIcon } from 'lucide-react';
 

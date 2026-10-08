@@ -1,6 +1,6 @@
 import ProgressBar from '@/components/ui/ProgressBar';
 import ConfirmDialog from '@/components/ui/Dialog';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import { useState, useMemo } from 'react';
 import { useProgresses } from '../hooks/useProgresses';
 import type { Progress } from '../types';
