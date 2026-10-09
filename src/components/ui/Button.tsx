@@ -7,6 +7,7 @@ import { cn } from "../../lib/util";
 export type ButtonVariant =
   | "primary"
   | "primary-active"
+  | "muted"
   | "ghost"
   | "success"
   | "success-active"
@@ -55,6 +56,8 @@ const variantClasses: Record<ButtonVariant, string> = {
   "primary-active":
     "liquid-glass-sm bg-primary/30! hover:bg-primary/60!",
 
+  muted:
+    "bg-muted/60 hover:bg-muted dark:bg-border/60 dark:hover:bg-border",
   ghost:
     "bg-transparent hover:bg-muted/60 dark:hover:bg-secondary/80",
 

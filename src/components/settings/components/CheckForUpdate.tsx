@@ -1,12 +1,14 @@
 import { BetterTypography } from "@/components/common/BetterTypography";
 import Button from "@/components/ui/Button";
 import { useState } from "react";
-// import { toast } from '@/stores/useToastStore';
 import UpdateAvailableModal from "./modals/UpdateAvailableModal";
 import { RefreshCwIcon } from "lucide-react";
 import { toast } from "@/stores/useToastStore";
+import { isVersionHigher } from "@/lib/version";
 
-// Updated interface to match the new JSON structure
+const UPDATE_CHECK_URL = import.meta.env.VITE_UPDATE_CHECK_URL ||
+    "https://raw.githubusercontent.com/alizs10/aure-homepage-chrome-extension/main/version.json";
+
 interface VersionInfo {
     latestVersion: string;
     minimumSupportedVersion: string;
@@ -22,19 +24,14 @@ export default function CheckForUpdate() {
     const [loading, setLoading] = useState(false)
 
     async function checkForUpdate() {
-
         if (loading) return
 
         setLoading(true)
 
         try {
-            const res = await fetch(
-                "https://raw.githubusercontent.com/alizs10/aure-homepage-chrome-extension/main/version.json",
-                // "https://raw.githubusercontent.com/alizs10/aure-homepage-chrome-extension/refs/heads/dev/version.json",
-                {
-                    cache: "no-store",
-                }
-            );
+            const res = await fetch(UPDATE_CHECK_URL, {
+                cache: "no-store",
+            });
 
             if (!res.ok) {
                 throw new Error("Failed to fetch latest version.");
@@ -43,23 +40,15 @@ export default function CheckForUpdate() {
             const latest: VersionInfo = await res.json();
             const currentVersion = import.meta.env.VITE_APP_VERSION;
 
-            // Simple version check. 
-            // Note: For a robust check, you might want to compare semantic versions 
-            // to avoid prompting users who are already on a newer beta version.
-            if (latest.latestVersion !== currentVersion) {
+            // 🌟 Robust semantic version comparison
+            if (isVersionHigher(latest.latestVersion, currentVersion)) {
                 setUpdate(latest);
                 setOpen(true);
             } else {
-                // TODO: Show a toast:
-                // "You're already using the latest version."
-                // console.log("Already up to date.");
                 toast.info("Already up to date.")
             }
         } catch (error) {
             console.error(error);
-
-            // TODO: Show a toast:
-            // "Unable to check for updates."
             toast.error("Unable to check for updates.")
         } finally {
             setLoading(false)
@@ -85,7 +74,7 @@ export default function CheckForUpdate() {
                     open={open}
                     onClose={() => setOpen(false)}
                     currentVersion={import.meta.env.VITE_APP_VERSION}
-                    latest={update} // Passing the whole object for easier access to new fields
+                    latest={update}
                 />
             )}
         </>

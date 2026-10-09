@@ -1,6 +1,8 @@
 import { BetterTypography } from '@/components/common/BetterTypography'
 import ThemeToggle from '@/components/common/ThemeToggle'
 import NetworkStatus from '@/components/features/network-status/NetworkStatus'
+import PomodoroHeaderFeature from '@/components/features/pomodoro/PomodoroHeaderFeature'
+import HeaderUpdateChecker from '@/components/features/updates/HeaderUpdateChecker'
 import Updates from '@/components/features/updates/Updates'
 import Button from '@/components/ui/Button'
 import { useSettingsStore } from '@/stores'
@@ -10,27 +12,19 @@ import Moment from 'react-moment'
 import { useLocation } from 'react-router-dom'
 
 export default function Header() {
-
     const location = useLocation();
 
     const isSettingsPath = useMemo(() => {
-
         if (!location?.pathname) return false
-
         return location?.pathname === '/settings'
-
     }, [location])
 
     const isHomePath = useMemo(() => {
-
         if (!location?.pathname) return false
-
         return location?.pathname === '/'
-
     }, [location])
 
     const { settings } = useSettingsStore();
-
 
     const [now, setNow] = useState(new Date())
 
@@ -44,10 +38,7 @@ export default function Header() {
 
     return (
         <header className="sticky top-0 flex justify-between h-8 min-h-8 px-4 md:px-8 lg:px-10 liquid-glass-sm z-50">
-
             <div className="flex-row-center gap-x-4">
-
-
                 {!isHomePath && (
                     <Button
                         variant="ghost"
@@ -68,7 +59,6 @@ export default function Header() {
                     </BetterTypography>
                 </div>
 
-
                 {!isSettingsPath && (
                     <Button
                         variant="ghost"
@@ -84,10 +74,15 @@ export default function Header() {
                 )}
             </div>
 
-            <div className="flex-row-center gap-x-4">
+            <div className="flex-row-center gap-x-1 sm:gap-x-2">
+
+                {/* 🌟 New Update Checker Feature */}
+                <HeaderUpdateChecker />
+
+                {/* 🌟 Pomodoro Header Feature */}
+                <PomodoroHeaderFeature />
 
                 <NetworkStatus />
-
 
                 <div className="h-full flex-center">
                     <BetterTypography variant='12' className='hidden sm:block text-nowrap' weight='medium' as="h3">
@@ -99,11 +94,8 @@ export default function Header() {
                 </div>
 
                 <Updates />
-
                 <ThemeToggle />
             </div>
-
         </header>
-
     )
 }

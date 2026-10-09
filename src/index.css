@@ -173,8 +173,8 @@
     --accent-foreground: hsl(240 5.9% 10%);
     --destructive: hsl(346.8 77.2% 49.8%);
     --destructive-foreground: hsl(0 0% 100%);
-    --success: hsl(85 85% 35%);
-    --success-foreground: hsl(0 0% 100%);
+--success: hsl(142 72% 25%);
+--success-foreground: hsl(0 0% 100%);
     --warning: hsl(37 92% 44%);
     --warning-foreground: hsl(0 0% 100%);
     --border: hsl(240, 0.7%, 82%);
