@@ -43,7 +43,7 @@ export default function PaginationDots({
                             >
                                 <div className={`rounded-full transition-colors ${circleSize} ${currentPage === i + 1
                                     ? 'bg-primary'
-                                    : 'bg-border'
+                                    : 'bg-secondary dark:bg-border'
                                     }`} />
                             </Button>
                         ))}
