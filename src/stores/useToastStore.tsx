@@ -42,7 +42,7 @@ export const useToastStore = create<ToastState>((set, get) => ({
         const id = options?.id ?? genId()
         const duration = options?.duration ?? DEFAULT_DURATION
 
-        // ✅ Handle smooth update for existing toasts (No animation thrashing)
+        // ✅ Handle smooth update for existing toasts
         const existingIndex = get().toasts.findIndex(t => t.id === id)
         if (existingIndex !== -1) {
             const updatedToasts = [...get().toasts]
@@ -50,11 +50,22 @@ export const useToastStore = create<ToastState>((set, get) => ({
                 ...updatedToasts[existingIndex],
                 message,
                 icon,
-                status: 'front', // Keep as 'front' to let CSS transition handle the smooth change
+                status: 'front',
                 action: options?.action,
                 duration
             }
             set({ toasts: updatedToasts })
+
+            // ✅ FIX: If the updated state has a finite duration, schedule its auto-dismissal
+            if (duration !== Infinity) {
+                setTimeout(() => {
+                    const current = get().toasts.find(t => t.id === id)
+                    if (current && current.status !== 'exiting') {
+                        get().exitToast(id)
+                    }
+                }, duration)
+            }
+
             return // Exit early, do not run "new toast" logic
         }
 
