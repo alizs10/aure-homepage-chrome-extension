@@ -92,7 +92,12 @@ export async function exportUserData(username?: string) {
     const jsonString = JSON.stringify(payload, null, 2);
     const blob = new Blob([jsonString], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const filename = `${username ? username.toLowerCase().split(" ").join("-") : 'aure-homepage'}-backup-${new Date().toISOString().split('T')[0]}`
+
+    // ✅ Added local time to the filename (e.g., 2026-10-10_14-30-15)
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-');
+    const filename = `${username ? username.toLowerCase().split(" ").join("-") : 'aure-homepage'}-backup-${dateStr}_${timeStr}`;
 
     const a = document.createElement("a");
     a.href = url;

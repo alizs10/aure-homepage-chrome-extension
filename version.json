@@ -11,8 +11,10 @@
         "Introduced the new Counters widget to track days since or until important events, habits, and recurring chores.",
         "Introduced the new Progresses widget to track multi-step goals and projects with linear or free-form checklists, custom labels, and visual progress bars.",
         "Added the new Golden accent color with a bright, shiny golden appearance.",
+        "Refined the Liquid Glass effects for a clearer, cleaner appearance with more subtle highlights and a more balanced glass look.",
         "Updated the extension icon with a fresh new logo design.",
         "Replaced the default toast notification system with a custom, design-system-aligned toaster that integrates seamlessly with the Liquid Glass UI.",
-        "Revamped Data Backup & Restore with improved performance and a clean new full-screen UI."
+        "Revamped Data Backup & Restore with improved performance and a clean new full-screen UI.",
+        "Exported backup files now include the local date and time in the filename for easier version tracking."
     ]
 }

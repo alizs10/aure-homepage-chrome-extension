@@ -1,3 +1,4 @@
+
 export default function LiquidGlass() {
     return (
         <svg
@@ -15,20 +16,23 @@ export default function LiquidGlass() {
                     height="140%"
                     colorInterpolationFilters="sRGB"
                 >
+                    {/* Smoother, broader lens distortion */}
                     <feTurbulence
                         type="fractalNoise"
-                        baseFrequency="0.008 0.012"
+                        baseFrequency="0.003 0.004"
                         numOctaves="2"
                         seed="42"
                         result="noise"
                     />
 
+                    {/* Softer distortion for a polished glass effect */}
                     <feGaussianBlur
                         in="noise"
-                        stdDeviation="3"
+                        stdDeviation="100"
                         result="blurredNoise"
                     />
 
+                    {/* More restrained refraction */}
                     <feDisplacementMap
                         in="SourceGraphic"
                         in2="blurredNoise"

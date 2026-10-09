@@ -27,7 +27,7 @@ export default function Modal({ children, open, onClose, className }: ModalProps
                             "flex flex-col",
                             "transition-colors duration-200",
                             "max-w-4/5 sm:max-w-md w-full",
-                            "max-h-[80vh] overflow-y-scroll scrollbar-none",
+                            "max-h-[80vh] overflow-clip",
                             className
                         )}
                     >

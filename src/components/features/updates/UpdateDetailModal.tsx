@@ -27,7 +27,7 @@ export default function UpdateDetailModal({ entry, onClose, isLatest }: UpdateDe
             onClose={onClose}
             className="max-w-4/5 sm:max-w-xl"
         >
-            <div className="rounded-3xl liquid-glass p-5 flex flex-col gap-4 w-full max-h-[80vh] overflow-y-auto scrollbar-hide">
+            <div className="rounded-3xl liquid-glass p-3 md:p-5 flex flex-col gap-5 w-full max-h-[80vh] overflow-y-auto scrollbar-none">
                 <ModalHeader
                     title={`Release v${entry?.version ?? ''}`}
                     onClose={onClose}
