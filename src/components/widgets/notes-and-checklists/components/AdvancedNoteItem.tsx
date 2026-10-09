@@ -33,7 +33,7 @@ export function AdvancedNoteItem({ item, onToggleTask, date, edited }: AdvancedN
                 if (block.type === 'task') {
                     const task = block as TaskBlock;
                     return (
-                        <div key={block.id} className="flex-row-center gap-x-2">
+                        <div key={block.id} className="flex flex-row gap-x-2">
                             <Checkbox
                                 checked={!!task.status}
                                 onChange={() => onToggleTask(item.id, task.id)}
@@ -41,7 +41,7 @@ export function AdvancedNoteItem({ item, onToggleTask, date, edited }: AdvancedN
                             />
                             <BetterTypography
                                 variant="sm"
-                                className={`flex-1 wrap-break-word ${task.status ? 'line-through text-muted-foreground' : ''}`}
+                                className={`flex-1 leading-snug mt-0.75 wrap-break-word ${task.status ? 'line-through text-muted-foreground' : ''}`}
                             >
                                 {task.content}
                             </BetterTypography>

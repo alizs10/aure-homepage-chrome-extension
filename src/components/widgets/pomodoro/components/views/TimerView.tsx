@@ -13,7 +13,7 @@ export default function TimerView() {
         session, status, formattedTime, progress,
         cyclePosition, longBreakInterval,
         start, pause, resume, reset, resetCycle,
-        includeOvertime, skipOvertime, completeEarly, // 🌟 Added
+        includeOvertime, skipOvertime, completeEarly,
         currentTaskId, tasks
     } = usePomodoro()
 
@@ -46,7 +46,8 @@ export default function TimerView() {
         <>
             <div className="flex-1 flex flex-col items-center justify-center gap-0">
                 <BetterTypography className={`capitalize text-nowrap ${getSessionColor()}`} variant="14-16-20" weight="semibold" as="h3">
-                    {isOvertime ? 'Overtime' : session.replace('-', ' ')}
+                    {/* ✅ Dynamically shows "Focus Overtime", "Short Break Overtime", etc. */}
+                    {isOvertime ? `${session.replace('-', ' ')} Overtime` : session.replace('-', ' ')}
                 </BetterTypography>
 
                 <BetterTypography
@@ -124,7 +125,6 @@ export default function TimerView() {
                                     Pause
                                 </BetterTypography>
                             </Button>
-                            {/* 🌟 Complete Early Button */}
                             <Button
                                 onClick={completeEarly}
                                 variant="ghost"
@@ -147,7 +147,6 @@ export default function TimerView() {
                                     Resume
                                 </BetterTypography>
                             </Button>
-                            {/* 🌟 Complete Early Button (Also available when paused) */}
                             <Button
                                 onClick={completeEarly}
                                 variant="ghost"
@@ -183,7 +182,6 @@ export default function TimerView() {
                                 size="sm"
                             >
                                 <BetterTypography variant='xs' weight='medium'>
-
                                     {session === 'focus' ? 'Break' : 'Focus'}
                                 </BetterTypography>
                             </Button>
