@@ -95,10 +95,10 @@ export const accentOptions = [
     {
         id: "golden",
         label: "Golden",
-        light: "hsl(43 100% 48%)",
-        dark: "hsl(43 100% 65%)",
+        light: "hsl(39 81% 40%)",
+        dark: "hsl(45 100% 68%)",
         foreground: {
-            light: "hsl(42 100% 10%)",
+            light: "hsl(0 0% 100%)",
             dark: "hsl(42 100% 10%)"
         }
     },
