@@ -23,6 +23,7 @@ export interface SavedPomodoroState {
     cycleStartedAt: number | null;
     overtimeStartedAt: number | null;
     updatedAt: number;
+    ownerTabId?: string; // 🌟 NEW: Track which tab started the session
 }
 
 export interface PomodoroActiveState extends SavedPomodoroState {
