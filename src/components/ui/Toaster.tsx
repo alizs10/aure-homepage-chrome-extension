@@ -1,6 +1,7 @@
 import { useToastStore, type ToastStatus } from '@/stores/useToastStore'
 import Button from './Button'
 import { BetterTypography } from '../common/BetterTypography'
+import { createPortal } from 'react-dom'
 
 export default function Toaster() {
     const toasts = useToastStore(s => s.toasts)
@@ -37,7 +38,7 @@ export default function Toaster() {
         }
     }
 
-    return (
+    return createPortal((
         // ✅ 1. Added 'isolate' to contain repaints and prevent whole-app flashing
         <div className="fixed inset-0 isolate overflow-x-clip mx-auto z-9999 flex flex-col gap-2 pointer-events-none px-5 py-4 items-end">
             {toasts.map((t) => (
@@ -77,5 +78,7 @@ export default function Toaster() {
                 </div>
             ))}
         </div>
+    ),
+        document.body // Forces it to render at the root level
     )
 }
