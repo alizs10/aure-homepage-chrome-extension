@@ -12,13 +12,15 @@ export function EnterName({
     onNext: () => void;
 }) {
     return (
-        <TextInput
-            {...register("name")}
-            placeholder="Your name..."
-            className="text-sm md:text-base lg:text-lg py-2.5"
-            error={errors.name?.message}
-            onKeyDown={e => e.code === 'Enter' ? onNext() : undefined}
-            autoFocus
-        />
+        <div className="w-full h-fit">
+            <TextInput
+                {...register("name")}
+                placeholder="Your name..."
+                className="text-sm md:text-base lg:text-lg py-2.5"
+                error={errors.name?.message}
+                onKeyDown={e => e.code === 'Enter' ? onNext() : undefined}
+                autoFocus
+            />
+        </div>
     );
 }
