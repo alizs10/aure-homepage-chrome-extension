@@ -1,0 +1,167 @@
+
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aure-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and publish extension
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Validate release version
+        id: version
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF_TYPE" != "tag" ]]; then
+            echo "Manual runs must use a version tag."
+            exit 1
+          fi
+
+          VERSION="${GITHUB_REF_NAME#v}"
+
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version tag: $GITHUB_REF_NAME"
+            exit 1
+          fi
+
+          CHANGELOG="src/components/features/updates/changelog/${VERSION}.md"
+
+          if [[ ! -f "$CHANGELOG" ]]; then
+            echo "Missing changelog: $CHANGELOG"
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "changelog=$CHANGELOG" >> "$GITHUB_OUTPUT"
+
+      - name: Update manifest version
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          bun -e '
+            const fs = require("node:fs");
+            const path = "public/manifest.json";
+            const manifest = JSON.parse(fs.readFileSync(path, "utf8"));
+            manifest.version = process.env.VERSION;
+            fs.writeFileSync(path, JSON.stringify(manifest, null, 4) + "\n");
+          '
+
+      - name: Build extension
+        run: bun run build
+
+      - name: Verify build output
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          test -f dist/manifest.json
+          test -f dist/background.js
+          test -f dist/index.html
+
+          ACTUAL_VERSION="$(bun -e \
+            'console.log(JSON.parse(require("node:fs").readFileSync("dist/manifest.json", "utf8")).version)')"
+
+          test "$ACTUAL_VERSION" = "$VERSION"
+
+      - name: Package extension
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          cd dist
+          zip -r "../aure-homepage-extension-v${VERSION}.zip" .
+
+      - name: Prepare release notes
+        env:
+          CHANGELOG: ${{ steps.version.outputs.changelog }}
+        run: |
+          sed '1{/^---$/,/^---$/d;}' "$CHANGELOG" > release-notes.md
+
+      - name: Update version.json on default branch
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          git fetch origin "$DEFAULT_BRANCH"
+          git checkout -B "$DEFAULT_BRANCH" "origin/$DEFAULT_BRANCH"
+
+          node <<'NODE'
+          const fs = require("node:fs");
+
+          const version = process.env.VERSION;
+          const changelogPath =
+            `src/components/features/updates/changelog/${version}.md`;
+          const metadataPath = "version.json";
+
+          const metadata = JSON.parse(
+            fs.readFileSync(metadataPath, "utf8")
+          );
+          const changelog = fs.readFileSync(changelogPath, "utf8");
+
+          const notes = changelog
+            .replace(/^---\s*\n[\s\S]*?\n---\s*\n/, "")
+            .split("\n")
+            .filter((line) => /^\s*[-*]\s+/.test(line))
+            .map((line) =>
+              line
+                .replace(/^\s*[-*]\s+/, "")
+                .replace(/\*\*(.*?)\*\*/g, "$1")
+                .replace(/`([^`]+)`/g, "$1")
+                .trim()
+            )
+            .filter(Boolean);
+
+          metadata.latestVersion = version;
+          metadata.releaseDate = new Date().toISOString().slice(0, 10);
+          metadata.downloadUrl =
+            `https://github.com/${process.env.GITHUB_REPOSITORY}/releases/download/v${version}/aure-homepage-extension-v${version}.zip`;
+          metadata.releasePage =
+            `https://github.com/${process.env.GITHUB_REPOSITORY}/releases/tag/v${version}`;
+          metadata.notes = notes;
+
+          fs.writeFileSync(
+            metadataPath,
+            JSON.stringify(metadata, null, 4) + "\n"
+          );
+          NODE
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add version.json
+
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update release metadata for v${VERSION}"
+            git push origin "$DEFAULT_BRANCH"
+          fi
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+          CHANGELOG: ${{ steps.version.outputs.changelog }}
+        run: |
+          gh release create "v${VERSION}" \
+            "aure-homepage-extension-v${VERSION}.zip" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Aure Homepage v${VERSION}" \
+            --notes-file release-notes.md
