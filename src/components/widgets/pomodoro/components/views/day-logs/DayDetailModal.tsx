@@ -59,7 +59,10 @@ export default function DayDetailModal({ open, onClose, day, formatDuration }: D
 
             // Create a temporary link to download the image
             const link = document.createElement('a');
-            link.download = `focus-summary-${day.dateKey}.png`;
+            // ⬇️ Add current time to the filename (e.g., focus-summary-2026-10-10_14-30-05.png)
+            const timeString = format(new Date(), 'HH-mm-ss');
+            link.download = `focus-summary-${day.dateKey}_${timeString}.png`;
+
             link.href = dataUrl;
             link.click();
 
