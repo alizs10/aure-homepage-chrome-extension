@@ -18,6 +18,7 @@
         "Updated the extension icon with a fresh new logo design.",
         "Replaced the default toast notification system with a custom, design-system-aligned toaster that integrates seamlessly with the Liquid Glass UI.",
         "Revamped Data Backup & Restore with improved performance and a clean new full-screen UI.",
-        "Exported backup files now include the local date and time in the filename for easier version tracking."
+        "Exported backup files now include the local date and time in the filename for easier version tracking.",
+        "Overhauled the Search Suggestions system for instant, zero-latency local results while streaming History and Google results in the background."
     ]
 }

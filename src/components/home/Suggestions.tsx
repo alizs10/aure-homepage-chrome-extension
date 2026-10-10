@@ -30,23 +30,23 @@ const BADGE_CONFIG: Record<Suggestion['source'], { variant: ComponentProps<typeo
 interface SuggestionsProps {
   searchValue: string;
   isCommandMode: boolean;
-  isNavigating?: boolean;
+  selectedIndex: number; // 🌟 Controlled by parent
+  onIndexChange: (index: number | ((prev: number) => number)) => void; // 🌟 Controlled by parent
   onSuggestionSelect?: (suggestion: Suggestion) => void;
-  onSearchUpdate?: (value: string) => void;
   onHighlight?: (suggestion: Suggestion | null) => void;
 }
 
 export default function Suggestions({
   searchValue,
   isCommandMode,
-  isNavigating = false,
+  selectedIndex,
+  onIndexChange,
   onSuggestionSelect,
-  onSearchUpdate,
   onHighlight
 }: SuggestionsProps) {
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [topSites, setTopSites] = useState<chrome.topSites.MostVisitedURL[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+  const [historySuggestions, setHistorySuggestions] = useState<Suggestion[]>([]);
+  const [googleSuggestions, setGoogleSuggestions] = useState<Suggestion[]>([]);
 
   const favorites = useFavoritesStore((state) => state.data);
   const folders = useFoldersStore((state) => state.data);
@@ -68,152 +68,131 @@ export default function Suggestions({
     getTopSites().then(setTopSites);
   }, []);
 
-  useEffect(() => {
-    if (isNavigating) return;
+  const query = searchValue.toLowerCase().trim();
+  const rawQuery = searchValue.trim();
 
-    const fetchSuggestions = async () => {
-      if (isCommandMode) {
-        const query = searchValue.slice(1).toLowerCase().trim();
+  const shouldFetchHistory = !isCommandMode && query.length > 0;
+  const shouldFetchGoogle = !isCommandMode && rawQuery.length > 0 && !isValidUrl(rawQuery);
 
-        if (!query) {
-          const formattedCommands: Suggestion[] = commands.map(cmd => ({
-            id: cmd.id, url: '#', label: cmd.label, description: cmd.description, source: "command" as const
-          }));
-          setSuggestions(formattedCommands);
-          setSelectedIndex(-1);
-          return;
-        }
+  if (!shouldFetchHistory && historySuggestions.length > 0) setHistorySuggestions([]);
+  if (!shouldFetchGoogle && googleSuggestions.length > 0) setGoogleSuggestions([]);
 
-        const commandSuggestions = commands.filter(cmd =>
-          cmd.keywords.some(keyword => keyword.includes(query)) ||
-          cmd.label.toLowerCase().includes(query)
-        );
-
-        setSuggestions(commandSuggestions.map(cmd => ({
+  const localSuggestions = useMemo(() => {
+    if (isCommandMode) {
+      const cmdQuery = searchValue.slice(1).toLowerCase().trim();
+      if (!cmdQuery) {
+        return commands.map(cmd => ({
           id: cmd.id, url: '#', label: cmd.label, description: cmd.description, source: "command" as const
-        })));
-        setSelectedIndex(-1);
-        return;
+        }));
       }
+      return commands
+        .filter(cmd =>
+          cmd.keywords.some(keyword => keyword.includes(cmdQuery)) ||
+          cmd.label.toLowerCase().includes(cmdQuery)
+        )
+        .map(cmd => ({
+          id: cmd.id, url: '#', label: cmd.label, description: cmd.description, source: "command" as const
+        }));
+    }
 
-      const query = searchValue.toLowerCase().trim();
-      const combinedSuggestions: Suggestion[] = [];
+    const combined: Suggestion[] = [];
 
-      if (isValidUrl(searchValue)) {
-        const cleanUrl = searchValue.startsWith('http') ? searchValue : `http://${searchValue}`;
-        combinedSuggestions.push({
-          id: 'direct',
-          url: cleanUrl,
-          label: `Go to ${searchValue}`,
-          description: 'Direct Navigation',
-          source: 'direct'
-        });
-      }
-
-      const filteredTopSites = topSites
-        .filter(site => site.title?.toLowerCase().includes(query) || site.url.toLowerCase().includes(query));
-
-      filteredTopSites.forEach((site, index) => {
-        combinedSuggestions.push({
-          id: `top-${index}`, url: site.url, label: site.title || site.url, source: "top-sites"
-        });
+    if (isValidUrl(searchValue)) {
+      const cleanUrl = searchValue.startsWith('http') ? searchValue : `http://${searchValue}`;
+      combined.push({
+        id: 'direct', url: cleanUrl, label: `Go to ${searchValue}`, description: 'Direct Navigation', source: 'direct'
       });
+    }
 
-      const filteredFavorites = favorites
-        .filter(fav => fav.title.toLowerCase().includes(query) || fav.url.toLowerCase().includes(query));
+    const limit = query.length === 0 ? 5 : 10;
 
-      filteredFavorites.forEach((fav) => {
-        combinedSuggestions.push({
-          id: `fav-${fav.id}`, url: fav.url, label: fav.title, description: fav.url, source: "favorite"
-        });
-      });
+    const filteredTopSites = topSites
+      .filter(site => site.title?.toLowerCase().includes(query) || site.url.toLowerCase().includes(query))
+      .slice(0, limit);
 
-      const filteredFolderSites = folderWebsites
-        .filter(site => site.title.toLowerCase().includes(query) || site.url.toLowerCase().includes(query));
+    filteredTopSites.forEach((site, index) => {
+      combined.push({ id: `top-${index}`, url: site.url, label: site.title || site.url, source: "top-sites" });
+    });
 
-      filteredFolderSites.forEach((site, index) => {
-        combinedSuggestions.push({
-          id: `folder-${index}`, url: site.url, label: site.title, description: `${site.folderTitle} Folder`, source: "folder"
-        });
-      });
+    const filteredFavorites = favorites
+      .filter(fav => fav.title.toLowerCase().includes(query) || fav.url.toLowerCase().includes(query))
+      .slice(0, limit);
 
-      if (query.length > 0) {
-        try {
-          // 🌟 Updated limit to 10
-          const historyItems = await chrome.history.search({ text: query, maxResults: 10 });
-          historyItems.forEach((item, index) => {
-            if (item.url) {
-              combinedSuggestions.push({
-                id: `history-${index}`, url: item.url, label: item.title || item.url, description: item.url, source: "history"
-              });
-            }
-          });
-        } catch (e) {
-          console.warn("History search failed", e);
+    filteredFavorites.forEach((fav) => {
+      combined.push({ id: `fav-${fav.id}`, url: fav.url, label: fav.title, description: fav.url, source: "favorite" });
+    });
+
+    const filteredFolderSites = folderWebsites
+      .filter(site => site.title.toLowerCase().includes(query) || site.url.toLowerCase().includes(query))
+      .slice(0, limit);
+
+    filteredFolderSites.forEach((site, index) => {
+      combined.push({ id: `folder-${index}`, url: site.url, label: site.title, description: `${site.folderTitle} Folder`, source: "folder" });
+    });
+
+    return combined;
+  }, [searchValue, isCommandMode, topSites, favorites, folderWebsites, query]);
+
+  useEffect(() => {
+    if (!shouldFetchHistory) return;
+    let isCancelled = false;
+    chrome.history.search({ text: query, maxResults: 10 }).then(historyItems => {
+      if (isCancelled) return;
+      const items: Suggestion[] = [];
+      historyItems.forEach((item, index) => {
+        if (item.url) {
+          items.push({ id: `history-${index}`, url: item.url, label: item.title || item.url, description: item.url, source: "history" });
         }
-      }
+      });
+      setHistorySuggestions(items);
+    }).catch(e => console.warn("History search failed", e));
+    return () => { isCancelled = true; };
+  }, [shouldFetchHistory, query]);
 
-      if (searchValue.trim().length > 0 && !isValidUrl(searchValue)) {
-        try {
-          const response = await fetch(
-            `https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(searchValue)}`
-          );
-          const data = await response.json();
-
-          if (Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
-            // 🌟 Updated limit to 10
-            data[1].slice(0, 10).forEach((suggestion: string, index: number) => {
-              combinedSuggestions.push({
-                id: `google-${index}`,
-                url: `https://www.google.com/search?q=${encodeURIComponent(suggestion)}`,
-                label: suggestion,
-                source: 'google'
-              });
-            });
-          }
-        } catch (error) {
-          console.error("Error fetching Google suggestions:", error);
+  useEffect(() => {
+    if (!shouldFetchGoogle) return;
+    const timer = setTimeout(async () => {
+      try {
+        const response = await fetch(`https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(rawQuery)}`);
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
+          const items: Suggestion[] = data[1].slice(0, 10).map((suggestion: string, index: number) => ({
+            id: `google-${index}`, url: `https://www.google.com/search?q=${encodeURIComponent(suggestion)}`, label: suggestion, source: 'google'
+          }));
+          setGoogleSuggestions(items);
         }
+      } catch (error) {
+        console.error("Error fetching Google suggestions:", error);
       }
-
-      setSuggestions(combinedSuggestions);
-      setSelectedIndex(-1);
-    };
-
-    const timer = setTimeout(() => {
-      fetchSuggestions();
-    }, 150);
-
+    }, 200);
     return () => clearTimeout(timer);
-  }, [searchValue, topSites, favorites, folderWebsites, isNavigating, isCommandMode]);
+  }, [shouldFetchGoogle, rawQuery]);
+
+  const suggestions = useMemo(() => {
+    return [...localSuggestions, ...historySuggestions, ...googleSuggestions];
+  }, [localSuggestions, historySuggestions, googleSuggestions]);
 
   useEffect(() => {
     if (selectedIndex >= 0) {
-      if (selectedIndex === 0) {
-        scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' });
-      } else if (itemRefs.current[selectedIndex]) {
-        itemRefs.current[selectedIndex]?.scrollIntoView({ block: 'nearest', behavior: 'instant' });
-      }
+      if (selectedIndex === 0) scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+      else if (itemRefs.current[selectedIndex]) itemRefs.current[selectedIndex]?.scrollIntoView({ block: 'nearest', behavior: 'instant' });
     }
   }, [selectedIndex]);
 
   const handleSuggestionClick = useCallback((suggestion: Suggestion) => {
-    if (onSuggestionSelect) {
-      onSuggestionSelect(suggestion);
-    }
+    if (onSuggestionSelect) onSuggestionSelect(suggestion);
   }, [onSuggestionSelect]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (suggestions.length === 0) return;
-
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setSelectedIndex(prev => prev < suggestions.length - 1 ? prev + 1 : prev);
+        onIndexChange(prev => prev < suggestions.length - 1 ? prev + 1 : prev);
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setSelectedIndex(prev => prev > 0 ? prev - 1 : prev);
+        onIndexChange(prev => prev > 0 ? prev - 1 : prev);
         break;
       case 'Enter':
         if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
@@ -223,13 +202,12 @@ export default function Suggestions({
         break;
       case 'Escape':
         e.preventDefault();
-        setSelectedIndex(-1);
+        onIndexChange(-1);
         break;
       default:
-        setSelectedIndex(-1);
         break;
     }
-  }, [suggestions, selectedIndex, handleSuggestionClick]);
+  }, [suggestions, selectedIndex, handleSuggestionClick, onIndexChange]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -239,22 +217,34 @@ export default function Suggestions({
   useEffect(() => {
     if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
       onHighlight?.(suggestions[selectedIndex]);
-      if (onSearchUpdate && suggestions[selectedIndex].source !== 'direct') {
-        onSearchUpdate(suggestions[selectedIndex].label);
-      }
     } else {
       onHighlight?.(null);
     }
-  }, [selectedIndex, suggestions, onSearchUpdate, onHighlight]);
+  }, [selectedIndex, suggestions, onHighlight]);
 
-  if (suggestions.length === 0) return null;
+  if (suggestions.length === 0) {
+    return (
+      <div className='absolute top-full left-0 right-0 px-4 md:px-8 lg:px-10 mt-4 z-50'>
+        <div className="rounded-3xl liquid-glass bg-background/80! overflow-clip">
+          <div className="p-4 app-blur bg-background/30 z-10">
+            <BetterTypography variant="md" weight="medium">
+              {isCommandMode ? "Commands" : "Suggestions"}
+            </BetterTypography>
+          </div>
+          <div className="p-6 flex-center">
+            <BetterTypography variant="sm" className="text-muted-foreground">
+              {searchValue.trim().length > 0 ? "No matches found" : "Start typing to see suggestions"}
+            </BetterTypography>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div
-      className='absolute top-full left-0 right-0 px-4 md:px-8 lg:px-10 mt-4 z-50'
-    >
+    <div className='absolute top-full left-0 right-0 px-4 md:px-8 lg:px-10 mt-4 z-50'>
       <div className="rounded-3xl liquid-glass bg-background/80! overflow-clip">
-        <div ref={scrollContainerRef} className="flex flex-col max-h-100 overflow-y-scroll rounded-3xl scrollbar-none">
+        <div ref={scrollContainerRef} className="flex flex-col max-h-[calc(50vh-3rem)] overflow-y-scroll rounded-3xl scrollbar-none">
           <div className="p-4 app-blur bg-background/30 z-10">
             <BetterTypography variant="md" weight="medium">
               {isCommandMode ? "Commands" : "Suggestions"}
@@ -263,38 +253,23 @@ export default function Suggestions({
 
           <ul className='flex flex-col overflow-clip'>
             {suggestions.map((s, index) => (
-              <li
-                key={s.id}
-                ref={(el) => { itemRefs.current[index] = el; }}
-              >
+              <li key={s.id} ref={(el) => { itemRefs.current[index] = el; }}>
                 <a
                   href={s.url}
                   target={s.source === 'command' ? '_self' : "_blank"}
                   rel="noopener noreferrer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSuggestionClick(s);
-                  }}
+                  onClick={(e) => { e.preventDefault(); handleSuggestionClick(s); }}
                   className={`flex justify-between items-center py-2.5 px-5 transition-colors duration-200 ${selectedIndex === index ? 'bg-muted' : 'bg-transparent hover:bg-muted'}`}
                 >
                   <div className="flex flex-col gap-y-0.5 min-w-0 flex-1 pr-4">
                     <BetterTypography variant="sm" weight="medium" className="line-clamp-1">
                       {s.label}
                     </BetterTypography>
-
-                    <BetterTypography
-                      variant="xs"
-                      className="text-muted-foreground line-clamp-1"
-                    >
+                    <BetterTypography variant="xs" className="text-muted-foreground line-clamp-1">
                       {sliceText(s.description || s.url, 60)}
                     </BetterTypography>
                   </div>
-
-                  <Badge
-                    variant={BADGE_CONFIG[s.source].variant}
-                    size="sm"
-                    className="shrink-0"
-                  >
+                  <Badge variant={BADGE_CONFIG[s.source].variant} size="sm" className="shrink-0">
                     {BADGE_CONFIG[s.source].label}
                   </Badge>
                 </a>
