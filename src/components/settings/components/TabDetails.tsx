@@ -7,17 +7,14 @@ import AboutTabDetails from "./tabs-details/about-tab-details/AboutTabDetails";
 import PreferencesTabDetails from "./tabs-details/preferences-tab-details/PreferencesTabDetails";
 import SitesAndShortcutsTabDetails from "./tabs-details/sites-and-folders/SitesAndFoldersTabDetails";
 import UserInfoTabDetails from "./tabs-details/user-info-tab-details/UserInfoTabDetails";
-import WidgetsCenterTabDetails from "./tabs-details/widgets-center/WidgetsCenterTabDetails";
 import CommandsTabDetails from "./tabs-details/commands-tab-details/CommandsTabDetails";
 
 export default function TabDetails() {
     const [searchParams] = useSearchParams();
 
-    // 🌟 Read from URL, default to 'preferences'
     const activeTab = searchParams.get("tab") || "preferences";
 
     const tab = useMemo(() => {
-        // Fallback to the first tab (Preferences) if an invalid tab ID is in the URL
         return TABS.find(t => t.id === activeTab) || TABS[0];
     }, [activeTab]);
 
@@ -51,9 +48,6 @@ export default function TabDetails() {
             )}
             {activeTab === 'sites-and-folders' && (
                 <SitesAndShortcutsTabDetails />
-            )}
-            {activeTab === 'widgets-center' && (
-                <WidgetsCenterTabDetails />
             )}
             {activeTab === 'commands' && (
                 <CommandsTabDetails />

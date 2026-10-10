@@ -4,7 +4,7 @@ import Toggle from "@/components/ui/Toggle";
 import { useSettingsStore } from "@/stores";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from '@/stores/useToastStore';
 import FavoritesContent from "./favorites/FavoritesContent";
 import FoldersContent from "./folders/FoldersContent";
 

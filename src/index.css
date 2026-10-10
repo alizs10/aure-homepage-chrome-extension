@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "./styles/liquid-glass.css";
-@import "./styles/sonner.css";
+@import "./styles/toaster.css";
 @import "./styles/changelog.css";
 
 /* Define Ubuntu Font Family */
@@ -82,11 +82,13 @@
     --color-input: var(--input);
     --color-ring: var(--ring);
 
+    
     --color-cherry: var(--accent-cherry);
     --color-tangerine: var(--accent-tangerine);
     --color-lime-accent: var(--accent-lime);
     --color-ocean: var(--accent-ocean);
     --color-orchid: var(--accent-orchid);
+    --color-golden: var(--accent-golden);
 
     --font-sans: "Ubuntu", "IRANSans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     --animate-skeleton-shimmer: skeleton-shimmer 1.5s ease-in-out infinite;
@@ -120,7 +122,8 @@
     --accent-orchid-light: 315 83% 57%;
     --accent-orchid-dark: 315 83% 65%;
 
-    
+    --accent-golden-light: 39 81% 40%;
+    --accent-golden-dark: 43 100% 65%;
 }
 
 /* Apply accents dynamically based on data-accent attribute */
@@ -148,6 +151,10 @@
     --app-primary: hsl(var(--accent-orchid-light));
     --app-primary-dark: hsl(var(--accent-orchid-dark));
 }
+[data-accent="golden"] {
+    --app-primary: hsl(var(--accent-golden-light));
+    --app-primary-dark: hsl(var(--accent-golden-dark));
+}
 
 :root {
     --background: hsl(0 0% 100%);
@@ -166,8 +173,8 @@
     --accent-foreground: hsl(240 5.9% 10%);
     --destructive: hsl(346.8 77.2% 49.8%);
     --destructive-foreground: hsl(0 0% 100%);
-    --success: hsl(85 85% 35%);
-    --success-foreground: hsl(0 0% 100%);
+--success: hsl(142 72% 25%);
+--success-foreground: hsl(0 0% 100%);
     --warning: hsl(37 92% 44%);
     --warning-foreground: hsl(0 0% 100%);
     --border: hsl(240, 0.7%, 82%);
@@ -177,11 +184,14 @@
     --sidebar-foreground: hsl(240 10% 3.9%);
     --liquid-glass-blur: 2px;
 
+     /* 🌟 ADD THIS LINE: */
+    --accent-default: hsl(var(--accent-default-light));
       --accent-cherry: hsl(var(--accent-cherry-light));
     --accent-tangerine: hsl(var(--accent-tangerine-light));
     --accent-lime: hsl(var(--accent-lime-light));
     --accent-ocean: hsl(var(--accent-ocean-light));
     --accent-orchid: hsl(var(--accent-orchid-light));
+    --accent-golden: hsl(var(--accent-golden-light));
 }
 
 .dark {
@@ -211,11 +221,14 @@
     --sidebar-background: hsl(240 5.9% 10%);
     --sidebar-foreground: hsl(0 0% 98%);
 
+       /* 🌟 ADD THIS LINE: */
+    --accent-default: hsl(var(--accent-default-dark));
       --accent-cherry: hsl(var(--accent-cherry-dark));
     --accent-tangerine: hsl(var(--accent-tangerine-dark));
     --accent-lime: hsl(var(--accent-lime-dark));
     --accent-ocean: hsl(var(--accent-ocean-dark));
     --accent-orchid: hsl(var(--accent-orchid-dark));
+    --accent-golden: hsl(var(--accent-golden-dark));
 }
 
 html,
@@ -355,4 +368,3 @@ button {
 .no-transitions * {
     transition: none !important;
 }
-

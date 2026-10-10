@@ -1,4 +1,4 @@
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 import AppLoader from "./AppLoader";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
@@ -24,6 +24,9 @@ export default function App() {
               <Route path="/settings" element={<Settings />} />
               {/* <Route path="/ui" element={<UiShowcase />} /> */}
             </Route>
+
+            {/* ✅ Catch-all route: Redirects any unmatched paths (404) to the Home page */}
+            <Route path="*" element={<Navigate to="/" replace />} />
 
           </Route>
         </Routes>

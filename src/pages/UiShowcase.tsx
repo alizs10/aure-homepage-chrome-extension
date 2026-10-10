@@ -10,8 +10,9 @@ import ColorPicker from '@/components/ui/ColorPicker';
 import Popup from '@/components/ui/Popup';
 import ConfirmDialog from '@/components/ui/Dialog';
 import Skeleton from '@/components/ui/Skeleton';
-import Badge from '@/components/ui/Badge'; // 🌟 Added
+import Badge from '@/components/ui/Badge';
 import { HomeIcon, SettingsIcon, SearchIcon, TrashIcon } from 'lucide-react';
+import { toast } from '@/stores/useToastStore'; // 🌟 Added toast import
 
 export default function UiShowcase() {
     // Local states for interactive components
@@ -81,6 +82,70 @@ export default function UiShowcase() {
                 </div>
             </ShowcaseSection>
 
+            {/* 🌟 TOASTS */}
+            <ShowcaseSection title="Toasts">
+                <div className="flex flex-col gap-6">
+                    <BetterTypography variant="sm" weight="medium" className="text-muted-foreground">
+                        Test all toast variants, text lengths, state updates, and dismissal actions.
+                    </BetterTypography>
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <Button variant="success" onClick={() => toast.success("Changes saved!")}>Success (Short)</Button>
+                        <Button variant="destructive" onClick={() => toast.error("Connection lost.")}>Error (Short)</Button>
+                        <Button variant="primary" onClick={() => toast.info("A new version is available. Refresh the page to update.")}>Info (Medium)</Button>
+                        <Button variant="warning" onClick={() => toast.warning("Your local storage is almost full. Consider deleting some old notes or widgets to free up space and keep the app running smoothly.")}>Warning (Long)</Button>
+                    </div>
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                const id = "showcase-loading-success";
+                                toast.loading("Importing data...", { id });
+                                setTimeout(() => toast.success("Data imported successfully!", { id }), 2500);
+                            }}
+                        >
+                            Loading → Success
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                const id = "showcase-loading-error";
+                                toast.loading("Uploading backup...", { id });
+                                setTimeout(() => toast.error("Upload failed. Please try again.", { id }), 2500);
+                            }}
+                        >
+                            Loading → Error
+                        </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                const mockPromise = new Promise<string>((resolve, reject) => {
+                                    setTimeout(() => {
+                                        if (Math.random() > 0.5) resolve("Data synced!");
+                                        else reject(new Error("Server timeout"));
+                                    }, 2000);
+                                });
+
+                                toast.promise(mockPromise, {
+                                    loading: 'Syncing data...',
+                                    success: (data) => data,
+                                    error: (err) => err instanceof Error ? err.message : 'Sync failed',
+                                });
+                            }}
+                        >
+                            Promise (Random)
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            onClick={() => toast("Custom default toast with a specific icon.", <HomeIcon className="size-5 text-primary" />)}
+                        >
+                            Default (Custom Icon)
+                        </Button>
+                    </div>
+                </div>
+            </ShowcaseSection>
+
             {/* 🌟 BADGES */}
             <ShowcaseSection title="Badges">
                 <div className="flex flex-col gap-6">
@@ -90,7 +155,7 @@ export default function UiShowcase() {
                         <Badge variant="success" withDot>Success</Badge>
                         <Badge variant="warning" withDot>Warning</Badge>
                         <Badge variant="destructive" withDot>Destructive</Badge>
-                        <Badge variant="outline" withDot>Outline</Badge>
+                        <Badge variant="ghost" withDot>Outline</Badge>
                     </div>
                     <div className="flex flex-wrap gap-3 items-center">
                         <Badge size="sm" variant="default" withDot>Small</Badge>

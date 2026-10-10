@@ -10,6 +10,8 @@ import { blurOptions } from "@/types";
 import { useFolders } from "./components/settings/components/tabs-details/sites-and-folders/components/folders/hooks/useFolders";
 import { usePomodoro } from "./components/widgets/pomodoro/hooks/usePomodoro";
 import { runMigrations } from "./lib/migrations";
+import { useCounters } from "./components/widgets/counters/hooks/useCounters";
+import { useProgresses } from "./components/widgets/progresses/hooks/useProgresses";
 
 type AppLoaderProps = {
     children: React.ReactNode;
@@ -28,8 +30,10 @@ export default function AppLoader({ children }: AppLoaderProps) {
     const { initialize: initFavorites, loading: isFavoritesLoading } = useFavorites();
     const { initialize: initFolders, loading: isFoldersLoading } = useFolders();
     const { initialize: initPomodoro, loading: isPomodoroLoading } = usePomodoro();
+    const { initialize: initCounters, loading: isCountersLoading } = useCounters();
+    const { initialize: initProgresses, loading: isProgressesLoading } = useProgresses();
 
-    const isLoading = loading || isFavoritesLoading || isFoldersLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading || isPomodoroLoading;
+    const isLoading = loading || isFavoritesLoading || isFoldersLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading || isPomodoroLoading || isCountersLoading || isProgressesLoading;
     const location = useLocation();
 
     useEffect(() => {
@@ -41,26 +45,19 @@ export default function AppLoader({ children }: AppLoaderProps) {
         initFavorites();
         initFolders();
         initPomodoro();
-    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders, initPomodoro]);
-
-    // 🌟 Derived state: If there are no settings (new user), there is nothing to migrate.
-    // This completely eliminates the need for a synchronous setState!
-    const isReady = migrationsDone || !settings;
+        initCounters();
+        initProgresses();
+    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders, initPomodoro, initCounters, initProgresses]);
 
     useEffect(() => {
-        // Only run migrations if settings exist, we are not loading, and migrations haven't run yet
-        if (loading || !settings || migrationsDone) return;
+        // If still loading, already done, or no settings (fresh user), do nothing synchronously
+        if (loading || migrationsDone || !settings) return;
 
-        let cancelled = false;
-
-        // 🌟 Calling setState inside an async callback (.then) is the correct React pattern
+        // Existing user - run migrations asynchronously. 
+        // Calling setState inside .then() is allowed by the React Compiler.
         runMigrations().then(() => {
-            if (!cancelled) {
-                setMigrationsDone(true);
-            }
+            setMigrationsDone(true);
         });
-
-        return () => { cancelled = true; };
     }, [loading, settings, migrationsDone]);
 
     // 🌟 Apply global CSS variables as soon as settings are loaded
@@ -77,13 +74,25 @@ export default function AppLoader({ children }: AppLoaderProps) {
         }
     }, [settings]);
 
-    if (isLoading || !isReady) {
+    // 1. Block rendering while initial data is loading
+    if (isLoading) {
         return null;
     }
 
-    if (!settings && location.pathname !== "/wizard") {
-        return <Navigate to="/wizard" replace />;
+    // 2. Handle fresh users (no settings yet)
+    if (!settings) {
+        if (location.pathname !== "/wizard") {
+            return <Navigate to="/wizard" replace />;
+        }
+        // Allow the Wizard to render even though migrationsDone is false
+        return <>{children}</>;
     }
 
+    // 3. Block rendering for existing users until migrations complete
+    if (!migrationsDone) {
+        return null;
+    }
+
+    // 4. Render the app normally
     return <>{children}</>;
 }

@@ -23,7 +23,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
                         className={cn(
                             "liquid-glass flex-1 w-full rounded-3xl px-4 py-2 md:py-2.5",
                             "text-xs md:text-sm lg:text-base text-foreground",
-                            "placeholder:text-foreground",
+                            "placeholder:text-muted-foreground",
                             "focus:outline-none focus:ring-0",
                             "data-invalid:border-destructive data-invalid:text-destructive",
                             className,

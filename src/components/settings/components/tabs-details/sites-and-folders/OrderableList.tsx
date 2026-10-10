@@ -2,7 +2,7 @@ import { BetterTypography } from '@/components/common/BetterTypography'
 import Button from '@/components/ui/Button'
 import { motion } from 'framer-motion'
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from 'lucide-react'
-import { toast } from 'sonner'
+import { toast } from '@/stores/useToastStore'
 import type { ReactNode } from 'react'
 
 export interface OrderableItem {

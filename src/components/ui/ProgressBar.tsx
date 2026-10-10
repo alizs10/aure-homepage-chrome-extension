@@ -1,15 +1,18 @@
 import { cn } from "@/lib/util";
 import { BetterTypography } from "../common/BetterTypography";
+import type { CSSProperties } from "react";
 
 interface ProgressBarProps {
     value: number; // 0 to 100
     fillClassName?: string;
+    fillStyle?: CSSProperties; // 🌟 Added to support dynamic inline colors safely
     showThumb?: boolean;
 }
 
 export default function ProgressBar({
     value,
     fillClassName = "bg-primary/40",
+    fillStyle,
     showThumb = true,
 }: ProgressBarProps) {
     const percent = Math.max(0, Math.min(100, value));
@@ -24,7 +27,7 @@ export default function ProgressBar({
                         "absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ease-linear",
                         fillClassName
                     )}
-                    style={{ width: `${percent}%` }}
+                    style={{ width: `${percent}%`, ...fillStyle }}
                 />
             </div>
 
@@ -36,7 +39,7 @@ export default function ProgressBar({
                         left: `clamp(22px, ${percent}%, calc(100% - 22px))`,
                     }}
                 >
-                    <div className="h-8 w-11 rounded-full liquid-glass flex-center shadow-lg -translate-x-1/2">
+                    <div className="h-8 w-11 rounded-full liquid-glass bg-background/40 flex-center shadow-lg -translate-x-1/2">
                         <BetterTypography
                             variant="12"
                             weight="medium"

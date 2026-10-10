@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { toast } from 'sonner'
+import { toast } from '@/stores/useToastStore'
 
 import { BetterTypography } from '@/components/common/BetterTypography'
 import Button from '@/components/ui/Button'

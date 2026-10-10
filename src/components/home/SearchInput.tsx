@@ -1,5 +1,5 @@
 import { SearchIcon, TerminalIcon } from 'lucide-react';
-import { useState, type ChangeEvent } from 'react';
+import { useState, useRef, useEffect, type ChangeEvent } from 'react';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
 import { getDestination } from './helpers/search';
@@ -11,16 +11,27 @@ import useWidth from '@/hooks/useWidth';
 
 export default function SearchInput() {
     const [searchValue, setSearchValue] = useState('');
+    const [inputDisplayValue, setInputDisplayValue] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [isNavigating, setIsNavigating] = useState(false);
-    const [highlightedSuggestion, setHighlightedSuggestion] = useState<Suggestion | null>(null); // 🌟 Track keyboard selection
+    const [highlightedSuggestion, setHighlightedSuggestion] = useState<Suggestion | null>(null);
+
+    // 🌟 FIX: Moved selectedIndex up to be the single source of truth
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
     const { width } = useWidth();
+
+    const isInitialMount = useRef(true);
+    useEffect(() => {
+        isInitialMount.current = false;
+    }, []);
 
     const isCommandMode = searchValue.startsWith('/');
 
     const wrapperRef = useClickOutside(() => {
         setShowSuggestions(false);
+        setInputDisplayValue(searchValue);
+        setHighlightedSuggestion(null);
+        setSelectedIndex(-1);
     });
 
     const buttonSpace =
@@ -39,56 +50,49 @@ export default function SearchInput() {
             if (command) {
                 const query = searchValue.slice(1).trim();
                 const firstWord = query.split(' ')[0].toLowerCase();
-
-                const isKeywordMatch =
-                    command.keywords.includes(firstWord);
-
-                const trigger = isKeywordMatch
-                    ? firstWord
-                    : command.label.slice(1);
-
+                const isKeywordMatch = command.keywords.includes(firstWord);
+                const trigger = isKeywordMatch ? firstWord : command.label.slice(1);
                 const args = query.slice(trigger.length).trim();
 
                 command.handler(args);
-
                 setSearchValue('');
+                setInputDisplayValue('');
                 setShowSuggestions(false);
+                setSelectedIndex(-1);
             }
-
             return;
         }
 
-        if (
-            suggestion.url &&
-            suggestion.url !== '#' &&
-            suggestion.url !== 'undefined'
-        ) {
+        if (suggestion.url && suggestion.url !== '#' && suggestion.url !== 'undefined') {
             window.location.href = suggestion.url;
         } else {
-            console.warn(
-                'Attempted to navigate to invalid URL:',
-                suggestion.url,
-            );
+            console.warn('Attempted to navigate to invalid URL:', suggestion.url);
         }
     }
 
-    function handleSearchUpdate(value: string) {
-        setSearchValue(value);
-        setIsNavigating(true);
+    function handleHighlight(suggestion: Suggestion | null) {
+        setHighlightedSuggestion(suggestion);
+        if (suggestion && suggestion.source !== 'direct') {
+            setInputDisplayValue(suggestion.label);
+        } else {
+            setInputDisplayValue(searchValue);
+        }
     }
 
     function onChange(e: ChangeEvent<HTMLInputElement>) {
         const newValue = e.target.value;
 
         setSearchValue(newValue);
-        setIsNavigating(false);
-        setShowSuggestions(newValue.length > 0);
-        setHighlightedSuggestion(null); // 🌟 Clear highlight when user types
+        setInputDisplayValue(newValue);
+        setShowSuggestions(true);
+        setHighlightedSuggestion(null);
+
+        // 🌟 FIX: Instantly clear the keyboard selection when the user manually types/deletes.
+        // This prevents Suggestions from overwriting the input with the old highlighted item.
+        setSelectedIndex(-1);
     }
 
     function handleSearch() {
-        // 🌟 FIX: If a website suggestion is highlighted via keyboard, navigate to its URL directly
-        // This prevents searching Google for the label (e.g. "GitHub") instead of going to the URL
         if (
             highlightedSuggestion &&
             highlightedSuggestion.source !== 'command' &&
@@ -98,34 +102,29 @@ export default function SearchInput() {
             if (dest) {
                 window.location.href = dest;
                 setSearchValue('');
+                setInputDisplayValue('');
                 setShowSuggestions(false);
-                setIsNavigating(false);
                 setHighlightedSuggestion(null);
+                setSelectedIndex(-1);
                 return;
             }
         }
 
-        // If a command is highlighted, execute it
         if (highlightedSuggestion?.source === 'command') {
             handleSuggestionSelect(highlightedSuggestion);
             setHighlightedSuggestion(null);
+            setSelectedIndex(-1);
             return;
         }
 
-        // ---------------------------------------------------------
-        // Command mode
-        // ---------------------------------------------------------
-
         if (isCommandMode) {
             const query = searchValue.slice(1).trim();
-
             if (!query) {
                 setShowSuggestions(false);
                 return;
             }
 
             const firstWord = query.split(' ')[0].toLowerCase();
-
             const matchedCommand = commands.find(
                 (command) =>
                     command.label === `/${firstWord}` ||
@@ -134,35 +133,27 @@ export default function SearchInput() {
 
             if (matchedCommand) {
                 const args = query.slice(firstWord.length).trim();
-
                 matchedCommand.handler(args);
-
                 setSearchValue('');
+                setInputDisplayValue('');
                 setShowSuggestions(false);
-
+                setSelectedIndex(-1);
                 return;
             }
 
             setShowSuggestions(false);
-
+            setSelectedIndex(-1);
             return;
         }
-
-        // ---------------------------------------------------------
-        // Normal web search
-        // ---------------------------------------------------------
 
         const url = getDestination(searchValue);
-
-        if (!url) {
-            return;
-        }
+        if (!url) return;
 
         window.location.href = url;
-
         setSearchValue('');
+        setInputDisplayValue('');
         setShowSuggestions(false);
-        setIsNavigating(false);
+        setSelectedIndex(-1);
     }
 
     return (
@@ -171,47 +162,33 @@ export default function SearchInput() {
                 <motion.div
                     initial={false}
                     animate={{
-                        width: searchValue
-                            ? `calc(100% - ${buttonSpace})`
-                            : '100%',
+                        width: searchValue ? `calc(100% - ${buttonSpace})` : '100%',
                     }}
-                    transition={{
-                        type: 'spring',
-                        stiffness: 350,
-                        damping: 30,
-                    }}
+                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                     className="z-30 shrink-0"
                 >
                     <TextInput
                         className={`h-full w-full text-sm sm:px-6 sm:text-lg md:py-2.5 md:text-xl lg:px-10 lg:py-4 lg:text-2xl`}
-                        placeholder={
-                            isCommandMode
-                                ? 'Type a command...'
-                                : 'Search through web...'
-                        }
-                        value={searchValue}
+                        placeholder={isCommandMode ? 'Type a command...' : 'Search through web...'}
+                        value={inputDisplayValue}
                         onChange={onChange}
                         onFocus={() => {
-                            if (searchValue.length > 0) {
+                            if (!isInitialMount.current) {
                                 setShowSuggestions(true);
                             }
                         }}
+                        onClick={() => setShowSuggestions(true)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 e.preventDefault();
                                 handleSearch();
                                 return;
                             }
-
                             if (e.key === 'Escape') {
                                 setShowSuggestions(false);
-                            }
-
-                            if (
-                                e.key === 'Backspace' ||
-                                e.key === 'Delete'
-                            ) {
-                                setIsNavigating(false);
+                                setInputDisplayValue(searchValue);
+                                setHighlightedSuggestion(null);
+                                setSelectedIndex(-1);
                             }
                         }}
                         autoFocus
@@ -219,12 +196,7 @@ export default function SearchInput() {
                 </motion.div>
 
                 <div className="z-30 shrink-0">
-                    <Button
-                        role="div"
-                        onClick={handleSearch}
-                        size="icon"
-                        className="ml-2 h-full"
-                    >
+                    <Button role="div" onClick={handleSearch} size="icon" className="ml-2 h-full">
                         {isCommandMode ? (
                             <TerminalIcon className="size-5 md:size-6 lg:size-7" />
                         ) : (
@@ -238,10 +210,10 @@ export default function SearchInput() {
                 <Suggestions
                     searchValue={searchValue}
                     isCommandMode={isCommandMode}
-                    isNavigating={isNavigating}
+                    selectedIndex={selectedIndex}
+                    onIndexChange={setSelectedIndex}
                     onSuggestionSelect={handleSuggestionSelect}
-                    onSearchUpdate={handleSearchUpdate}
-                    onHighlight={setHighlightedSuggestion} // 🌟 Pass state setter
+                    onHighlight={handleHighlight}
                 />
             )}
         </div>

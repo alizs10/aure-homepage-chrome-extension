@@ -1,0 +1,43 @@
+@keyframes toast-slide-in {
+    from {
+        transform: translateX(120%) scale(0.8);
+    }
+    to {
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes toast-slide-out {
+    from {
+        transform: translateX(0) scale(1);
+    }
+    to {
+        transform: translateX(120%) scale(0.8);
+    }
+}
+
+@keyframes toast-push-back {
+    0% {
+        transform: translateX(0) translateY(0) scale(1);
+    }
+    40% {
+        transform: translateX(-14px) translateY(0) scale(0.95);
+    }
+    100% {
+        transform: translateX(18px) translateY(0) scale(0.8);
+    }
+}
+
+@keyframes toast-pull-front {
+    0% {
+        transform: translateX(18px) translateY(0) scale(0.8);
+    }
+    60% {
+        transform: translateX(-4px) translateY(-2px) scale(1.02);
+    }
+    100% {
+        transform: translateX(0) translateY(0) scale(1);
+    }
+}
+
+/* ✅ Removed toast-update keyframes to prevent repaint flashes */

@@ -7,7 +7,7 @@ import { wizardSchema, type WizardFormValues } from "@/components/wizard/validat
 import { zodResolver } from "@hookform/resolvers/zod";
 import { WizardIntro } from "@/components/wizard/components/WizardIntro";
 import { WizardContent } from "@/components/wizard/WizardContent";
-import { toast } from "sonner";
+import { toast } from '@/stores/useToastStore';
 
 export default function Wizard() {
     const save = useSettingsStore((s) => s.save);
@@ -60,23 +60,26 @@ export default function Wizard() {
     const navigate = useNavigate();
 
     const onSubmit = async (data: WizardFormValues) => {
-        // 🌟 Save settings with schema_version: 0
-        // AppLoader will run migrations after navigation
         const settingsToSave: Settings = {
-            schema_version: 0,
+            schema_version: 3, // ✅ Fixed: match current migration version
             ...data,
             blur: 'xs',
-            widgets: {
-                "mood-tracker": true,
-                "calendar": true,
-                "notes-and-checklists": true,
-                "pet-house": true,
-                "pomodoro": true,
-            },
             accent: "default",
             show_top_sites: true,
             show_favorites: true,
             show_folders: true,
+            widget_layout: { // ✅ Added: same default layout as migration
+                positions: [
+                    { widgetId: "notes-and-checklists", page: 1, column: 0, row: 0, size: 2 },
+                    { widgetId: "mood-tracker", page: 1, column: 1, row: 0, size: 2 },
+                    { widgetId: "counters", page: 1, column: 1, row: 1, size: 1 },
+                    { widgetId: "pomodoro", page: 1, column: 2, row: 0, size: 2 },
+                    { widgetId: "calendar", page: 2, column: 0, row: 0, size: 2 },
+                    { widgetId: "pet-house", page: 2, column: 1, row: 0, size: 1 },
+                    { widgetId: "progresses", page: 2, column: 2, row: 0, size: 2 },
+                ],
+                totalPages: 3,
+            },
         };
 
         await save(settingsToSave);

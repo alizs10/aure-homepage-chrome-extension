@@ -17,4 +17,13 @@ export const NotesRepository = {
     remove(id: number) {
         return db.notes.delete(id);
     },
+
+    // 🌟 NEW: Bulk operations for cleanup
+    bulkDelete(ids: number[]) {
+        return db.notes.bulkDelete(ids);
+    },
+
+    bulkPut(notes: NoteAndChecklist[]) {
+        return db.notes.bulkPut(notes);
+    }
 };

@@ -41,7 +41,7 @@ export default function ConfirmDialog({
     onConfirm,
     onCancel,
     confirmVariant = "primary",
-    cancelVariant = "ghost",
+    cancelVariant = "ghost-destructive",
     confirmIcon,
     cancelIcon,
     confirmInput,

@@ -4,7 +4,7 @@ import { moodMessages, type MoodType } from '@/components/widgets/mood-tracker/t
 import { useNotesAndChecklistsStore } from '@/components/widgets/notes-and-checklists/store';
 import { usePomodoroStore } from '@/components/widgets/pomodoro/store';
 import { useSettingsStore } from '@/stores';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 
 export interface Command {
     id: string;

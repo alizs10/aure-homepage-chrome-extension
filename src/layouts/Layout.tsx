@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import Background from '../components/common/Background'
-import MyToaster from '@/components/common/MyToaster'
+import Toaster from '@/components/ui/Toaster'
 
 export default function Layout() {
     return (
@@ -11,7 +11,8 @@ export default function Layout() {
             {/* Outlet renders the active child route (AppLayout or Wizard) */}
             <Outlet />
 
-            <MyToaster />
+            {/* <MyToaster /> */}
+            <Toaster />
         </div>
     )
 }

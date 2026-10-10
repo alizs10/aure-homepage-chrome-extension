@@ -3,11 +3,30 @@ import { FoldersRepository } from "@/components/settings/components/tabs-details
 import { useFoldersStore } from "@/components/settings/components/tabs-details/sites-and-folders/components/folders/store";
 import type { Folder, Website } from "@/components/settings/components/tabs-details/sites-and-folders/types";
 import { DEFAULT_FOLDERS } from "@/components/wizard/constants/defaultFolders";
+import { NotesRepository } from "@/components/widgets/notes-and-checklists/db";
+import type { AdvancedNote, Block, NoteAndChecklist, Note, Checklist } from "@/components/widgets/notes-and-checklists/types";
+import type { Settings, WidgetLayout } from "@/types";
 
-// 🌟 Current schema version - increment when adding new migrations
-export const CURRENT_SCHEMA_VERSION = 2;
+type LegacyNote = Note & { status?: boolean };
 
-// 🌟 Migration definitions
+function isAdvancedNote(note: NoteAndChecklist | LegacyNote): note is AdvancedNote {
+    return 'type' in note && note.type === 'advanced';
+}
+
+function isLegacyChecklist(note: LegacyNote): note is Checklist {
+    return 'status' in note;
+}
+
+export const CURRENT_SCHEMA_VERSION = 3;
+
+// Type for settings during migration (may have old properties)
+type LegacySettings = Settings & {
+    widget_layout?: WidgetLayout;
+    widgets?: Record<string, boolean>;
+    layout_mode?: string;
+    default_page?: number;
+};
+
 const migrations: Record<number, () => Promise<void>> = {
     // Version 1: Add default folders feature
     1: async () => {
@@ -31,7 +50,6 @@ const migrations: Record<number, () => Promise<void>> = {
             }
         }
 
-        // Update settings to include new fields
         const { settings, update } = useSettingsStore.getState();
         if (settings) {
             await update({
@@ -40,45 +58,103 @@ const migrations: Record<number, () => Promise<void>> = {
             });
         }
 
-        // Refresh the folders store
         await useFoldersStore.getState().initialize();
     },
 
-    // 🌟 Version 2: Ensure Pomodoro widget is enabled for all existing users
+    // Version 2: Migrate notes to support advanced block-based format
     2: async () => {
-        const { settings, update } = useSettingsStore.getState();
-        if (settings) {
-            // Fallback in case the widgets object is somehow missing
-            const currentWidgets = settings.widgets || {
-                "mood-tracker": true,
-                "calendar": true,
-                "notes-and-checklists": true,
-                "pet-house": true,
-                "pomodoro": true,
+        const notes = await NotesRepository.getAll();
+
+        for (const note of notes) {
+            if (isAdvancedNote(note)) continue;
+
+            const legacyNote = note as LegacyNote;
+            const isChecklist = legacyNote.content.startsWith("[] ");
+
+            const blockId = `${legacyNote.id}-block-0`;
+            let block: Block;
+            let updatedContent = legacyNote.content;
+
+            if (isChecklist) {
+                const status = isLegacyChecklist(legacyNote) ? legacyNote.status : false;
+                const prefix = status ? '[x] ' : '[] ';
+
+                block = {
+                    id: blockId,
+                    type: 'task',
+                    content: legacyNote.content.substring(3),
+                    status: status,
+                };
+
+                updatedContent = prefix + legacyNote.content.substring(3);
+            } else {
+                block = {
+                    id: blockId,
+                    type: 'text',
+                    content: legacyNote.content,
+                };
+            }
+
+            const advancedNote: AdvancedNote = {
+                id: legacyNote.id,
+                content: updatedContent,
+                createdAt: legacyNote.createdAt,
+                updatedAt: legacyNote.updatedAt,
+                type: 'advanced',
+                blocks: [block],
             };
 
+            await NotesRepository.put(advancedNote as NoteAndChecklist);
+        }
+
+        const { settings, update } = useSettingsStore.getState();
+        if (settings) {
             await update({
                 schema_version: 2,
-                widgets: {
-                    ...currentWidgets,
-                    pomodoro: true, // Force enable Pomodoro
-                }
             });
         }
     },
+
+    // Version 3: Transition to customizer-based layout system
+    3: async () => {
+        const { settings, update } = useSettingsStore.getState();
+        if (!settings) return;
+
+        const legacySettings = settings as LegacySettings;
+        let widgetLayout: WidgetLayout | undefined = legacySettings.widget_layout;
+
+        if (!widgetLayout) {
+            // Create a default layout with main widgets on pages 1-2, blank page 3
+            widgetLayout = {
+                positions: [
+                    { widgetId: "notes-and-checklists", page: 1, column: 0, row: 0, size: 2 },
+                    { widgetId: "mood-tracker", page: 1, column: 1, row: 0, size: 2 },
+                    { widgetId: "counters", page: 1, column: 1, row: 1, size: 1 },
+                    { widgetId: "pomodoro", page: 1, column: 2, row: 0, size: 2 },
+                    { widgetId: "calendar", page: 2, column: 0, row: 0, size: 2 },
+                    { widgetId: "pet-house", page: 2, column: 1, row: 0, size: 1 },
+                    { widgetId: "progresses", page: 2, column: 2, row: 0, size: 2 },
+                ],
+                totalPages: 3, // ✅ Fixed: pages 1, 2, and blank page 3
+            };
+        }
+
+        await update({
+            schema_version: 3,
+            widget_layout: widgetLayout,
+        });
+    },
 };
 
-// 🌟 Run all pending migrations
 export async function runMigrations(): Promise<void> {
     const { settings } = useSettingsStore.getState();
 
-    if (!settings) return; // No settings = wizard hasn't run yet
+    if (!settings) return;
 
     const currentVersion = settings.schema_version ?? 0;
 
-    if (currentVersion >= CURRENT_SCHEMA_VERSION) return; // Already up to date
+    if (currentVersion >= CURRENT_SCHEMA_VERSION) return;
 
-    // Run each migration in order
     for (let version = currentVersion + 1; version <= CURRENT_SCHEMA_VERSION; version++) {
         const migration = migrations[version];
         if (migration) {

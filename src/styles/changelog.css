@@ -41,7 +41,7 @@
     color: var(--muted-foreground);
 }
 
-.changelog-content li::before {
+/* .changelog-content li::before {
     content: "";
     position: absolute;
     left: 0;
@@ -50,7 +50,7 @@
     height: 4px;
     border-radius: 9999px;
     background: var(--primary);
-}
+} */
 
 .changelog-content p {
     margin: 0.5rem 0;

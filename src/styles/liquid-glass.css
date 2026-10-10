@@ -27,14 +27,14 @@
 }
 
 @utility liquid-glass {
-    --liquid-glass-shadow-size: 5px;
+    --liquid-glass-shadow-size: 3px;
 
     background: var(--liquid-glass-background);
     
     /* 🌟 Glass Edge: Simulates physical thickness and light catching the border */
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-top-color: rgba(255, 255, 255, 0.35);
-    border-bottom-color: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-top-color: rgba(255, 255, 255, 0.15);
+    border-bottom-color: rgba(255, 255, 255, 0.15);
 
     /* Fallback */
     backdrop-filter:
@@ -76,14 +76,14 @@
 }
 
 @utility liquid-glass-sm {
-    --liquid-glass-shadow-size: 1px;
+    --liquid-glass-shadow-size: 1.5px;
 
     background: var(--liquid-glass-background-sm);
     
     /* 🌟 Thinner glass edge for small components */
-    border: 0.5px solid rgba(255, 255, 255, 0.12);
-    border-top-color: rgba(255, 255, 255, 0.25);
-    border-bottom-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top-color: rgba(255, 255, 255, 0.12);
+    border-bottom-color: rgba(255, 255, 255, 0.12);
 
     /* Fallback */
     backdrop-filter:

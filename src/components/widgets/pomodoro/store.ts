@@ -8,6 +8,51 @@ import { calculateRemaining, calculateOvertime, processElapsedTime, getDurationM
 import type { SavedPomodoroState, PomodoroSettings, PomodoroTask, PomodoroView, PomodoroSession } from './types';
 import { DEFAULT_POMODORO_SETTINGS } from './types';
 
+// 🌟 Cross-Tab Sync Setup
+const TAB_ID = crypto.randomUUID();
+const pomodoroChannel = typeof BroadcastChannel !== 'undefined'
+    ? new BroadcastChannel('pomodoro_sync')
+    : null;
+
+function broadcastState() {
+    if (pomodoroChannel) {
+        const state = usePomodoroStore.getState();
+        pomodoroChannel.postMessage({
+            type: 'STATE_SYNC',
+            payload: {
+                ...getPersistableState(state),
+                tasks: state.tasks,
+                currentView: state.currentView,
+                settings: state.settings
+            }
+        });
+    }
+}
+
+let localCompletionClaimed = false;
+
+if (pomodoroChannel) {
+    pomodoroChannel.onmessage = (event) => {
+        if (event.data.type === 'STATE_SYNC') {
+            const newState = event.data.payload;
+            // Update store silently (no DB save, no broadcast)
+            usePomodoroStore.setState({ ...newState });
+
+            // Reset claim flag when session changes
+            if (newState.status === 'overtime' || newState.status === 'idle') {
+                localCompletionClaimed = false;
+            }
+        } else if (event.data.type === 'COMPLETION_CLAIM') {
+            // Another tab is handling completion, so we stop our interval
+            if (event.data.tabId !== TAB_ID) {
+                localCompletionClaimed = true;
+                stopPomodoroRefresh();
+            }
+        }
+    };
+}
+
+
 interface PomodoroState extends SavedPomodoroState {
     loading: boolean;
     initialized: boolean;
@@ -220,6 +265,7 @@ export const usePomodoroStore = create<PomodoroState>((set, get) => ({
             totalSessions: 0
         });
         set({ tasks: await PomodoroTasksRepository.getAll() });
+        broadcastState(); // 🌟 ADD THIS
         return id;
     },
 
@@ -234,6 +280,7 @@ export const usePomodoroStore = create<PomodoroState>((set, get) => ({
         } else {
             set({ tasks });
         }
+        broadcastState(); // 🌟 MOVE OUTSIDE the if/else
     },
 
     deleteTask: async (id) => {
@@ -252,6 +299,7 @@ export const usePomodoroStore = create<PomodoroState>((set, get) => ({
         } else {
             set({ tasks });
         }
+        broadcastState(); // 🌟 MOVE OUTSIDE the if/else
     },
 
     setCurrentTask: async (taskId) => {
@@ -262,25 +310,31 @@ export const usePomodoroStore = create<PomodoroState>((set, get) => ({
         }
         set({ currentTaskId: taskId, currentTaskName: taskName, updatedAt: Date.now() });
         await PomodoroActiveStateRepository.save(getPersistableState(get()));
+        broadcastState(); // 🌟 Sync
     },
 
     start: async () => {
+        localCompletionClaimed = false; // 🌟 Reset claim
         const state = get();
         let cycleStartedAt = state.cycleStartedAt;
         if (!cycleStartedAt && state.session === 'focus' && state.cyclePosition === 1) {
             cycleStartedAt = Date.now();
         }
-        set({ status: 'running', startedAt: Date.now(), remaining: state.duration, cycleStartedAt, overtimeStartedAt: null, updatedAt: Date.now() });
+        set({
+            status: 'running', startedAt: Date.now(), remaining: state.duration,
+            cycleStartedAt, overtimeStartedAt: null, updatedAt: Date.now(),
+            ownerTabId: TAB_ID // 🌟 Track owner
+        });
         await PomodoroActiveStateRepository.save(getPersistableState(get()));
+        broadcastState(); // 🌟 Sync
 
-        // 🌟 Schedule alarm for when tab is closed
         await setPomodoroAlarm(state.duration, state.session, state.cyclePosition, state.settings.longBreakInterval);
     },
-
     pause: async () => {
-        clearPomodoroAlarm(); // 🌟 Clear alarm
+        clearPomodoroAlarm();
         set({ status: 'paused', startedAt: null, remaining: calculateRemaining(get()), updatedAt: Date.now() });
         await PomodoroActiveStateRepository.save(getPersistableState(get()));
+        broadcastState(); // 🌟 Sync
     },
 
     resume: async () => {
@@ -288,21 +342,24 @@ export const usePomodoroStore = create<PomodoroState>((set, get) => ({
         const elapsed = state.duration - state.remaining;
         const newStartedAt = Date.now() - elapsed;
         set({ status: 'running', startedAt: newStartedAt, updatedAt: Date.now() });
-        await PomodoroActiveStateRepository.save(getPersistableState(get()));
 
-        // 🌟 Schedule alarm with remaining time
+        await PomodoroActiveStateRepository.save(getPersistableState(get()));
+        broadcastState(); // 🌟 Sync
         await setPomodoroAlarm(state.remaining, state.session, state.cyclePosition, state.settings.longBreakInterval);
     },
 
     reset: async () => {
+        localCompletionClaimed = false; // 🌟 Reset claim
         clearPomodoroAlarm(); // 🌟 Clear alarm
         const state = get();
         const newDuration = getDurationMs(state.session, state.settings);
         set({ status: 'idle', startedAt: null, duration: newDuration, remaining: newDuration, overtimeStartedAt: null, updatedAt: Date.now() });
         await PomodoroActiveStateRepository.save(getPersistableState(get()));
+        broadcastState(); // 🌟 Sync
     },
 
     resetCycle: async () => {
+        localCompletionClaimed = false; // 🌟 Reset claim
         clearPomodoroAlarm(); // 🌟 Clear alarm
         const state = get();
         const cycleStart = state.cycleStartedAt;
@@ -331,6 +388,7 @@ export const usePomodoroStore = create<PomodoroState>((set, get) => ({
             updatedAt: Date.now(),
         });
         await PomodoroActiveStateRepository.save(getPersistableState(get()));
+        broadcastState(); // 🌟 Sync
     },
 
     includeOvertime: async () => {
@@ -425,11 +483,13 @@ export const usePomodoroStore = create<PomodoroState>((set, get) => ({
 
         if (state.status === 'idle') {
             await PomodoroActiveStateRepository.save(getPersistableState(get()));
+            broadcastState(); // 🌟 Sync
         }
     },
 }));
 
 async function transitionToNextSession() {
+    localCompletionClaimed = false; // 🌟 Reset claim for next session
     const state = usePomodoroStore.getState();
     const { nextSession, nextCycle } = getNextSession(state.session, state.cyclePosition, state.settings.longBreakInterval);
     const nextDuration = getDurationMs(nextSession, state.settings);
@@ -450,6 +510,7 @@ async function transitionToNextSession() {
 
     usePomodoroStore.setState(updates);
     await PomodoroActiveStateRepository.save(getPersistableState(usePomodoroStore.getState()));
+    broadcastState(); // 🌟 Sync
 }
 
 let refreshInterval: number | null = null;
@@ -461,8 +522,6 @@ export function startPomodoroRefresh() {
 
         if (state.status === 'overtime' && state.overtimeStartedAt) {
             const overtimeElapsed = Date.now() - state.overtimeStartedAt;
-
-            // 🌟 Just cap the visual remaining time at 24 hours. No auto-resolving.
             const cappedRemaining = Math.max(-overtimeElapsed, -MAX_OVERTIME_MS);
             usePomodoroStore.setState({ remaining: cappedRemaining });
             return;
@@ -471,11 +530,19 @@ export function startPomodoroRefresh() {
         if (state.status === 'running' && state.startedAt) {
             const remaining = calculateRemaining(state);
 
-            if (remaining <= 0) {
+            // 🌟 Distributed Completion Lock
+            if (remaining <= 0 && !localCompletionClaimed) {
+                localCompletionClaimed = true;
+
+                // Claim completion across all tabs
+                if (pomodoroChannel) {
+                    pomodoroChannel.postMessage({ type: 'COMPLETION_CLAIM', tabId: TAB_ID });
+                }
+
                 clearPomodoroAlarm();
                 triggerCompletionAlerts(state.session);
                 enterOvertime();
-            } else {
+            } else if (remaining > 0) {
                 usePomodoroStore.setState({ remaining });
             }
         }
@@ -489,10 +556,13 @@ function enterOvertime() {
         remaining: 0,
         updatedAt: Date.now(),
     });
-    PomodoroActiveStateRepository.save(getPersistableState(usePomodoroStore.getState()));
+    PomodoroActiveStateRepository.save(getPersistableState(usePomodoroStore.getState())).then(() => {
+        broadcastState(); // 🌟 Sync
+    });
 }
 
 export function stopPomodoroRefresh() {
+
     if (refreshInterval) {
         clearInterval(refreshInterval);
         refreshInterval = null;

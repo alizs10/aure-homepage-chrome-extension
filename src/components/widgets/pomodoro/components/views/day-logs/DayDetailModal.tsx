@@ -7,9 +7,10 @@ import type { DayLog } from '../../../types';
 import { useWallpaperBackground } from '@/hooks/useWallpaperBackground';
 import { toPng } from 'html-to-image';
 import { useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import Button from '@/components/ui/Button';
 import { ScanSquareIcon } from 'lucide-react';
+import { cn } from '@/lib/util';
 
 interface DayDetailModalProps {
     open: boolean;
@@ -58,7 +59,10 @@ export default function DayDetailModal({ open, onClose, day, formatDuration }: D
 
             // Create a temporary link to download the image
             const link = document.createElement('a');
-            link.download = `focus-summary-${day.dateKey}.png`;
+            // ⬇️ Add current time to the filename (e.g., focus-summary-2026-10-10_14-30-05.png)
+            const timeString = format(new Date(), 'HH-mm-ss');
+            link.download = `focus-summary-${day.dateKey}_${timeString}.png`;
+
             link.href = dataUrl;
             link.click();
 
@@ -75,18 +79,34 @@ export default function DayDetailModal({ open, onClose, day, formatDuration }: D
         <ModalWrapper open={open} onClose={onClose}>
 
             {/* 1. Outer Shell: Handles shadows and rounded corners without clipping them */}
-            <div ref={captureRef} className="rounded-3xl w-full max-w-4/5 sm:max-w-md max-h-[80vh] flex flex-col relative overflow-y-scroll scrollbar-none">
+            <div ref={captureRef} className={
+                cn(
+                    "w-full max-w-4/5 sm:max-w-md max-h-[80vh] flex flex-col relative overflow-y-scroll scrollbar-none",
+                    isCapturing ? "" : "rounded-3xl liquid-glass"
+                )
+            }>
 
                 <div
                     style={{ backgroundImage: `url(${background})` }}
-                    className="absolute z-0 inset-0 bg-cover bg-center rounded-3xl"
+                    className={
+                        cn(
+                            "absolute z-0 inset-0 bg-cover bg-center",
+                        )
+                    }
                 />
                 <div
-                    className="absolute z-0 inset-0 backdrop-blur-xs bg-background/50 rounded-3xl app_shadow"
+                    className={
+                        cn(
+                            "absolute z-0 inset-0 backdrop-blur-xs bg-background/50",
+                        )
+                    }
                 />
 
                 {/* 2. Clipping Layer: Handles overflow and hides the blurred edges */}
-                <div className="relative flex-1 rounded-3xl overflow-hidden flex flex-col">
+                <div className={cn(
+                    "relative flex-1 overflow-hidden flex flex-col",
+                    // isCapturing ? "" : "rounded-3xl"
+                )}>
 
                     {/* 3. Scrollable Content Layer */}
                     <div className="relative z-10 flex-1 overflow-y-auto scrollbar-none flex flex-col p-5 gap-5">
@@ -98,7 +118,7 @@ export default function DayDetailModal({ open, onClose, day, formatDuration }: D
 
                         <div className="w-full flex-center">
                             <div
-                                className="flex flex-col items-center justify-center rounded-full p-10 liquid-glass aspect-square">
+                                className="flex flex-col items-center justify-center rounded-full p-10 liquid-glass bg-background/70 aspect-square">
                                 <BetterTypography
                                     variant="2xl"
                                     weight="bold"

@@ -4,6 +4,10 @@ import { ChevronDownIcon } from "lucide-react";
 import { BetterTypography } from "../common/BetterTypography";
 import Button from "../ui/Button";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/util";
+
+// 🌟 Match the variants from BetterTypography
+type TypographyVariant = "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | (string & {});
 
 export interface DropdownProps<T extends string | number> {
     value: T;
@@ -12,7 +16,10 @@ export interface DropdownProps<T extends string | number> {
     placeholder?: string;
     triggerVariant?: "primary" | "ghost";
     hideLabel?: boolean;
-    icon?: ReactNode
+    icon?: ReactNode;
+    triggerClassName?: string;
+    labelVariant?: TypographyVariant;
+    align?: "start" | "center" | "end"; // 🌟 Added align prop
 }
 
 export default function Dropdown<T extends string | number>({
@@ -22,7 +29,10 @@ export default function Dropdown<T extends string | number>({
     placeholder = "Select...",
     triggerVariant = "primary",
     hideLabel = false,
-    icon
+    icon,
+    triggerClassName,
+    labelVariant = "xxs",
+    align = "end", // 🌟 Default to "end" to match original design
 }: DropdownProps<T>) {
     const selectedOption = options.find(
         (opt) => String(opt.value) === String(value)
@@ -52,12 +62,14 @@ export default function Dropdown<T extends string | number>({
                     <Button
                         variant={triggerVariant}
                         size={hideLabel ? "icon-sm" : "sm"}
-                        className="h-full py-0"
+                        className={cn(
+                            "h-full py-0",
+                            triggerClassName
+                        )}
                         rightIcon={
                             !icon ? <Select.Icon className="transition-transform duration-200 data-popup-open:rotate-180">
                                 <ChevronDownIcon className="size-4" />
                             </Select.Icon>
-
                                 :
                                 icon
                         }
@@ -66,7 +78,7 @@ export default function Dropdown<T extends string | number>({
             >
                 {!hideLabel && (
                     <BetterTypography
-                        variant="xxs"
+                        variant={labelVariant}
                         weight="medium"
                         className="text-nowrap"
                     >
@@ -76,29 +88,31 @@ export default function Dropdown<T extends string | number>({
             </Select.Trigger>
 
             <Select.Portal>
+                {/* 🌟 CRITICAL FIX: Apply z-index to the Positioner via inline style */}
                 <Select.Positioner
                     side="bottom"
-                    align="end"
+                    align={align} // 🌟 Pass the align prop
                     sideOffset={4}
                     alignItemWithTrigger={false}
+                    className="z-9999"
+                    style={{ zIndex: 9999 }}
                 >
                     <Select.Popup
                         className="
-                w-fit
-                min-w-30
-                max-h-60
-                overflow-y-auto
-                scrollbar-hide
-                liquid-glass
-                bg-background/50!
-                z-9999
-                px-2
-                py-1.5
-                space-y-0.5
-                rounded-3xl
-                flex
-                flex-col
-            "
+                            w-fit
+                            min-w-30
+                            max-h-60
+                            overflow-y-auto
+                            scrollbar-hide
+                            liquid-glass
+                            bg-background/50!
+                            px-2
+                            py-1.5
+                            space-y-0.5
+                            rounded-3xl
+                            flex
+                            flex-col
+                        "
                     >
                         {options.map((option) => (
                             <Select.Item

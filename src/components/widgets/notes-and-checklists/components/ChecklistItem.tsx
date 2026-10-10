@@ -1,10 +1,6 @@
-// components/notes-and-checklists/ChecklistItem.tsx
 import { BetterTypography } from '@/components/common/BetterTypography';
-import Button from '@/components/ui/Button';
-import { AnimatePresence, motion } from 'framer-motion';
-import { CircleCheckIcon, CircleIcon } from 'lucide-react';
+import Checkbox from '@/components/ui/Checkbox';
 import ItemFooter from './ItemFooter';
-
 
 interface ChecklistItemProps {
     item: {
@@ -22,45 +18,15 @@ export function ChecklistItem({ item, onChange, date, edited }: ChecklistItemPro
 
     return (
         <div className="flex-row-center gap-x-1">
-            <Button className='overflow-clip' variant='success' onClick={() => onChange(item.id)} size='icon'>
-                <AnimatePresence mode="wait" initial={false}>
-
-                    {item.status ? (
-                        <motion.div
-                            key={'circle-check'}
-                            initial={{ y: -25 }}
-                            animate={{ y: 0 }}
-                            exit={{ y: 25 }}
-                            transition={{
-                                ease: "linear",
-                                duration: .1
-                            }}
-                        >
-
-                            <CircleCheckIcon className='size-5 text-success' />
-                        </motion.div>
-                    ) : (
-                        <motion.div
-                            key={'circle'}
-                            initial={{ y: -25 }}
-                            animate={{ y: 0 }}
-                            exit={{ y: 25 }}
-                            transition={{
-                                ease: "linear",
-                                duration: .1
-                            }}
-                        >
-                            <CircleIcon className='size-5' />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </Button>
-            <div className="rounded-3xl liquid-glass  min-w-2/3 flex-1 px-4 py-2 flex flex-col gap-y-2">
+            <Checkbox
+                checked={!!item.status}
+                onChange={() => onChange(item.id)}
+            />
+            <div className="rounded-3xl liquid-glass min-w-2/3 flex-1 px-4 py-2 flex flex-col gap-y-2">
                 <BetterTypography className={`${item.status ? 'line-through' : ''}`} variant="sm">
                     {content}
                 </BetterTypography>
                 <ItemFooter date={date} edited={edited} />
-
             </div>
         </div>
     );

@@ -7,11 +7,14 @@ import { cn } from "../../lib/util";
 export type ButtonVariant =
   | "primary"
   | "primary-active"
+  | "muted"
   | "ghost"
   | "success"
   | "success-active"
   | "destructive"
   | "ghost-destructive"
+  | "ghost-warning"
+  | "ghost-success"
   | "warning"
   | "none";
 
@@ -53,8 +56,10 @@ const variantClasses: Record<ButtonVariant, string> = {
   "primary-active":
     "liquid-glass-sm bg-primary/30! hover:bg-primary/60!",
 
+  muted:
+    "bg-muted/60 hover:bg-muted dark:bg-border/60 dark:hover:bg-border",
   ghost:
-    "bg-transparent hover:bg-background/30",
+    "bg-transparent hover:bg-muted/60 dark:hover:bg-secondary/80",
 
   success:
     "liquid-glass-sm hover:bg-success/30!",
@@ -67,6 +72,10 @@ const variantClasses: Record<ButtonVariant, string> = {
 
   "ghost-destructive":
     "bg-transparent hover:bg-destructive/20",
+  "ghost-warning":
+    "bg-transparent hover:bg-warning/20",
+  "ghost-success":
+    "bg-transparent hover:bg-success/20",
 
   "warning":
     "liquid-glass-sm hover:bg-warning/60!",

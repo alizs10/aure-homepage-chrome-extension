@@ -2,7 +2,7 @@ import { BetterTypography } from "@/components/common/BetterTypography";
 import { AnimatePresence, motion } from "framer-motion";
 import { BoneIcon, CatIcon, SoupIcon } from "lucide-react";
 import { useMemo, useState, type PropsWithChildren } from "react";
-import { toast } from "sonner";
+import { toast } from '@/stores/useToastStore';
 import Button from "../../../ui/Button";
 import KillPetDialog from "../dialogs/KillPetDialog";
 import HardDeletePetDialog from "../dialogs/HardDeletePetDialog"; // 🌟 NEW IMPORT

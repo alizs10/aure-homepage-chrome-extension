@@ -5,7 +5,7 @@ import ModalHeader from "@/components/ui/modal/ModalHeader";
 import ModalWrapper from "@/components/ui/modal/ModalWrapper";
 import { db } from "@/lib/db";
 import { UploadIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from '@/stores/useToastStore';
 import { BetterTypography } from "@/components/common/BetterTypography";
 
 interface AddWallpaperModalProps {

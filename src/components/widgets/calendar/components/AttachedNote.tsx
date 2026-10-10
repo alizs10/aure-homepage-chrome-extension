@@ -2,7 +2,7 @@ import { BetterTypography } from '@/components/common/BetterTypography';
 import { format } from 'date-fns';
 import { PenIcon, StickyNoteIcon, TrashIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/stores/useToastStore';
 import Button from '../../../ui/Button';
 import { useCalendar } from '../hooks/useCalendar';
 import CalendarNoteModal from '../modals/CalendarNoteModal';

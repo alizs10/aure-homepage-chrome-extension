@@ -5,7 +5,8 @@ import { copyToClipboard } from '@/helpers'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CopyCheckIcon, CopyIcon, HeartIcon, MailIcon, SendIcon } from 'lucide-react'
 import { useState } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/stores/useToastStore'
+// import { toast } from '@/stores/useToastStore'
 
 export default function AboutTabDetails() {
     const [copied, setCopied] = useState(false)
