@@ -1,11 +1,16 @@
-import type { Favorite, Folder } from '@/components/settings/components/tabs-details/sites-and-folders/types';
-import type { CalendarNote } from '@/components/widgets/calendar/types';
-import type { Counter } from '@/components/widgets/counters/types';
-import type { MoodHistory } from '@/components/widgets/mood-tracker/types';
-import type { NoteAndChecklist } from '@/components/widgets/notes-and-checklists/types';
-import type { Pet } from '@/components/widgets/pet-house/types';
-import type { PomodoroHistoryEntry, PomodoroTask, PomodoroActiveState } from '@/components/widgets/pomodoro/types';
-import type { Progress, ProgressLabel } from '@/components/widgets/progresses/types';
+import type { Favorite, Folder } from '@/features/bookmarks';
+import type {
+    CalendarNote,
+    Counter,
+    MoodHistory,
+    NoteAndChecklist,
+    Pet,
+    PomodoroHistoryEntry,
+    PomodoroTask,
+    PomodoroActiveState,
+    Progress,
+    ProgressLabel,
+} from '@/types/entities';
 import type { Wallpaper } from '@/types';
 import Dexie, { type Table } from 'dexie';
 
@@ -18,9 +23,9 @@ export class NewTabDB extends Dexie {
     favorites!: Table<Favorite, number>;
     folders!: Table<Folder, number>;
     pomodoroHistory!: Table<PomodoroHistoryEntry, number>;
-    pomodoroTasks!: Table<PomodoroTask, number>; // 🌟 NEW
-    pomodoroActiveState!: Table<PomodoroActiveState, string>; // 🌟 NEW
-    counters!: Table<Counter, number>; // 🌟 NEW
+    pomodoroTasks!: Table<PomodoroTask, number>;
+    pomodoroActiveState!: Table<PomodoroActiveState, string>;
+    counters!: Table<Counter, number>;
     progresses!: Table<Progress, number>;
     progressLabels!: Table<ProgressLabel, number>;
 
@@ -35,12 +40,12 @@ export class NewTabDB extends Dexie {
             notes: 'id',
             favorites: 'id',
             folders: 'id',
-            pomodoroHistory: '++id, type, completedAt, taskId', // Added taskId index
-            pomodoroTasks: '++id, name, createdAt', // 🌟 NEW
-            pomodoroActiveState: 'id', // 🌟 NEW (singleton)
-            counters: '++id, type, createdAt', // 🌟 NEW
-            progresses: '++id, completed, deadline', // 🌟 NEW
-            progressLabels: '++id, name', // 🌟 NEW
+            pomodoroHistory: '++id, type, completedAt, taskId',
+            pomodoroTasks: '++id, name, createdAt',
+            pomodoroActiveState: 'id',
+            counters: '++id, type, createdAt',
+            progresses: '++id, completed, deadline',
+            progressLabels: '++id, name',
         });
     }
 }

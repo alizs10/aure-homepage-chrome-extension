@@ -4,8 +4,7 @@ import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { BetterTypography } from "../common/BetterTypography";
 import Badge from "../ui/Badge";
 import { sliceText } from "@/helpers";
-import { useFavoritesStore } from "@/components/settings/components/tabs-details/sites-and-folders/components/favorites/store";
-import { useFoldersStore } from "@/components/settings/components/tabs-details/sites-and-folders/components/folders/store";
+import { useFavoritesStore, useFoldersStore } from "@/features/bookmarks";
 import { isValidUrl } from "./helpers/search";
 import type { ComponentProps } from "react";
 

@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button as BaseButton } from "@base-ui/react/button";
@@ -37,10 +37,11 @@ type SharedProps = {
   children?: ReactNode;
 };
 
-type LinkButtonProps = SharedProps & {
-  href: string;
-  disabled?: never;
-};
+type LinkButtonProps = SharedProps &
+  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children" | "className"> & {
+    href: string;
+    disabled?: never;
+  };
 
 type NativeButtonProps = SharedProps &
   ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -125,8 +126,23 @@ export default function Button(props: ButtonProps) {
   );
 
   if ("href" in props && props.href) {
+    const { href, ...linkProps } = props as LinkButtonProps;
+    const isExternal = typeof href === "string" && /^(https?:\/\/|mailto:|tg:|chrome:)/i.test(href);
+
+    if (isExternal) {
+      return (
+        <a
+          href={href}
+          className={classes}
+          {...(linkProps as AnchorHTMLAttributes<HTMLAnchorElement>)}
+        >
+          {content}
+        </a>
+      );
+    }
+
     return (
-      <Link to={props.href} className={classes}>
+      <Link to={href} className={classes} {...(linkProps as any)}>
         {content}
       </Link>
     );

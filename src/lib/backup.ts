@@ -3,16 +3,21 @@ import { storage } from "@/lib/storage";
 import { STORAGE_KEYS } from "@/constants/storage_keys";
 
 // ✅ Import types for strict casting during import
-import type { Favorite, Folder } from '@/components/settings/components/tabs-details/sites-and-folders/types';
-import type { CalendarNote } from '@/components/widgets/calendar/types';
-import type { MoodHistory } from '@/components/widgets/mood-tracker/types';
-import type { NoteAndChecklist } from '@/components/widgets/notes-and-checklists/types';
-import type { Pet } from '@/components/widgets/pet-house/types';
-import type { PomodoroHistoryEntry, PomodoroTask, PomodoroActiveState } from '@/components/widgets/pomodoro/types';
+import type { Favorite, Folder } from '@/features/bookmarks';
+import type {
+    CalendarNote,
+    Counter,
+    MoodHistory,
+    NoteAndChecklist,
+    Pet,
+    PomodoroHistoryEntry,
+    PomodoroTask,
+    PomodoroActiveState,
+    Progress,
+    ProgressLabel,
+} from '@/types/entities';
 import type { Wallpaper } from '@/types';
 import { CURRENT_SCHEMA_VERSION } from "./migrations";
-import type { Counter } from "@/components/widgets/counters/types";
-import type { Progress, ProgressLabel } from '@/components/widgets/progresses/types';
 
 async function getAllChromeStorageData() {
     const data: Record<string, unknown> = {};

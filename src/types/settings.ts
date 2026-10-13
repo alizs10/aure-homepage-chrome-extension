@@ -1,4 +1,4 @@
-import type { PomodoroSettings } from '@/components/widgets/pomodoro/types';
+import type { PomodoroSettings } from '@/types/entities/pomodoro';
 
 //theme
 export type Theme = 'dark' | 'light' | 'system'

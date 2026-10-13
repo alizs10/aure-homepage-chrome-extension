@@ -1,10 +1,8 @@
 import { useSettingsStore } from "@/stores";
-import { FoldersRepository } from "@/components/settings/components/tabs-details/sites-and-folders/components/folders/db";
-import { useFoldersStore } from "@/components/settings/components/tabs-details/sites-and-folders/components/folders/store";
-import type { Folder, Website } from "@/components/settings/components/tabs-details/sites-and-folders/types";
-import { DEFAULT_FOLDERS } from "@/components/wizard/constants/defaultFolders";
-import { NotesRepository } from "@/components/widgets/notes-and-checklists/db";
-import type { AdvancedNote, Block, NoteAndChecklist, Note, Checklist } from "@/components/widgets/notes-and-checklists/types";
+import { FoldersRepository, useFoldersStore, type Folder, type Website } from "@/features/bookmarks";
+import { DEFAULT_FOLDERS } from "@/constants/defaultFolders";
+import { NotesRepository } from "@/features/widgets";
+import type { AdvancedNote, Block, NoteAndChecklist, Note, Checklist } from "@/types/entities";
 import type { Settings, WidgetLayout } from "@/types";
 
 type LegacyNote = Note & { status?: boolean };

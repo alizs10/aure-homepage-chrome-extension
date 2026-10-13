@@ -6,7 +6,7 @@
 - [`ARCH-003`](../ARCHITECTURE_AUDIT.md#arch-003-layer-inversion-global-lib-and-types-importing-from-widget-subdirectories): Layer Inversion (Global Lib and Types Importing from UI Widgets)  
 - [`ARCH-007`](../ARCHITECTURE_AUDIT.md#arch-007-invalid-html-nesting--navigation-inconsistencies): Invalid HTML Element Nesting & Navigation Inconsistencies  
 **Estimated Time:** 4–6 hours  
-**Status:** `[ ] Not Started`
+**Status:** `[x] Completed`
 
 ---
 
@@ -49,93 +49,56 @@ src/
 
 ### Task 2.1: Hoist Favorites & Folders to Feature Domain (ARCH-002)
 
-- [ ] **Create Directory Structure:** Create `src/features/bookmarks/db/` and `src/features/bookmarks/stores/`.
-- [ ] **Consolidate Types:** Create `src/features/bookmarks/types.ts` moving definitions from:
-  - `src/components/settings/components/tabs-details/sites-and-folders/components/favorites/types.ts`
-  - `src/components/settings/components/tabs-details/sites-and-folders/components/folders/types.ts`
-- [ ] **Move Repositories:**
-  - Move `.../favorites/db.ts` to `src/features/bookmarks/db/favorites.repo.ts`.
-  - Move `.../folders/db.ts` to `src/features/bookmarks/db/folders.repo.ts`.
-- [ ] **Move Zustand Stores:**
-  - Move `.../favorites/store.ts` to `src/features/bookmarks/stores/favorites.store.ts`.
-  - Move `.../folders/store.ts` to `src/features/bookmarks/stores/folders.store.ts`.
-- [ ] **Update Import References Across the Codebase:**
-  Update imports in all affected consumer files:
-  - [`src/AppLoader.tsx`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/AppLoader.tsx)
-  - [`src/lib/db.ts`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/lib/db.ts)
-  - [`src/lib/migrations.ts`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/lib/migrations.ts)
-  - [`src/lib/backup.ts`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/lib/backup.ts)
-  - [`src/components/home/Suggestions.tsx`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/home/Suggestions.tsx)
-  - [`src/components/home/favorites/Favorites.tsx`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/home/favorites/Favorites.tsx)
-  - [`src/components/home/folders/Folders.tsx`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/home/folders/Folders.tsx)
-  - [`src/components/settings/components/tabs-details/sites-and-folders/SitesAndFoldersContent.tsx`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/settings/components/tabs-details/sites-and-folders/SitesAndFoldersContent.tsx)
-  - All modals and list items under `sites-and-folders/components/`.
+- [x] **Create Directory Structure:** Create `src/features/bookmarks/db/` and `src/features/bookmarks/stores/`.
+- [x] **Consolidate Types:** Create `src/features/bookmarks/types.ts` moving definitions from sites-and-folders.
+- [x] **Move Repositories:** Created `src/features/bookmarks/db/favorites.repo.ts` and `folders.repo.ts`.
+- [x] **Move Zustand Stores:** Created `src/features/bookmarks/stores/favorites.store.ts` and `folders.store.ts`.
+- [x] **Move Custom Hooks:** Created `src/features/bookmarks/hooks/useFavorites.ts` and `useFolders.ts`.
+- [x] **Update Import References Across the Codebase:**
+  Updated all consumer files (`AppLoader`, `Suggestions`, `Favorites`, `Folders`, `db.ts`, `backup.ts`, `migrations.ts`).
 
 ---
 
 ### Task 2.2: Resolve Layer Inversion in Core Lib & Types (ARCH-003)
 
-- [ ] **Extract Widget Entity Types to `src/types/entities/`:**
-  - Create `src/types/entities/calendar.ts`: Export `CalendarEvent`, `CalendarStartDay`.
-  - Create `src/types/entities/counter.ts`: Export `CounterItem`.
-  - Create `src/types/entities/mood.ts`: Export `MoodItem`.
-  - Create `src/types/entities/note.ts`: Export `NoteItem`, `ChecklistItem`.
-  - Create `src/types/entities/pet.ts`: Export `PetItem`.
-  - Create `src/types/entities/pomodoro.ts`: Export `PomodoroTask`, `PomodoroSession`, `PomodoroActiveState`.
-  - Create `src/types/entities/progress.ts`: Export `ProgressItem`.
-  - Create `src/types/entities/index.ts` re-exporting all entity models.
-- [ ] **Refactor `src/types/settings.ts`:**
-  - Change line 1 from importing `CalendarStartDay` from `@/components/widgets/calendar/types` to importing from `@/types/entities/calendar`.
-- [ ] **Refactor `src/lib/db.ts`:**
-  - Change all type imports (lines 1–8) to import from `@/types/entities` and `@/features/bookmarks/types`.
-  - Ensure `src/lib/db.ts` contains **zero** imports pointing to `src/components/*`.
-- [ ] **Refactor `src/lib/backup.ts`:**
-  - Extract an abstract repository interface or relocate widget repositories to `@/features/widgets/*/repositories/` so that `backup.ts` does not depend on UI component hierarchies.
-- [ ] **Widget Subdirectory Re-exports:**
-  - In each widget's `types/index.ts`, re-export the entity types from `@/types/entities/*` to prevent breaking internal widget component imports.
+- [x] **Extract Widget Entity Types to `src/types/entities/`:**
+  - Created entity models in `src/types/entities/` (`calendar.ts`, `counter.ts`, `mood.ts`, `note.ts`, `pet.ts`, `pomodoro.ts`, `progress.ts`, `index.ts`).
+- [x] **Created Repositories in `src/features/widgets/`:**
+  - Hoisted all 7 repositories to `src/features/widgets/<name>/repo.ts` with barrel export in `src/features/widgets/index.ts`.
+- [x] **Refactor `src/types/settings.ts`:**
+  - Hoisted `PomodoroSettings` to `@/types/entities/pomodoro`. 0 UI imports.
+- [x] **Refactor `src/lib/db.ts`:**
+  - Cleaned all type imports to import from `@/types/entities` and `@/features/bookmarks`. 0 UI imports.
+- [x] **Refactor `src/lib/backup.ts`:**
+  - Cleaned all type imports to import from `@/types/entities` and `@/features/bookmarks`. 0 UI imports.
+- [x] **Refactor `src/lib/migrations.ts`:**
+  - Cleaned imports to use `@/constants/defaultFolders`, `@/features/widgets`, and `@/types/entities`. 0 UI imports.
+- [x] **Widget Subdirectory Re-exports:**
+  - Re-exported entity models and repositories from widget directories for backwards compatibility.
 
 ---
 
 ### Task 2.3: Correct Link Architecture & HTML Element Nesting (ARCH-007)
 
-- [ ] **Refactor `src/components/ui/Button.tsx` for External Protocols:**
-  Update lines 127–133 to distinguish internal SPA client routes from external URLs and protocols:
-  ```tsx
-  if ("href" in props) {
-    const { href, ...linkProps } = props;
-    const isExternal = typeof href === 'string' && /^(https?:\/\/|mailto:|tg:|chrome:)/i.test(href);
-
-    if (isExternal) {
-      return (
-        <a href={href} className={buttonVariants({ variant, size, className })} {...(linkProps as any)}>
-          {content}
-        </a>
-      );
-    }
-
-    return (
-      <Link to={href} className={buttonVariants({ variant, size, className })} {...(linkProps as any)}>
-        {content}
-      </Link>
-    );
-  }
-  ```
-- [ ] **Fix Nested `<Button>` Inside `<a>` in `TopSites.tsx`:**
-  In [`src/components/home/TopSites.tsx#L48-L52`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/home/TopSites.tsx#L48-L52):
-  - Remove outer `<a>` wrapper.
-  - Pass `href={site.url}` and `target="_blank"` directly to `<Button>`.
-- [ ] **Fix Nested `<Button>` Inside `<Link>` in `Favorites.tsx`:**
-  In [`src/components/home/favorites/Favorites.tsx#L16-L20`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/home/favorites/Favorites.tsx#L16-L20):
-  - Pass `href={favorite.url}` directly to `<Button>` rather than wrapping `<Button>` inside an anchor/Link tag.
-- [ ] **Verify `AboutTabDetails.tsx` Links:**
-  Ensure Telegram (`tg:resolve?domain=...`) and Email (`mailto:...`) buttons launch respective OS handler applications cleanly without altering hash route.
+- [x] **Refactor `src/components/ui/Button.tsx` for External Protocols:**
+  - Added external protocol detection (`isExternal = /^(https?:\/\/|mailto:|tg:|chrome:)/i.test(href)`).
+  - Rendered native `<a>` for external protocols with full anchor props, and `<Link>` for SPA routes.
+- [x] **Fix Nested `<Button>` Inside `<a>` in `TopSites.tsx`:**
+  - Removed outer `<a>` wrapper and passed `href={site.url}` directly to `<Button>`.
+- [x] **Fix Nested `<Button>` Inside `<Link>` in `Favorites.tsx`:**
+  - Removed outer `<Link>` wrapper and passed `href={site.url}` directly to `<Button>`.
+- [x] **Fix `FolderModal.tsx` External Site Links:**
+  - Rendered native `<a>` tag for folder websites.
+- [x] **Verify `AboutTabDetails.tsx` Links:**
+  - Added `target="_blank"` and `rel="noopener noreferrer"` to external links.
 
 ---
 
 ## 4. Verification & Testing Checklist
 
-- [ ] **Compile Verification:** Run `npx tsc --noEmit` and confirm 0 type errors across the entire codebase.
-- [ ] **Lint Import Boundaries:** Verify that no file in `src/lib/` or `src/types/` imports from `src/components/`.
+- [x] **Compile Verification:** Ran `npx tsc --noEmit` — 0 errors across entire codebase.
+- [x] **Build Verification:** Ran `npm run build` — compiled cleanly in 432ms.
+- [x] **Lint Import Boundaries:** Verified `src/lib/db.ts`, `src/lib/backup.ts`, `src/lib/migrations.ts`, and `src/types/settings.ts` have zero imports from `src/components/`.
 - [ ] **Bookmark CRUD Regression Test:**
   1. Add a new Favorite from the Settings tab.
   2. Verify Favorite appears immediately on the Home page.

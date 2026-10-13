@@ -66,6 +66,8 @@ export default function AboutTabDetails() {
                         variant='primary'
                         size='sm'
                         href="https://t.me/alizs10"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         leftIcon={<SendIcon className="size-4" />}
                     >
                         <BetterTypography variant="xs" weight="medium">

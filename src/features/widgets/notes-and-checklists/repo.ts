@@ -1,0 +1,28 @@
+import { db } from "@/lib/db";
+import type { NoteAndChecklist } from "@/types/entities/note";
+
+export const NotesRepository = {
+    getAll() {
+        return db.notes.toArray();
+    },
+
+    get(id: number) {
+        return db.notes.get(id);
+    },
+
+    put(note: NoteAndChecklist) {
+        return db.notes.put(note);
+    },
+
+    remove(id: number) {
+        return db.notes.delete(id);
+    },
+
+    bulkDelete(ids: number[]) {
+        return db.notes.bulkDelete(ids);
+    },
+
+    bulkPut(notes: NoteAndChecklist[]) {
+        return db.notes.bulkPut(notes);
+    }
+};

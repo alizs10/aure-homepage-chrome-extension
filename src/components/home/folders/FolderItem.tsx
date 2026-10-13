@@ -1,7 +1,7 @@
 import Favicon from '@/components/common/Favicon'
 import { ItemTooltip } from '@/components/common/ItemTooltip'
 import Button from '@/components/ui/Button'
-import type { Folder } from '@/components/settings/components/tabs-details/sites-and-folders/types'
+import type { Folder } from '@/features/bookmarks';
 import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import FolderModal from './FolderModal'

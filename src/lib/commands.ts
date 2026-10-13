@@ -1,6 +1,7 @@
 import { useCalendarNotesStore } from '@/components/widgets/calendar/store';
 import { useMoodTrackerStore } from '@/components/widgets/mood-tracker/store';
-import { moodMessages, type MoodType } from '@/components/widgets/mood-tracker/types';
+import { moodMessages } from '@/components/widgets/mood-tracker/types';
+import type { MoodType } from '@/types/entities/mood';
 import { useNotesAndChecklistsStore } from '@/components/widgets/notes-and-checklists/store';
 import { usePomodoroStore } from '@/components/widgets/pomodoro/store';
 import { useSettingsStore } from '@/stores';
