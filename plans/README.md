@@ -26,7 +26,7 @@ graph TD
 
 | Plan | Target Severity | Issues Covered | Status | Estimated Effort |
 | :--- | :--- | :--- | :--- | :--- |
-| [**01-CRITICAL-PLAN.md**](./01-CRITICAL-PLAN.md) | **Critical** | ARCH-001 | `[ ] Ready` | 1 hour |
+| [**01-CRITICAL-PLAN.md**](./01-CRITICAL-PLAN.md) | **Critical** | ARCH-001 | `[x] Completed` | 1 hour |
 | [**02-HIGH-PLAN.md**](./02-HIGH-PLAN.md) | **High** | ARCH-002, ARCH-003, ARCH-007 | `[ ] Ready` | 4–6 hours |
 | [**03-MEDIUM-PLAN.md**](./03-MEDIUM-PLAN.md) | **Medium** | ARCH-004, ARCH-005, ARCH-006, ARCH-008, DUP-001, DUP-002, DUP-003, DUP-004, MAINT-001 | `[ ] Ready` | 6–8 hours |
 | [**04-LOW-PLAN.md**](./04-LOW-PLAN.md) | **Low / Maint** | DUP-005, REUSE-001, REUSE-002, MAINT-002 | `[ ] Ready` | 2–3 hours |
