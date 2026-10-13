@@ -1,5 +1,5 @@
 import { CircleDashedCheckIcon, CircleDashedIcon } from "lucide-react";
-export * from '@/types/entities/progress';
+export type * from '@/types/entities/progress';
 
 export const progressFilters = [
     { label: "All", icon: undefined, value: "all" },

@@ -1,6 +1,6 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { Loader2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, type LinkProps } from "react-router-dom";
 import { Button as BaseButton } from "@base-ui/react/button";
 import { cn } from "../../lib/util";
 
@@ -38,7 +38,8 @@ type SharedProps = {
 };
 
 type LinkButtonProps = SharedProps &
-  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children" | "className"> & {
+  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children" | "className" | "href"> &
+  Omit<LinkProps, "children" | "className" | "to"> & {
     href: string;
     disabled?: never;
   };
@@ -48,7 +49,7 @@ type NativeButtonProps = SharedProps &
     href?: never;
   };
 
-type ButtonProps = LinkButtonProps | NativeButtonProps;
+export type ButtonProps = LinkButtonProps | NativeButtonProps;
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
@@ -78,7 +79,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   "ghost-success":
     "bg-transparent hover:bg-success/20",
 
-  "warning":
+  warning:
     "liquid-glass-sm hover:bg-warning/60!",
   none: "",
 };
@@ -105,11 +106,15 @@ export default function Button(props: ButtonProps) {
     ...rest
   } = props;
 
+  const isDisabled = !!loading || ("disabled" in props && !!props.disabled);
+
   const classes = cn(
     "relative inline-flex items-center justify-center gap-x-2 rounded-3xl font-medium",
+    "cursor-pointer select-none no-underline text-foreground",
     "transition-[background,box-shadow,transform,opacity] duration-200",
     "active:scale-97 active:opacity-80",
     "disabled:pointer-events-none disabled:grayscale disabled:text-foreground/30",
+    isDisabled && "pointer-events-none grayscale text-foreground/30",
     variantClasses[variant],
     sizeClasses[size],
     className,
@@ -126,15 +131,17 @@ export default function Button(props: ButtonProps) {
   );
 
   if ("href" in props && props.href) {
-    const { href, ...linkProps } = props as LinkButtonProps;
+    const { href, ...linkProps } = rest as Omit<LinkButtonProps, keyof SharedProps>;
     const isExternal = typeof href === "string" && /^(https?:\/\/|mailto:|tg:|chrome:)/i.test(href);
 
     if (isExternal) {
       return (
         <a
           href={href}
-          className={classes}
           {...(linkProps as AnchorHTMLAttributes<HTMLAnchorElement>)}
+          className={classes}
+          aria-disabled={isDisabled || undefined}
+          tabIndex={isDisabled ? -1 : undefined}
         >
           {content}
         </a>
@@ -142,7 +149,13 @@ export default function Button(props: ButtonProps) {
     }
 
     return (
-      <Link to={href} className={classes} {...(linkProps as any)}>
+      <Link
+        to={href}
+        {...(linkProps as Omit<LinkProps, "to">)}
+        className={classes}
+        aria-disabled={isDisabled || undefined}
+        tabIndex={isDisabled ? -1 : undefined}
+      >
         {content}
       </Link>
     );
