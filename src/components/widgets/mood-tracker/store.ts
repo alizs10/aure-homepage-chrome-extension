@@ -3,7 +3,6 @@ import { create } from 'zustand';
 import { format } from 'date-fns';
 import type { filters, MoodHistory, MoodType } from './types';
 import { MoodRepository } from './db';
-import { useSettingsStore } from '@/stores';
 
 interface MoodTrackerState {
     data: MoodHistory[];
@@ -31,20 +30,12 @@ export const useMoodTrackerStore = create<MoodTrackerState>((set, get) => ({
 
 
 
-    // Load data on app start (replaces the useEffect in the Provider)
     initialize: async () => {
         const moods = await MoodRepository.getAll();
-
-        // Read the preference from the global settings store
-        const settings = useSettingsStore.getState().settings;
-        const savedShowChart = settings?.widgetPreferences?.['mood-tracker']?.showChart;
-
         set({
             data: moods,
             loading: false,
-            showChart: savedShowChart !== undefined ? savedShowChart : true
         });
-
     },
 
     addItem: async (mood, date) => {
@@ -103,22 +94,7 @@ export const useMoodTrackerStore = create<MoodTrackerState>((set, get) => ({
         set({ filter: value });
     },
 
-    setShowChart: async (value) => {
-        // 1. Optimistic UI: Update local store immediately for zero-lag feel
+    setShowChart: (value) => {
         set({ showChart: value });
-
-        // 2. Persist to Global Settings: Use the existing `update` method
-        const settings = useSettingsStore.getState().settings;
-        if (!settings) return;
-
-        await useSettingsStore.getState().update({
-            widgetPreferences: {
-                ...settings.widgetPreferences,
-                'mood-tracker': {
-                    ...settings.widgetPreferences?.['mood-tracker'],
-                    showChart: value,
-                },
-            },
-        });
     }
 }));

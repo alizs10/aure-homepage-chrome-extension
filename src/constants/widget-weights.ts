@@ -1,4 +1,17 @@
-import type { WidgetId } from '@/types';
+import type { WidgetId, WidgetLayout } from '@/types';
+
+export const DEFAULT_WIDGET_LAYOUT: WidgetLayout = {
+    positions: [
+        { widgetId: "notes-and-checklists", page: 1, column: 0, row: 0, size: 2 },
+        { widgetId: "mood-tracker", page: 1, column: 1, row: 0, size: 2 },
+        { widgetId: "counters", page: 1, column: 1, row: 1, size: 1 },
+        { widgetId: "pomodoro", page: 1, column: 2, row: 0, size: 2 },
+        { widgetId: "calendar", page: 2, column: 0, row: 0, size: 2 },
+        { widgetId: "pet-house", page: 2, column: 1, row: 0, size: 1 },
+        { widgetId: "progresses", page: 2, column: 2, row: 0, size: 2 },
+    ],
+    totalPages: 3,
+};
 
 // Widget weight map: how many grid units each widget occupies
 export const WIDGET_WEIGHTS: Record<WidgetId, number> = {

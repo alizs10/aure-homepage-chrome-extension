@@ -1,9 +1,7 @@
 // stores.ts
 import { create } from 'zustand';
-import { toast } from '@/stores/useToastStore';
 import type { AdvancedNote, Block, Checklist, NoteAndChecklist, TaskBlock } from './types';
 import { NotesRepository } from './db';
-import { useSettingsStore } from '@/stores';
 
 // 🌟 Helper: Generate unique block ID
 function generateBlockId(noteId: number, index: number): string {
@@ -91,18 +89,11 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
     editable: undefined,
     showChecked: false,
 
-    // Load data on app start
     initialize: async () => {
         const notes = await NotesRepository.getAll();
-
-        // Read the preference from the global settings store
-        const settings = useSettingsStore.getState().settings;
-        const savedShowChecked = settings?.widgetPreferences?.['notes-and-checklists']?.showChecked;
-
         set({
             data: notes,
             loading: false,
-            showChecked: savedShowChecked !== undefined ? savedShowChecked : true
         });
     },
 
@@ -170,8 +161,6 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
         // Handle flat checklist
         if ('status' in note && typeof note.status === 'boolean') {
             const checklist = note as Checklist;
-            const status = checklist.status ? 'Unchecked' : 'Checked';
-            toast.info(`${status} item`);
 
             const updated: Checklist = {
                 ...checklist,
@@ -198,9 +187,6 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
 
         const block = advancedNote.blocks[blockIndex];
         if (block.type !== 'task') return;
-
-        const status = block.status ? 'Unchecked' : 'Checked';
-        toast.info(`${status} item`);
 
         // Create updated blocks array
         const updatedBlocks = [...advancedNote.blocks];
@@ -294,23 +280,8 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
         set({ editable: undefined });
     },
 
-    setShowChecked: async (value) => {
-        // 1. Optimistic UI: Update local store immediately for zero-lag feel
+    setShowChecked: (value) => {
         set({ showChecked: value });
-
-        // 2. Persist to Global Settings: Use the existing `update` method
-        const settings = useSettingsStore.getState().settings;
-        if (!settings) return;
-
-        await useSettingsStore.getState().update({
-            widgetPreferences: {
-                ...settings.widgetPreferences,
-                'notes-and-checklists': {
-                    ...settings.widgetPreferences?.['notes-and-checklists'],
-                    showChecked: value,
-                },
-            },
-        });
     },
 
     // 🌟 Surgical Cleanup Action
@@ -396,13 +367,5 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
                 return { data: newData, editable: newEditable };
             });
         }
-
-        const messages = {
-            completed: 'Completed tasks cleared!',
-            tasks: 'All tasks cleared!',
-            notes: 'All notes cleared!',
-            all: 'All data wiped!'
-        };
-        toast.success(messages[type]);
     }
 }));

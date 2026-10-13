@@ -5,6 +5,7 @@ import ModalHeader from '@/components/ui/modal/ModalHeader';
 import ConfirmDialog from '@/components/ui/Dialog';
 import Button from '@/components/ui/Button';
 import { BetterTypography } from '@/components/common/BetterTypography';
+import { toast } from '@/stores/useToastStore';
 import { useNotesAndChecklists } from '../hooks/useNotesAndChecklists';
 
 type CleanupType = 'completed' | 'tasks' | 'notes' | 'all';
@@ -21,6 +22,13 @@ export default function CleanupModal({ open, onClose }: CleanupModalProps) {
     const handleConfirm = () => {
         if (confirmAction) {
             cleanup(confirmAction);
+            const messages: Record<CleanupType, string> = {
+                completed: 'Completed tasks cleared!',
+                tasks: 'All tasks cleared!',
+                notes: 'All notes cleared!',
+                all: 'All data wiped!',
+            };
+            toast.success(messages[confirmAction]);
             setConfirmAction(null);
             onClose();
         }

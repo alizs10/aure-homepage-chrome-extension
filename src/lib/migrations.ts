@@ -1,6 +1,7 @@
 import { useSettingsStore } from "@/stores";
 import { FoldersRepository, useFoldersStore, type Folder, type Website } from "@/features/bookmarks";
 import { DEFAULT_FOLDERS } from "@/constants/defaultFolders";
+import { DEFAULT_WIDGET_LAYOUT } from "@/constants/widget-weights";
 import { NotesRepository } from "@/features/widgets";
 import type { AdvancedNote, Block, NoteAndChecklist, Note, Checklist } from "@/types/entities";
 import type { Settings, WidgetLayout } from "@/types";
@@ -122,19 +123,7 @@ const migrations: Record<number, () => Promise<void>> = {
         let widgetLayout: WidgetLayout | undefined = legacySettings.widget_layout;
 
         if (!widgetLayout) {
-            // Create a default layout with main widgets on pages 1-2, blank page 3
-            widgetLayout = {
-                positions: [
-                    { widgetId: "notes-and-checklists", page: 1, column: 0, row: 0, size: 2 },
-                    { widgetId: "mood-tracker", page: 1, column: 1, row: 0, size: 2 },
-                    { widgetId: "counters", page: 1, column: 1, row: 1, size: 1 },
-                    { widgetId: "pomodoro", page: 1, column: 2, row: 0, size: 2 },
-                    { widgetId: "calendar", page: 2, column: 0, row: 0, size: 2 },
-                    { widgetId: "pet-house", page: 2, column: 1, row: 0, size: 1 },
-                    { widgetId: "progresses", page: 2, column: 2, row: 0, size: 2 },
-                ],
-                totalPages: 3, // ✅ Fixed: pages 1, 2, and blank page 3
-            };
+            widgetLayout = DEFAULT_WIDGET_LAYOUT;
         }
 
         await update({

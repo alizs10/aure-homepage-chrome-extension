@@ -2,6 +2,7 @@
 import { useCallback, useMemo } from 'react';
 import type { AdvancedNote, Checklist, NoteAndChecklist, TaskBlock } from '../types';
 import { useNotesAndChecklistsStore } from '../store';
+import { useSettingsStore } from '@/stores';
 
 export function useNotesAndChecklists() {
     // Select state slices
@@ -18,9 +19,27 @@ export function useNotesAndChecklists() {
     const startEdit = useNotesAndChecklistsStore((state) => state.startEdit);
     const updateItem = useNotesAndChecklistsStore((state) => state.updateItem);
     const cancelEdit = useNotesAndChecklistsStore((state) => state.cancelEdit);
-    const setShowChecked = useNotesAndChecklistsStore((state) => state.setShowChecked);
+    const storeSetShowChecked = useNotesAndChecklistsStore((state) => state.setShowChecked);
     const initialize = useNotesAndChecklistsStore((state) => state.initialize);
     const cleanup = useNotesAndChecklistsStore((state) => state.cleanup);
+
+    const updateSettings = useSettingsStore((state) => state.update);
+    const settings = useSettingsStore((state) => state.settings);
+
+    const setShowChecked = useCallback((value: boolean) => {
+        storeSetShowChecked(value);
+        if (settings) {
+            updateSettings({
+                widgetPreferences: {
+                    ...settings.widgetPreferences,
+                    'notes-and-checklists': {
+                        ...settings.widgetPreferences?.['notes-and-checklists'],
+                        showChecked: value,
+                    },
+                },
+            });
+        }
+    }, [storeSetShowChecked, updateSettings, settings]);
 
     // 🌟 Type guards for safe type narrowing
     const isAdvanced = (item: NoteAndChecklist): item is AdvancedNote =>

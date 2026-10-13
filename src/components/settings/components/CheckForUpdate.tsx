@@ -1,64 +1,35 @@
+import { useState } from "react";
+import { RefreshCwIcon } from "lucide-react";
 import { BetterTypography } from "@/components/common/BetterTypography";
 import Button from "@/components/ui/Button";
-import { useState } from "react";
 import UpdateAvailableModal from "./modals/UpdateAvailableModal";
-import { RefreshCwIcon } from "lucide-react";
 import { toast } from "@/stores/useToastStore";
-import { isVersionHigher } from "@/lib/version";
-
-const UPDATE_CHECK_URL = import.meta.env.VITE_UPDATE_CHECK_URL ||
-    "https://raw.githubusercontent.com/alizs10/aure-homepage-chrome-extension/main/version.json";
-
-interface VersionInfo {
-    latestVersion: string;
-    minimumSupportedVersion: string;
-    releaseDate: string;
-    downloadUrl: string;
-    releasePage: string;
-    notes: string[];
-}
+import { useUpdateChecker } from "@/hooks/useUpdateChecker";
 
 export default function CheckForUpdate() {
     const [open, setOpen] = useState(false);
-    const [update, setUpdate] = useState<VersionInfo | null>(null);
-    const [loading, setLoading] = useState(false)
+    const { loading, checkForUpdate, updateInfo, currentVersion } = useUpdateChecker(false);
 
-    async function checkForUpdate() {
-        if (loading) return
-
-        setLoading(true)
+    async function handleCheck() {
+        if (loading) return;
 
         try {
-            const res = await fetch(UPDATE_CHECK_URL, {
-                cache: "no-store",
-            });
-
-            if (!res.ok) {
-                throw new Error("Failed to fetch latest version.");
-            }
-
-            const latest: VersionInfo = await res.json();
-            const currentVersion = import.meta.env.VITE_APP_VERSION;
-
-            // 🌟 Robust semantic version comparison
-            if (isVersionHigher(latest.latestVersion, currentVersion)) {
-                setUpdate(latest);
+            const result = await checkForUpdate();
+            if (result.hasUpdate && result.updateInfo) {
                 setOpen(true);
             } else {
-                toast.info("Already up to date.")
+                toast.info("Already up to date.");
             }
         } catch (error) {
-            console.error(error);
-            toast.error("Unable to check for updates.")
-        } finally {
-            setLoading(false)
+            console.error("Update check error:", error);
+            toast.error("Unable to check for updates.");
         }
     }
 
     return (
         <>
             <Button
-                onClick={checkForUpdate}
+                onClick={handleCheck}
                 size="sm"
                 variant="primary"
                 leftIcon={<RefreshCwIcon className="size-4" />}
@@ -69,12 +40,12 @@ export default function CheckForUpdate() {
                 </BetterTypography>
             </Button>
 
-            {(open && update) && (
+            {open && updateInfo && (
                 <UpdateAvailableModal
                     open={open}
                     onClose={() => setOpen(false)}
-                    currentVersion={import.meta.env.VITE_APP_VERSION}
-                    latest={update}
+                    currentVersion={currentVersion}
+                    latest={updateInfo}
                 />
             )}
         </>

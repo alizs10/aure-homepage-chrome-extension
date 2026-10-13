@@ -1,5 +1,6 @@
 import { STORAGE_KEYS } from '@/constants/storage_keys';
 import { marked } from 'marked';
+import { compareVersions } from './version';
 
 const modules = import.meta.glob<string>('/src/components/features/updates/changelog/*.md', {
     eager: true,
@@ -40,18 +41,6 @@ function extractPreview(html: string): string {
         .trim();
     if (text.length <= 140) return text;
     return text.slice(0, 140).trim() + '…';
-}
-
-function compareVersions(a: string, b: string): number {
-    const pa = a.split('.').map(Number);
-    const pb = b.split('.').map(Number);
-    for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
-        const da = pa[i] ?? 0;
-        const db = pb[i] ?? 0;
-        if (da > db) return 1;
-        if (da < db) return -1;
-    }
-    return 0;
 }
 
 export const changelog: ChangelogEntry[] = Object.entries(modules)
