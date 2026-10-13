@@ -65,23 +65,61 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true; // Keep channel open for asynchronous sendResponse
 });
 
+// 🌟 Helper: Focus existing Aure tab or open new tab (handles macOS minimized windows)
+async function openOrFocusAureTab() {
+    try {
+        const extensionUrl = chrome.runtime.getURL('index.html');
+        const tabs = await chrome.tabs.query({ url: [extensionUrl, 'chrome://newtab/*'] });
+
+        // If an existing Aure tab is already open, activate it and unminimize/focus its window
+        if (tabs.length > 0 && tabs[0].id !== undefined) {
+            const tab = tabs[0];
+            await chrome.tabs.update(tab.id, { active: true });
+            if (tab.windowId !== undefined) {
+                const win = await chrome.windows.get(tab.windowId);
+                await chrome.windows.update(tab.windowId, {
+                    focused: true,
+                    ...(win.state === 'minimized' ? { state: 'normal' } : {}),
+                });
+            }
+            return;
+        }
+
+        // If no Aure tab exists, inspect existing Chrome windows
+        const windows = await chrome.windows.getAll();
+        if (windows.length === 0) {
+            // No Chrome windows exist (macOS dock only)
+            await chrome.windows.create({
+                url: extensionUrl,
+                focused: true,
+                state: 'normal',
+            });
+            return;
+        }
+
+        // A window exists: unminimize if needed and focus
+        const targetWindow = windows.find((w) => w.focused) || windows[0];
+        if (targetWindow.id !== undefined) {
+            await chrome.windows.update(targetWindow.id, {
+                focused: true,
+                ...(targetWindow.state === 'minimized' ? { state: 'normal' } : {}),
+            });
+
+            await chrome.tabs.create({
+                windowId: targetWindow.id,
+                url: extensionUrl,
+                active: true,
+            });
+        }
+    } catch (error) {
+        console.error('Failed to focus or open Aure tab on notification click:', error);
+    }
+}
+
 // 🌟 Focus existing Aure tab or open new tab when notification is clicked
 chrome.notifications.onClicked.addListener(async (notificationId) => {
     if (notificationId === 'aure-pomodoro-complete') {
         chrome.notifications.clear(notificationId);
-        try {
-            const extensionUrl = chrome.runtime.getURL('index.html');
-            const tabs = await chrome.tabs.query({ url: [extensionUrl, 'chrome://newtab/*'] });
-            if (tabs.length > 0 && tabs[0].id !== undefined) {
-                await chrome.tabs.update(tabs[0].id, { active: true });
-                if (tabs[0].windowId !== undefined) {
-                    await chrome.windows.update(tabs[0].windowId, { focused: true });
-                }
-            } else {
-                await chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
-            }
-        } catch (error) {
-            console.error('Failed to focus or open Aure tab on notification click:', error);
-        }
+        await openOrFocusAureTab();
     }
 });
