@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Favorite } from '../types';
 import { FavoritesRepository } from '../db/favorites.repo';
+import { getAdjacentSwap } from '@/lib/util';
 
 interface FavoritesState {
     data: Favorite[];
@@ -63,54 +64,20 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     },
 
     sortUp: async (id) => {
-        const data = get().data;
-        const currentIndex = data.findIndex((item) => item.id === id);
-        if (currentIndex <= 0) return;
+        const swap = getAdjacentSwap(get().data, id, 'up');
+        if (!swap) return;
 
-        const currentItem = data[currentIndex];
-        const previousItem = data[currentIndex - 1];
-
-        // Swap orders
-        const updatedCurrent = { ...currentItem, order: previousItem.order };
-        const updatedPrevious = { ...previousItem, order: currentItem.order };
-
-        await FavoritesRepository.put(updatedCurrent);
-        await FavoritesRepository.put(updatedPrevious);
-
-        // Update state and re-sort
-        set((state) => {
-            const newData = state.data.map((n) => {
-                if (n.id === id) return updatedCurrent;
-                if (n.id === previousItem.id) return updatedPrevious;
-                return n;
-            });
-            return { data: newData.sort((a, b) => a.order - b.order) };
-        });
+        await FavoritesRepository.put(swap.updatedCurrent);
+        await FavoritesRepository.put(swap.updatedAdjacent);
+        set({ data: swap.newItems });
     },
 
     sortDown: async (id) => {
-        const data = get().data;
-        const currentIndex = data.findIndex((item) => item.id === id);
-        if (currentIndex === -1 || currentIndex >= data.length - 1) return;
+        const swap = getAdjacentSwap(get().data, id, 'down');
+        if (!swap) return;
 
-        const currentItem = data[currentIndex];
-        const nextItem = data[currentIndex + 1];
-
-        // Swap orders
-        const updatedCurrent = { ...currentItem, order: nextItem.order };
-        const updatedNext = { ...nextItem, order: currentItem.order };
-
-        await FavoritesRepository.put(updatedCurrent);
-        await FavoritesRepository.put(updatedNext);
-
-        // Update state and re-sort
-        set((state) => {
-            const newData = state.data.map((n) => {
-                if (n.id === id) return updatedCurrent;
-                if (n.id === nextItem.id) return updatedNext;
-                return n;
-            });
-            return { data: newData.sort((a, b) => a.order - b.order) };
-        });
+        await FavoritesRepository.put(swap.updatedCurrent);
+        await FavoritesRepository.put(swap.updatedAdjacent);
+        set({ data: swap.newItems });
     },
 }));

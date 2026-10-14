@@ -57,7 +57,6 @@ export const usePetHouseStore = create<PetHouseState>((set, get) => ({
 
         const updated: Pet = {
             ...pet,
-            hasBeenFeedCount: pet.hasBeenFeedCount + 1,
             updatedAt: now,
             deletedAt: now,
         };

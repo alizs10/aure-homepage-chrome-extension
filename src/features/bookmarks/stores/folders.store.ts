@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Folder, Website } from '../types';
 import { FoldersRepository } from '../db/folders.repo';
+import { getAdjacentSwap } from '@/lib/util';
 
 interface FoldersState {
     data: Folder[];
@@ -53,41 +54,21 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
     },
 
     sortUp: async (id) => {
-        const data = get().data;
-        const currentIndex = data.findIndex((item) => item.id === id);
-        if (currentIndex <= 0) return;
-        const currentItem = data[currentIndex];
-        const previousItem = data[currentIndex - 1];
-        const updatedCurrent = { ...currentItem, order: previousItem.order };
-        const updatedPrevious = { ...previousItem, order: currentItem.order };
-        await FoldersRepository.put(updatedCurrent);
-        await FoldersRepository.put(updatedPrevious);
-        set((state) => ({
-            data: state.data.map((n) => {
-                if (n.id === id) return updatedCurrent;
-                if (n.id === previousItem.id) return updatedPrevious;
-                return n;
-            }).sort((a, b) => a.order - b.order)
-        }));
+        const swap = getAdjacentSwap(get().data, id, 'up');
+        if (!swap) return;
+
+        await FoldersRepository.put(swap.updatedCurrent);
+        await FoldersRepository.put(swap.updatedAdjacent);
+        set({ data: swap.newItems });
     },
 
     sortDown: async (id) => {
-        const data = get().data;
-        const currentIndex = data.findIndex((item) => item.id === id);
-        if (currentIndex === -1 || currentIndex >= data.length - 1) return;
-        const currentItem = data[currentIndex];
-        const nextItem = data[currentIndex + 1];
-        const updatedCurrent = { ...currentItem, order: nextItem.order };
-        const updatedNext = { ...nextItem, order: currentItem.order };
-        await FoldersRepository.put(updatedCurrent);
-        await FoldersRepository.put(updatedNext);
-        set((state) => ({
-            data: state.data.map((n) => {
-                if (n.id === id) return updatedCurrent;
-                if (n.id === nextItem.id) return updatedNext;
-                return n;
-            }).sort((a, b) => a.order - b.order)
-        }));
+        const swap = getAdjacentSwap(get().data, id, 'down');
+        if (!swap) return;
+
+        await FoldersRepository.put(swap.updatedCurrent);
+        await FoldersRepository.put(swap.updatedAdjacent);
+        set({ data: swap.newItems });
     },
 
     addWebsiteToFolder: async (folderId, websiteData) => {
@@ -150,28 +131,17 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         const folder = get().data.find((f) => f.id === folderId);
         if (!folder) return;
 
-        const websites = folder.websites;
-        const currentIndex = websites.findIndex((w) => w.id === websiteId);
-        if (currentIndex <= 0) return;
-
-        const currentWebsite = websites[currentIndex];
-        const previousWebsite = websites[currentIndex - 1];
-
-        const updatedCurrent = { ...currentWebsite, order: previousWebsite.order };
-        const updatedPrevious = { ...previousWebsite, order: currentWebsite.order };
+        const swap = getAdjacentSwap(folder.websites, websiteId, 'up');
+        if (!swap) return;
 
         const updatedFolder: Folder = {
             ...folder,
-            websites: websites.map((w) => {
-                if (w.id === websiteId) return updatedCurrent;
-                if (w.id === previousWebsite.id) return updatedPrevious;
-                return w;
-            }).sort((a, b) => a.order - b.order)
+            websites: swap.newItems,
         };
 
         await FoldersRepository.put(updatedFolder);
         set((state) => ({
-            data: state.data.map((f) => (f.id === folderId ? updatedFolder : f))
+            data: state.data.map((f) => (f.id === folderId ? updatedFolder : f)),
         }));
     },
 
@@ -179,28 +149,17 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         const folder = get().data.find((f) => f.id === folderId);
         if (!folder) return;
 
-        const websites = folder.websites;
-        const currentIndex = websites.findIndex((w) => w.id === websiteId);
-        if (currentIndex === -1 || currentIndex >= websites.length - 1) return;
-
-        const currentWebsite = websites[currentIndex];
-        const nextWebsite = websites[currentIndex + 1];
-
-        const updatedCurrent = { ...currentWebsite, order: nextWebsite.order };
-        const updatedNext = { ...nextWebsite, order: currentWebsite.order };
+        const swap = getAdjacentSwap(folder.websites, websiteId, 'down');
+        if (!swap) return;
 
         const updatedFolder: Folder = {
             ...folder,
-            websites: websites.map((w) => {
-                if (w.id === websiteId) return updatedCurrent;
-                if (w.id === nextWebsite.id) return updatedNext;
-                return w;
-            }).sort((a, b) => a.order - b.order)
+            websites: swap.newItems,
         };
 
         await FoldersRepository.put(updatedFolder);
         set((state) => ({
-            data: state.data.map((f) => (f.id === folderId ? updatedFolder : f))
+            data: state.data.map((f) => (f.id === folderId ? updatedFolder : f)),
         }));
     }
 }));

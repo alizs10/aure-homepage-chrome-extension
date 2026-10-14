@@ -7,7 +7,7 @@
 - [`REUSE-002`](../ARCHITECTURE_AUDIT.md#reuse-002-reimplemented-classname-concatenation-cn): Reimplemented ClassName Concatenation (`cn`)  
 - [`MAINT-002`](../ARCHITECTURE_AUDIT.md#maint-002-dead-code-obsolete-caching-layers-and-mutation-bugs): Dead Code, Obsolete Caching Layers & Domain Mutation Bugs  
 **Estimated Time:** 2–3 hours  
-**Status:** `[ ] Not Started`
+**Status:** `[x] Completed`
 
 ---
 
@@ -38,100 +38,48 @@ Address residual code smells, dead code, subtle logic bugs, and inconsistent uti
 ## 3. Step-by-Step Implementation Tasks
 
 ### Task 4.1: Extract Generic `swapItemOrder` Utility (DUP-005)
-- [ ] In [`src/lib/util.ts`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/lib/util.ts), implement:
-  ```typescript
-  export interface OrderableItem {
-    id: number;
-    order: number;
-  }
-
-  export function getAdjacentSwap<T extends OrderableItem>(
-    items: T[],
-    id: number,
-    direction: 'up' | 'down'
-  ): { current: T; adjacent: T } | null {
-    const index = items.findIndex((item) => item.id === id);
-    if (index === -1) return null;
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= items.length) return null;
-
-    return {
-      current: items[index],
-      adjacent: items[targetIndex],
-    };
-  }
-  ```
-- [ ] Refactor `favorites.store.ts` (`sortUp`, `sortDown`) to use `getAdjacentSwap`.
-- [ ] Refactor `folders.store.ts` (`sortUp`, `sortDown`, `sortWebsiteUp`, `sortWebsiteDown`) to use `getAdjacentSwap`.
+- [x] In [`src/lib/util.ts`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/lib/util.ts), implement `getAdjacentSwap<T extends OrderableItem>`
+- [x] Refactor `favorites.store.ts` (`sortUp`, `sortDown`) to use `getAdjacentSwap`.
+- [x] Refactor `folders.store.ts` (`sortUp`, `sortDown`, `sortWebsiteUp`, `sortWebsiteDown`) to use `getAdjacentSwap`.
 
 ---
 
 ### Task 4.2: Standardize Date Formatting (REUSE-001)
-- [ ] Review and expand [`src/helpers/date.ts`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/helpers/date.ts) to support application date formats:
-  ```typescript
-  import { format, parseISO } from 'date-fns';
-
-  export const formatDisplayDate = (date: Date | string | number, formatStr = 'MMMM d, yyyy'): string => {
-    try {
-      const d = typeof date === 'string' ? parseISO(date) : new Date(date);
-      return format(d, formatStr);
-    } catch {
-      return String(date);
-    }
-  };
-  ```
-- [ ] In [`src/components/updates/UpdatesPopup.tsx`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/updates/UpdatesPopup.tsx#L13), remove the local `formatDate` helper and use `formatDisplayDate`.
-- [ ] In [`src/layouts/Header.tsx`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/layouts/Header.tsx#L20), format the live date/time using `formatDisplayDate(new Date(), 'eeee, MMMM d, yyyy')` with a 1-second interval timer, removing dependency on `react-moment`.
+- [x] Review and expand [`src/helpers/date.ts`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/helpers/date.ts) to support application date formats with `formatDisplayDate`.
+- [x] In [`src/components/updates/UpdatesPopup.tsx`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/updates/UpdatesPopup.tsx#L13) and `UpdateDetailModal.tsx`, remove the local `formatDate` helper and use `formatDisplayDate`.
+- [x] In [`src/layouts/Header.tsx`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/layouts/Header.tsx), format the live date/time using `formatDisplayDate`.
 
 ---
 
 ### Task 4.3: Fix `ModalWrapper.tsx` `cn` Import (REUSE-002)
-- [ ] Open [`src/components/ui/modal/ModalWrapper.tsx`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/ui/modal/ModalWrapper.tsx).
-- [ ] Delete private inline `function cn(...)` on lines 42–44.
-- [ ] Add `import { cn } from '@/lib/util';` at the top of the file.
+- [x] Open [`src/components/ui/modal/ModalWrapper.tsx`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/ui/modal/ModalWrapper.tsx).
+- [x] Delete private inline `function cn(...)` on lines 42–44.
+- [x] Add `import { cn } from '@/lib/util';` at the top of the file.
 
 ---
 
 ### Task 4.4: Fix Pet House Deletion Bug (MAINT-002)
-- [ ] Open [`src/components/widgets/pet-house/store.ts#L60`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/widgets/pet-house/store.ts#L60).
-- [ ] In `removeItem`, remove `hasBeenFeedCount: state.hasBeenFeedCount + 1`:
-  ```typescript
-  // Before:
-  removeItem: async (id: number) => {
-    await repository.delete(id);
-    set((state) => ({
-      items: state.items.filter((item) => item.id !== id),
-      hasBeenFeedCount: state.hasBeenFeedCount + 1, // BUG
-    }));
-  }
-
-  // After:
-  removeItem: async (id: number) => {
-    await repository.delete(id);
-    set((state) => ({
-      items: state.items.filter((item) => item.id !== id),
-    }));
-  }
-  ```
+- [x] Open [`src/components/widgets/pet-house/store.ts#L60`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/widgets/pet-house/store.ts#L60).
+- [x] In `removeItem`, remove `hasBeenFeedCount: state.hasBeenFeedCount + 1`.
 
 ---
 
 ### Task 4.5: Clean Obsolete Code and File Naming (MAINT-002)
-- [ ] **Delete UiShowcase:** Remove `src/pages/UiShowcase.tsx` and delete the commented-out import and route in [`src/App.tsx#L12`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/App.tsx#L12).
-- [ ] **Clean Storage Cleanup Loop:** In [`src/stores/settings.store.ts#L60-L68`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/stores/settings.store.ts#L60-L68), remove the loop removing keys matching `/^favicon_/` from `chrome.storage.local`.
-- [ ] **Fix SearchInput ARIA & Fallback:**
+- [x] **Delete UiShowcase:** Remove `src/pages/UiShowcase.tsx` and delete the commented-out import and route in [`src/App.tsx#L12`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/App.tsx#L12).
+- [x] **Clean Storage Cleanup Loop:** In [`src/stores/settings.store.ts#L60-L68`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/stores/settings.store.ts#L60-L68), remove the loop removing keys matching `/^favicon_/` from `chrome.storage.local`.
+- [x] **Fix SearchInput ARIA & Fallback:**
   - In [`src/components/home/SearchInput.tsx#L199`](file:///Users/alizs/Documents/codes/aure-homepage-chrome-extention/src/components/home/SearchInput.tsx#L199), remove invalid attribute `role="div"`.
   - In line 44, change `http://` prefix fallback to `https://`.
-- [ ] **Rename Non-JSX Files:**
+- [x] **Rename Non-JSX Files:**
   - Rename `src/hooks/useCurrentDateString.tsx` to `src/hooks/useCurrentDateString.ts`.
-  - Rename `src/hooks/useWidth.tsx` to `src/hooks/useWidth.ts`.
-  - In `src/components/widgets/counters/types/index.tsx` and `src/components/widgets/progresses/types/index.tsx`, extract the SVG/JSX icon dictionaries into separate `icons.tsx` components and keep pure type definitions in `index.ts`.
+  - Rename `src/components/settings/constants/tabs.tsx` and `src/components/widgets/notes-and-checklists/hooks/useNotesAndChecklists.tsx` to `.ts`.
+  - In `src/components/widgets/counters/types/index.tsx` and `src/components/widgets/progresses/types/index.tsx`, extract the filter constants with Lucide JSX icons into separate `constants/filters.tsx` components and keep pure type definitions in `types/index.ts`.
 
 ---
 
 ## 4. Verification & Testing Checklist
 
-- [ ] **Build Check:** Run `npm run build` and ensure clean compile with zero errors.
+- [x] **Build Check:** Run `npm run build` and ensure clean compile with zero errors.
 - [ ] **Reordering Functionality:**
   1. Add 3 favorites.
   2. Click "Move Up" and "Move Down" buttons in Settings > Sites and Folders.

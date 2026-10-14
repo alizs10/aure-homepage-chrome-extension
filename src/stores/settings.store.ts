@@ -50,24 +50,13 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
         });
     },
 
-    // Inside your useSettingsStore clear method:
     clear: async () => {
         // 1. Clear known settings keys
         await Promise.all(
             Object.values(STORAGE_KEYS).map((key) => storage.remove(key))
         );
 
-        // 2. (Optional) Clear all dynamic favicon caches
-        const allStorage = await chrome.storage.local.get(null); // Gets everything
-        const faviconKeys = Object.keys(allStorage).filter((key) =>
-            key.startsWith("favicon_")
-        );
-
-        if (faviconKeys.length > 0) {
-            await chrome.storage.local.remove(faviconKeys);
-        }
-
-        // 3. Clear IndexedDB
+        // 2. Clear IndexedDB
         await Promise.all(db.tables.map((table) => table.clear()));
 
         set({ settings: null });

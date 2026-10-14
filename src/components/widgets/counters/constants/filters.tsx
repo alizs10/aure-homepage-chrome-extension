@@ -1,5 +1,4 @@
 import { ClockArrowDown, ClockArrowUp } from 'lucide-react';
-export type * from '@/types/entities/counter';
 
 export const counterFilters = [
     { label: "All", icon: undefined, value: "all" },

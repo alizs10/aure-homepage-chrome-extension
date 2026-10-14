@@ -6,7 +6,7 @@ import { useState, useMemo } from 'react';
 import { useProgresses } from '../hooks/useProgresses';
 import ProgressItem from './ProgressItem';
 import ProgressModal from '../modals/ProgressModal';
-import { progressFilters } from '../types';
+import { progressFilters } from '../constants/filters';
 import type { Progress } from '../types';
 
 export default function ProgressesContent() {

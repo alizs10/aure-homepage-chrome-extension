@@ -20,7 +20,7 @@ export function isValidUrl(string: string): boolean {
         }
         // 3. Check for domain-like strings (contains a dot, no spaces)
         if (/^[^\s]+\.[^\s]+$/.test(trimmed)) {
-            new URL(`http://${trimmed}`);
+            new URL(`https://${trimmed}`);
             return true;
         }
     } catch {
@@ -39,9 +39,9 @@ export function getDestination(query: string): string | null {
 
     const trimmed = query.trim();
 
-    // If it's a valid URL, navigate directly (prepend http:// if missing)
+    // If it's a valid URL, navigate directly (prepend https:// if missing)
     if (isValidUrl(trimmed)) {
-        return trimmed.startsWith('http') ? trimmed : `http://${trimmed}`;
+        return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`;
     }
 
     // Otherwise, fallback to Google Search

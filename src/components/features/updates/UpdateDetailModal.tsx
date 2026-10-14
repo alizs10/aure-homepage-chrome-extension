@@ -3,21 +3,12 @@ import Badge from '@/components/ui/Badge'
 import ModalHeader from '@/components/ui/modal/ModalHeader'
 import ModalWrapper from '@/components/ui/modal/ModalWrapper'
 import type { ChangelogEntry } from '@/lib/changelog'
-import { format, parseISO } from 'date-fns'
+import { formatDisplayDate } from '@/helpers/date'
 
 interface UpdateDetailModalProps {
     entry: ChangelogEntry | null
     onClose: () => void
     isLatest: boolean
-}
-
-function formatDate(dateStr: string): string {
-    if (!dateStr) return ''
-    try {
-        return format(parseISO(dateStr), 'MMMM d, yyyy')
-    } catch {
-        return dateStr
-    }
 }
 
 export default function UpdateDetailModal({ entry, onClose, isLatest }: UpdateDetailModalProps) {
@@ -44,7 +35,7 @@ export default function UpdateDetailModal({ entry, onClose, isLatest }: UpdateDe
                             )}
                             {entry.date && (
                                 <BetterTypography variant="xs" className="text-muted-foreground">
-                                    {formatDate(entry.date)}
+                                    {formatDisplayDate(entry.date)}
                                 </BetterTypography>
                             )}
                         </div>

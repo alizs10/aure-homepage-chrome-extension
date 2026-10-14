@@ -196,7 +196,7 @@ export default function SearchInput() {
                 </motion.div>
 
                 <div className="z-30 shrink-0">
-                    <Button role="div" onClick={handleSearch} size="icon" className="ml-2 h-full">
+                    <Button onClick={handleSearch} size="icon" className="ml-2 h-full">
                         {isCommandMode ? (
                             <TerminalIcon className="size-5 md:size-6 lg:size-7" />
                         ) : (

@@ -97,7 +97,7 @@ export default function Suggestions({
     const combined: Suggestion[] = [];
 
     if (isValidUrl(searchValue)) {
-      const cleanUrl = searchValue.startsWith('http') ? searchValue : `http://${searchValue}`;
+      const cleanUrl = searchValue.startsWith('http') ? searchValue : `https://${searchValue}`;
       combined.push({
         id: 'direct', url: cleanUrl, label: `Go to ${searchValue}`, description: 'Direct Navigation', source: 'direct'
       });

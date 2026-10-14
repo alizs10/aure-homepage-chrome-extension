@@ -8,7 +8,7 @@ import Button from '@/components/ui/Button'
 import { useSettingsStore } from '@/stores'
 import { HomeIcon, SettingsIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { format } from 'date-fns'
+import { formatDisplayDate } from '@/helpers/date'
 import { useLocation } from 'react-router-dom'
 
 export default function Header() {
@@ -86,10 +86,10 @@ export default function Header() {
 
                 <div className="h-full flex-center">
                     <BetterTypography variant='12' className='hidden sm:block text-nowrap' weight='medium' as="h3">
-                        {format(now, "MMM d, HH:mm:ss")}
+                        {formatDisplayDate(now, "MMM d, HH:mm:ss")}
                     </BetterTypography>
                     <BetterTypography variant='12' className='sm:hidden text-nowrap' weight='medium' as="h3">
-                        {format(now, "HH:mm")}
+                        {formatDisplayDate(now, "HH:mm")}
                     </BetterTypography>
                 </div>
 

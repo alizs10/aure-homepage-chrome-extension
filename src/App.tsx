@@ -3,7 +3,6 @@ import AppLoader from "./AppLoader";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import Wizard from "./pages/Wizard";
-// import UiShowcase from "./pages/UiShowcase"; // 🌟 New Showcase Page
 import Layout from "./layouts/Layout";
 import AppLayout from "./layouts/AppLayout";
 
@@ -18,11 +17,10 @@ export default function App() {
             {/* Wizard has NO header, renders directly in Root Layout */}
             <Route path="/wizard" element={<Wizard />} />
 
-            {/* AppLayout wraps Home, Settings, and UI Showcase */}
+            {/* AppLayout wraps Home and Settings */}
             <Route element={<AppLayout />}>
               <Route path="/" element={<Home />} />
               <Route path="/settings" element={<Settings />} />
-              {/* <Route path="/ui" element={<UiShowcase />} /> */}
             </Route>
 
             {/* ✅ Catch-all route: Redirects any unmatched paths (404) to the Home page */}
