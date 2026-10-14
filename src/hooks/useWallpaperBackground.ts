@@ -10,7 +10,8 @@ export function useWallpaperBackground() {
     const { resolvedTheme } = useTheme();
     const settingsLoading = useSettingsStore((s) => s.loading);
     const wallpaperId = useSettingsStore((s) => s.settings?.wallpaper);
-    const { customWallpapers, loading: wallpapersLoading, fetchWallpapers } = useWallpaperStore();
+    const customWallpapers = useWallpaperStore((s) => s.customWallpapers);
+    const fetchWallpapers = useWallpaperStore((s) => s.fetchWallpapers);
 
     useEffect(() => {
         fetchWallpapers();
@@ -29,7 +30,7 @@ export function useWallpaperBackground() {
         : null;
 
     const background = customBackground || defaultBackground;
-    const isLoading = settingsLoading || wallpapersLoading;
+    const isLoading = settingsLoading && !wallpaperId;
 
     return { background, isLoading };
 }

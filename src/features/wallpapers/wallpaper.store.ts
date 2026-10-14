@@ -11,7 +11,8 @@ export const DEFAULT_WALLPAPERS: Wallpaper[] = [
 export interface WallpaperState {
     customWallpapers: Wallpaper[];
     loading: boolean;
-    fetchWallpapers: () => Promise<void>;
+    initialized: boolean;
+    fetchWallpapers: (force?: boolean) => Promise<void>;
     addWallpaper: (wallpaper: Wallpaper) => Promise<string>;
     deleteWallpaper: (id: string) => Promise<void>;
     getWallpaper: (id: string) => Promise<Wallpaper | null>;
@@ -20,27 +21,35 @@ export interface WallpaperState {
 export const useWallpaperStore = create<WallpaperState>((set, get) => ({
     customWallpapers: [],
     loading: false,
+    initialized: false,
 
-    fetchWallpapers: async () => {
-        set({ loading: true });
+    fetchWallpapers: async (force = false) => {
+        if (get().initialized && !force) {
+            return;
+        }
+
+        if (!get().initialized) {
+            set({ loading: true });
+        }
+
         try {
             const wallpapers = await wallpaperRepository.getAll();
-            set({ customWallpapers: wallpapers, loading: false });
+            set({ customWallpapers: wallpapers, loading: false, initialized: true });
         } catch (error) {
             console.error("Failed to fetch wallpapers", error);
-            set({ loading: false });
+            set({ loading: false, initialized: true });
         }
     },
 
     addWallpaper: async (data: Wallpaper) => {
         const id = await wallpaperRepository.add(data);
-        await get().fetchWallpapers();
+        await get().fetchWallpapers(true);
         return id;
     },
 
     deleteWallpaper: async (id: string) => {
         await wallpaperRepository.delete(id);
-        await get().fetchWallpapers();
+        await get().fetchWallpapers(true);
     },
 
     getWallpaper: async (id: string) => {

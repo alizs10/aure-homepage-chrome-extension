@@ -4,9 +4,9 @@ import { useWallpaperBackground } from "@/hooks/useWallpaperBackground";
 
 export default function Background() {
     const { background, isLoading } = useWallpaperBackground();
-    const loaded = useImage(background);
+    const status = useImage(background);
 
-    if (isLoading) {
+    if (isLoading && !background) {
         return null;
     }
 
@@ -16,7 +16,7 @@ export default function Background() {
                 backgroundImage: `url(${background})`,
             }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: loaded ? 1 : 0 }}
+            animate={{ opacity: status === "loaded" ? 1 : 0 }}
             transition={{
                 ease: "linear",
                 duration: 0.5,
