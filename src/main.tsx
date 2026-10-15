@@ -5,7 +5,7 @@ import App from './App.tsx'
 import './index.css'
 import LiquidGlass from './components/ui/LiquidGlass.tsx'
 
-if (import.meta.env.DEV || import.meta.env.VITE_REACT_SCAN === 'true') {
+if (import.meta.env.DEV || import.meta.env.MODE === 'scan' || import.meta.env.VITE_REACT_SCAN === 'true') {
   const { scan } = await import('react-scan');
   scan({
     enabled: true,
