@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:scan": "VITE_REACT_SCAN=true npm run build",
     "build:watch": "tsc -b && vite build --watch --mode watch",
     "lint": "eslint .",
     "preview": "vite preview"
