@@ -1,24 +1,17 @@
 {
-    "latestVersion": "0.0.5",
+    "latestVersion": "0.0.6",
     "minimumSupportedVersion": "0.0.1",
-    "releaseDate": "2026-10-10",
-    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.5/aure-homepage-extension-v0.0.5.zip",
-    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.5",
+    "releaseDate": "2026-10-15",
+    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.6/aure-homepage-extension-v0.0.6.zip",
+    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.6",
     "notes": [
-        "Added Organize Pages with drag-and-drop widget placement and multi-page support.",
-        "Added Advanced Notes to mix text and checkboxes in a single entry using Shift + Enter.",
-        "Added a Cleanup menu to Notes & Tasks settings to easily clear tasks or notes.",
-        "Introduced the Counters widget to track days since or until events and habits.",
-        "Introduced the Progresses widget to track multi-step goals with visual progress bars.",
-        "Added a new Golden accent color theme.",
-        "Pomodoro timers and tasks now sync automatically across all open tabs.",
-        "Added a mini-timer to the header to track active Pomodoro sessions from any page.",
-        "Refined the Liquid Glass design for a cleaner, more balanced appearance.",
-        "Added automatic daily update checks to notify you of new releases.",
-        "Updated the extension icon with a fresh new design.",
-        "Replaced the default toast library with a custom Toaster that blends seamlessly with the Liquid Glass design.",
-        "Revamped Data Backup & Restore with a cleaner UI and faster performance.",
-        "Backup files now automatically include the date and time in the filename.",
-        "Overhauled search suggestions for instant results and a smoother typing experience."
+        "Real-time Cross-Tab Sync: All settings, layouts, and widgets now sync instantly across all open tabs without refreshing.",
+        "Bookmarks Sync: Adding, editing, or rearranging favorites and folders reflects instantly in every tab.",
+        "Widgets in Sync: Notes, Tasks, Counters, Progresses, Mood Tracker, Pet House, and Calendar now stay perfectly synchronized everywhere.",
+        "Custom Wallpapers Sync: Uploaded wallpapers and background choices update immediately across tabs.",
+        "Enhanced Reliability: Optimized background timer alarms and restored instant window focus when clicking notifications.",
+        "Smoother Performance: Faster startup, lower memory footprint, and seamless transitions across settings menus.",
+        "Smarter Search: Prevented search suggestions from unexpectedly opening when switching back to Aure from other tabs.",
+        "Unified Date Formats: Standardized date and time formatting across all widgets for a consistent experience."
     ]
 }
