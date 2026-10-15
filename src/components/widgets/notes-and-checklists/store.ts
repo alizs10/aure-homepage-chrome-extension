@@ -230,12 +230,16 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
         if (!note) return;
 
         // Handle flat checklist
-        if ('status' in note && typeof note.status === 'boolean') {
+        const isChecklist = ('status' in note && typeof (note as Checklist).status === 'boolean') || note.content.startsWith('[] ') || note.content.startsWith('[x] ');
+        if (isChecklist) {
             const checklist = note as Checklist;
+            const currentStatus = typeof checklist.status === 'boolean'
+                ? checklist.status
+                : checklist.content.startsWith('[x] ');
 
             const updated: Checklist = {
                 ...checklist,
-                status: !checklist.status,
+                status: !currentStatus,
                 updatedAt: Date.now(),
             };
 

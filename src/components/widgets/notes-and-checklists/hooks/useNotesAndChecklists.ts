@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import type { AdvancedNote, Checklist, NoteAndChecklist, TaskBlock } from '../types';
 import { useNotesAndChecklistsStore } from '../store';
 import { useSettingsStore } from '@/stores';
+import { toast } from '@/stores/useToastStore';
 
 export function useNotesAndChecklists() {
     // Select state slices
@@ -14,14 +15,41 @@ export function useNotesAndChecklists() {
     // Select actions
     const addItem = useNotesAndChecklistsStore((state) => state.addItem);
     const removeItem = useNotesAndChecklistsStore((state) => state.removeItem);
-    const toggleCheckbox = useNotesAndChecklistsStore((state) => state.toggleCheckbox);
-    const toggleAdvancedTask = useNotesAndChecklistsStore((state) => state.toggleAdvancedTask);
+    const storeToggleCheckbox = useNotesAndChecklistsStore((state) => state.toggleCheckbox);
+    const storeToggleAdvancedTask = useNotesAndChecklistsStore((state) => state.toggleAdvancedTask);
     const startEdit = useNotesAndChecklistsStore((state) => state.startEdit);
     const updateItem = useNotesAndChecklistsStore((state) => state.updateItem);
     const cancelEdit = useNotesAndChecklistsStore((state) => state.cancelEdit);
     const storeSetShowChecked = useNotesAndChecklistsStore((state) => state.setShowChecked);
     const initialize = useNotesAndChecklistsStore((state) => state.initialize);
     const cleanup = useNotesAndChecklistsStore((state) => state.cleanup);
+
+    const toggleCheckbox = useCallback(async (id: number) => {
+        const item = useNotesAndChecklistsStore.getState().data.find((n) => n.id === id);
+        if (item) {
+            const isFlatChecklist = ('status' in item && typeof (item as Checklist).status === 'boolean') || item.content.startsWith('[] ') || item.content.startsWith('[x] ');
+            if (isFlatChecklist) {
+                const currentStatus = typeof (item as Checklist).status === 'boolean'
+                    ? (item as Checklist).status
+                    : item.content.startsWith('[x] ');
+                const status = currentStatus ? 'Unchecked' : 'Checked';
+                toast.info(`${status} item`);
+            }
+        }
+        await storeToggleCheckbox(id);
+    }, [storeToggleCheckbox]);
+
+    const toggleAdvancedTask = useCallback(async (noteId: number, blockId: string) => {
+        const item = useNotesAndChecklistsStore.getState().data.find((n) => n.id === noteId);
+        if (item && 'type' in item && item.type === 'advanced') {
+            const block = item.blocks.find((b) => b.id === blockId);
+            if (block && block.type === 'task') {
+                const status = block.status ? 'Unchecked' : 'Checked';
+                toast.info(`${status} item`);
+            }
+        }
+        await storeToggleAdvancedTask(noteId, blockId);
+    }, [storeToggleAdvancedTask]);
 
     const updateSettings = useSettingsStore((state) => state.update);
     const settings = useSettingsStore((state) => state.settings);
