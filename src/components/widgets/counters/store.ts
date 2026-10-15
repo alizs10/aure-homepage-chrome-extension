@@ -3,6 +3,44 @@ import type { Counter, CounterFilter } from './types';
 import { CounterRepository } from './db';
 import { addDays, format } from 'date-fns';
 
+// 🌟 Cross-Tab Sync Setup
+const TAB_ID = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Math.random().toString(36).substring(2);
+
+const countersChannel = typeof BroadcastChannel !== 'undefined'
+    ? new BroadcastChannel('counters_sync')
+    : null;
+
+type CountersSyncMessage = {
+    type: 'COUNTERS_SYNC';
+    payload: Counter[];
+    tabId: string;
+};
+
+function broadcastCounters(data: Counter[]) {
+    if (countersChannel) {
+        countersChannel.postMessage({
+            type: 'COUNTERS_SYNC',
+            payload: data,
+            tabId: TAB_ID,
+        });
+    }
+}
+
+if (countersChannel) {
+    countersChannel.onmessage = (event: MessageEvent<CountersSyncMessage>) => {
+        if (!event.data || event.data.tabId === TAB_ID) return;
+
+        if (event.data.type === 'COUNTERS_SYNC') {
+            useCountersStore.setState({
+                data: event.data.payload,
+                loading: false,
+            });
+        }
+    };
+}
+
 interface CountersState {
     data: Counter[];
     loading: boolean;
@@ -36,6 +74,7 @@ export const useCountersStore = create<CountersState>((set, get) => ({
         };
         await CounterRepository.put(newItem);
         set((state) => ({ data: [...state.data, newItem] }));
+        broadcastCounters(get().data);
     },
 
     updateItem: async (id, updates) => {
@@ -51,11 +90,13 @@ export const useCountersStore = create<CountersState>((set, get) => ({
         set((state) => ({
             data: state.data.map(d => d.id === id ? updated : d)
         }));
+        broadcastCounters(get().data);
     },
 
     removeItem: async (id) => {
         await CounterRepository.remove(id);
         set((state) => ({ data: state.data.filter(d => d.id !== id) }));
+        broadcastCounters(get().data);
     },
 
     resetItem: async (id) => {
@@ -78,6 +119,7 @@ export const useCountersStore = create<CountersState>((set, get) => ({
         set((state) => ({
             data: state.data.map(d => d.id === id ? updated : d)
         }));
+        broadcastCounters(get().data);
     },
 
     onFilterChange: (value) => {
