@@ -39,6 +39,7 @@ export function useWidgetLayout(isOpen: boolean = false): LayoutState {
 
     // 🌟 Keep local layout draft synchronized with store whenever settings change (e.g. cross-tab sync) or modal opens
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPositions(savedLayout?.positions ?? []);
         setTotalPages(savedLayout?.totalPages ?? 1);
     }, [savedLayout, isOpen]);
@@ -46,6 +47,7 @@ export function useWidgetLayout(isOpen: boolean = false): LayoutState {
     // 🌟 Clamp editingPage if totalPages changes
     useEffect(() => {
         if (editingPage > totalPages && totalPages > 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setEditingPage(totalPages);
         }
     }, [editingPage, totalPages]);
