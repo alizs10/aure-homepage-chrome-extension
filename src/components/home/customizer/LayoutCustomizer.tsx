@@ -115,7 +115,7 @@ export default function LayoutCustomizer({
         canAddOrSwap,
         getAvailableWidgets,
         canAddNewPage
-    } = useWidgetLayout();
+    } = useWidgetLayout(open);
 
     const [activeWidget, setActiveWidget] = useState<{
         id: WidgetId;
@@ -170,9 +170,9 @@ export default function LayoutCustomizer({
 
     useEffect(() => {
         if (open) {
-            setEditingPage(currentPage);
+            setEditingPage(Math.min(currentPage, totalPages > 0 ? totalPages : 1));
         }
-    }, [open, currentPage, setEditingPage]);
+    }, [open, currentPage, totalPages, setEditingPage]);
 
     const currentPageHasWidgets = positions.some(
         p => p.page === editingPage
