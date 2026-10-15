@@ -1,5 +1,5 @@
 import { SearchIcon, TerminalIcon } from 'lucide-react';
-import { useState, useRef, useEffect, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
 import { getDestination } from './helpers/search';
@@ -19,11 +19,6 @@ export default function SearchInput() {
     const [selectedIndex, setSelectedIndex] = useState(-1);
 
     const { width } = useWidth();
-
-    const isInitialMount = useRef(true);
-    useEffect(() => {
-        isInitialMount.current = false;
-    }, []);
 
     const isCommandMode = searchValue.startsWith('/');
 
@@ -172,11 +167,6 @@ export default function SearchInput() {
                         placeholder={isCommandMode ? 'Type a command...' : 'Search through web...'}
                         value={inputDisplayValue}
                         onChange={onChange}
-                        onFocus={() => {
-                            if (!isInitialMount.current) {
-                                setShowSuggestions(true);
-                            }
-                        }}
                         onClick={() => setShowSuggestions(true)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
