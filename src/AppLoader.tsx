@@ -54,9 +54,13 @@ export default function AppLoader({ children }: AppLoaderProps) {
 
         // Existing user - run migrations asynchronously. 
         // Calling setState inside .then() is allowed by the React Compiler.
-        runMigrations().then(() => {
-            setMigrationsDone(true);
-        });
+        runMigrations()
+            .catch((error) => {
+                console.error("Migration error:", error);
+            })
+            .finally(() => {
+                setMigrationsDone(true);
+            });
     }, [loading, settings, migrationsDone]);
 
     // 🌟 Apply global CSS variables as soon as settings are loaded
@@ -92,6 +96,11 @@ export default function AppLoader({ children }: AppLoaderProps) {
         return null;
     }
 
-    // 4. Render the app normally
+    // 4. Handle onboarded users attempting to access the wizard
+    if (location.pathname === "/wizard") {
+        return <Navigate to="/" replace />;
+    }
+
+    // 5. Render the app normally
     return <>{children}</>;
 }

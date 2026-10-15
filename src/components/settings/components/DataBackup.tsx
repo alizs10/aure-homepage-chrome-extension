@@ -52,6 +52,9 @@ export default function DataBackup() {
 
             // Delay reload so the user sees the success state animation and message
             setTimeout(() => {
+                if (window.location.hash.includes('wizard')) {
+                    window.location.hash = '#/';
+                }
                 window.location.reload();
             }, 2000);
 

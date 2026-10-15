@@ -17,7 +17,8 @@ import type {
     ProgressLabel,
 } from '@/types/entities';
 import type { Wallpaper } from '@/types';
-import { CURRENT_SCHEMA_VERSION } from "./migrations";
+import { CURRENT_SCHEMA_VERSION, runMigrations } from "./migrations";
+import { useSettingsStore } from "@/stores";
 
 async function getAllChromeStorageData() {
     const data: Record<string, unknown> = {};
@@ -32,7 +33,7 @@ async function getAllChromeStorageData() {
     return data;
 }
 
-// ✅ RESTORED: Safely wipe all data before restoring for a clean import
+// ✅ Safely wipe IndexedDB data before restoring for a clean import
 async function clearAllData() {
     await db.transaction('rw',
         [
@@ -57,9 +58,6 @@ async function clearAllData() {
             await db.progressLabels.clear();
         }
     );
-
-    const keys = Object.values(STORAGE_KEYS);
-    await Promise.all(keys.map(key => storage.remove(key)));
 }
 
 export async function exportUserData(username?: string) {
@@ -140,6 +138,10 @@ export async function importUserData(file: File) {
     const dbData = backup.indexedDB as Record<string, unknown>;
     const storageData = backup.chromeStorage as Record<string, unknown>;
 
+    if (typeof storageData.settings !== 'object' || storageData.settings === null || Array.isArray(storageData.settings)) {
+        throw new Error("Invalid backup format: Missing or malformed 'settings' in chromeStorage.");
+    }
+
     const expectedTables = [
         'wallpapers', 'moods', 'pets', 'calendar', 'notes', 'favorites', 'folders',
         'pomodoroHistory', 'pomodoroTasks', 'pomodoroActiveState', 'counters', 'progresses', 'progressLabels'
@@ -160,7 +162,7 @@ export async function importUserData(file: File) {
         }
     }
 
-    // ✅ 1. Clean slate: Wipe existing data first
+    // ✅ 1. Clean slate: Wipe existing IndexedDB data first
     await clearAllData();
 
     // ✅ 2. Write new data
@@ -201,7 +203,18 @@ export async function importUserData(file: File) {
         }
     );
 
+    // Remove obsolete storage keys that are not present in the backup (except settings, which is guaranteed present)
+    const keysToRemove = Object.values(STORAGE_KEYS).filter(key => key !== STORAGE_KEYS.settings && !(key in storageData));
+    if (keysToRemove.length > 0) {
+        await Promise.all(keysToRemove.map(key => storage.remove(key)));
+    }
+
+    // Overwrite storage keys directly (prevents settings from ever flashing as null)
     for (const [key, value] of Object.entries(storageData)) {
         await storage.set(key, value);
     }
+
+    // Reload settings store and execute any pending migrations for the imported data
+    await useSettingsStore.getState().load();
+    await runMigrations();
 }

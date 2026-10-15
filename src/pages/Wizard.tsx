@@ -1,7 +1,7 @@
 import { useSettingsStore } from "@/stores";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import type { Settings } from "../types/settings";
 import { wizardSchema, type WizardFormValues } from "@/components/wizard/validation/wizard-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,7 @@ import { DEFAULT_WIDGET_LAYOUT } from '@/constants/widget-weights';
 
 export default function Wizard() {
     const save = useSettingsStore((s) => s.save);
+    const settings = useSettingsStore((s) => s.settings);
 
     const {
         register,
@@ -76,6 +77,10 @@ export default function Wizard() {
         toast.success("All set, enjoy!")
         navigate("/", { replace: true });
     };
+
+    if (settings) {
+        return <Navigate to="/" replace />;
+    }
 
     return (
         <div className="relative z-10 w-full flex-1 min-h-0 flex flex-col gap-y-4 overflow-y-auto scrollbar-none px-4 md:px-8 lg:px-10 py-10">
