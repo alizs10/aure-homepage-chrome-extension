@@ -2,6 +2,72 @@
 import { create } from 'zustand';
 import type { AdvancedNote, Block, Checklist, NoteAndChecklist, TaskBlock } from './types';
 import { NotesRepository } from './db';
+import { useSettingsStore } from '@/stores';
+
+// 🌟 Cross-Tab Sync Setup
+const TAB_ID = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Math.random().toString(36).substring(2);
+
+const notesChannel = typeof BroadcastChannel !== 'undefined'
+    ? new BroadcastChannel('notes_sync')
+    : null;
+
+type NotesSyncMessage = {
+    type: 'NOTES_SYNC';
+    payload: {
+        data: NoteAndChecklist[];
+        showChecked: boolean;
+    };
+    tabId: string;
+};
+
+function broadcastNotes() {
+    if (notesChannel) {
+        const state = useNotesAndChecklistsStore.getState();
+        notesChannel.postMessage({
+            type: 'NOTES_SYNC',
+            payload: {
+                data: state.data,
+                showChecked: state.showChecked,
+            },
+            tabId: TAB_ID,
+        });
+    }
+}
+
+if (notesChannel) {
+    notesChannel.onmessage = (event: MessageEvent<NotesSyncMessage>) => {
+        if (!event.data || event.data.tabId === TAB_ID) return;
+
+        if (event.data.type === 'NOTES_SYNC') {
+            const currentEditable = useNotesAndChecklistsStore.getState().editable;
+            let nextEditable = currentEditable;
+            if (currentEditable) {
+                const exists = event.data.payload.data.some(n => n.id === currentEditable.id);
+                if (!exists) {
+                    nextEditable = undefined;
+                } else {
+                    const updated = event.data.payload.data.find(n => n.id === currentEditable.id);
+                    if (updated) nextEditable = updated;
+                }
+            }
+            useNotesAndChecklistsStore.setState({
+                data: event.data.payload.data,
+                editable: nextEditable,
+                showChecked: event.data.payload.showChecked ?? useNotesAndChecklistsStore.getState().showChecked,
+                loading: false,
+            });
+        }
+    };
+}
+
+useSettingsStore.subscribe((state) => {
+    const pref = state.settings?.widgetPreferences?.['notes-and-checklists']?.showChecked;
+    if (pref !== undefined && pref !== useNotesAndChecklistsStore.getState().showChecked) {
+        useNotesAndChecklistsStore.setState({ showChecked: pref });
+    }
+});
 
 // 🌟 Helper: Generate unique block ID
 function generateBlockId(noteId: number, index: number): string {
@@ -91,8 +157,11 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
 
     initialize: async () => {
         const notes = await NotesRepository.getAll();
+        const settings = useSettingsStore.getState().settings;
+        const showCheckedPref = settings?.widgetPreferences?.['notes-and-checklists']?.showChecked ?? false;
         set({
             data: notes,
+            showChecked: showCheckedPref,
             loading: false,
         });
     },
@@ -142,6 +211,7 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
                 set((state) => ({ data: [...state.data, note] }));
             }
         }
+        broadcastNotes();
     },
 
     removeItem: async (id) => {
@@ -152,6 +222,7 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
             data: state.data.filter((n) => n.id !== id),
             editable: state.editable?.id === id ? undefined : state.editable
         }));
+        broadcastNotes();
     },
 
     toggleCheckbox: async (id) => {
@@ -172,6 +243,7 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
             set((state) => ({
                 data: state.data.map((n) => (n.id === id ? updated : n))
             }));
+            broadcastNotes();
         }
     },
 
@@ -209,6 +281,7 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
         set((state) => ({
             data: state.data.map((n) => (n.id === noteId ? updated : n))
         }));
+        broadcastNotes();
     },
 
     startEdit: (id) => {
@@ -274,6 +347,7 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
                 }));
             }
         }
+        broadcastNotes();
     },
 
     cancelEdit: () => {
@@ -282,6 +356,7 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
 
     setShowChecked: (value) => {
         set({ showChecked: value });
+        broadcastNotes();
     },
 
     // 🌟 Surgical Cleanup Action
@@ -366,6 +441,7 @@ export const useNotesAndChecklistsStore = create<NotesAndChecklistsState>((set, 
 
                 return { data: newData, editable: newEditable };
             });
+            broadcastNotes();
         }
     }
 }));
