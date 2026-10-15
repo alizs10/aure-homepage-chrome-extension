@@ -8,6 +8,45 @@ export const DEFAULT_WALLPAPERS: Wallpaper[] = [
     { id: "default", name: "Default", variants: { light: defaultLight, dark: defaultDark1 } }
 ];
 
+// 🌟 Cross-Tab Sync Setup
+const TAB_ID = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Math.random().toString(36).substring(2);
+
+const wallpaperChannel = typeof BroadcastChannel !== 'undefined'
+    ? new BroadcastChannel('wallpaper_sync')
+    : null;
+
+type WallpaperSyncMessage = {
+    type: 'WALLPAPERS_SYNC';
+    payload: Wallpaper[];
+    tabId: string;
+};
+
+function broadcastWallpapers(customWallpapers: Wallpaper[]) {
+    if (wallpaperChannel) {
+        wallpaperChannel.postMessage({
+            type: 'WALLPAPERS_SYNC',
+            payload: customWallpapers,
+            tabId: TAB_ID,
+        });
+    }
+}
+
+if (wallpaperChannel) {
+    wallpaperChannel.onmessage = (event: MessageEvent<WallpaperSyncMessage>) => {
+        if (!event.data || event.data.tabId === TAB_ID) return;
+
+        if (event.data.type === 'WALLPAPERS_SYNC') {
+            useWallpaperStore.setState({
+                customWallpapers: event.data.payload,
+                loading: false,
+                initialized: true,
+            });
+        }
+    };
+}
+
 export interface WallpaperState {
     customWallpapers: Wallpaper[];
     loading: boolean;
@@ -44,12 +83,14 @@ export const useWallpaperStore = create<WallpaperState>((set, get) => ({
     addWallpaper: async (data: Wallpaper) => {
         const id = await wallpaperRepository.add(data);
         await get().fetchWallpapers(true);
+        broadcastWallpapers(get().customWallpapers);
         return id;
     },
 
     deleteWallpaper: async (id: string) => {
         await wallpaperRepository.delete(id);
         await get().fetchWallpapers(true);
+        broadcastWallpapers(get().customWallpapers);
     },
 
     getWallpaper: async (id: string) => {
