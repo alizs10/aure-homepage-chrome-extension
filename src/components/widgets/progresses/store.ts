@@ -2,6 +2,52 @@ import { create } from 'zustand';
 import type { Progress, ProgressFilter, ProgressLabel } from './types';
 import { ProgressLabelRepository, ProgressRepository } from './db';
 
+// 🌟 Cross-Tab Sync Setup
+const TAB_ID = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Math.random().toString(36).substring(2);
+
+const progressesChannel = typeof BroadcastChannel !== 'undefined'
+    ? new BroadcastChannel('progresses_sync')
+    : null;
+
+type ProgressesSyncMessage = {
+    type: 'PROGRESSES_SYNC';
+    payload: {
+        data: Progress[];
+        labels: ProgressLabel[];
+    };
+    tabId: string;
+};
+
+function broadcastProgresses() {
+    if (progressesChannel) {
+        const state = useProgressesStore.getState();
+        progressesChannel.postMessage({
+            type: 'PROGRESSES_SYNC',
+            payload: {
+                data: state.data,
+                labels: state.labels,
+            },
+            tabId: TAB_ID,
+        });
+    }
+}
+
+if (progressesChannel) {
+    progressesChannel.onmessage = (event: MessageEvent<ProgressesSyncMessage>) => {
+        if (!event.data || event.data.tabId === TAB_ID) return;
+
+        if (event.data.type === 'PROGRESSES_SYNC') {
+            useProgressesStore.setState({
+                data: event.data.payload.data,
+                labels: event.data.payload.labels,
+                loading: false,
+            });
+        }
+    };
+}
+
 interface ProgressesState {
     data: Progress[];
     labels: ProgressLabel[];
@@ -50,6 +96,7 @@ export const useProgressesStore = create<ProgressesState>((set, get) => ({
         const newItem: Progress = { ...item, id: now, createdAt: now, updatedAt: now };
         await ProgressRepository.put(newItem);
         set((state) => ({ data: [...state.data, newItem] }));
+        broadcastProgresses();
     },
 
     updateItem: async (id, updates) => {
@@ -68,11 +115,13 @@ export const useProgressesStore = create<ProgressesState>((set, get) => ({
         const updated: Progress = { ...item, ...updates, updatedAt: Date.now() };
         await ProgressRepository.put(updated);
         set((state) => ({ data: state.data.map(d => d.id === id ? updated : d) }));
+        broadcastProgresses();
     },
 
     removeItem: async (id) => {
         await ProgressRepository.remove(id);
         set((state) => ({ data: state.data.filter(d => d.id !== id) }));
+        broadcastProgresses();
     },
 
     advanceStep: async (id) => {
@@ -95,6 +144,7 @@ export const useProgressesStore = create<ProgressesState>((set, get) => ({
         const updated: Progress = { ...progress, steps: updatedSteps, activeStepIndex: newActiveIndex, completed: newCompleted, updatedAt: Date.now() };
         await ProgressRepository.put(updated);
         set((state) => ({ data: state.data.map(p => p.id === id ? updated : p) }));
+        broadcastProgresses();
     },
 
     retreatStep: async (id) => {
@@ -115,6 +165,7 @@ export const useProgressesStore = create<ProgressesState>((set, get) => ({
         const updated: Progress = { ...progress, steps: updatedSteps, activeStepIndex: newActiveIndex, completed: newCompleted, updatedAt: Date.now() };
         await ProgressRepository.put(updated);
         set((state) => ({ data: state.data.map(p => p.id === id ? updated : p) }));
+        broadcastProgresses();
     },
 
     toggleStep: async (id, stepId) => {
@@ -129,6 +180,7 @@ export const useProgressesStore = create<ProgressesState>((set, get) => ({
         const updated: Progress = { ...progress, steps: updatedSteps, completed: allCompleted, updatedAt: Date.now() };
         await ProgressRepository.put(updated);
         set((state) => ({ data: state.data.map(p => p.id === id ? updated : p) }));
+        broadcastProgresses();
     },
 
     toggleComplete: async (id) => {
@@ -137,6 +189,7 @@ export const useProgressesStore = create<ProgressesState>((set, get) => ({
         const updated: Progress = { ...progress, completed: !progress.completed, updatedAt: Date.now() };
         await ProgressRepository.put(updated);
         set((state) => ({ data: state.data.map(p => p.id === id ? updated : p) }));
+        broadcastProgresses();
     },
 
     onFilterChange: (value) => set({ filter: value }),
