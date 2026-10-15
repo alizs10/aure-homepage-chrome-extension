@@ -3,6 +3,41 @@ import type { Favorite } from '../types';
 import { FavoritesRepository } from '../db/favorites.repo';
 import { getAdjacentSwap } from '@/lib/util';
 
+// 🌟 Cross-Tab Sync Setup
+const TAB_ID = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Math.random().toString(36).substring(2);
+
+const favoritesChannel = typeof BroadcastChannel !== 'undefined'
+    ? new BroadcastChannel('favorites_sync')
+    : null;
+
+type FavoritesSyncMessage = {
+    type: 'FAVORITES_SYNC';
+    payload: Favorite[];
+    tabId: string;
+};
+
+function broadcastFavorites(data: Favorite[]) {
+    if (favoritesChannel) {
+        favoritesChannel.postMessage({
+            type: 'FAVORITES_SYNC',
+            payload: data,
+            tabId: TAB_ID,
+        });
+    }
+}
+
+if (favoritesChannel) {
+    favoritesChannel.onmessage = (event: MessageEvent<FavoritesSyncMessage>) => {
+        if (!event.data || event.data.tabId === TAB_ID) return;
+
+        if (event.data.type === 'FAVORITES_SYNC') {
+            useFavoritesStore.setState({ data: event.data.payload, loading: false });
+        }
+    };
+}
+
 interface FavoritesState {
     data: Favorite[];
     loading: boolean;
@@ -41,11 +76,13 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
 
         await FavoritesRepository.put(favorite);
         set((state) => ({ data: [...state.data, favorite] }));
+        broadcastFavorites(get().data);
     },
 
     removeItem: async (id) => {
         await FavoritesRepository.remove(id);
         set((state) => ({ data: state.data.filter((n) => n.id !== id) }));
+        broadcastFavorites(get().data);
     },
 
     updateItem: async (updated) => {
@@ -61,6 +98,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         set((state) => ({
             data: state.data.map((n) => (n.id === updated.id ? updatedFavorite : n)),
         }));
+        broadcastFavorites(get().data);
     },
 
     sortUp: async (id) => {
@@ -70,6 +108,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         await FavoritesRepository.put(swap.updatedCurrent);
         await FavoritesRepository.put(swap.updatedAdjacent);
         set({ data: swap.newItems });
+        broadcastFavorites(get().data);
     },
 
     sortDown: async (id) => {
@@ -79,5 +118,6 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         await FavoritesRepository.put(swap.updatedCurrent);
         await FavoritesRepository.put(swap.updatedAdjacent);
         set({ data: swap.newItems });
+        broadcastFavorites(get().data);
     },
 }));

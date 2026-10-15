@@ -3,6 +3,41 @@ import type { Folder, Website } from '../types';
 import { FoldersRepository } from '../db/folders.repo';
 import { getAdjacentSwap } from '@/lib/util';
 
+// 🌟 Cross-Tab Sync Setup
+const TAB_ID = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Math.random().toString(36).substring(2);
+
+const foldersChannel = typeof BroadcastChannel !== 'undefined'
+    ? new BroadcastChannel('folders_sync')
+    : null;
+
+type FoldersSyncMessage = {
+    type: 'FOLDERS_SYNC';
+    payload: Folder[];
+    tabId: string;
+};
+
+function broadcastFolders(data: Folder[]) {
+    if (foldersChannel) {
+        foldersChannel.postMessage({
+            type: 'FOLDERS_SYNC',
+            payload: data,
+            tabId: TAB_ID,
+        });
+    }
+}
+
+if (foldersChannel) {
+    foldersChannel.onmessage = (event: MessageEvent<FoldersSyncMessage>) => {
+        if (!event.data || event.data.tabId === TAB_ID) return;
+
+        if (event.data.type === 'FOLDERS_SYNC') {
+            useFoldersStore.setState({ data: event.data.payload, loading: false });
+        }
+    };
+}
+
 interface FoldersState {
     data: Folder[];
     loading: boolean;
@@ -38,11 +73,13 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         const folder: Folder = { id: Date.now(), title, websites: [], order: maxOrder + 1 };
         await FoldersRepository.put(folder);
         set((state) => ({ data: [...state.data, folder] }));
+        broadcastFolders(get().data);
     },
 
     removeItem: async (id) => {
         await FoldersRepository.remove(id);
         set((state) => ({ data: state.data.filter((n) => n.id !== id) }));
+        broadcastFolders(get().data);
     },
 
     updateItem: async (updated) => {
@@ -51,6 +88,7 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         const updatedFolder = { ...folder, ...updated };
         await FoldersRepository.put(updatedFolder);
         set((state) => ({ data: state.data.map((n) => (n.id === updated.id ? updatedFolder : n)) }));
+        broadcastFolders(get().data);
     },
 
     sortUp: async (id) => {
@@ -60,6 +98,7 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         await FoldersRepository.put(swap.updatedCurrent);
         await FoldersRepository.put(swap.updatedAdjacent);
         set({ data: swap.newItems });
+        broadcastFolders(get().data);
     },
 
     sortDown: async (id) => {
@@ -69,6 +108,7 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         await FoldersRepository.put(swap.updatedCurrent);
         await FoldersRepository.put(swap.updatedAdjacent);
         set({ data: swap.newItems });
+        broadcastFolders(get().data);
     },
 
     addWebsiteToFolder: async (folderId, websiteData) => {
@@ -87,6 +127,7 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         set((state) => ({
             data: state.data.map((f) => (f.id === folderId ? updatedFolder : f))
         }));
+        broadcastFolders(get().data);
     },
 
     removeWebsiteFromFolder: async (folderId, websiteId) => {
@@ -102,6 +143,7 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         set((state) => ({
             data: state.data.map((f) => (f.id === folderId ? updatedFolder : f))
         }));
+        broadcastFolders(get().data);
     },
 
     updateWebsiteInFolder: async (folderId, websiteId, updatedData) => {
@@ -125,6 +167,7 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         set((state) => ({
             data: state.data.map((f) => (f.id === folderId ? updatedFolder : f))
         }));
+        broadcastFolders(get().data);
     },
 
     sortWebsiteUp: async (folderId, websiteId) => {
@@ -143,6 +186,7 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         set((state) => ({
             data: state.data.map((f) => (f.id === folderId ? updatedFolder : f)),
         }));
+        broadcastFolders(get().data);
     },
 
     sortWebsiteDown: async (folderId, websiteId) => {
@@ -161,5 +205,6 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         set((state) => ({
             data: state.data.map((f) => (f.id === folderId ? updatedFolder : f)),
         }));
+        broadcastFolders(get().data);
     }
 }));
