@@ -1,5 +1,6 @@
 import { BetterTypography } from '@/components/common/BetterTypography'
 import ThemeToggle from '@/components/common/ThemeToggle'
+import Clock from '@/components/features/clock/Clock'
 import NetworkStatus from '@/components/features/network-status/NetworkStatus'
 import PomodoroHeaderFeature from '@/components/features/pomodoro/PomodoroHeaderFeature'
 import HeaderUpdateChecker from '@/components/features/updates/HeaderUpdateChecker'
@@ -7,8 +8,7 @@ import Updates from '@/components/features/updates/Updates'
 import Button from '@/components/ui/Button'
 import { useSettingsStore } from '@/stores'
 import { HomeIcon, SettingsIcon } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
-import { formatDisplayDate } from '@/helpers/date'
+import { useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
 export default function Header() {
@@ -26,15 +26,7 @@ export default function Header() {
 
     const { settings } = useSettingsStore();
 
-    const [now, setNow] = useState(new Date())
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setNow(new Date())
-        }, 1000)
-
-        return () => clearInterval(interval)
-    }, [])
 
     return (
         <header className="sticky top-0 flex justify-between h-8 min-h-8 px-4 md:px-8 lg:px-10 liquid-glass-sm z-50">
@@ -84,14 +76,7 @@ export default function Header() {
 
                 <NetworkStatus />
 
-                <div className="h-full flex-center">
-                    <BetterTypography variant='12' className='hidden sm:block text-nowrap' weight='medium' as="h3">
-                        {formatDisplayDate(now, "MMM d, HH:mm:ss")}
-                    </BetterTypography>
-                    <BetterTypography variant='12' className='sm:hidden text-nowrap' weight='medium' as="h3">
-                        {formatDisplayDate(now, "HH:mm")}
-                    </BetterTypography>
-                </div>
+                <Clock />
 
                 <Updates />
                 <ThemeToggle />
