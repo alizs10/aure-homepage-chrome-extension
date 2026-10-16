@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 dist.pem
+*.zip
 .mimocode
 PROJECT_LOGIC.md
 

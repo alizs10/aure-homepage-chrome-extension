@@ -4,6 +4,7 @@ import ModalWrapper from '@/components/ui/modal/ModalWrapper';
 import type { MouseEvent } from 'react';
 import type { Website } from '@/features/bookmarks';
 import { BetterTypography } from '@/components/common/BetterTypography';
+import Button from '@/components/ui/Button';
 
 interface FolderModalProps {
     open: boolean;
@@ -32,17 +33,18 @@ export default function FolderModal({ title, websites, open, onClose }: FolderMo
                 <div className='grid grid-cols-6 gap-2'>
                     {websites.map(w => (
                         <div key={w.id} className="flex flex-center flex-col gap-y-1.5 col-span-1 overflow-x-hidden">
-                            <a
+                            <Button
                                 href={w.url}
                                 onClick={onClose}
-                                className="w-full aspect-square rounded-full liquid-glass flex-center group z-30 relative"
+                                variant="primary"
+                                className="min-w-full w-full h-auto aspect-square group z-30 px-0 rounded-full pointer-events-auto"
                             >
-                                <div className="transition-transform duration-200 group-hover:rotate-12">
-                                    <Favicon className='min-w-6 md:min-w-10 size-6 md:size-10' url={w.url} />
+                                <div className="transition-transform duration-200 group-hover:rotate-12 size-full p-3">
+                                    <Favicon className="size-full" url={w.url} />
                                 </div>
-                            </a>
+                            </Button>
 
-                            <BetterTypography variant='xxs' className='line-clamp-1 text-nowrap overflow-hidden text-center text-ellipsis w-full'>
+                            <BetterTypography variant='xxs' className='text-center truncate w-full'>
                                 {w.title}
                             </BetterTypography>
                         </div>

@@ -28,6 +28,7 @@ export class NewTabDB extends Dexie {
     counters!: Table<Counter, number>;
     progresses!: Table<Progress, number>;
     progressLabels!: Table<ProgressLabel, number>;
+    cachedFavicons!: Table<CachedFavicon, string>;
 
     constructor() {
         super('newtab-db');
@@ -47,7 +48,17 @@ export class NewTabDB extends Dexie {
             progresses: '++id, completed, deadline',
             progressLabels: '++id, name',
         });
+
+        this.version(15).stores({
+            cachedFavicons: 'domain, updatedAt',
+        });
     }
+}
+
+export interface CachedFavicon {
+    domain: string;
+    dataUrl: string;
+    updatedAt: number;
 }
 
 export const db = new NewTabDB();

@@ -45,6 +45,7 @@ export default function Home() {
 
     useEffect(() => {
         const isNewTabPage = window.location.href.startsWith('chrome://newtab') ||
+            window.location.href.startsWith('about:newtab') ||
             window.location.pathname.endsWith('/newtab.html') ||
             window.location.pathname.endsWith('/index.html');
 

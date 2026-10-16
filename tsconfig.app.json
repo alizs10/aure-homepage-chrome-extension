@@ -9,7 +9,8 @@
     "module": "esnext",
     "types": [
       "vite/client",
-      "chrome"
+      "chrome",
+      "webextension-polyfill"
     ],
     "skipLibCheck": true,
     /* Bundler mode */

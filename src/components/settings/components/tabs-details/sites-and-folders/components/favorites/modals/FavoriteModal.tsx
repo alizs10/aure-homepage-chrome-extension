@@ -5,7 +5,7 @@ import Button from '@/components/ui/Button';
 import ModalHeader from '@/components/ui/modal/ModalHeader';
 import ModalWrapper from '@/components/ui/modal/ModalWrapper';
 import TextInput from '@/components/ui/TextInput';
-import { getTopSites } from '@/lib/chrome/top-sites';
+import { getTopSites, type TopSite } from '@/lib/browser/top-sites';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from '@/stores/useToastStore';
@@ -24,7 +24,7 @@ interface FavoriteModalProps {
 
 export default function FavoriteModal({ open, onClose, favorite_id, init_value }: FavoriteModalProps) {
 
-    const [topSites, setTopSites] = useState<chrome.topSites.MostVisitedURL[]>([]);
+    const [topSites, setTopSites] = useState<TopSite[]>([]);
 
     useEffect(() => {
         getTopSites().then(setTopSites);
@@ -75,7 +75,7 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
     };
 
     // 👇 Handle clicking a top site to fill the form
-    function handleTopSiteClick(site: chrome.topSites.MostVisitedURL) {
+    function handleTopSiteClick(site: TopSite) {
         // shouldDirty: true ensures the "Add Favorite" button becomes enabled
         // shouldValidate: true triggers immediate validation feedback
         setValue('title', site.title || site.url, { shouldValidate: true, shouldDirty: true });

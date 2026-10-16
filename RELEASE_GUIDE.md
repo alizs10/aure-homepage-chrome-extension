@@ -1,6 +1,6 @@
 # Aure Homepage — Release & Versioning Guide
 
-This document establishes the official procedure, rules, and guardrails for preparing, updating, and publishing a new release of the **Aure Homepage** Chrome extension.
+This document establishes the official procedure, rules, and guardrails for preparing, updating, and publishing a new release of the **Aure Homepage** extension for both **Google Chrome** and **Mozilla Firefox**.
 
 ---
 
@@ -11,7 +11,7 @@ Every new release requires updating or creating **5 specific files**:
 | File | Type | Purpose | Key Fields / Elements |
 | :--- | :--- | :--- | :--- |
 | [`.env`](file:///.env) | Configuration | Application build environment constants | `VITE_APP_VERSION`, `VITE_VERSION_DATE`, `VITE_VERSION_NAME` |
-| [`public/manifest.json`](file:///public/manifest.json) | Manifest | Chrome extension metadata | `"version"` |
+| [`manifest.base.json`](file:///manifest.base.json) | Manifest | Base extension metadata (shared across Chrome & Firefox) | `"version"` |
 | [`version.json`](file:///version.json) | Remote Manifest | In-app auto-update check endpoint | `"latestVersion"`, `"releaseDate"`, `"downloadUrl"`, `"releasePage"`, `"notes"` |
 | [`RELEASE_NOTES.md`](file:///RELEASE_NOTES.md) | Release Notes | GitHub Release body (used by GitHub Actions) | Release summary, What's New, Improvements, Fixes, Download & Installation instructions |
 | [`src/components/features/updates/changelog/<version>.md`](file:///src/components/features/updates/changelog/) | Changelog | In-app changelog modal and update indicators | YAML frontmatter (`version`, `date`, `title`), markdown changelog sections |
@@ -34,13 +34,17 @@ Every new release requires updating or creating **5 specific files**:
 
 ### 2.3 Date Format Consistency
 Ensure dates match across all modified files:
-* **Human-readable date format** for [`.env`](file:///.env): `DD Mon YYYY` (e.g., `15 Oct 2026`).
-* **ISO 8601 date format** for [`version.json`](file:///version.json) and changelog frontmatter: `YYYY-MM-DD` (e.g., `2026-10-15`).
+* **Human-readable date format** for [`.env`](file:///.env): `DD Mon YYYY` (e.g., `16 Oct 2026`).
+* **ISO 8601 date format** for [`version.json`](file:///version.json) and changelog frontmatter: `YYYY-MM-DD` (e.g., `2026-10-16`).
 
 ### 2.4 Consistent URLs and Asset Filenames
 * **Release Tag:** `vX.Y.Z` (e.g., `v0.0.6`).
-* **Zip Asset Name:** `aure-homepage-extension-v<version>.zip` (e.g., `aure-homepage-extension-v0.0.6.zip`).
-* **Download URL:** `https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v<version>/aure-homepage-extension-v<version>.zip`.
+* **Zip Asset Names:**
+  * Chrome: `aure-homepage-chrome-v<version>.zip`
+  * Firefox: `aure-homepage-firefox-v<version>.zip`
+* **Download URLs:**
+  * `https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v<version>/aure-homepage-chrome-v<version>.zip`
+  * `https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v<version>/aure-homepage-firefox-v<version>.zip`
 * **Release Page URL:** `https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v<version>`.
 
 ### 2.5 In-App Changelog Preview Consideration
@@ -55,11 +59,11 @@ The application's changelog system automatically extracts the first 140 plain-te
 1. **[`.env`](file:///.env)**:
    ```env
    VITE_APP_VERSION="0.0.6"
-   VITE_VERSION_DATE="15 Oct 2026"
+   VITE_VERSION_DATE="16 Oct 2026"
    VITE_VERSION_NAME="seamless_harmony_stable_release"
    ```
 
-2. **[`public/manifest.json`](file:///public/manifest.json)**:
+2. **[`manifest.base.json`](file:///manifest.base.json)**:
    ```json
    {
        "manifest_version": 3,
@@ -75,7 +79,7 @@ Create a new file under `src/components/features/updates/changelog/<version>.md`
 ```markdown
 ---
 version: 0.0.6
-date: 2026-10-15
+date: 2026-10-16
 title: seamless_harmony_stable_release
 ---
 
@@ -100,7 +104,7 @@ Edit [`RELEASE_NOTES.md`](file:///RELEASE_NOTES.md). This file serves directly a
 * Include `# Aure Homepage v<version>`.
 * Provide a concise 1–2 sentence introduction.
 * Structure into `## What's New`, `## Improvements`, `## Fixes`.
-* Keep the `## Installation` and `## Updating` sections with updated asset names.
+* Include download links for both Chrome (`aure-homepage-chrome-v<version>.zip`) and Firefox (`aure-homepage-firefox-v<version>.zip`).
 
 ### Step 4: Update Remote Auto-Update Endpoint
 Update [`version.json`](file:///version.json):
@@ -116,16 +120,23 @@ Update [`version.json`](file:///version.json):
 Before tagging or creating a release, run through this verification checklist:
 
 ```bash
-# 1. Typecheck and verify production build
-npm run build
+# 1. Typecheck and build both Chrome and Firefox distributions
+bun run build
 
-# 2. Run linter
-npm run lint
+# 2. Package both release archives
+bun run package
+
+# 3. Run linter
+bun run lint
 ```
 
-- [ ] **Build Integrity:** `npm run build` succeeds without TypeScript or bundling errors.
-- [ ] **Manifest Check:** Verify `dist/manifest.json` contains the updated `"version"`.
-- [ ] **Changelog Rendering:** Load the extension unpacked in Chrome (`chrome://extensions`) and open the Updates modal to ensure the new version is detected, badge displays correctly, and markdown renders cleanly without formatting glitches.
+- [ ] **Build Integrity:** `bun run build` succeeds without TypeScript or bundling errors.
+- [ ] **Manifest Checks:**
+  - Verify `dist/chrome/manifest.json` contains the updated `"version"` and Chrome-specific fields (`service_worker`, `favicon` permission, `_favicon/*` resource, `key`).
+  - Verify `dist/firefox/manifest.json` contains the updated `"version"` and Firefox-specific fields (`browser_specific_settings.gecko.id: "aure-homepage@auredev.ir"`, `background.scripts`).
+- [ ] **Chrome Testing:** Load unpacked from `dist/chrome` in `chrome://extensions`.
+- [ ] **Firefox Testing:** Load temporary add-on from `dist/firefox/manifest.json` in `about:debugging#/runtime/this-firefox`.
+- [ ] **Changelog Rendering:** Open the Updates modal to ensure the new version is detected, badge displays correctly, and markdown renders cleanly without formatting glitches.
 - [ ] **Cross-Tab Verification:** Confirm basic settings and widget changes persist and sync across tabs smoothly.
 
 ---
@@ -136,9 +147,9 @@ The repository includes an automated GitHub Actions workflow at [`.github/workfl
 
 When you are ready to publish:
 
-1. Commit all prepared release files to `dev` / `main`:
+1. Commit all prepared release files:
    ```bash
-   git add .env public/manifest.json version.json RELEASE_NOTES.md src/components/features/updates/changelog/0.0.6.md RELEASE_GUIDE.md
+   git add .env manifest.base.json version.json RELEASE_NOTES.md src/components/features/updates/changelog/0.0.6.md RELEASE_GUIDE.md
    git commit -m "[RELEASE] prepare version 0.0.6"
    git push origin main
    ```
@@ -149,7 +160,7 @@ When you are ready to publish:
    ```
 3. GitHub Actions will automatically:
    - Validate the version format and ensure [`RELEASE_NOTES.md`](file:///RELEASE_NOTES.md) exists.
-   - Run `bun run build`.
-   - Verify `dist/manifest.json` version matches the tag.
-   - Package `aure-homepage-extension-v0.0.6.zip`.
-   - Publish a GitHub Release with the zip asset and notes from [`RELEASE_NOTES.md`](file:///RELEASE_NOTES.md).
+   - Run `bun run build` to generate `dist/chrome` and `dist/firefox`.
+   - Verify both manifests match the tagged version.
+   - Package `aure-homepage-chrome-v0.0.6.zip` and `aure-homepage-firefox-v0.0.6.zip`.
+   - Publish a GitHub Release with both zip assets and notes from [`RELEASE_NOTES.md`](file:///RELEASE_NOTES.md).

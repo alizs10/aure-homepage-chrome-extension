@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import browser from 'webextension-polyfill';
 import { useSettingsStore } from '@/stores';
 import type { Settings } from '@/types';
 import { PomodoroRepository } from './db/db';
@@ -128,20 +129,28 @@ export function showCompletionNotification(
     body: string
 ) {
     try {
-        if (typeof chrome === 'undefined' || !chrome.runtime?.sendMessage) {
-            console.warn('Chrome extension runtime unavailable');
+        if (typeof browser !== 'undefined' && browser.runtime?.sendMessage) {
+            browser.runtime.sendMessage({
+                type: 'POMODORO_COMPLETE',
+                title,
+                body,
+            }).catch(() => {
+                // Silently ignore if worker is inactive
+            });
             return;
         }
 
-        chrome.runtime.sendMessage({
-            type: 'POMODORO_COMPLETE',
-            title,
-            body,
-        }, () => {
-            if (chrome.runtime.lastError) {
-                // Silently ignore if worker is inactive
-            }
-        });
+        if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+            chrome.runtime.sendMessage({
+                type: 'POMODORO_COMPLETE',
+                title,
+                body,
+            }, () => {
+                if (chrome.runtime.lastError) {
+                    // Silently ignore if worker is inactive
+                }
+            });
+        }
     } catch (e) {
         console.warn('Failed to send POMODORO_COMPLETE message', e);
     }
@@ -169,21 +178,32 @@ function triggerCompletionAlerts(session: PomodoroSession) {
 // 🌟 Helper: Schedule background alarm for when tab is closed
 async function setPomodoroAlarm(remaining: number, session: PomodoroSession, cyclePosition: number, longBreakInterval: number) {
     try {
-        if (typeof chrome === 'undefined' || !chrome.runtime?.sendMessage || !chrome.storage?.local) return;
         const endTime = Date.now() + remaining;
+        const context = { session, cyclePosition, longBreakInterval };
 
-        await chrome.storage.local.set({
-            pomodoroAlarmContext: { session, cyclePosition, longBreakInterval }
-        });
+        if (typeof browser !== 'undefined' && browser.runtime?.sendMessage && browser.storage?.local) {
+            await browser.storage.local.set({ pomodoroAlarmContext: context });
+            browser.runtime.sendMessage({
+                type: 'SET_POMODORO_ALARM',
+                endTime
+            }).catch(() => {});
+            return;
+        }
 
-        chrome.runtime.sendMessage({
-            type: 'SET_POMODORO_ALARM',
-            endTime
-        }, () => {
-            if (chrome.runtime.lastError) {
-                // Silently ignore if worker is inactive
-            }
-        });
+        if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage && chrome.storage?.local) {
+            await chrome.storage.local.set({
+                pomodoroAlarmContext: context
+            });
+
+            chrome.runtime.sendMessage({
+                type: 'SET_POMODORO_ALARM',
+                endTime
+            }, () => {
+                if (chrome.runtime.lastError) {
+                    // Silently ignore if worker is inactive
+                }
+            });
+        }
     } catch (e) {
         console.warn('Failed to set pomodoro background alarm', e);
     }
@@ -192,15 +212,24 @@ async function setPomodoroAlarm(remaining: number, session: PomodoroSession, cyc
 // 🌟 Helper: Clear background alarm
 function clearPomodoroAlarm() {
     try {
-        if (typeof chrome === 'undefined' || !chrome.runtime?.sendMessage) return;
-        if (chrome.storage?.local) {
-            chrome.storage.local.remove('pomodoroAlarmContext');
-        }
-        chrome.runtime.sendMessage({ type: 'CLEAR_POMODORO_ALARM' }, () => {
-            if (chrome.runtime.lastError) {
-                // Silently ignore if worker is inactive
+        if (typeof browser !== 'undefined' && browser.runtime?.sendMessage) {
+            if (browser.storage?.local) {
+                browser.storage.local.remove('pomodoroAlarmContext').catch(() => {});
             }
-        });
+            browser.runtime.sendMessage({ type: 'CLEAR_POMODORO_ALARM' }).catch(() => {});
+            return;
+        }
+
+        if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+            if (chrome.storage?.local) {
+                chrome.storage.local.remove('pomodoroAlarmContext');
+            }
+            chrome.runtime.sendMessage({ type: 'CLEAR_POMODORO_ALARM' }, () => {
+                if (chrome.runtime.lastError) {
+                    // Silently ignore if worker is inactive
+                }
+            });
+        }
     } catch (e) {
         console.warn('Failed to clear pomodoro background alarm', e);
     }

@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from '@/constants/storage_keys';
+import { storage } from './storage';
 import { marked } from 'marked';
 import { compareVersions } from './version';
 
@@ -64,12 +65,11 @@ export const latestVersion = changelog[0]?.version ?? '0.0.0';
 export const LAST_SEEN_KEY = STORAGE_KEYS.lastSeenChangelog;
 
 export async function getLastSeenVersion(): Promise<string | null> {
-    const result = await chrome.storage.local.get(LAST_SEEN_KEY);
-    return (result[LAST_SEEN_KEY] as string) ?? null;
+    return storage.get<string>(LAST_SEEN_KEY);
 }
 
 export async function setLastSeenVersion(version: string): Promise<void> {
-    await chrome.storage.local.set({ [LAST_SEEN_KEY]: version });
+    await storage.set(LAST_SEEN_KEY, version);
 }
 
 export function hasNewUpdate(lastSeen: string | null): boolean {

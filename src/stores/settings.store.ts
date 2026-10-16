@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import browser from "webextension-polyfill";
 import { storage } from "../lib/storage";
 import type { Settings } from "../types";
 import { STORAGE_KEYS } from "@/constants/storage_keys";
@@ -49,9 +50,10 @@ if (settingsChannel) {
     };
 }
 
-// 🌟 Fallback listener for changes from chrome.storage directly
-if (typeof chrome !== 'undefined' && chrome.storage?.onChanged) {
-    chrome.storage.onChanged.addListener((changes, areaName) => {
+// 🌟 Fallback listener for changes from browser/chrome storage directly
+const storageApi = typeof browser !== 'undefined' && browser.storage ? browser.storage : (typeof chrome !== 'undefined' ? chrome.storage : null);
+if (storageApi?.onChanged) {
+    storageApi.onChanged.addListener((changes, areaName) => {
         if (areaName === 'local' && changes.settings) {
             const next = changes.settings.newValue as Settings | undefined;
             if (next) {

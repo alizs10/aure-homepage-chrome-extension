@@ -1,19 +1,21 @@
 // background.ts
+import browser from 'webextension-polyfill';
 
 // 🌟 Listen for the background alarm (fires even if tab is closed)
-chrome.alarms.onAlarm.addListener(async (alarm) => {
+browser.alarms.onAlarm.addListener(async (alarm) => {
     if (alarm.name === 'pomodoro-session-end') {
-        const result = await chrome.storage.local.get('pomodoroAlarmContext');
+        const result = await browser.storage.local.get('pomodoroAlarmContext');
 
         const context = result.pomodoroAlarmContext as {
             session: string;
             cyclePosition: number;
-            longBreakInterval: number
+            longBreakInterval: number;
         } | undefined;
 
         if (context) {
             const { session, cyclePosition, longBreakInterval } = context;
-            const sessionLabel = session === 'focus' ? 'Focus' : session === 'short-break' ? 'Short Break' : 'Long Break';
+            const sessionLabel =
+                session === 'focus' ? 'Focus' : session === 'short-break' ? 'Short Break' : 'Long Break';
 
             let nextSession;
             if (session === 'focus') {
@@ -21,63 +23,76 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
             } else {
                 nextSession = 'focus';
             }
-            const nextLabel = nextSession === 'focus' ? 'Focus' : nextSession === 'short-break' ? 'Short Break' : 'Long Break';
+            const nextLabel =
+                nextSession === 'focus' ? 'Focus' : nextSession === 'short-break' ? 'Short Break' : 'Long Break';
 
             // 🌟 Use fixed notification ID so multiple alerts don't stack up
-            chrome.notifications.create('aure-pomodoro-complete', {
+            await browser.notifications.create('aure-pomodoro-complete', {
                 type: 'basic',
-                iconUrl: chrome.runtime.getURL('icon-128.png'),
+                iconUrl: browser.runtime.getURL('icon-128.png'),
                 title: `${sessionLabel} Complete!`,
                 message: `Time for your ${nextLabel.toLowerCase()}.`,
-                priority: 2,
             });
         }
     }
 });
 
 // 🌟 Listen for runtime messages from pomodoro store
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-    const action = message?.type || message?.action;
+browser.runtime.onMessage.addListener(async (rawMessage: unknown) => {
+    const message = (rawMessage || {}) as {
+        type?: string;
+        action?: string;
+        endTime?: number;
+        delayInMinutes?: number;
+        title?: string;
+        body?: string;
+        message?: string;
+    };
+    const action = message.type || message.action;
 
     if (action === 'SET_POMODORO_ALARM') {
         if (message.endTime) {
             const when = Math.max(message.endTime, Date.now() + 1000);
-            chrome.alarms.create('pomodoro-session-end', { when });
+            browser.alarms.create('pomodoro-session-end', { when });
         } else if (message.delayInMinutes) {
             const delayInMinutes = Math.max(message.delayInMinutes, 0.1);
-            chrome.alarms.create('pomodoro-session-end', { delayInMinutes });
+            browser.alarms.create('pomodoro-session-end', { delayInMinutes });
         }
-        sendResponse({ status: 'ok' });
-    } else if (action === 'CLEAR_POMODORO_ALARM') {
-        chrome.alarms.clear('pomodoro-session-end', (wasCleared) => {
-            sendResponse({ status: 'ok', wasCleared });
-        });
-    } else if (action === 'POMODORO_COMPLETE') {
-        chrome.notifications.create('aure-pomodoro-complete', {
+        return { status: 'ok' };
+    }
+
+    if (action === 'CLEAR_POMODORO_ALARM') {
+        const wasCleared = await browser.alarms.clear('pomodoro-session-end');
+        return { status: 'ok', wasCleared };
+    }
+
+    if (action === 'POMODORO_COMPLETE') {
+        await browser.notifications.create('aure-pomodoro-complete', {
             type: 'basic',
-            iconUrl: chrome.runtime.getURL('icon-128.png'),
+            iconUrl: browser.runtime.getURL('icon-128.png'),
             title: message.title || 'Pomodoro Completed!',
             message: message.body || message.message || 'Your Pomodoro session has ended. Take a break!',
-            priority: 2,
         });
-        sendResponse({ status: 'ok' });
+        return { status: 'ok' };
     }
-    return true; // Keep channel open for asynchronous sendResponse
 });
 
 // 🌟 Helper: Focus existing Aure tab or open new tab (handles macOS minimized windows)
 async function openOrFocusAureTab() {
     try {
-        const extensionUrl = chrome.runtime.getURL('index.html');
-        const tabs = await chrome.tabs.query({ url: [extensionUrl, 'chrome://newtab/*'] });
+        const extensionUrl = browser.runtime.getURL('index.html');
+        // Safely query all tabs without browser-specific match patterns
+        const tabs = await browser.tabs.query({});
+        const targetTab = tabs.find(
+            (t) => t.url && (t.url.startsWith(extensionUrl) || t.url === 'chrome://newtab/' || t.url === 'about:newtab')
+        );
 
         // If an existing Aure tab is already open, activate it and unminimize/focus its window
-        if (tabs.length > 0 && tabs[0].id !== undefined) {
-            const tab = tabs[0];
-            await chrome.tabs.update(tab.id, { active: true });
-            if (tab.windowId !== undefined) {
-                const win = await chrome.windows.get(tab.windowId);
-                await chrome.windows.update(tab.windowId, {
+        if (targetTab && targetTab.id !== undefined) {
+            await browser.tabs.update(targetTab.id, { active: true });
+            if (targetTab.windowId !== undefined) {
+                const win = await browser.windows.get(targetTab.windowId);
+                await browser.windows.update(targetTab.windowId, {
                     focused: true,
                     ...(win.state === 'minimized' ? { state: 'normal' } : {}),
                 });
@@ -85,11 +100,11 @@ async function openOrFocusAureTab() {
             return;
         }
 
-        // If no Aure tab exists, inspect existing Chrome windows
-        const windows = await chrome.windows.getAll();
+        // If no Aure tab exists, inspect existing windows
+        const windows = await browser.windows.getAll();
         if (windows.length === 0) {
-            // No Chrome windows exist (macOS dock only)
-            await chrome.windows.create({
+            // No windows exist (macOS dock only)
+            await browser.windows.create({
                 url: extensionUrl,
                 focused: true,
                 state: 'normal',
@@ -100,12 +115,12 @@ async function openOrFocusAureTab() {
         // A window exists: unminimize if needed and focus
         const targetWindow = windows.find((w) => w.focused) || windows[0];
         if (targetWindow.id !== undefined) {
-            await chrome.windows.update(targetWindow.id, {
+            await browser.windows.update(targetWindow.id, {
                 focused: true,
                 ...(targetWindow.state === 'minimized' ? { state: 'normal' } : {}),
             });
 
-            await chrome.tabs.create({
+            await browser.tabs.create({
                 windowId: targetWindow.id,
                 url: extensionUrl,
                 active: true,
@@ -117,9 +132,9 @@ async function openOrFocusAureTab() {
 }
 
 // 🌟 Focus existing Aure tab or open new tab when notification is clicked
-chrome.notifications.onClicked.addListener(async (notificationId) => {
+browser.notifications.onClicked.addListener(async (notificationId) => {
     if (notificationId === 'aure-pomodoro-complete') {
-        chrome.notifications.clear(notificationId);
+        await browser.notifications.clear(notificationId);
         await openOrFocusAureTab();
     }
 });

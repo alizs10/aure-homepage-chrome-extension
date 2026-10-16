@@ -132,7 +132,7 @@ export default function Button(props: ButtonProps) {
 
   if ("href" in props && props.href) {
     const { href, ...linkProps } = rest as Omit<LinkButtonProps, keyof SharedProps>;
-    const isExternal = typeof href === "string" && /^(https?:\/\/|mailto:|tg:|chrome:)/i.test(href);
+    const isExternal = typeof href === "string" && /^(https?:\/\/|mailto:|tg:|chrome:|about:|moz-extension:)/i.test(href);
 
     if (isExternal) {
       return (

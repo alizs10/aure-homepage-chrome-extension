@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTopSites } from "@/lib/chrome/top-sites";
+import { getTopSites, type TopSite } from "@/lib/browser/top-sites";
 import Favicon from "@/components/common/Favicon";
 import { ItemTooltip } from "@/components/common/ItemTooltip";
 import Button from "@/components/ui/Button";
@@ -8,7 +8,7 @@ import Skeleton from "../ui/Skeleton";
 const SKELETON_COUNT = 8;
 
 export default function TopSites() {
-    const [sites, setSites] = useState<chrome.topSites.MostVisitedURL[]>([]);
+    const [sites, setSites] = useState<TopSite[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -43,7 +43,7 @@ export default function TopSites() {
     return (
         <>
             {sites.map((site) => (
-                <ItemTooltip key={site.url} title={site.title} subtitle={site.url}>
+                <ItemTooltip key={site.url} title={site.title || site.url} subtitle={site.url}>
                     <Button
                         href={site.url}
                         variant="primary"

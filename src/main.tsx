@@ -5,11 +5,16 @@ import Wrappers from './Wrappers.tsx';
 import App from './App.tsx';
 import './index.css';
 import LiquidGlass from './components/ui/LiquidGlass.tsx';
+import { preloadFaviconCache } from './lib/favicon';
 
-scan({
-  enabled: true,
-  dangerouslyForceRunInProduction: true,
-});
+if (import.meta.env.DEV) {
+  scan({
+    enabled: true,
+  });
+}
+
+// Preload cached favicons into memory for instant synchronous rendering
+preloadFaviconCache();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
