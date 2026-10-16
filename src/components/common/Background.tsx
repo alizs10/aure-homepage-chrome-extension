@@ -12,6 +12,7 @@ export default function Background() {
 
     return (
         <motion.div
+            key={background}
             style={{
                 backgroundImage: `url(${background})`,
             }}

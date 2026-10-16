@@ -31,6 +31,10 @@ export function getManifest(target: TargetBrowser) {
         manifest.background = {
             scripts: ['background.js'],
         };
+        manifest.permissions = [
+            ...(manifest.permissions || []),
+            'sessions',
+        ];
         manifest.host_permissions = [
             ...(manifest.host_permissions || []),
             'https://faviconapi.com/*',

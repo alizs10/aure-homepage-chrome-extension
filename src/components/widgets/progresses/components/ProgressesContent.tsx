@@ -68,7 +68,13 @@ export default function ProgressesContent() {
                                 variant={filter === f.value ? 'primary-active' : 'ghost'}
                                 onClick={() => onFilterChange(f.value)}
                             >
-                                {f.icon ? f.icon : f.label}
+                                {f.icon ? (
+                                    f.icon
+                                ) : (
+                                    <BetterTypography variant='xxs' weight='medium'>
+                                        {f.label}
+                                    </BetterTypography>
+                                )}
                             </Button>
                         ))}
                     </div>

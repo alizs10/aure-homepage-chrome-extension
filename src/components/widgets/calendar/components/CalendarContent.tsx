@@ -66,11 +66,11 @@ export default function CalendarContent() {
                         <ChevronLeftIcon className="size-4" />
                     </Button>
 
-                    <div className="flex-row-center gap-x-1">
+                    <div className="flex-row-center gap-x-1 h-8">
                         {/* Full month and year displayed as plain typography */}
                         <BetterTypography
                             as="span"
-                            variant="md"
+                            variant="sm"
                             weight="medium"
                         >
                             {format(month, "MMMM yyyy")}
@@ -83,6 +83,7 @@ export default function CalendarContent() {
                             triggerVariant="ghost"
                             hideLabel
                             onValueChange={(year) => selectMonth(setYear(month, year))}
+                            triggerClassName='h-full'
                         />
                     </div>
 

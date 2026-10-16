@@ -1,5 +1,5 @@
 // background.ts
-import browser from 'webextension-polyfill';
+import browser, { type Runtime } from 'webextension-polyfill';
 
 // 🌟 Listen for the background alarm (fires even if tab is closed)
 browser.alarms.onAlarm.addListener(async (alarm) => {
@@ -38,7 +38,7 @@ browser.alarms.onAlarm.addListener(async (alarm) => {
 });
 
 // 🌟 Listen for runtime messages from pomodoro store
-browser.runtime.onMessage.addListener(async (rawMessage: unknown) => {
+browser.runtime.onMessage.addListener(async (rawMessage: unknown, sender: Runtime.MessageSender) => {
     const message = (rawMessage || {}) as {
         type?: string;
         action?: string;
@@ -74,6 +74,71 @@ browser.runtime.onMessage.addListener(async (rawMessage: unknown) => {
             message: message.body || message.message || 'Your Pomodoro session has ended. Take a break!',
         });
         return { status: 'ok' };
+    }
+
+    // 🌟 Firefox New Tab Focus Swap: Firefox's browser chrome retains focus on the Awesomebar
+    // during new-tab page loads and ignores page-level focus. Swapping to a freshly created tab
+    // allows page content (the search input) to receive immediate focus.
+    if (action === 'SWAP_FIREFOX_NEWTAB_FOR_FOCUS') {
+        const sourceTab = sender?.tab;
+        if (!sourceTab || sourceTab.id === undefined) {
+            return { status: 'error', reason: 'no_source_tab' };
+        }
+
+        // Avoid swapping custom container tabs where cookieStoreId replication requires extra permissions
+        if (sourceTab.cookieStoreId && sourceTab.cookieStoreId !== 'firefox-default') {
+            return { status: 'skipped', reason: 'container_tab' };
+        }
+
+        try {
+            const extensionUrl = browser.runtime.getURL('index.html#focused');
+            const newTab = await browser.tabs.create({
+                url: extensionUrl,
+                index: sourceTab.index,
+                windowId: sourceTab.windowId,
+                active: true,
+            });
+
+            const sourceTabId = sourceTab.id;
+            const sourceTabWindowId = sourceTab.windowId;
+
+            await browser.tabs.remove(sourceTabId);
+
+            // Clean up the closed tab from "Recently Closed Tabs" so Cmd/Ctrl+Shift+T won't reopen it
+            const sessionsApi = (browser as unknown as {
+                sessions?: {
+                    getRecentlyClosed?: (query?: unknown) => Promise<Array<{ tab?: { sessionId?: string; url?: string } }>>;
+                    forgetClosedTab?: (windowId: number, sessionId: string) => Promise<void>;
+                };
+            }).sessions;
+
+            const getRecentlyClosed = sessionsApi?.getRecentlyClosed?.bind(sessionsApi);
+            const forgetClosedTab = sessionsApi?.forgetClosedTab?.bind(sessionsApi);
+
+            if (getRecentlyClosed && forgetClosedTab) {
+                setTimeout(async () => {
+                    try {
+                        const closed = await getRecentlyClosed({ maxResults: 5 });
+                        const entry = closed.find(
+                            (item) =>
+                                item.tab &&
+                                item.tab.sessionId &&
+                                (item.tab.url?.includes('index.html') || item.tab.url?.includes('newtab'))
+                        );
+                        if (entry?.tab?.sessionId && sourceTabWindowId !== undefined) {
+                            await forgetClosedTab(sourceTabWindowId, entry.tab.sessionId);
+                        }
+                    } catch {
+                        // Best effort cleanup; safe to ignore errors
+                    }
+                }, 150);
+            }
+
+            return { status: 'ok', newTabId: newTab.id };
+        } catch (error) {
+            console.error('Failed to swap Firefox new tab for focus:', error);
+            return { status: 'error', error: String(error) };
+        }
     }
 });
 

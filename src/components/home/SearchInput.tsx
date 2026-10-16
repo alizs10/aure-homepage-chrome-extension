@@ -1,5 +1,5 @@
 import { SearchIcon, TerminalIcon } from 'lucide-react';
-import { useState, type ChangeEvent } from 'react';
+import { useState, useRef, useEffect, type ChangeEvent } from 'react';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
 import { getDestination } from './helpers/search';
@@ -17,6 +17,27 @@ export default function SearchInput() {
 
     // 🌟 FIX: Moved selectedIndex up to be the single source of truth
     const [selectedIndex, setSelectedIndex] = useState(-1);
+
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        // Explicitly focus input on mount
+        inputRef.current?.focus();
+
+        // Ensure search input regains focus when tab/window gains focus
+        const handleWindowFocus = () => {
+            if (
+                !document.activeElement ||
+                document.activeElement === document.body ||
+                document.activeElement === inputRef.current
+            ) {
+                inputRef.current?.focus();
+            }
+        };
+
+        window.addEventListener('focus', handleWindowFocus);
+        return () => window.removeEventListener('focus', handleWindowFocus);
+    }, []);
 
     const { width } = useWidth();
 
@@ -163,6 +184,7 @@ export default function SearchInput() {
                     className="z-30 shrink-0"
                 >
                     <TextInput
+                        ref={inputRef}
                         className={`h-full w-full text-sm sm:px-6 sm:text-lg md:py-2.5 md:text-xl lg:px-10 lg:py-4 lg:text-2xl`}
                         placeholder={isCommandMode ? 'Type a command...' : 'Search through web...'}
                         value={inputDisplayValue}

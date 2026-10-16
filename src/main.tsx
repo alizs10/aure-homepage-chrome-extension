@@ -16,6 +16,12 @@ if (import.meta.env.DEV) {
 // Preload cached favicons into memory for instant synchronous rendering
 preloadFaviconCache();
 
+// 🌟 Firefox focus marker: record focus bypass and normalize hash before HashRouter mounts
+if (window.location.hash.startsWith('#focused')) {
+  sessionStorage.setItem('aure_focus_bypass', 'true');
+  window.history.replaceState(null, '', window.location.pathname + '#/');
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Wrappers>
