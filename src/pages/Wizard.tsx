@@ -70,6 +70,7 @@ export default function Wizard() {
             show_top_sites: true,
             show_favorites: true,
             show_folders: true,
+            enable_ip_checker: false,
             widget_layout: DEFAULT_WIDGET_LAYOUT,
         };
 

@@ -14,7 +14,7 @@ interface FormValues {
     show_folders: boolean;
 }
 
-export default function SitesAndFoldersContent() {
+export default function BookmarksContent() {
     const { settings, update } = useSettingsStore();
 
     const {

@@ -1,4 +1,4 @@
-import { AppWindowIcon, InfoIcon, SwatchBookIcon, TerminalIcon, UserPenIcon } from "lucide-react";
+import { BookmarkIcon, InfoIcon, ShieldIcon, SwatchBookIcon, TerminalIcon, UserPenIcon } from "lucide-react";
 
 export const TABS = [
     {
@@ -7,9 +7,9 @@ export const TABS = [
         Icon: SwatchBookIcon
     },
     {
-        id: "sites-and-folders",
-        label: "Sites & Folders",
-        Icon: AppWindowIcon
+        id: "bookmarks",
+        label: "Bookmarks",
+        Icon: BookmarkIcon
     },
     {
         id: "user-information",
@@ -20,6 +20,11 @@ export const TABS = [
         id: "commands",
         label: "Commands",
         Icon: TerminalIcon
+    },
+    {
+        id: "privacy",
+        label: "Privacy",
+        Icon: ShieldIcon
     },
     {
         id: "about",

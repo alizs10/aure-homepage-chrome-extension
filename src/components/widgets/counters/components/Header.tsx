@@ -31,7 +31,9 @@ export default function Header({ onAdd }: HeaderProps) {
                                     {f.icon}
                                 </div>
                             ) : (
-                                f.label
+                                <BetterTypography variant='xxs' weight='medium'>
+                                    {f.label}
+                                </BetterTypography>
                             )}
                         </Button>
                     ))}

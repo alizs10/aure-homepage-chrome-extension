@@ -20,6 +20,8 @@ import type { Wallpaper } from '@/types';
 import { CURRENT_SCHEMA_VERSION, runMigrations } from "./migrations";
 import { useSettingsStore } from "@/stores";
 
+// 🔒 IP data (LOCAL_STORAGE_KEYS.ipData) is stored strictly in browser localStorage
+// and is NEVER exported or imported during backup/restore.
 async function getAllChromeStorageData() {
     const data: Record<string, unknown> = {};
     const keys = Object.values(STORAGE_KEYS);

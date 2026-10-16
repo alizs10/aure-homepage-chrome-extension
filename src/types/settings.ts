@@ -133,5 +133,6 @@ export interface Settings {
     show_top_sites: boolean
     show_favorites: boolean
     show_folders: boolean
+    enable_ip_checker?: boolean
     widget_layout?: WidgetLayout;
 }

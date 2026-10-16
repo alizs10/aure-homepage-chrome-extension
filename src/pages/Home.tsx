@@ -193,7 +193,7 @@ export default function Home() {
                             {showTopSites && <TopSites />} {/* no limits*/}
                             {showFavorites && <Favorites />} {/* 15 limits*/}
                             {showFolders && <Folders />} {/* 5 limits*/}
-                            <Link className="transition-opacity duration-200 pointer-events-auto" to="/settings?tab=sites-and-folders">
+                            <Link className="transition-opacity duration-200 pointer-events-auto" to="/settings?tab=bookmarks">
                                 <Button
                                     size='icon-sm'
                                     variant='warning'
