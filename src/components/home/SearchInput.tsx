@@ -21,11 +21,7 @@ export default function SearchInput() {
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        // Explicitly focus input on mount
-        inputRef.current?.focus();
-
-        // Ensure search input regains focus when tab/window gains focus
-        const handleWindowFocus = () => {
+        const focusInput = () => {
             if (
                 !document.activeElement ||
                 document.activeElement === document.body ||
@@ -35,8 +31,24 @@ export default function SearchInput() {
             }
         };
 
+        // Explicitly focus input on mount across multiple event loop ticks
+        focusInput();
+        const rafId = requestAnimationFrame(focusInput);
+        const timer1 = setTimeout(focusInput, 50);
+        const timer2 = setTimeout(focusInput, 150);
+
+        // Ensure search input regains focus when tab/window gains focus
+        const handleWindowFocus = () => {
+            focusInput();
+        };
+
         window.addEventListener('focus', handleWindowFocus);
-        return () => window.removeEventListener('focus', handleWindowFocus);
+        return () => {
+            cancelAnimationFrame(rafId);
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+            window.removeEventListener('focus', handleWindowFocus);
+        };
     }, []);
 
     const { width } = useWidth();

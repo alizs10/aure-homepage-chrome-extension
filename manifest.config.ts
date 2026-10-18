@@ -20,6 +20,7 @@ export function getManifest(target: TargetBrowser) {
         ];
         manifest.background = {
             service_worker: 'background.js',
+            type: 'module',
         };
     } else if (target === 'firefox') {
         manifest.browser_specific_settings = {
@@ -30,10 +31,12 @@ export function getManifest(target: TargetBrowser) {
         };
         manifest.background = {
             scripts: ['background.js'],
+            type: 'module',
         };
         manifest.permissions = [
             ...(manifest.permissions || []),
             'sessions',
+            'tabs',
         ];
         manifest.host_permissions = [
             ...(manifest.host_permissions || []),

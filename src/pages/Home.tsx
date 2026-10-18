@@ -45,10 +45,13 @@ export default function Home() {
     const [isCustomizing, setIsCustomizing] = useState(false);
 
     useEffect(() => {
-        const isNewTabPage = window.location.href.startsWith('chrome://newtab') ||
+        const isNewTabPage =
+            window.location.href.startsWith('chrome://newtab') ||
             window.location.href.startsWith('about:newtab') ||
+            window.location.href.startsWith('about:home') ||
             window.location.pathname.endsWith('/newtab.html') ||
-            window.location.pathname.endsWith('/index.html');
+            window.location.pathname.endsWith('/index.html') ||
+            window.location.protocol === 'moz-extension:';
 
         if (!isNewTabPage) return;
 
@@ -69,6 +72,7 @@ export default function Home() {
             // On initial Firefox newtab, Firefox locks focus to the URL bar/search bar.
             // Swapping tab when visible creates a fresh tab that properly focuses page content.
             if (!hasHandledFocus) {
+                sessionStorage.setItem('aure_focus_bypass', 'swapping');
                 const requestSwap = () => {
                     if (document.visibilityState !== 'visible') {
                         return;

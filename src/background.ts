@@ -92,12 +92,24 @@ browser.runtime.onMessage.addListener(async (rawMessage: unknown, sender: Runtim
 
         try {
             const extensionUrl = browser.runtime.getURL('index.html#focused');
-            const newTab = await browser.tabs.create({
+            const createProperties: {
+                url: string;
+                active: boolean;
+                index?: number;
+                windowId?: number;
+            } = {
                 url: extensionUrl,
-                index: sourceTab.index,
-                windowId: sourceTab.windowId,
                 active: true,
-            });
+            };
+
+            if (typeof sourceTab.index === 'number') {
+                createProperties.index = sourceTab.index;
+            }
+            if (typeof sourceTab.windowId === 'number') {
+                createProperties.windowId = sourceTab.windowId;
+            }
+
+            const newTab = await browser.tabs.create(createProperties);
 
             const sourceTabId = sourceTab.id;
             const sourceTabWindowId = sourceTab.windowId;
