@@ -66,10 +66,10 @@ interface MoodTrackerState {
 
     // Actions
     initialize: () => Promise<void>;
-    addItem: (mood: MoodType, date: Date) => Promise<void>;
+    addItem: (mood: MoodType, date: Date | string) => Promise<void>;
     removeItem: (id: number) => Promise<void>;
     updateItem: (id: number, mood: MoodType) => Promise<void>;
-    getItemByDate: (date: Date) => Promise<MoodHistory | undefined>;
+    getItemByDate: (date: Date | string) => Promise<MoodHistory | undefined>;
     getItem: (id: number) => Promise<MoodHistory | undefined>;
     onFilterChange: (value: typeof filters[number]['value']) => void;
     setShowChart: (value: boolean) => void;
@@ -93,9 +93,15 @@ export const useMoodTrackerStore = create<MoodTrackerState>((set, get) => ({
     },
 
     addItem: async (mood, date) => {
-        const formattedDate = format(date, "yyyy-MM-dd");
-        const now = Date.now();
+        const formattedDate = typeof date === 'string' ? date : format(date, "yyyy-MM-dd");
+        const existing = get().data.find((d) => d.date === formattedDate);
 
+        if (existing) {
+            await get().updateItem(existing.id, mood);
+            return;
+        }
+
+        const now = Date.now();
         const newItem: MoodHistory = {
             id: now,
             mood,
@@ -117,8 +123,8 @@ export const useMoodTrackerStore = create<MoodTrackerState>((set, get) => ({
         broadcastMood();
     },
 
-    getItemByDate: async (date: Date) => {
-        const formattedDate = format(date, "yyyy-MM-dd");
+    getItemByDate: async (date: Date | string) => {
+        const formattedDate = typeof date === 'string' ? date : format(date, "yyyy-MM-dd");
         return get().data.find((d) => d.date === formattedDate);
     },
 

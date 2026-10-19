@@ -18,4 +18,6 @@ export default function HistoryList() {
     if (filter === 'thisYear') {
         return <HistoryQuartersList />
     }
+
+    return <HistoryDaysList />;
 }
