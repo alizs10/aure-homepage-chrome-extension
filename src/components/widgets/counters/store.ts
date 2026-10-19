@@ -113,6 +113,8 @@ export const useCountersStore = create<CountersState>((set, get) => ({
             updated.endDate = format(addDays(now, item.intervalDays), 'yyyy-MM-dd');
             // 🌟 Reset the progress bar by updating createdAt to now
             updated.createdAt = now.getTime();
+        } else {
+            return;
         }
 
         await CounterRepository.put(updated);
