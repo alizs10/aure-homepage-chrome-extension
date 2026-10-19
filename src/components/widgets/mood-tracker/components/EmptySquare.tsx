@@ -53,7 +53,7 @@ export default function EmptySquare({ date, isFuture = false }: EmptySquareProps
                 }}
                 title={`Missed day (${formattedDateLabel}) - Click to choose mood`}
                 className={cn(
-                    "col-span-1 row-span-1 h-full bg-secondary hover:bg-secondary/70 flex-center cursor-pointer outline-none transition-colors group"
+                    "col-span-1 row-span-1 h-full bg-secondary flex-center cursor-pointer outline-none transition-colors group"
                 )}
             >
                 <MinusIcon className="text-secondary-foreground/30 dark:text-secondary-foreground/60 size-2 group-hover:hidden" />
