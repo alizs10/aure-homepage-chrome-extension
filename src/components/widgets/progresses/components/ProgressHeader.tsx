@@ -2,16 +2,22 @@ import { useState } from 'react';
 import { BetterTypography } from '@/components/common/BetterTypography';
 import Button from '@/components/ui/Button';
 import Popup from '@/components/ui/Popup';
-import { MoreHorizontalIcon, PencilIcon, Trash2Icon } from 'lucide-react';
+import { EyeIcon, MoreHorizontalIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 
 interface ProgressHeaderProps {
     title: string;
+    onView: () => void;
     onEdit: () => void;
     onDelete: () => void;
 }
 
-export default function ProgressHeader({ title, onEdit, onDelete }: ProgressHeaderProps) {
+export default function ProgressHeader({ title, onView, onEdit, onDelete }: ProgressHeaderProps) {
     const [isOpen, setIsOpen] = useState(false);
+
+    const handleView = () => {
+        setIsOpen(false);
+        onView();
+    };
 
     const handleEdit = () => {
         setIsOpen(false);
@@ -47,6 +53,15 @@ export default function ProgressHeader({ title, onEdit, onDelete }: ProgressHead
                 )}
             >
                 <div className="flex flex-col w-full space-y-0.5">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="justify-start w-full"
+                        leftIcon={<EyeIcon className="size-4" />}
+                        onClick={handleView}
+                    >
+                        <BetterTypography variant="xs" weight="medium">View</BetterTypography>
+                    </Button>
                     <Button
                         variant="ghost-warning"
                         size="sm"
