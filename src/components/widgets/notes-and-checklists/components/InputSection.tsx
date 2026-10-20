@@ -56,14 +56,17 @@ export function InputSection() {
         const shouldFocus = cursorPos !== undefined || !!editable;
 
         if (isMultiLine && textareaRef.current) {
+            adjustHeight();
             if (shouldFocus) {
                 textareaRef.current.focus();
                 if (cursorPos !== undefined) {
                     textareaRef.current.setSelectionRange(cursorPos, cursorPos);
+                    if (cursorPos === textareaRef.current.value.length && textareaRef.current.scrollHeight > textareaRef.current.clientHeight) {
+                        textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
+                    }
                     pendingCursorPosRef.current = undefined;
                 }
             }
-            adjustHeight();
         } else if (!isMultiLine && inputRef.current) {
             if (shouldFocus) {
                 inputRef.current.focus();
@@ -159,7 +162,46 @@ export function InputSection() {
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInput(e.target.value);
+        const value = e.target.value;
+        if (value.includes('\n')) {
+            setInput(value);
+            setIsMultiLine(true);
+            pendingCursorPosRef.current = e.target.selectionStart ?? value.length;
+        } else {
+            setInput(value);
+        }
+    };
+
+    const handleInputPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+        const clipboardText = e.clipboardData.getData('text');
+        const normalizedText = clipboardText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+        if (normalizedText.includes('\n')) {
+            e.preventDefault();
+            const cursorPos = e.currentTarget.selectionStart ?? input.length;
+            const selectionEnd = e.currentTarget.selectionEnd ?? input.length;
+            const newValue = input.slice(0, cursorPos) + normalizedText + input.slice(selectionEnd);
+
+            setInput(newValue);
+            setIsMultiLine(true);
+            pendingCursorPosRef.current = cursorPos + normalizedText.length;
+        }
+    };
+
+    const handleInputDrop = (e: React.DragEvent<HTMLInputElement>) => {
+        const droppedText = e.dataTransfer.getData('text');
+        const normalizedText = droppedText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+        if (normalizedText.includes('\n')) {
+            e.preventDefault();
+            const cursorPos = e.currentTarget.selectionStart ?? input.length;
+            const selectionEnd = e.currentTarget.selectionEnd ?? input.length;
+            const newValue = input.slice(0, cursorPos) + normalizedText + input.slice(selectionEnd);
+
+            setInput(newValue);
+            setIsMultiLine(true);
+            pendingCursorPosRef.current = cursorPos + normalizedText.length;
+        }
     };
 
     const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -209,6 +251,8 @@ export function InputSection() {
                             value={input}
                             onChange={handleInputChange}
                             onKeyDown={handleInputKeyDown}
+                            onPaste={handleInputPaste}
+                            onDrop={handleInputDrop}
                             placeholder='Shift+Enter for multi-line'
                             className='placeholder:text-muted-foreground text-xs md:text-sm lg:text-base py-0 h-10 app_gradient'
                         />
