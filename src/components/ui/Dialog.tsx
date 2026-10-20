@@ -10,7 +10,7 @@ export interface ConfirmDialogProps {
     open: boolean;
     onClose: () => void;
     title: string;
-    description?: string;
+    description?: ReactNode;
 
     // Flattened button props for a much cleaner API
     confirmText: string;
@@ -60,6 +60,7 @@ export default function ConfirmDialog({
 
                 {description && (
                     <BetterTypography
+                        as="div"
                         variant="sm"
                         className="mt-4 text-center text-muted-foreground"
                     >

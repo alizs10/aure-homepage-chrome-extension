@@ -6,6 +6,7 @@ import { usePetHouse } from '../hooks/usePetHouse';
 import Button from '@/components/ui/Button';
 import { toast } from '@/stores/useToastStore';
 import ConfirmDialog from '@/components/ui/Dialog';
+import ClickToCopy from '@/components/ui/ClickToCopy';
 
 export default function KillPetDialog({ pet }: { pet: Pet }) {
     const { removeItem } = usePetHouse();
@@ -17,7 +18,7 @@ export default function KillPetDialog({ pet }: { pet: Pet }) {
 
     const handleRemove = useCallback(() => {
         // UX Improvement: Warn the user if they typed the wrong confirmation string
-        if (confirmKey !== expectedKey) {
+        if (confirmKey.trim() !== expectedKey) {
             toast.error("Confirmation text did not match. Pet spared.", { duration: 2000 });
             setConfirmKey("");
             setDialogOpen(false);
@@ -59,7 +60,15 @@ export default function KillPetDialog({ pet }: { pet: Pet }) {
                     setDialogOpen(false);
                 }}
                 title={`Killing ${pet.name}???`}
-                description={`You really want to kill ${pet.name}? You can't bring back a dead pet!`}
+                description={
+                    <div className="flex flex-col items-center gap-y-2">
+                        <span>You really want to kill {pet.name}? You can't bring back a dead pet!</span>
+                        <div className="flex items-center justify-center gap-1.5 flex-wrap text-xs text-muted-foreground">
+                            <span>To confirm, type:</span>
+                            <ClickToCopy text={expectedKey} />
+                        </div>
+                    </div>
+                }
                 cancelText="Nooo"
                 confirmText="Kill it!"
                 confirmVariant="destructive"

@@ -6,6 +6,7 @@ import { usePetHouse } from '../hooks/usePetHouse';
 import Button from '@/components/ui/Button';
 import { toast } from '@/stores/useToastStore';
 import ConfirmDialog from '@/components/ui/Dialog';
+import ClickToCopy from '@/components/ui/ClickToCopy';
 
 export default function HardDeletePetDialog({ pet }: { pet: Pet }) {
     const { hardDeleteItem } = usePetHouse();
@@ -16,7 +17,7 @@ export default function HardDeletePetDialog({ pet }: { pet: Pet }) {
     const expectedKey = `delete ${pet.name} forever`;
 
     const handleHardDelete = useCallback(() => {
-        if (confirmKey !== expectedKey) {
+        if (confirmKey.trim() !== expectedKey) {
             toast.error("Confirmation text did not match. Pet ghost spared.", { duration: 2000 });
             setConfirmKey("");
             setDialogOpen(false);
@@ -49,7 +50,15 @@ export default function HardDeletePetDialog({ pet }: { pet: Pet }) {
                     setDialogOpen(false);
                 }}
                 title={`Permanently Delete ${pet.name}?`}
-                description={`This will completely erase ${pet.name}'s ghost from the database. This action cannot be undone.`}
+                description={
+                    <div className="flex flex-col items-center gap-y-2">
+                        <span>This will completely erase {pet.name}'s ghost from the database. This action cannot be undone.</span>
+                        <div className="flex items-center justify-center gap-1.5 flex-wrap text-xs text-muted-foreground">
+                            <span>To confirm, type:</span>
+                            <ClickToCopy text={expectedKey} />
+                        </div>
+                    </div>
+                }
                 cancelText="Keep Ghost"
                 confirmText="Delete Forever"
                 confirmVariant="destructive"
