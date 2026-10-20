@@ -1,18 +1,28 @@
 import { BetterTypography } from '@/components/common/BetterTypography';
 import Button from '@/components/ui/Button';
 import Dropdown from '@/components/ui/Dropdown';
-import { PlusIcon } from 'lucide-react';
+import { ArrowUpDownIcon, PlusIcon } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { useProgresses } from '../hooks/useProgresses';
 import { useProgressesStore } from '../store';
 import ProgressItem from './ProgressItem';
 import ProgressModal from '../modals/ProgressModal';
 import ProgressDetailModal from '../modals/ProgressDetailModal';
-import { progressFilters } from '../constants/filters';
-import type { Progress } from '../types';
+import { progressFilters, progressSortOptions } from '../constants/filters';
+import type { Progress, ProgressSort } from '../types';
 
 export default function ProgressesContent() {
-    const { data, labels, loading, filter, labelFilter, onFilterChange, onLabelFilterChange } = useProgresses();
+    const {
+        data,
+        labels,
+        loading,
+        filter,
+        labelFilter,
+        sortBy,
+        onFilterChange,
+        onLabelFilterChange,
+        onSortChange,
+    } = useProgresses();
     const [modalOpen, setModalOpen] = useState(false);
     const [editingProgress, setEditingProgress] = useState<Progress | null>(null);
     const [selectedProgress, setSelectedProgress] = useState<Progress | null>(null);
@@ -73,26 +83,37 @@ export default function ProgressesContent() {
                         align='start'
                     />
 
+                    <div className="flex-row-center gap-x-1 h-full">
+                        {/* Status Filter Tabs */}
+                        <div className="rounded-3xl liquid-glass flex-row-center p-0.5 gap-x-0.5">
+                            {progressFilters.map((f) => (
+                                <Button
+                                    key={f.value}
+                                    size='icon-sm'
+                                    variant={filter === f.value ? 'primary-active' : 'ghost'}
+                                    onClick={() => onFilterChange(f.value)}
+                                >
+                                    {f.icon ? (
+                                        f.icon
+                                    ) : (
+                                        <BetterTypography variant='xxs' weight='medium'>
+                                            {f.label}
+                                        </BetterTypography>
+                                    )}
+                                </Button>
+                            ))}
+                        </div>
 
-
-                    {/* Status Filter Tabs */}
-                    <div className="rounded-3xl liquid-glass flex-row-center p-0.5 gap-x-0.5">
-                        {progressFilters.map((f) => (
-                            <Button
-                                key={f.value}
-                                size='icon-sm'
-                                variant={filter === f.value ? 'primary-active' : 'ghost'}
-                                onClick={() => onFilterChange(f.value)}
-                            >
-                                {f.icon ? (
-                                    f.icon
-                                ) : (
-                                    <BetterTypography variant='xxs' weight='medium'>
-                                        {f.label}
-                                    </BetterTypography>
-                                )}
-                            </Button>
-                        ))}
+                        {/* 🌟 Sorting Dropdown */}
+                        <Dropdown<ProgressSort>
+                            value={sortBy}
+                            options={progressSortOptions}
+                            onValueChange={onSortChange}
+                            triggerVariant="ghost"
+                            hideLabel
+                            icon={<ArrowUpDownIcon className="size-4" />}
+                            align="end"
+                        />
                     </div>
                 </div>
             </div>

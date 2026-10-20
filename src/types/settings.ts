@@ -1,4 +1,5 @@
 import type { PomodoroSettings } from '@/types/entities/pomodoro';
+import type { ProgressSort } from '@/types/entities/progress';
 
 //theme
 export type Theme = 'dark' | 'light' | 'system'
@@ -46,6 +47,9 @@ export type WidgetPreferences = {
         showChart: boolean;
     };
     pomodoro: PomodoroSettings;
+    progresses: {
+        sortBy: ProgressSort;
+    };
 };
 
 //accent

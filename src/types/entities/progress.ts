@@ -29,3 +29,4 @@ export interface ProgressLabel {
 }
 
 export type ProgressFilter = 'all' | 'undone' | 'done';
+export type ProgressSort = 'priority-desc' | 'priority-asc' | 'created-desc' | 'created-asc';
