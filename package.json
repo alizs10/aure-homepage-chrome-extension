@@ -13,8 +13,8 @@
     "build:watch": "TARGET_BROWSER=chrome vite build --watch --mode watch",
     "build:watch:firefox": "TARGET_BROWSER=firefox vite build --watch --mode watch",
     "package": "bun run build && bun run package:chrome && bun run package:firefox",
-    "package:chrome": "node scripts/package.js chrome",
-    "package:firefox": "node scripts/package.js firefox",
+    "package:chrome": "bun run build:chrome && node scripts/package.js chrome",
+    "package:firefox": "bun run build:firefox && node scripts/package.js firefox",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -26,7 +26,10 @@ export function getManifest(target: TargetBrowser) {
         manifest.browser_specific_settings = {
             gecko: {
                 id: 'aure-homepage@auredev.ir',
-                strict_min_version: '109.0',
+                strict_min_version: '142.0',
+                data_collection_permissions: {
+                    required: ['none'],
+                },
             },
         };
         manifest.background = {
