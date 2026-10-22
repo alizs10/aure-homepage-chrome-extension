@@ -30,7 +30,7 @@ Every new release requires updating or creating **5 specific files**:
 * **Thematic Alignment:** Choose the code name based on the key theme or standout improvements of the release:
   * `0.0.4` &rarr; `bold_forward_stable_release` (Folders, Pomodoro, UI refresh)
   * `0.0.5` &rarr; `toward_perfection_stable_release` (Organize pages, new widgets, responsive design)
-  * `0.0.6` &rarr; `seamless_harmony_stable_release` (Real-time cross-tab sync, architectural harmony & stability)
+  * `0.1.0` &rarr; `seamless_harmony_stable_release` (Real-time cross-tab sync, architectural harmony & stability)
 
 ### 2.3 Date Format Consistency
 Ensure dates match across all modified files:
@@ -38,7 +38,7 @@ Ensure dates match across all modified files:
 * **ISO 8601 date format** for [`version.json`](file:///version.json) and changelog frontmatter: `YYYY-MM-DD` (e.g., `2026-10-22`).
 
 ### 2.4 Consistent URLs and Asset Filenames
-* **Release Tag:** `vX.Y.Z` (e.g., `v0.0.6`).
+* **Release Tag:** `vX.Y.Z` (e.g., `v0.1.0`).
 * **Zip Asset Names:**
   * Chrome: `aure-homepage-chrome-v<version>.zip`
   * Firefox: `aure-homepage-firefox-v<version>.zip`
@@ -58,7 +58,7 @@ The application's changelog system automatically extracts the first 140 plain-te
 
 1. **[`.env`](file:///.env)**:
    ```env
-   VITE_APP_VERSION="0.0.6"
+   VITE_APP_VERSION="0.1.0"
    VITE_VERSION_DATE="22 Oct 2026"
    VITE_VERSION_NAME="seamless_harmony_stable_release"
    ```
@@ -68,17 +68,17 @@ The application's changelog system automatically extracts the first 140 plain-te
    {
        "manifest_version": 3,
        "name": "Aure Homepage",
-       "version": "0.0.6",
+       "version": "0.1.0",
        ...
    }
    ```
 
 ### Step 2: Create the In-App Changelog
-Create a new file under `src/components/features/updates/changelog/<version>.md` (e.g., [`src/components/features/updates/changelog/0.0.6.md`](file:///src/components/features/updates/changelog/0.0.6.md)):
+Create a new file under `src/components/features/updates/changelog/<version>.md` (e.g., [`src/components/features/updates/changelog/0.1.0.md`](file:///src/components/features/updates/changelog/0.1.0.md)):
 
 ```markdown
 ---
-version: 0.0.6
+version: 0.1.0
 date: 2026-10-22
 title: seamless_harmony_stable_release
 ---
@@ -149,18 +149,18 @@ When you are ready to publish:
 
 1. Commit all prepared release files:
    ```bash
-   git add .env manifest.base.json version.json RELEASE_NOTES.md src/components/features/updates/changelog/0.0.6.md RELEASE_GUIDE.md
-   git commit -m "[RELEASE] prepare version 0.0.6"
+   git add .env manifest.base.json version.json RELEASE_NOTES.md src/components/features/updates/changelog/0.1.0.md RELEASE_GUIDE.md
+   git commit -m "[RELEASE] prepare version 0.1.0"
    git push origin main
    ```
 2. Create and push a version tag:
    ```bash
-   git tag v0.0.6
-   git push origin v0.0.6
+   git tag v0.1.0
+   git push origin v0.1.0
    ```
 3. GitHub Actions will automatically:
    - Validate the version format and ensure [`RELEASE_NOTES.md`](file:///RELEASE_NOTES.md) exists.
    - Run `bun run build` to generate `dist/chrome` and `dist/firefox`.
    - Verify both manifests match the tagged version.
-   - Package `aure-homepage-chrome-v0.0.6.zip` and `aure-homepage-firefox-v0.0.6.zip`.
+   - Package `aure-homepage-chrome-v0.1.0.zip` and `aure-homepage-firefox-v0.1.0.zip`.
    - Publish a GitHub Release with both zip assets and notes from [`RELEASE_NOTES.md`](file:///RELEASE_NOTES.md).

@@ -1,4 +1,4 @@
-# Aure Homepage v0.0.6
+# Aure Homepage v0.1.0
 
 This release introduces official **Mozilla Firefox** support, complete real-time cross-tab synchronization across widgets and settings, live public IP & country flag with privacy controls, a new detailed progress modal with custom sorting, and key usability refinements across all widgets.
 
@@ -58,14 +58,14 @@ This release introduces official **Mozilla Firefox** support, complete real-time
 ## Download & Installation
 
 ### Google Chrome
-1. Download **`aure-homepage-chrome-v0.0.6.zip`** from the Assets section below.
+1. Download **`aure-homepage-chrome-v0.1.0.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `chrome://extensions`.
 4. Enable **Developer mode** in the top-right corner.
 5. Click **Load unpacked** and select the extracted folder.
 
 ### Mozilla Firefox
-1. Download **`aure-homepage-firefox-v0.0.6.zip`** from the Assets section below.
+1. Download **`aure-homepage-firefox-v0.1.0.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `about:debugging#/runtime/this-firefox`.
 4. Click **Load Temporary Add-on...** and select `manifest.json` from the extracted folder.

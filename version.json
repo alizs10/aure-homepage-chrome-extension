@@ -1,9 +1,9 @@
 {
-    "latestVersion": "0.0.6",
+    "latestVersion": "0.1.0",
     "minimumSupportedVersion": "0.0.1",
     "releaseDate": "2026-10-22",
-    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.6/aure-homepage-chrome-v0.0.6.zip",
-    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.6",
+    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.1.0/aure-homepage-chrome-v0.1.0.zip",
+    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.1.0",
     "notes": [
         "Multi-Browser Support: Aure Homepage is now officially available for Mozilla Firefox alongside Google Chrome with complete feature parity.",
         "Real-Time Cross-Tab Sync: All settings, layouts, wallpapers, bookmarks, and widgets sync instantly across all open tabs without refreshing.",
