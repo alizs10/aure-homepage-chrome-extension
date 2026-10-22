@@ -2,6 +2,8 @@ import { BetterTypography } from '@/components/common/BetterTypography';
 import Button from '@/components/ui/Button';
 import ProgressBar from '@/components/ui/ProgressBar';
 import { usePomodoro } from '@/components/widgets/pomodoro/hooks/usePomodoro';
+import { usePomodoroConfirm } from '@/components/widgets/pomodoro/hooks/usePomodoroConfirm';
+import type { PomodoroConfirmAction } from '@/components/widgets/pomodoro/types';
 import {
     PauseIcon,
     PlayIcon,
@@ -15,9 +17,10 @@ import {
 interface PomodoroHeaderPopupProps {
     onGoToPomodoro: () => void;
     onClose: () => void;
+    onRequestConfirm?: (action: PomodoroConfirmAction) => void;
 }
 
-export default function PomodoroHeaderPopup({ onGoToPomodoro, onClose }: PomodoroHeaderPopupProps) {
+export default function PomodoroHeaderPopup({ onGoToPomodoro, onClose, onRequestConfirm }: PomodoroHeaderPopupProps) {
     const {
         session,
         status,
@@ -25,12 +28,20 @@ export default function PomodoroHeaderPopup({ onGoToPomodoro, onClose }: Pomodor
         progress,
         pause,
         resume,
-        reset,
-        includeOvertime,
-        skipOvertime,
-        completeEarly,
         currentTaskName,
     } = usePomodoro();
+
+    const internalConfirm = usePomodoroConfirm({
+        onConfirmed: onClose,
+    });
+
+    const handleAction = (action: PomodoroConfirmAction) => {
+        if (onRequestConfirm) {
+            onRequestConfirm(action);
+        } else {
+            internalConfirm.requestConfirm(action);
+        }
+    };
 
     const isOvertime = status === 'overtime';
 
@@ -105,7 +116,7 @@ export default function PomodoroHeaderPopup({ onGoToPomodoro, onClose }: Pomodor
                             <BetterTypography variant="xs" weight="medium">Pause</BetterTypography>
                         </Button>
                         <Button
-                            onClick={() => { reset(); onClose(); }}
+                            onClick={() => handleAction('reset-session')}
                             variant="ghost"
                             size="sm"
                             leftIcon={<RotateCcwIcon className="size-4" />}
@@ -127,7 +138,7 @@ export default function PomodoroHeaderPopup({ onGoToPomodoro, onClose }: Pomodor
                             <BetterTypography variant="xs" weight="medium">Resume</BetterTypography>
                         </Button>
                         <Button
-                            onClick={() => { reset(); onClose(); }}
+                            onClick={() => handleAction('reset-session')}
                             variant="ghost"
                             size="sm"
                             leftIcon={<RotateCcwIcon className="size-4" />}
@@ -139,7 +150,7 @@ export default function PomodoroHeaderPopup({ onGoToPomodoro, onClose }: Pomodor
 
                 {(status === 'running' || status === 'paused') && (
                     <Button
-                        onClick={() => { completeEarly(); onClose(); }}
+                        onClick={() => handleAction('complete-early')}
                         variant="ghost"
                         size="sm"
                         className="w-full"
@@ -154,7 +165,7 @@ export default function PomodoroHeaderPopup({ onGoToPomodoro, onClose }: Pomodor
                 {isOvertime && (
                     <div className="flex gap-2">
                         <Button
-                            onClick={() => { includeOvertime(); onClose(); }}
+                            onClick={() => handleAction('include-overtime')}
                             variant="primary"
                             size="sm"
                             className="flex-1"
@@ -165,7 +176,7 @@ export default function PomodoroHeaderPopup({ onGoToPomodoro, onClose }: Pomodor
                             </BetterTypography>
                         </Button>
                         <Button
-                            onClick={() => { skipOvertime(); onClose(); }}
+                            onClick={() => handleAction('skip-overtime')}
                             variant="ghost"
                             size="sm"
                             leftIcon={session === 'focus' ? <Coffee className="size-4" /> : <Target className="size-4" />}
@@ -192,6 +203,8 @@ export default function PomodoroHeaderPopup({ onGoToPomodoro, onClose }: Pomodor
                     </Button>
                 </div>
             </div>
+
+            {!onRequestConfirm && internalConfirm.confirmDialog}
         </div>
     );
 }

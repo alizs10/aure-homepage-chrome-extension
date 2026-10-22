@@ -5,6 +5,7 @@ import { BetterTypography } from '@/components/common/BetterTypography';
 import Button from '@/components/ui/Button';
 import Popup from '@/components/ui/Popup';
 import { usePomodoro } from '@/components/widgets/pomodoro/hooks/usePomodoro';
+import { usePomodoroConfirm } from '@/components/widgets/pomodoro/hooks/usePomodoroConfirm';
 import { startPomodoroRefresh } from '@/components/widgets/pomodoro/store';
 import { useSettingsStore } from '@/stores';
 import { LOCAL_STORAGE_KEYS } from '@/constants/storage_keys';
@@ -22,6 +23,7 @@ function getPomodoroPage(settings: Settings | null): number | null {
 export default function PomodoroHeaderFeature() {
     const { settings } = useSettingsStore();
     const { session, status, formattedTime } = usePomodoro();
+    const { requestConfirm, confirmDialog, isConfirming } = usePomodoroConfirm();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -48,10 +50,10 @@ export default function PomodoroHeaderFeature() {
     const pomodoroPage = useMemo(() => getPomodoroPage(settings), [settings]);
     const isSettingsPage = location.pathname === '/settings';
 
-    // Only show when: pomodoro exists, timer is active, and user isn't already viewing it
+    // Only show when: pomodoro exists, timer is active (or confirming), and user isn't already viewing it
     const shouldShow =
         pomodoroPage !== null &&
-        status !== 'idle' &&
+        (status !== 'idle' || isConfirming) &&
         (isSettingsPage || currentPage !== pomodoroPage);
 
     // 🌟 Bug fix: When the Pomodoro widget unmounts (page change), its cleanup stops
@@ -100,36 +102,43 @@ export default function PomodoroHeaderFeature() {
     };
 
     return (
-        <Popup
-            open={popupOpen}
-            side="bottom"
-            align="center"
-            sideOffset={8}
-            onOpenChange={setPopupOpen}
-            trigger={(props) => (
-                <Button
-                    {...props}
-                    variant="muted"
-                    size="xs"
-                    className="gap-x-1.5"
-                >
-                    <div
-                        className={`size-1.5 rounded-full transition-colors duration-300 ${getDotColor()} ${status === 'overtime' ? 'animate-pulse' : ''}`}
-                    />
-                    <BetterTypography
-                        variant="12"
-                        weight="semibold"
-                        className={`tabular-nums ${getTextColor()}`}
+        <>
+            <Popup
+                open={popupOpen}
+                side="bottom"
+                align="center"
+                sideOffset={8}
+                onOpenChange={setPopupOpen}
+                trigger={(props) => (
+                    <Button
+                        {...props}
+                        variant="muted"
+                        size="xs"
+                        className="gap-x-1.5"
                     >
-                        {formattedTime}
-                    </BetterTypography>
-                </Button>
-            )}
-        >
-            <PomodoroHeaderPopup
-                onGoToPomodoro={handleGoToPomodoro}
-                onClose={() => setPopupOpen(false)}
-            />
-        </Popup>
+                        <div
+                            className={`size-1.5 rounded-full transition-colors duration-300 ${getDotColor()} ${status === 'overtime' ? 'animate-pulse' : ''}`}
+                        />
+                        <BetterTypography
+                            variant="12"
+                            weight="semibold"
+                            className={`tabular-nums ${getTextColor()}`}
+                        >
+                            {formattedTime}
+                        </BetterTypography>
+                    </Button>
+                )}
+            >
+                <PomodoroHeaderPopup
+                    onGoToPomodoro={handleGoToPomodoro}
+                    onClose={() => setPopupOpen(false)}
+                    onRequestConfirm={(action) => {
+                        setPopupOpen(false);
+                        requestConfirm(action);
+                    }}
+                />
+            </Popup>
+            {confirmDialog}
+        </>
     );
 }

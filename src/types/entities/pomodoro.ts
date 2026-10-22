@@ -2,6 +2,13 @@ export type PomodoroSession = 'focus' | 'short-break' | 'long-break';
 export type PomodoroStatus = 'idle' | 'running' | 'paused' | 'overtime';
 export type PomodoroView = 'timer' | 'logs' | 'chart';
 
+export type PomodoroConfirmAction =
+    | 'reset-cycle'
+    | 'reset-session'
+    | 'complete-early'
+    | 'include-overtime'
+    | 'skip-overtime';
+
 export interface PomodoroTask {
     id: number;
     name: string;
