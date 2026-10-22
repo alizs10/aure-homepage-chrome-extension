@@ -16,7 +16,7 @@ function isLegacyChecklist(note: LegacyNote): note is Checklist {
     return 'status' in note;
 }
 
-export const CURRENT_SCHEMA_VERSION = 3;
+export const CURRENT_SCHEMA_VERSION = 4;
 
 // Type for settings during migration (may have old properties)
 type LegacySettings = Settings & {
@@ -129,6 +129,19 @@ const migrations: Record<number, () => Promise<void>> = {
         await update({
             schema_version: 3,
             widget_layout: widgetLayout,
+        });
+    },
+
+    // Version 4: Add wallpaper_blur and wallpaper_brightness and Accent
+    4: async () => {
+        const { settings, update } = useSettingsStore.getState();
+        if (!settings) return;
+
+        await update({
+            schema_version: 4,
+            accent: "golden",
+            wallpaper_blur: settings.wallpaper_blur ?? 'none',
+            wallpaper_brightness: settings.wallpaper_brightness ?? '100',
         });
     },
 };

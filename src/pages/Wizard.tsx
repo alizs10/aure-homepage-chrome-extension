@@ -63,10 +63,12 @@ export default function Wizard() {
 
     const onSubmit = async (data: WizardFormValues) => {
         const settingsToSave: Settings = {
-            schema_version: 3, // ✅ Fixed: match current migration version
+            schema_version: 4, // ✅ Fixed: match current migration version
             ...data,
+            wallpaper_blur: 'none',
+            wallpaper_brightness: '100',
             blur: 'xs',
-            accent: "default",
+            accent: "golden",
             show_top_sites: true,
             show_favorites: true,
             show_folders: true,

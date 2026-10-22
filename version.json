@@ -8,12 +8,13 @@
         "Multi-Browser Support: Aure Homepage is now officially available for Mozilla Firefox alongside Google Chrome with complete feature parity.",
         "Real-Time Cross-Tab Sync: All settings, layouts, wallpapers, bookmarks, and widgets sync instantly across all open tabs without refreshing.",
         "Live IP & Country Flag: View public IP address and country flag directly in Network Status with a dedicated Privacy toggle.",
+        "Wallpaper Brightness & Blur: Fine-tune your background directly in Preferences with dedicated brightness and blur presets for better widget contrast.",
         "Progress Goals: A new detail modal with full info and all actions, plus customizable sorting options.",
         "Mood Tracker: You can now choose your mood for missed days directly in the tracker grid.",
-        "Pomodoro Safeguards: Protective confirmation prompts for timer resets, early breaks, and overtime to prevent lost session progress.",
+        "Pomodoro Safeguards: Protective confirmation prompts across widgets and header popups for timer resets, early breaks, and overtime to prevent lost session progress.",
         "Smarter Countdowns: Clear negative day indicators for expired countdowns and refined reset rules for recurring targets.",
         "Smart Multi-Line Paste: Pasting multi-line text into quick notes automatically enables multi-line editing while preserving formatting.",
         "Pet House Shortcuts: Click-to-copy confirmation phrases when releasing or deleting pets.",
-        "Visuals & Polish: New default wallpapers replaced the old ones, renamed Sites & Folders to Bookmarks, and optimized clock performance."
+        "Visuals & Polish: Renamed interface blur to UI Blur, updated default wallpapers, and optimized clock performance."
     ]
 }

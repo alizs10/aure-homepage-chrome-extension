@@ -1,6 +1,6 @@
 # Aure Homepage v0.1.0
 
-This release introduces official **Mozilla Firefox** support, complete real-time cross-tab synchronization across widgets and settings, live public IP & country flag with privacy controls, a new detailed progress modal with custom sorting, and key usability refinements across all widgets.
+This release introduces official **Mozilla Firefox** support, complete real-time cross-tab synchronization across widgets and settings, live public IP & country flag with privacy controls, a new detailed progress modal with custom sorting, wallpaper brightness & blur adjustments, and key usability refinements across all widgets.
 
 ## What's New
 
@@ -14,6 +14,10 @@ This release introduces official **Mozilla Firefox** support, complete real-time
   * **Bookmarks & Folders**: Favorites, folders, and site ordering update smoothly across all open tabs.
   * **Interactive Widgets**: Notes & Tasks, Counters, Progresses, Mood Tracker, Pet House, and Calendar stay in sync everywhere.
   * **Custom Wallpapers**: Added or selected wallpapers apply immediately across all open tabs.
+* **Wallpaper Brightness & Blur Controls**:
+  * Fine-tune your background directly in Preferences with dedicated quick-preset buttons.
+  * Adjust wallpaper brightness (from 25% dim to 125% bright) to make widgets and text pop.
+  * Apply customizable wallpaper blur (from subtle softening to full glass aesthetic) with seamless edge protection.
 * **Live IP & Network Checker**:
   * Inspect your public IP address and country flag directly from the Network Status widget.
   * Automatic network health and connection quality monitoring.
@@ -28,7 +32,7 @@ This release introduces official **Mozilla Firefox** support, complete real-time
 ## Improvements
 
 ### Pomodoro Timer Safeguards
-* Added protective confirmation dialogs before resetting cycles, ending sessions early, or handling overtime, preventing accidental timer resets.
+* Added protective confirmation dialogs across both the main widget and header popup before resetting cycles, ending sessions early, or handling overtime, preventing accidental timer resets.
 
 ### Counters & Countdowns
 * Expired countdowns now display negative elapsed days (e.g., `-3d`) for clear visibility into how long ago a milestone was reached.
@@ -45,6 +49,7 @@ This release introduces official **Mozilla Firefox** support, complete real-time
 
 ### Performance & Polish
 * **Faster & Lighter**: Extracted Clock rendering and optimized background processes for lower memory usage and smoother animations.
+* **Distinct Blur Settings**: Clarified interface blur controls as **UI Blur** to distinguish between window glass styling and wallpaper background effects.
 * **Unified Dates**: Standardized date and time formatting throughout all widgets for a clean, consistent design.
 * **New Wallpapers**: New default wallpapers have replaced the old ones.
 
