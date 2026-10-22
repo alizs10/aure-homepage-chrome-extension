@@ -4,9 +4,13 @@ import TextInput from '@/components/ui/TextInput'
 import { copyToClipboard } from '@/helpers'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CopyCheckIcon, CopyIcon, HeartIcon, MailIcon, SendIcon } from 'lucide-react'
+import { GithubIcon } from '@/components/icons'
 import { useState } from 'react'
 import { toast } from '@/stores/useToastStore'
-// import { toast } from '@/stores/useToastStore'
+
+const GITHUB_REPO_URL =
+    import.meta.env.VITE_GITHUB_REPO_URL ||
+    'https://github.com/alizs10/aure-homepage-chrome-extension'
 
 export default function AboutTabDetails() {
     const [copied, setCopied] = useState(false)
@@ -25,7 +29,7 @@ export default function AboutTabDetails() {
 
     return (
         <div className="h-fit flex-1 flex flex-col gap-y-10">
-            <div className="flex flex-col gap-y-1">
+            <div className="flex flex-col gap-y-1 liquid-glass p-4 rounded-3xl">
                 <BetterTypography variant="sm">
                     App Name: <span className="font-semibold">{`"${import.meta.env.VITE_APP_NAME}"`}</span>
                 </BetterTypography>
@@ -45,10 +49,6 @@ export default function AboutTabDetails() {
                     Last Updated:{' '}
                     <span className="font-semibold">{import.meta.env.VITE_VERSION_DATE}</span>
                 </BetterTypography>
-
-                <BetterTypography variant="sm">
-                    Developer: <span className="font-semibold">{import.meta.env.VITE_DEVELOPER}</span>
-                </BetterTypography>
             </div>
 
             <div className="flex flex-col gap-y-2">
@@ -65,10 +65,23 @@ export default function AboutTabDetails() {
                     <Button
                         variant='primary'
                         size='sm'
+                        href={GITHUB_REPO_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        leftIcon={<GithubIcon className="size-4.5" />}
+                    >
+                        <BetterTypography variant="xs" weight="medium">
+                            GitHub
+                        </BetterTypography>
+                    </Button>
+
+                    <Button
+                        variant='primary'
+                        size='sm'
                         href="https://t.me/alizs10"
                         target="_blank"
                         rel="noopener noreferrer"
-                        leftIcon={<SendIcon className="size-4" />}
+                        leftIcon={<SendIcon className="size-4.5" />}
                     >
                         <BetterTypography variant="xs" weight="medium">
                             @alizs10
@@ -76,10 +89,10 @@ export default function AboutTabDetails() {
                     </Button>
 
                     <Button
-                        variant='destructive'
+                        variant='primary'
                         size='sm'
                         href="mailto:alizswork@gmail.com"
-                        leftIcon={<MailIcon className="size-4" />}
+                        leftIcon={<MailIcon className="size-4.5" />}
                     >
                         <BetterTypography variant="xs" weight="medium">
                             alizswork@gmail.com
