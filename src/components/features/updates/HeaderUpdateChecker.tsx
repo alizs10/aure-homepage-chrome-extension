@@ -4,12 +4,18 @@ import { BetterTypography } from "@/components/common/BetterTypography";
 import Button from "@/components/ui/Button";
 import UpdateAvailableModal from "@/components/settings/components/modals/UpdateAvailableModal";
 import { useUpdateChecker } from "@/hooks/useUpdateChecker";
+import { isVersionHigher } from "@/lib/version";
 
 export default function HeaderUpdateChecker() {
     const { hasUpdate, updateInfo, currentVersion } = useUpdateChecker(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    if (hasUpdate && updateInfo) {
+    const isUpdateAvailable =
+        hasUpdate &&
+        Boolean(updateInfo) &&
+        Boolean(updateInfo?.latestVersion && isVersionHigher(updateInfo.latestVersion, currentVersion));
+
+    if (isUpdateAvailable && updateInfo) {
         return (
             <>
                 <Button

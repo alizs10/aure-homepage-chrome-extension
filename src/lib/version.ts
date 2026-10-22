@@ -1,13 +1,14 @@
 /**
- * Compares two semantic version strings (e.g., "0.0.5" vs "0.0.4").
+ * Compares two semantic version strings (e.g., "0.0.5" vs "0.0.4", "v0.1.0" vs "0.1.0").
  * Returns 1 if a > b, -1 if a < b, and 0 if a === b.
  */
 export function compareVersions(a: string, b: string): number {
-    const pa = a.split('.').map(Number);
-    const pb = b.split('.').map(Number);
+    const clean = (v: string) => v.replace(/^v/i, '').trim();
+    const pa = clean(a).split('.').map(Number);
+    const pb = clean(b).split('.').map(Number);
     for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
-        const da = pa[i] ?? 0;
-        const db = pb[i] ?? 0;
+        const da = Number.isNaN(pa[i]) ? 0 : (pa[i] ?? 0);
+        const db = Number.isNaN(pb[i]) ? 0 : (pb[i] ?? 0);
         if (da > db) return 1;
         if (da < db) return -1;
     }
