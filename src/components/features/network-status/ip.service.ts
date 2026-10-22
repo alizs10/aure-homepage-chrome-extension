@@ -8,7 +8,7 @@ export interface IpInfo {
     timestamp: number;
 }
 
-export const IP_CACHE_DURATION_MS = 60 * 60 * 1000; // 1 hour
+export const IP_CACHE_DURATION_MS = 30 * 1000; // 30 secs
 const PRIMARY_IP_API_URL = "https://free.freeipapi.com/api/v1/json";
 const FALLBACK_IP_API_URL = "https://freeipapi.com/api/json";
 const FETCH_TIMEOUT_MS = 6000;
