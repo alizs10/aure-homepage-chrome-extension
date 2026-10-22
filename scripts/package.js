@@ -16,6 +16,6 @@ for (const t of targets) {
     }
     const zipName = `aure-homepage-${t}-v${version}.zip`;
     console.log(`Packaging ${t} extension to ${zipName}...`);
-    execSync(`cd dist/${t} && zip -q -r "../../${zipName}" . -x "*.DS_Store"`, { stdio: 'inherit' });
+    execSync(`cd dist/${t} && zip -q -r "../../${zipName}" . -x "*.DS_Store" "*/**/.DS_Store" "__MACOSX*" "*/**/__MACOSX*"`, { stdio: 'inherit' });
     console.log(`✅ Created ${zipName}`);
 }
