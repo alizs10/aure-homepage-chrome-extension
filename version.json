@@ -1,17 +1,19 @@
 {
     "latestVersion": "0.0.6",
     "minimumSupportedVersion": "0.0.1",
-    "releaseDate": "2026-10-16",
+    "releaseDate": "2026-10-22",
     "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.0.6/aure-homepage-chrome-v0.0.6.zip",
     "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.0.6",
     "notes": [
-        "Multi-Browser Support: Aure Homepage is now officially available for Mozilla Firefox in addition to Google Chrome.",
-        "Real-Time Cross-Tab Sync: All settings, layouts, wallpapers, and widgets now sync instantly across all open tabs without refreshing.",
-        "Live IP & Network Checker: View your public IP address, location, country flag, and connection quality right from the Network Status widget.",
-        "Privacy Controls: New Privacy settings tab to customize IP checking or hide location details.",
-        "Bookmarks Experience: Cleaned up and renamed Sites & Folders to Bookmarks in Settings for a more natural, familiar experience.",
-        "Enhanced Reliability: Optimized background timer alarms and instant browser focus on notification clicks.",
-        "Smarter Search: Prevented search suggestions from unexpectedly reappearing when returning to open tabs.",
-        "Smoother Performance: Faster startup, lower memory footprint, and standardized date and time formatting throughout all widgets."
+        "Multi-Browser Support: Aure Homepage is now officially available for Mozilla Firefox alongside Google Chrome with complete feature parity.",
+        "Real-Time Cross-Tab Sync: All settings, layouts, wallpapers, bookmarks, and widgets sync instantly across all open tabs without refreshing.",
+        "Live IP & Country Flag: View public IP address and country flag directly in Network Status with a dedicated Privacy toggle.",
+        "Progress Goals: A new detail modal with full info and all actions, plus customizable sorting options.",
+        "Mood Tracker: You can now choose your mood for missed days directly in the tracker grid.",
+        "Pomodoro Safeguards: Protective confirmation prompts for timer resets, early breaks, and overtime to prevent lost session progress.",
+        "Smarter Countdowns: Clear negative day indicators for expired countdowns and refined reset rules for recurring targets.",
+        "Smart Multi-Line Paste: Pasting multi-line text into quick notes automatically enables multi-line editing while preserving formatting.",
+        "Pet House Shortcuts: Click-to-copy confirmation phrases when releasing or deleting pets.",
+        "Visuals & Polish: New default wallpapers replaced the old ones, renamed Sites & Folders to Bookmarks, and optimized clock performance."
     ]
 }

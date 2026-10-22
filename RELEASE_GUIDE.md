@@ -34,8 +34,8 @@ Every new release requires updating or creating **5 specific files**:
 
 ### 2.3 Date Format Consistency
 Ensure dates match across all modified files:
-* **Human-readable date format** for [`.env`](file:///.env): `DD Mon YYYY` (e.g., `16 Oct 2026`).
-* **ISO 8601 date format** for [`version.json`](file:///version.json) and changelog frontmatter: `YYYY-MM-DD` (e.g., `2026-10-16`).
+* **Human-readable date format** for [`.env`](file:///.env): `DD Mon YYYY` (e.g., `22 Oct 2026`).
+* **ISO 8601 date format** for [`version.json`](file:///version.json) and changelog frontmatter: `YYYY-MM-DD` (e.g., `2026-10-22`).
 
 ### 2.4 Consistent URLs and Asset Filenames
 * **Release Tag:** `vX.Y.Z` (e.g., `v0.0.6`).
@@ -59,7 +59,7 @@ The application's changelog system automatically extracts the first 140 plain-te
 1. **[`.env`](file:///.env)**:
    ```env
    VITE_APP_VERSION="0.0.6"
-   VITE_VERSION_DATE="16 Oct 2026"
+   VITE_VERSION_DATE="22 Oct 2026"
    VITE_VERSION_NAME="seamless_harmony_stable_release"
    ```
 
@@ -79,7 +79,7 @@ Create a new file under `src/components/features/updates/changelog/<version>.md`
 ```markdown
 ---
 version: 0.0.6
-date: 2026-10-16
+date: 2026-10-22
 title: seamless_harmony_stable_release
 ---
 

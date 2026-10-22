@@ -1,6 +1,6 @@
 # Aure Homepage v0.0.6
 
-This release introduces official **Mozilla Firefox** support, live public IP & network details with privacy controls, complete real-time cross-tab synchronization across widgets and settings, and key stability improvements.
+This release introduces official **Mozilla Firefox** support, complete real-time cross-tab synchronization across widgets and settings, live public IP & country flag with privacy controls, a new detailed progress modal with custom sorting, and key usability refinements across all widgets.
 
 ## What's New
 
@@ -15,19 +15,38 @@ This release introduces official **Mozilla Firefox** support, live public IP & n
   * **Interactive Widgets**: Notes & Tasks, Counters, Progresses, Mood Tracker, Pet House, and Calendar stay in sync everywhere.
   * **Custom Wallpapers**: Added or selected wallpapers apply immediately across all open tabs.
 * **Live IP & Network Checker**:
-  * Inspect your public IP address, country flag, city, and ISP directly from the Network Status widget.
+  * Inspect your public IP address and country flag directly from the Network Status widget.
   * Automatic network health and connection quality monitoring.
 * **Dedicated Privacy Settings**:
   * New **Privacy** tab in Settings to toggle IP inspection on or off and manage data preferences.
+* **Progress Goals Details & Sorting**:
+  * A new detail modal displaying full info and all actions for your progress cards.
+  * Sort progress cards by Priority (High to Low / Low to High) or Date Created (Newest / Oldest first) with remembered preferences.
+* **Mood Tracker Missed Days**:
+  * You can now choose your mood for missed days directly in the tracker grid.
 
 ## Improvements
+
+### Pomodoro Timer Safeguards
+* Added protective confirmation dialogs before resetting cycles, ending sessions early, or handling overtime, preventing accidental timer resets.
+
+### Counters & Countdowns
+* Expired countdowns now display negative elapsed days (e.g., `-3d`) for clear visibility into how long ago a milestone was reached.
+* Refined reset behavior: recurring countdowns and count-ups can be reset instantly while fixed milestones remain preserved.
+
+### Notes & Checklists
+* Pasting or dropping multi-line text into the quick note field automatically switches into multi-line mode without losing line breaks or cursor positioning.
+
+### Pet House
+* Added click-to-copy helpers for confirmation phrases in pet release and deletion dialogs to make actions faster and easier.
 
 ### Bookmarks Experience
 * Renamed "Sites & Folders" to **Bookmarks** in Settings for a more natural and intuitive management experience.
 
 ### Performance & Polish
-* **Faster & Lighter**: Optimized core architecture for quicker startup, smoother navigation, and lower memory usage.
+* **Faster & Lighter**: Extracted Clock rendering and optimized background processes for lower memory usage and smoother animations.
 * **Unified Dates**: Standardized date and time formatting throughout all widgets for a clean, consistent design.
+* **New Wallpapers**: New default wallpapers have replaced the old ones.
 
 ### Background & Alarms
 * **Notification Focus**: Clicking a timer notification now smoothly unminimizes and brings your active browser window into focus.
