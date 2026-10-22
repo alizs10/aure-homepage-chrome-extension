@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { Dialog } from "@base-ui/react/dialog";
+import { cn } from "@/lib/util";
 
 interface ModalProps {
     children: ReactNode;
@@ -37,8 +38,4 @@ export default function Modal({ children, open, onClose, className }: ModalProps
             </Dialog.Portal>
         </Dialog.Root>
     );
-}
-
-function cn(...classes: (string | undefined | null | false)[]) {
-    return classes.filter(Boolean).join(" ");
 }

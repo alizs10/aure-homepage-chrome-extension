@@ -1,22 +1,13 @@
 import { BetterTypography } from '@/components/common/BetterTypography'
 import { changelog, type ChangelogEntry } from '@/lib/changelog'
 import { ChevronRightIcon, XIcon } from 'lucide-react'
-import { format, parseISO } from 'date-fns'
+import { formatDisplayDate } from '@/helpers/date'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 
 interface UpdatesPopupProps {
     onSelectEntry: (entry: ChangelogEntry) => void
     onOpenChange: (open: boolean) => void
-}
-
-function formatDate(dateStr: string): string {
-    if (!dateStr) return ''
-    try {
-        return format(parseISO(dateStr), 'MMM d, yyyy')
-    } catch {
-        return dateStr
-    }
 }
 
 export default function UpdatesPopupContent({ onSelectEntry, onOpenChange }: UpdatesPopupProps) {
@@ -63,7 +54,7 @@ export default function UpdatesPopupContent({ onSelectEntry, onOpenChange }: Upd
                                             </div>
                                             {entry.date && (
                                                 <span className="text-[11px] text-muted-foreground">
-                                                    {formatDate(entry.date)}
+                                                    {formatDisplayDate(entry.date, 'MMM d, yyyy')}
                                                 </span>
                                             )}
                                         </div>

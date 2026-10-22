@@ -1,16 +1,18 @@
 import { useSettingsStore } from "@/stores";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import type { Settings } from "../types/settings";
 import { wizardSchema, type WizardFormValues } from "@/components/wizard/validation/wizard-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { WizardIntro } from "@/components/wizard/components/WizardIntro";
 import { WizardContent } from "@/components/wizard/WizardContent";
 import { toast } from '@/stores/useToastStore';
+import { DEFAULT_WIDGET_LAYOUT } from '@/constants/widget-weights';
 
 export default function Wizard() {
     const save = useSettingsStore((s) => s.save);
+    const settings = useSettingsStore((s) => s.settings);
 
     const {
         register,
@@ -61,31 +63,27 @@ export default function Wizard() {
 
     const onSubmit = async (data: WizardFormValues) => {
         const settingsToSave: Settings = {
-            schema_version: 3, // ✅ Fixed: match current migration version
+            schema_version: 4, // ✅ Fixed: match current migration version
             ...data,
+            wallpaper_blur: 'none',
+            wallpaper_brightness: '100',
             blur: 'xs',
-            accent: "default",
+            accent: "golden",
             show_top_sites: true,
             show_favorites: true,
             show_folders: true,
-            widget_layout: { // ✅ Added: same default layout as migration
-                positions: [
-                    { widgetId: "notes-and-checklists", page: 1, column: 0, row: 0, size: 2 },
-                    { widgetId: "mood-tracker", page: 1, column: 1, row: 0, size: 2 },
-                    { widgetId: "counters", page: 1, column: 1, row: 1, size: 1 },
-                    { widgetId: "pomodoro", page: 1, column: 2, row: 0, size: 2 },
-                    { widgetId: "calendar", page: 2, column: 0, row: 0, size: 2 },
-                    { widgetId: "pet-house", page: 2, column: 1, row: 0, size: 1 },
-                    { widgetId: "progresses", page: 2, column: 2, row: 0, size: 2 },
-                ],
-                totalPages: 3,
-            },
+            enable_ip_checker: false,
+            widget_layout: DEFAULT_WIDGET_LAYOUT,
         };
 
         await save(settingsToSave);
         toast.success("All set, enjoy!")
         navigate("/", { replace: true });
     };
+
+    if (settings) {
+        return <Navigate to="/" replace />;
+    }
 
     return (
         <div className="relative z-10 w-full flex-1 min-h-0 flex flex-col gap-y-4 overflow-y-auto scrollbar-none px-4 md:px-8 lg:px-10 py-10">

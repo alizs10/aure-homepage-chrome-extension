@@ -10,10 +10,11 @@ import ProgressActions from './ProgressActions';
 
 interface ProgressItemProps {
     progress: Progress;
+    onView: (progress: Progress) => void;
     onEdit: (progress: Progress) => void;
 }
 
-export default function ProgressItem({ progress, onEdit }: ProgressItemProps) {
+export default function ProgressItem({ progress, onView, onEdit }: ProgressItemProps) {
     const { advanceStep, retreatStep, toggleStep, removeItem, toggleComplete } = useProgresses();
     const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
@@ -36,6 +37,7 @@ export default function ProgressItem({ progress, onEdit }: ProgressItemProps) {
             <div className="flex flex-col gap-y-3 p-4 rounded-3xl liquid-glass border border-border/50">
                 <ProgressHeader
                     title={progress.title}
+                    onView={() => onView(progress)}
                     onEdit={() => onEdit(progress)}
                     onDelete={() => setConfirmDeleteOpen(true)}
                 />

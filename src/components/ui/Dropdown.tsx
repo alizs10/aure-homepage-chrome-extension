@@ -20,6 +20,7 @@ export interface DropdownProps<T extends string | number> {
     triggerClassName?: string;
     labelVariant?: TypographyVariant;
     align?: "start" | "center" | "end"; // 🌟 Added align prop
+    title?: string;
 }
 
 export default function Dropdown<T extends string | number>({
@@ -33,6 +34,7 @@ export default function Dropdown<T extends string | number>({
     triggerClassName,
     labelVariant = "xxs",
     align = "end", // 🌟 Default to "end" to match original design
+    title,
 }: DropdownProps<T>) {
     const selectedOption = options.find(
         (opt) => String(opt.value) === String(value)
@@ -60,6 +62,7 @@ export default function Dropdown<T extends string | number>({
             <Select.Trigger
                 render={
                     <Button
+                        title={title ?? (hideLabel ? displayLabel : undefined)}
                         variant={triggerVariant}
                         size={hideLabel ? "icon-sm" : "sm"}
                         className={cn(

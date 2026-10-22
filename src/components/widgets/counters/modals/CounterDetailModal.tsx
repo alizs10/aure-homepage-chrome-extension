@@ -39,6 +39,8 @@ export default function CounterDetailModal({ open, onClose, counter, onEdit }: C
         ? format(parseISO(counter.startDate), 'MMM d, yyyy')
         : format(parseISO(counter.endDate!), 'MMM d, yyyy');
 
+    const canReset = counter.type === 'count_up' || (counter.type === 'count_down' && !!counter.isRecurring);
+
     return (
         <>
             <ModalWrapper open={open} onClose={onClose}>
@@ -76,9 +78,11 @@ export default function CounterDetailModal({ open, onClose, counter, onEdit }: C
                         <Button variant="ghost-warning" className="w-full" leftIcon={<PenIcon className="size-4" />} onClick={onEdit}>
                             <BetterTypography variant="sm" weight="medium">Edit</BetterTypography>
                         </Button>
-                        <Button variant="success" className="w-full" leftIcon={<RotateCcwIcon className="size-4" />} onClick={handleReset}>
-                            <BetterTypography variant="sm" weight="medium">Reset</BetterTypography>
-                        </Button>
+                        {canReset && (
+                            <Button variant="success" className="w-full" leftIcon={<RotateCcwIcon className="size-4" />} onClick={handleReset}>
+                                <BetterTypography variant="sm" weight="medium">Reset</BetterTypography>
+                            </Button>
+                        )}
                     </div>
                 </div>
             </ModalWrapper>

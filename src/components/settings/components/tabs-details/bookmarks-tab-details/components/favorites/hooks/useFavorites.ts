@@ -1,0 +1,1 @@
+export * from '@/features/bookmarks/hooks/useFavorites';

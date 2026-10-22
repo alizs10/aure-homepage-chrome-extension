@@ -15,17 +15,23 @@ export default function CounterCircle({ counter, size = 56 }: CounterCircleProps
     const { resolvedTheme } = useTheme();
 
     const days = getDaysCount(counter);
-    const daysAbs = Math.abs(days);
-    const displayDays = daysAbs >= 10000 ? `${Math.floor(daysAbs / 1000)}k` : String(daysAbs);
+    const isCountDown = counter.type === 'count_down';
+    const isNegativeCountdown = isCountDown && !counter.isRecurring && days < 0;
+
+    const daysAbs = (isCountDown && counter.isRecurring && days < 0) ? 0 : Math.abs(days);
+    const formatted = daysAbs >= 10000 ? `${Math.floor(daysAbs / 1000)}k` : String(daysAbs);
+    const displayDays = isNegativeCountdown ? `-${formatted}` : formatted;
 
     const getVariant = (len: number): "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" => {
         if (size > 60) {
-            if (len >= 4) return "sm";
+            if (len >= 5) return "xs";
+            if (len === 4) return "sm";
             if (len === 3) return "lg";
             if (len === 2) return "xl";
             return "2xl";
         }
-        if (len >= 4) return "xs";
+        if (len >= 5) return "xxs";
+        if (len === 4) return "xs";
         if (len === 3) return "md";
         if (len === 2) return "lg";
         return "xl";

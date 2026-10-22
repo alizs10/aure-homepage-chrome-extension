@@ -1,5 +1,4 @@
-import { useFavorites } from "@/components/settings/components/tabs-details/sites-and-folders/components/favorites/hooks/useFavorites";
-import { useFolders } from "@/components/settings/components/tabs-details/sites-and-folders/components/folders/hooks/useFolders";
+import { useFavorites, useFolders } from "@/features/bookmarks";
 import { Tooltip } from "@base-ui/react/tooltip";
 import Favorites from "./favorites/Favorites";
 import Folders from "./folders/Folders";

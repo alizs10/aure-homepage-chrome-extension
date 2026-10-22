@@ -18,12 +18,40 @@ export default function SearchInput() {
     // 🌟 FIX: Moved selectedIndex up to be the single source of truth
     const [selectedIndex, setSelectedIndex] = useState(-1);
 
-    const { width } = useWidth();
+    const inputRef = useRef<HTMLInputElement>(null);
 
-    const isInitialMount = useRef(true);
     useEffect(() => {
-        isInitialMount.current = false;
+        const focusInput = () => {
+            if (
+                !document.activeElement ||
+                document.activeElement === document.body ||
+                document.activeElement === inputRef.current
+            ) {
+                inputRef.current?.focus();
+            }
+        };
+
+        // Explicitly focus input on mount across multiple event loop ticks
+        focusInput();
+        const rafId = requestAnimationFrame(focusInput);
+        const timer1 = setTimeout(focusInput, 50);
+        const timer2 = setTimeout(focusInput, 150);
+
+        // Ensure search input regains focus when tab/window gains focus
+        const handleWindowFocus = () => {
+            focusInput();
+        };
+
+        window.addEventListener('focus', handleWindowFocus);
+        return () => {
+            cancelAnimationFrame(rafId);
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+            window.removeEventListener('focus', handleWindowFocus);
+        };
     }, []);
+
+    const { width } = useWidth();
 
     const isCommandMode = searchValue.startsWith('/');
 
@@ -168,15 +196,11 @@ export default function SearchInput() {
                     className="z-30 shrink-0"
                 >
                     <TextInput
+                        ref={inputRef}
                         className={`h-full w-full text-sm sm:px-6 sm:text-lg md:py-2.5 md:text-xl lg:px-10 lg:py-4 lg:text-2xl`}
                         placeholder={isCommandMode ? 'Type a command...' : 'Search through web...'}
                         value={inputDisplayValue}
                         onChange={onChange}
-                        onFocus={() => {
-                            if (!isInitialMount.current) {
-                                setShowSuggestions(true);
-                            }
-                        }}
                         onClick={() => setShowSuggestions(true)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
@@ -196,7 +220,7 @@ export default function SearchInput() {
                 </motion.div>
 
                 <div className="z-30 shrink-0">
-                    <Button role="div" onClick={handleSearch} size="icon" className="ml-2 h-full">
+                    <Button onClick={handleSearch} size="icon" className="ml-2 h-full">
                         {isCommandMode ? (
                             <TerminalIcon className="size-5 md:size-6 lg:size-7" />
                         ) : (

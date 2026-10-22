@@ -1,4 +1,4 @@
-import { useFolders } from "@/components/settings/components/tabs-details/sites-and-folders/components/folders/hooks/useFolders";
+import { useFolders } from "@/features/bookmarks";
 import FolderItem from "./FolderItem";
 
 export default function Folders() {

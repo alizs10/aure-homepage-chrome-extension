@@ -5,9 +5,10 @@ import { TABS } from "../constants/tabs";
 import CheckForUpdate from "./CheckForUpdate";
 import AboutTabDetails from "./tabs-details/about-tab-details/AboutTabDetails";
 import PreferencesTabDetails from "./tabs-details/preferences-tab-details/PreferencesTabDetails";
-import SitesAndShortcutsTabDetails from "./tabs-details/sites-and-folders/SitesAndFoldersTabDetails";
+import BookmarksTabDetails from "./tabs-details/bookmarks-tab-details/BookmarksTabDetails";
 import UserInfoTabDetails from "./tabs-details/user-info-tab-details/UserInfoTabDetails";
 import CommandsTabDetails from "./tabs-details/commands-tab-details/CommandsTabDetails";
+import PrivacyTabDetails from "./tabs-details/privacy-tab-details/PrivacyTabDetails";
 
 export default function TabDetails() {
     const [searchParams] = useSearchParams();
@@ -46,11 +47,14 @@ export default function TabDetails() {
             {activeTab === 'preferences' && (
                 <PreferencesTabDetails />
             )}
-            {activeTab === 'sites-and-folders' && (
-                <SitesAndShortcutsTabDetails />
+            {activeTab === 'bookmarks' && (
+                <BookmarksTabDetails />
             )}
             {activeTab === 'commands' && (
                 <CommandsTabDetails />
+            )}
+            {activeTab === 'privacy' && (
+                <PrivacyTabDetails />
             )}
             {activeTab === 'about' && (
                 <AboutTabDetails />

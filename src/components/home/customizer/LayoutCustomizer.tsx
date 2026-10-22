@@ -4,7 +4,7 @@ import { BetterTypography } from '@/components/common/BetterTypography';
 import Button from '@/components/ui/Button';
 import ModalHeader from '@/components/ui/modal/ModalHeader';
 import ModalWrapper from '@/components/ui/modal/ModalWrapper';
-import { type ViewportSize } from '@/constants/widget-weights';
+import useWidth from '@/hooks/useWidth';
 import { useWidgetLayout } from '@/hooks/useWidgetLayout';
 import type {
     DragEndEvent,
@@ -115,7 +115,7 @@ export default function LayoutCustomizer({
         canAddOrSwap,
         getAvailableWidgets,
         canAddNewPage
-    } = useWidgetLayout();
+    } = useWidgetLayout(open);
 
     const [activeWidget, setActiveWidget] = useState<{
         id: WidgetId;
@@ -127,24 +127,7 @@ export default function LayoutCustomizer({
 
     const [overDropZoneId, setOverDropZoneId] = useState<string | null>(null);
 
-    const [viewportSize, setViewportSize] = useState<ViewportSize>('desktop');
-
-    useEffect(() => {
-        const updateViewport = () => {
-            const width = window.innerWidth;
-            if (width < 640) {
-                setViewportSize('mobile');
-            } else if (width < 1024) {
-                setViewportSize('tablet');
-            } else {
-                setViewportSize('desktop');
-            }
-        };
-
-        updateViewport();
-        window.addEventListener('resize', updateViewport);
-        return () => window.removeEventListener('resize', updateViewport);
-    }, []);
+    const { viewportSize } = useWidth();
 
     const availableWidgets = getAvailableWidgets();
     const canAddPage = canAddNewPage();
@@ -187,9 +170,9 @@ export default function LayoutCustomizer({
 
     useEffect(() => {
         if (open) {
-            setEditingPage(currentPage);
+            setEditingPage(Math.min(currentPage, totalPages > 0 ? totalPages : 1));
         }
-    }, [open, currentPage, setEditingPage]);
+    }, [open, currentPage, totalPages, setEditingPage]);
 
     const currentPageHasWidgets = positions.some(
         p => p.page === editingPage

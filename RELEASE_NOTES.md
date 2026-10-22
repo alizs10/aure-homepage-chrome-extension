@@ -1,59 +1,84 @@
-# Aure Homepage v0.0.5
+# Aure Homepage v0.1.0
 
-This release introduces powerful new dashboard organization tools, two brand-new widgets, and a major overhaul to the search experience, alongside refined visuals and quality-of-life improvements across the app.
+This release introduces official **Mozilla Firefox** support, complete real-time cross-tab synchronization across widgets and settings, live public IP & country flag with privacy controls, a new detailed progress modal with custom sorting, wallpaper brightness & blur adjustments, and key usability refinements across all widgets.
 
 ## What's New
 
-* **Organize Pages**: Rearrange widgets with intuitive drag-and-drop, organize your dashboard across multiple pages, and use smart swapping to easily manage occupied spaces.
-* **Counters Widget**: Track days since an event or count down to upcoming deadlines, chores, and recurring habits.
-* **Progresses Widget**: Manage multi-step projects and habits with visual progress bars, deadlines, and custom labels.
-* **Advanced Notes**: Mix text paragraphs and checkboxes in a single Notes & Tasks entry by pressing `Shift + Enter`.
-* **Golden Accent**: Added a bright, shiny Golden accent color theme, optimized for both light and dark modes.
-* **Pomodoro Cross-Tab Sync & Mini-Timer**: Pomodoro timers and tasks now sync automatically across all open tabs, and a new header mini-timer lets you track active sessions from any page.
-* Added a **Cleanup menu** to Notes & Tasks settings to easily clear completed tasks, wipe notes, or reset everything.
+* **Multi-Browser Support (Firefox & Chrome)**:
+  * Aure Homepage is now fully supported on **Mozilla Firefox** alongside **Google Chrome** with complete feature parity.
+  * Cross-browser high-resolution favicon caching with automatic offline fallbacks.
+  * Native new tab experience tailored for both browser ecosystems.
+* **Real-Time Cross-Tab Sync**:
+  * Every change you make updates across all open tabs instantly without needing a page refresh.
+  * **Settings & Layout**: Appearance settings, theme accents, and dashboard arrangements stay synchronized in real time.
+  * **Bookmarks & Folders**: Favorites, folders, and site ordering update smoothly across all open tabs.
+  * **Interactive Widgets**: Notes & Tasks, Counters, Progresses, Mood Tracker, Pet House, and Calendar stay in sync everywhere.
+  * **Custom Wallpapers**: Added or selected wallpapers apply immediately across all open tabs.
+* **Wallpaper Brightness & Blur Controls**:
+  * Fine-tune your background directly in Preferences with dedicated quick-preset buttons.
+  * Adjust wallpaper brightness (from 25% dim to 125% bright) to make widgets and text pop.
+  * Apply customizable wallpaper blur (from subtle softening to full glass aesthetic) with seamless edge protection.
+* **Live IP & Network Checker**:
+  * Inspect your public IP address and country flag directly from the Network Status widget.
+  * Automatic network health and connection quality monitoring.
+* **Dedicated Privacy Settings**:
+  * New **Privacy** tab in Settings to toggle IP inspection on or off and manage data preferences.
+* **Progress Goals Details & Sorting**:
+  * A new detail modal displaying full info and all actions for your progress cards.
+  * Sort progress cards by Priority (High to Low / Low to High) or Date Created (Newest / Oldest first) with remembered preferences.
+* **Mood Tracker Missed Days**:
+  * You can now choose your mood for missed days directly in the tracker grid.
 
 ## Improvements
 
-### Search System
+### Pomodoro Timer Safeguards
+* Added protective confirmation dialogs across both the main widget and header popup before resetting cycles, ending sessions early, or handling overtime, preventing accidental timer resets.
 
-* **Instant Suggestions**: Search results now appear instantly on focus, with web suggestions streaming in smoothly as you type.
-* **Better Navigation**: Improved keyboard navigation and auto-fill for a faster, glitch-free search experience.
+### Counters & Countdowns
+* Expired countdowns now display negative elapsed days (e.g., `-3d`) for clear visibility into how long ago a milestone was reached.
+* Refined reset behavior: recurring countdowns and count-ups can be reset instantly while fixed milestones remain preserved.
 
-### Liquid Glass & UI
+### Notes & Checklists
+* Pasting or dropping multi-line text into the quick note field automatically switches into multi-line mode without losing line breaks or cursor positioning.
 
-* **Refined Design**: Improved the Liquid Glass styling for a cleaner, more balanced look across the interface.
-* **Custom Toaster**: Replaced the default toast library with a custom Toaster that perfectly matches the app's Liquid Glass design.
-* **New App Icon**: Refreshed the extension logo with a clean, modern design.
+### Pet House
+* Added click-to-copy helpers for confirmation phrases in pet release and deletion dialogs to make actions faster and easier.
 
-### General
+### Bookmarks Experience
+* Renamed "Sites & Folders" to **Bookmarks** in Settings for a more natural and intuitive management experience.
 
-* **Auto Updates**: Get notified automatically when a new version is available via daily background checks.
-* **Better Backups**: Revamped Data Backup & Restore with a cleaner UI and faster performance. Backup files now automatically include the date and time in the filename.
+### Performance & Polish
+* **Faster & Lighter**: Extracted Clock rendering and optimized background processes for lower memory usage and smoother animations.
+* **Distinct Blur Settings**: Clarified interface blur controls as **UI Blur** to distinguish between window glass styling and wallpaper background effects.
+* **Unified Dates**: Standardized date and time formatting throughout all widgets for a clean, consistent design.
+* **New Wallpapers**: New default wallpapers have replaced the old ones.
+
+### Background & Alarms
+* **Notification Focus**: Clicking a timer notification now smoothly unminimizes and brings your active browser window into focus.
 
 ## Fixes
 
-* Fixed search suggestion flickering and input lockups when typing spaces or rapidly navigating with the keyboard.
-* Resolved various edge cases in search input synchronization and state management.
+* **Search Suggestions**: Prevented search suggestions from unexpectedly reappearing when returning to an open tab.
 
-## Installation
+## Download & Installation
 
-1. Download **aure-homepage-extension-v0.0.5.zip** from the Assets section below.
+### Google Chrome
+1. Download **`aure-homepage-chrome-v0.1.0.zip`** from the Assets section below.
 2. Extract the ZIP file.
-3. Open `chrome://extensions`.
-4. Enable **Developer mode**.
-5. Click **Load unpacked**.
-6. Select the extracted extension folder.
+3. Navigate to `chrome://extensions`.
+4. Enable **Developer mode** in the top-right corner.
+5. Click **Load unpacked** and select the extracted folder.
+
+### Mozilla Firefox
+1. Download **`aure-homepage-firefox-v0.1.0.zip`** from the Assets section below.
+2. Extract the ZIP file.
+3. Navigate to `about:debugging#/runtime/this-firefox`.
+4. Click **Load Temporary Add-on...** and select `manifest.json` from the extracted folder.
 
 ## Updating
 
-1. Download **aure-homepage-extension-v0.0.5.zip** from the Assets section below.
-2. Extract the ZIP file.
-3. Open `chrome://extensions`.
-4. Click **Load unpacked**.
-5. Select the newly extracted extension folder.
-
-Your existing data will be preserved as long as the extension ID remains the same.
+Download the latest ZIP for your browser from the Assets section below and extract it over your existing installation folder, or reload the unpacked extension in your browser's extensions page. Your personal settings, bookmarks, and widget data are stored locally and will be preserved.
 
 ---
 
-Thank you for using Aure Homepage. Feedback, bug reports, and feature requests are always appreciated.
+Thank you for using Aure Homepage! Feedback, bug reports, and feature requests are always welcome.

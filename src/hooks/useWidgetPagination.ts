@@ -3,6 +3,8 @@ import { useSettingsStore } from '@/stores';
 import { type ViewportSize } from '@/constants/widget-weights';
 import { LOCAL_STORAGE_KEYS } from '@/constants/storage_keys';
 
+import useWidth from '@/hooks/useWidth';
+
 type PaginationResult = {
     currentPage: number;
     totalPages: number;
@@ -14,7 +16,7 @@ type PaginationResult = {
 
 export function useWidgetPagination(totalPagesOverride?: number): PaginationResult {
     const { settings } = useSettingsStore();
-    const [viewportSize, setViewportSize] = useState<ViewportSize>('desktop');
+    const { viewportSize } = useWidth();
 
     const widgetLayout = settings?.widget_layout;
     const totalPages = totalPagesOverride ?? widgetLayout?.totalPages ?? 1;
@@ -40,23 +42,6 @@ export function useWidgetPagination(totalPagesOverride?: number): PaginationResu
     useEffect(() => {
         currentPageRef.current = currentPage;
     }, [currentPage]);
-
-    useEffect(() => {
-        const updateViewport = () => {
-            const width = window.innerWidth;
-            if (width < 640) {
-                setViewportSize('mobile');
-            } else if (width < 1024) {
-                setViewportSize('tablet');
-            } else {
-                setViewportSize('desktop');
-            }
-        };
-
-        updateViewport();
-        window.addEventListener('resize', updateViewport);
-        return () => window.removeEventListener('resize', updateViewport);
-    }, []);
 
     // 🌟 Single source of truth: persist AND broadcast whenever the page changes
     useEffect(() => {

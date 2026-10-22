@@ -4,6 +4,44 @@ import { format } from 'date-fns';
 import type { CalendarNote } from './types';
 import { CalendarRepository } from './db';
 
+// 🌟 Cross-Tab Sync Setup
+const TAB_ID = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Math.random().toString(36).substring(2);
+
+const calendarChannel = typeof BroadcastChannel !== 'undefined'
+    ? new BroadcastChannel('calendar_sync')
+    : null;
+
+type CalendarSyncMessage = {
+    type: 'CALENDAR_SYNC';
+    payload: CalendarNote[];
+    tabId: string;
+};
+
+function broadcastCalendar(data: CalendarNote[]) {
+    if (calendarChannel) {
+        calendarChannel.postMessage({
+            type: 'CALENDAR_SYNC',
+            payload: data,
+            tabId: TAB_ID,
+        });
+    }
+}
+
+if (calendarChannel) {
+    calendarChannel.onmessage = (event: MessageEvent<CalendarSyncMessage>) => {
+        if (!event.data || event.data.tabId === TAB_ID) return;
+
+        if (event.data.type === 'CALENDAR_SYNC') {
+            useCalendarNotesStore.setState({
+                data: event.data.payload,
+                loading: false,
+            });
+        }
+    };
+}
+
 interface CalendarNotesState {
     data: CalendarNote[];
     loading: boolean;
@@ -66,11 +104,13 @@ export const useCalendarNotesStore = create<CalendarNotesState>((set, get) => ({
 
         await CalendarRepository.put(note);
         set((state) => ({ data: [...state.data, note] }));
+        broadcastCalendar(get().data);
     },
 
     removeItem: async (id) => {
         await CalendarRepository.remove(id);
         set((state) => ({ data: state.data.filter((n) => n.id !== id) }));
+        broadcastCalendar(get().data);
     },
 
     updateItem: async (id, text) => {
@@ -89,5 +129,6 @@ export const useCalendarNotesStore = create<CalendarNotesState>((set, get) => ({
         set((state) => ({
             data: state.data.map((n) => (n.id === id ? updated : n))
         }));
+        broadcastCalendar(get().data);
     }
 }));

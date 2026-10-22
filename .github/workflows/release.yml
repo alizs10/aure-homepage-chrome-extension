@@ -53,7 +53,7 @@ jobs:
           node <<'NODE'
           const fs = require("node:fs");
 
-          const manifestPath = "public/manifest.json";
+          const manifestPath = "manifest.base.json";
           const manifest = JSON.parse(
             fs.readFileSync(manifestPath, "utf8")
           );
@@ -73,24 +73,30 @@ jobs:
         env:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          test -f dist/manifest.json
-          test -f dist/background.js
-          test -f dist/index.html
+          test -f dist/chrome/manifest.json
+          test -f dist/chrome/background.js
+          test -f dist/chrome/index.html
+          test -f dist/firefox/manifest.json
+          test -f dist/firefox/background.js
+          test -f dist/firefox/index.html
 
-          ACTUAL_VERSION="$(node -p \
-            "require('./dist/manifest.json').version")"
+          CHROME_VERSION="$(node -p "require('./dist/chrome/manifest.json').version")"
+          FIREFOX_VERSION="$(node -p "require('./dist/firefox/manifest.json').version")"
 
-          if [[ "$ACTUAL_VERSION" != "$VERSION" ]]; then
-            echo "Manifest version mismatch: expected $VERSION, got $ACTUAL_VERSION"
+          if [[ "$CHROME_VERSION" != "$VERSION" ]]; then
+            echo "Chrome manifest version mismatch: expected $VERSION, got $CHROME_VERSION"
+            exit 1
+          fi
+
+          if [[ "$FIREFOX_VERSION" != "$VERSION" ]]; then
+            echo "Firefox manifest version mismatch: expected $VERSION, got $FIREFOX_VERSION"
             exit 1
           fi
 
       - name: Package extension
         env:
           VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          cd dist
-          zip -r "../aure-homepage-extension-v${VERSION}.zip" .
+        run: bun run package
 
       - name: Publish GitHub Release
         env:
@@ -98,7 +104,8 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           gh release create "v${VERSION}" \
-            "aure-homepage-extension-v${VERSION}.zip" \
+            "aure-homepage-chrome-v${VERSION}.zip" \
+            "aure-homepage-firefox-v${VERSION}.zip" \
             --repo "$GITHUB_REPOSITORY" \
             --title "Aure Homepage v${VERSION}" \
             --notes-file RELEASE_NOTES.md

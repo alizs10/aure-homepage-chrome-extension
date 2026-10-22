@@ -10,33 +10,26 @@ export default function LiquidGlass() {
             <defs>
                 <filter
                     id="liquid-glass"
-                    x="-20%"
-                    y="-20%"
-                    width="140%"
-                    height="140%"
+                    x="0%"
+                    y="0%"
+                    width="100%"
+                    height="100%"
                     colorInterpolationFilters="sRGB"
                 >
-                    {/* Smoother, broader lens distortion */}
+                    {/* Low baseFrequency + 1 octave produces smooth, broad lens waves directly without expensive blur */}
                     <feTurbulence
                         type="fractalNoise"
-                        baseFrequency="0.003 0.004"
-                        numOctaves="2"
+                        baseFrequency="0.0015 0.002"
+                        numOctaves="1"
                         seed="42"
                         result="noise"
                     />
 
-                    {/* Softer distortion for a polished glass effect */}
-                    <feGaussianBlur
-                        in="noise"
-                        stdDeviation="100"
-                        result="blurredNoise"
-                    />
-
-                    {/* More restrained refraction */}
+                    {/* Restrained refraction directly using the smooth noise */}
                     <feDisplacementMap
                         in="SourceGraphic"
-                        in2="blurredNoise"
-                        scale="20"
+                        in2="noise"
+                        scale="18"
                         xChannelSelector="R"
                         yChannelSelector="G"
                     />

@@ -3,17 +3,25 @@ import { storage } from "@/lib/storage";
 import { STORAGE_KEYS } from "@/constants/storage_keys";
 
 // ✅ Import types for strict casting during import
-import type { Favorite, Folder } from '@/components/settings/components/tabs-details/sites-and-folders/types';
-import type { CalendarNote } from '@/components/widgets/calendar/types';
-import type { MoodHistory } from '@/components/widgets/mood-tracker/types';
-import type { NoteAndChecklist } from '@/components/widgets/notes-and-checklists/types';
-import type { Pet } from '@/components/widgets/pet-house/types';
-import type { PomodoroHistoryEntry, PomodoroTask, PomodoroActiveState } from '@/components/widgets/pomodoro/types';
+import type { Favorite, Folder } from '@/features/bookmarks';
+import type {
+    CalendarNote,
+    Counter,
+    MoodHistory,
+    NoteAndChecklist,
+    Pet,
+    PomodoroHistoryEntry,
+    PomodoroTask,
+    PomodoroActiveState,
+    Progress,
+    ProgressLabel,
+} from '@/types/entities';
 import type { Wallpaper } from '@/types';
-import { CURRENT_SCHEMA_VERSION } from "./migrations";
-import type { Counter } from "@/components/widgets/counters/types";
-import type { Progress, ProgressLabel } from '@/components/widgets/progresses/types';
+import { CURRENT_SCHEMA_VERSION, runMigrations } from "./migrations";
+import { useSettingsStore } from "@/stores";
 
+// 🔒 IP data (LOCAL_STORAGE_KEYS.ipData) is stored strictly in browser localStorage
+// and is NEVER exported or imported during backup/restore.
 async function getAllChromeStorageData() {
     const data: Record<string, unknown> = {};
     const keys = Object.values(STORAGE_KEYS);
@@ -27,7 +35,7 @@ async function getAllChromeStorageData() {
     return data;
 }
 
-// ✅ RESTORED: Safely wipe all data before restoring for a clean import
+// ✅ Safely wipe IndexedDB data before restoring for a clean import
 async function clearAllData() {
     await db.transaction('rw',
         [
@@ -52,9 +60,6 @@ async function clearAllData() {
             await db.progressLabels.clear();
         }
     );
-
-    const keys = Object.values(STORAGE_KEYS);
-    await Promise.all(keys.map(key => storage.remove(key)));
 }
 
 export async function exportUserData(username?: string) {
@@ -135,6 +140,10 @@ export async function importUserData(file: File) {
     const dbData = backup.indexedDB as Record<string, unknown>;
     const storageData = backup.chromeStorage as Record<string, unknown>;
 
+    if (typeof storageData.settings !== 'object' || storageData.settings === null || Array.isArray(storageData.settings)) {
+        throw new Error("Invalid backup format: Missing or malformed 'settings' in chromeStorage.");
+    }
+
     const expectedTables = [
         'wallpapers', 'moods', 'pets', 'calendar', 'notes', 'favorites', 'folders',
         'pomodoroHistory', 'pomodoroTasks', 'pomodoroActiveState', 'counters', 'progresses', 'progressLabels'
@@ -155,7 +164,7 @@ export async function importUserData(file: File) {
         }
     }
 
-    // ✅ 1. Clean slate: Wipe existing data first
+    // ✅ 1. Clean slate: Wipe existing IndexedDB data first
     await clearAllData();
 
     // ✅ 2. Write new data
@@ -196,7 +205,18 @@ export async function importUserData(file: File) {
         }
     );
 
+    // Remove obsolete storage keys that are not present in the backup (except settings, which is guaranteed present)
+    const keysToRemove = Object.values(STORAGE_KEYS).filter(key => key !== STORAGE_KEYS.settings && !(key in storageData));
+    if (keysToRemove.length > 0) {
+        await Promise.all(keysToRemove.map(key => storage.remove(key)));
+    }
+
+    // Overwrite storage keys directly (prevents settings from ever flashing as null)
     for (const [key, value] of Object.entries(storageData)) {
         await storage.set(key, value);
     }
+
+    // Reload settings store and execute any pending migrations for the imported data
+    await useSettingsStore.getState().load();
+    await runMigrations();
 }

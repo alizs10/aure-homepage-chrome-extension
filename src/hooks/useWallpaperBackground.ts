@@ -1,36 +1,36 @@
-import { useLiveQuery } from "dexie-react-hooks";
+import { useEffect } from "react";
 import { useSettingsStore } from "@/stores";
-import { db } from "@/lib/db";
+import { useWallpaperStore } from "@/features/wallpapers";
 import { useTheme } from "./useTheme";
 
-// Adjust these paths if your assets folder is located differently
 import lightBackground from "../assets/background/default-light.webp";
 import darkBackground from "../assets/background/default-dark.webp";
 
 export function useWallpaperBackground() {
     const { resolvedTheme } = useTheme();
-    const loading = useSettingsStore((s) => s.loading);
+    const settingsLoading = useSettingsStore((s) => s.loading);
     const wallpaperId = useSettingsStore((s) => s.settings?.wallpaper);
+    const customWallpapers = useWallpaperStore((s) => s.customWallpapers);
+    const fetchWallpapers = useWallpaperStore((s) => s.fetchWallpapers);
+
+    useEffect(() => {
+        fetchWallpapers();
+    }, [fetchWallpapers]);
+
+    const activeWallpaper = (!wallpaperId || wallpaperId === "default")
+        ? null
+        : (customWallpapers.find((w) => w.id === wallpaperId) ?? null);
 
     const defaultBackground = resolvedTheme === "dark" ? darkBackground : lightBackground;
 
-    const wallpaperData = useLiveQuery(
-        async () => {
-            if (loading) return undefined;
-            if (!wallpaperId || wallpaperId === "default") return null;
-            return (await db.wallpapers.get(wallpaperId)) ?? null;
-        },
-        [loading, wallpaperId]
-    );
-
-    const customBackground = wallpaperData
+    const customBackground = activeWallpaper
         ? resolvedTheme === "dark"
-            ? wallpaperData.variants.dark || wallpaperData.variants.light
-            : wallpaperData.variants.light || wallpaperData.variants.dark
+            ? activeWallpaper.variants.dark || activeWallpaper.variants.light
+            : activeWallpaper.variants.light || activeWallpaper.variants.dark
         : null;
 
     const background = customBackground || defaultBackground;
-    const isLoading = loading || wallpaperData === undefined;
+    const isLoading = settingsLoading && !wallpaperId;
 
     return { background, isLoading };
 }

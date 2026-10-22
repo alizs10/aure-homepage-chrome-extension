@@ -1,4 +1,5 @@
-import type { PomodoroSettings } from '@/components/widgets/pomodoro/types';
+import type { PomodoroSettings } from '@/types/entities/pomodoro';
+import type { ProgressSort } from '@/types/entities/progress';
 
 //theme
 export type Theme = 'dark' | 'light' | 'system'
@@ -27,6 +28,32 @@ export const blurOptions = [
 
 export type BlurSize = typeof blurOptions[number]["key"];
 
+//wallpaper blur
+export const wallpaperBlurOptions = [
+    { key: "none", label: "Off", value: "0px" },
+    { key: "xs", label: "Very Low", value: "2px" },
+    { key: "sm", label: "Low", value: "4px" },
+    { key: "md", label: "Medium", value: "8px" },
+    { key: "lg", label: "High", value: "12px" },
+    { key: "xl", label: "Very High", value: "16px" },
+    { key: "2xl", label: "Ultra", value: "24px" },
+    { key: "3xl", label: "Maximum", value: "32px" },
+] as const;
+
+export type WallpaperBlur = typeof wallpaperBlurOptions[number]["key"];
+
+//wallpaper brightness
+export const wallpaperBrightnessOptions = [
+    { key: "25", label: "25%", value: "25%" },
+    { key: "50", label: "50%", value: "50%" },
+    { key: "75", label: "75%", value: "75%" },
+    { key: "90", label: "90%", value: "90%" },
+    { key: "100", label: "100%", value: "100%" },
+    { key: "125", label: "125%", value: "125%" },
+] as const;
+
+export type WallpaperBrightness = typeof wallpaperBrightnessOptions[number]["key"];
+
 //widgets
 export type WidgetId =
     | "notes-and-checklists"
@@ -46,6 +73,9 @@ export type WidgetPreferences = {
         showChart: boolean;
     };
     pomodoro: PomodoroSettings;
+    progresses: {
+        sortBy: ProgressSort;
+    };
 };
 
 //accent
@@ -127,11 +157,14 @@ export interface Settings {
     name: string
     theme: Theme
     wallpaper: "default" | string
+    wallpaper_blur?: WallpaperBlur
+    wallpaper_brightness?: WallpaperBrightness
     blur: BlurSize
     widgetPreferences?: Partial<WidgetPreferences>;
     accent: Accent
     show_top_sites: boolean
     show_favorites: boolean
     show_folders: boolean
+    enable_ip_checker?: boolean
     widget_layout?: WidgetLayout;
 }

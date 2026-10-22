@@ -1,11 +1,11 @@
-import { getTopSites } from "@/lib/chrome/top-sites";
+import { getTopSites, type TopSite } from "@/lib/browser/top-sites";
+import browser from 'webextension-polyfill';
 import { commands } from "@/lib/commands";
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { BetterTypography } from "../common/BetterTypography";
 import Badge from "../ui/Badge";
 import { sliceText } from "@/helpers";
-import { useFavoritesStore } from "@/components/settings/components/tabs-details/sites-and-folders/components/favorites/store";
-import { useFoldersStore } from "@/components/settings/components/tabs-details/sites-and-folders/components/folders/store";
+import { useFavoritesStore, useFoldersStore } from "@/features/bookmarks";
 import { isValidUrl } from "./helpers/search";
 import type { ComponentProps } from "react";
 
@@ -44,7 +44,7 @@ export default function Suggestions({
   onSuggestionSelect,
   onHighlight
 }: SuggestionsProps) {
-  const [topSites, setTopSites] = useState<chrome.topSites.MostVisitedURL[]>([]);
+  const [topSites, setTopSites] = useState<TopSite[]>([]);
   const [historySuggestions, setHistorySuggestions] = useState<Suggestion[]>([]);
   const [googleSuggestions, setGoogleSuggestions] = useState<Suggestion[]>([]);
 
@@ -98,7 +98,7 @@ export default function Suggestions({
     const combined: Suggestion[] = [];
 
     if (isValidUrl(searchValue)) {
-      const cleanUrl = searchValue.startsWith('http') ? searchValue : `http://${searchValue}`;
+      const cleanUrl = searchValue.startsWith('http') ? searchValue : `https://${searchValue}`;
       combined.push({
         id: 'direct', url: cleanUrl, label: `Go to ${searchValue}`, description: 'Direct Navigation', source: 'direct'
       });
@@ -136,7 +136,10 @@ export default function Suggestions({
   useEffect(() => {
     if (!shouldFetchHistory) return;
     let isCancelled = false;
-    chrome.history.search({ text: query, maxResults: 10 }).then(historyItems => {
+    const historyApi = typeof browser !== 'undefined' && browser.history ? browser.history : (typeof chrome !== 'undefined' ? chrome.history : null);
+    if (!historyApi) return;
+
+    historyApi.search({ text: query, maxResults: 10 }).then(historyItems => {
       if (isCancelled) return;
       const items: Suggestion[] = [];
       historyItems.forEach((item, index) => {

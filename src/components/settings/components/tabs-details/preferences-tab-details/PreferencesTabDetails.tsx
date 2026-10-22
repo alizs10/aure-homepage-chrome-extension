@@ -4,15 +4,9 @@ import { useTheme } from "@/hooks/useTheme"
 import { useSettingsStore } from "@/stores"
 import AccentSection from "./AccentSection"
 import BlurSection from "./BlurSection"
-import { WallpapersSection } from "./WallpapersSection"; // Adjust path if needed
-
-
-
-
-
-
-
-
+import { WallpapersSection } from "./WallpapersSection";
+import WallpaperBrightnessSection from "./WallpaperBrightnessSection"
+import WallpaperBlurSection from "./WallpaperBlurSection"
 
 export default function PreferencesTabDetails() {
     const { update } = useSettingsStore()
@@ -37,18 +31,17 @@ export default function PreferencesTabDetails() {
             </div>
 
             {/* --- Wallpapers Section --- */}
-            <WallpapersSection />
+            <div className="flex flex-col gap-y-6">
+                <WallpapersSection />
+                <WallpaperBrightnessSection />
+                <WallpaperBlurSection />
+            </div>
 
             {/* --- Accent Section --- */}
             <AccentSection />
 
-            {/* --- Blur Section --- */}
+            {/* --- UI Blur Section --- */}
             <BlurSection />
-
-
-            {/* <div className="h-5 w-full bg-blue-200">
-                hello
-            </div> */}
         </div>
     )
 }

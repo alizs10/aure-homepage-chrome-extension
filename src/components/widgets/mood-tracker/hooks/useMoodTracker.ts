@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { calculateMoodScore } from '../helpers/history';
 import { useMoodTrackerStore } from '../store';
 import { useCurrentDateString } from '@/hooks/useCurrentDateString';
+import { useSettingsStore } from '@/stores';
 
 export function useMoodTracker() {
     // Select only the state slices we need (prevents unnecessary re-renders)
@@ -10,15 +11,31 @@ export function useMoodTracker() {
     const loading = useMoodTrackerStore((state) => state.loading);
     const filter = useMoodTrackerStore((state) => state.filter);
     const showChart = useMoodTrackerStore((state) => state.showChart); // <-- Added
-
+    const storeSetShowChart = useMoodTrackerStore((state) => state.setShowChart);
+    const updateSettings = useSettingsStore((state) => state.update);
+    const settings = useSettingsStore((state) => state.settings);
 
     // Select actions (Zustand actions are stable, so this is highly optimized)
     const addItem = useMoodTrackerStore((state) => state.addItem);
     const removeItem = useMoodTrackerStore((state) => state.removeItem);
     const updateItem = useMoodTrackerStore((state) => state.updateItem);
     const onFilterChange = useMoodTrackerStore((state) => state.onFilterChange);
-    const setShowChart = useMoodTrackerStore((state) => state.setShowChart); // <-- Added
     const initialize = useMoodTrackerStore((state) => state.initialize);
+
+    const setShowChart = (value: boolean) => {
+        storeSetShowChart(value);
+        if (settings) {
+            updateSettings({
+                widgetPreferences: {
+                    ...settings.widgetPreferences,
+                    'mood-tracker': {
+                        ...settings.widgetPreferences?.['mood-tracker'],
+                        showChart: value,
+                    },
+                },
+            });
+        }
+    };
 
 
     // 🌟 Reactive date string that auto-updates

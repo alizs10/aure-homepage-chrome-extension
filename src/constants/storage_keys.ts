@@ -6,4 +6,5 @@ export const STORAGE_KEYS = {
 // LocalStorage keys (session-based, resets on browser restart)
 export const LOCAL_STORAGE_KEYS = {
     selectedPage: 'aure_selected_page',
+    ipData: 'aure_ip_data',
 } as const;

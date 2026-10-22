@@ -2,7 +2,7 @@ import { BetterTypography } from '@/components/common/BetterTypography';
 import Button from '@/components/ui/Button';
 import { PlusIcon } from 'lucide-react';
 import { useCounters } from '../hooks/useCounters';
-import { counterFilters } from '../types';
+import { counterFilters } from '../constants/filters';
 
 interface HeaderProps {
     onAdd: () => void;
@@ -31,7 +31,9 @@ export default function Header({ onAdd }: HeaderProps) {
                                     {f.icon}
                                 </div>
                             ) : (
-                                f.label
+                                <BetterTypography variant='xxs' weight='medium'>
+                                    {f.label}
+                                </BetterTypography>
                             )}
                         </Button>
                     ))}

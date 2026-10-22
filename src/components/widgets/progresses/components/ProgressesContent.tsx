@@ -1,18 +1,31 @@
 import { BetterTypography } from '@/components/common/BetterTypography';
 import Button from '@/components/ui/Button';
 import Dropdown from '@/components/ui/Dropdown';
-import { PlusIcon } from 'lucide-react';
+import { ArrowUpDownIcon, PlusIcon } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { useProgresses } from '../hooks/useProgresses';
+import { useProgressesStore } from '../store';
 import ProgressItem from './ProgressItem';
 import ProgressModal from '../modals/ProgressModal';
-import { progressFilters } from '../types';
-import type { Progress } from '../types';
+import ProgressDetailModal from '../modals/ProgressDetailModal';
+import { progressFilters, progressSortOptions } from '../constants/filters';
+import type { Progress, ProgressSort } from '../types';
 
 export default function ProgressesContent() {
-    const { data, labels, loading, filter, labelFilter, onFilterChange, onLabelFilterChange } = useProgresses();
+    const {
+        data,
+        labels,
+        loading,
+        filter,
+        labelFilter,
+        sortBy,
+        onFilterChange,
+        onLabelFilterChange,
+        onSortChange,
+    } = useProgresses();
     const [modalOpen, setModalOpen] = useState(false);
     const [editingProgress, setEditingProgress] = useState<Progress | null>(null);
+    const [selectedProgress, setSelectedProgress] = useState<Progress | null>(null);
 
     const handleAdd = () => {
         setEditingProgress(null);
@@ -22,6 +35,19 @@ export default function ProgressesContent() {
     const handleEdit = (progress: Progress) => {
         setEditingProgress(progress);
         setModalOpen(true);
+    };
+
+    const handleView = (progress: Progress) => {
+        setSelectedProgress(progress);
+    };
+
+    const handleEditFromDetail = () => {
+        if (selectedProgress) {
+            const latest = useProgressesStore.getState().data.find((p) => p.id === selectedProgress.id) || selectedProgress;
+            setEditingProgress(latest);
+            setModalOpen(true);
+            setSelectedProgress(null);
+        }
     };
 
     const handleClose = () => {
@@ -57,20 +83,37 @@ export default function ProgressesContent() {
                         align='start'
                     />
 
+                    <div className="flex-row-center gap-x-1 h-full">
+                        {/* Status Filter Tabs */}
+                        <div className="rounded-3xl liquid-glass flex-row-center p-0.5 gap-x-0.5">
+                            {progressFilters.map((f) => (
+                                <Button
+                                    key={f.value}
+                                    size='icon-sm'
+                                    variant={filter === f.value ? 'primary-active' : 'ghost'}
+                                    onClick={() => onFilterChange(f.value)}
+                                >
+                                    {f.icon ? (
+                                        f.icon
+                                    ) : (
+                                        <BetterTypography variant='xxs' weight='medium'>
+                                            {f.label}
+                                        </BetterTypography>
+                                    )}
+                                </Button>
+                            ))}
+                        </div>
 
-
-                    {/* Status Filter Tabs */}
-                    <div className="rounded-3xl liquid-glass flex-row-center p-0.5 gap-x-0.5">
-                        {progressFilters.map((f) => (
-                            <Button
-                                key={f.value}
-                                size='icon-sm'
-                                variant={filter === f.value ? 'primary-active' : 'ghost'}
-                                onClick={() => onFilterChange(f.value)}
-                            >
-                                {f.icon ? f.icon : f.label}
-                            </Button>
-                        ))}
+                        {/* 🌟 Sorting Dropdown */}
+                        <Dropdown<ProgressSort>
+                            value={sortBy}
+                            options={progressSortOptions}
+                            onValueChange={onSortChange}
+                            triggerVariant="ghost"
+                            hideLabel
+                            icon={<ArrowUpDownIcon className="size-4" />}
+                            align="end"
+                        />
                     </div>
                 </div>
             </div>
@@ -89,9 +132,23 @@ export default function ProgressesContent() {
             ) : (
                 <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide flex flex-col gap-y-3">
                     {data.map((progress) => (
-                        <ProgressItem key={progress.id} progress={progress} onEdit={handleEdit} />
+                        <ProgressItem
+                            key={progress.id}
+                            progress={progress}
+                            onView={handleView}
+                            onEdit={handleEdit}
+                        />
                     ))}
                 </div>
+            )}
+
+            {selectedProgress && (
+                <ProgressDetailModal
+                    open={Boolean(selectedProgress)}
+                    onClose={() => setSelectedProgress(null)}
+                    progress={selectedProgress}
+                    onEdit={handleEditFromDetail}
+                />
             )}
 
             {modalOpen && (

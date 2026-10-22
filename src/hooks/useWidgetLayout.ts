@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSettingsStore } from '@/stores';
 import { WIDGET_WEIGHTS, GRID_DIMENSIONS } from '@/constants/widget-weights';
 import type { WidgetId, WidgetPosition, WidgetLayout } from '@/types';
@@ -27,7 +27,7 @@ type LayoutState = {
     canAddNewPage: () => boolean;
 };
 
-export function useWidgetLayout(): LayoutState {
+export function useWidgetLayout(isOpen: boolean = false): LayoutState {
     const { settings, update } = useSettingsStore();
     const [isCustomizing, setIsCustomizing] = useState(false);
 
@@ -36,6 +36,21 @@ export function useWidgetLayout(): LayoutState {
     const [positions, setPositions] = useState<WidgetPosition[]>(savedLayout?.positions ?? []);
     const [totalPages, setTotalPages] = useState(savedLayout?.totalPages ?? 1);
     const [editingPage, setEditingPage] = useState(1);
+
+    // 🌟 Keep local layout draft synchronized with store whenever settings change (e.g. cross-tab sync) or modal opens
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setPositions(savedLayout?.positions ?? []);
+        setTotalPages(savedLayout?.totalPages ?? 1);
+    }, [savedLayout, isOpen]);
+
+    // 🌟 Clamp editingPage if totalPages changes
+    useEffect(() => {
+        if (editingPage > totalPages && totalPages > 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setEditingPage(totalPages);
+        }
+    }, [editingPage, totalPages]);
 
     const startCustomizing = useCallback(() => {
         setIsCustomizing(true);

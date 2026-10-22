@@ -5,9 +5,8 @@ import { useMoodTracker } from "./components/widgets/mood-tracker/hooks/useMoodT
 import { useCalendar } from "./components/widgets/calendar/hooks/useCalendar";
 import { usePetHouse } from "./components/widgets/pet-house/hooks/usePetHouse";
 import { useNotesAndChecklists } from "./components/widgets/notes-and-checklists/hooks/useNotesAndChecklists";
-import { useFavorites } from "./components/settings/components/tabs-details/sites-and-folders/components/favorites/hooks/useFavorites";
+import { useFavorites, useFolders } from "@/features/bookmarks";
 import { blurOptions } from "@/types";
-import { useFolders } from "./components/settings/components/tabs-details/sites-and-folders/components/folders/hooks/useFolders";
 import { usePomodoro } from "./components/widgets/pomodoro/hooks/usePomodoro";
 import { runMigrations } from "./lib/migrations";
 import { useCounters } from "./components/widgets/counters/hooks/useCounters";
@@ -55,9 +54,13 @@ export default function AppLoader({ children }: AppLoaderProps) {
 
         // Existing user - run migrations asynchronously. 
         // Calling setState inside .then() is allowed by the React Compiler.
-        runMigrations().then(() => {
-            setMigrationsDone(true);
-        });
+        runMigrations()
+            .catch((error) => {
+                console.error("Migration error:", error);
+            })
+            .finally(() => {
+                setMigrationsDone(true);
+            });
     }, [loading, settings, migrationsDone]);
 
     // 🌟 Apply global CSS variables as soon as settings are loaded
@@ -93,6 +96,11 @@ export default function AppLoader({ children }: AppLoaderProps) {
         return null;
     }
 
-    // 4. Render the app normally
+    // 4. Handle onboarded users attempting to access the wizard
+    if (location.pathname === "/wizard") {
+        return <Navigate to="/" replace />;
+    }
+
+    // 5. Render the app normally
     return <>{children}</>;
 }

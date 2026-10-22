@@ -38,7 +38,7 @@ export default function HistoryWeeksList() {
                     );
                 }
                 // Empty placeholder rendered in its correct chronological slot
-                return <EmptyRect key={`empty-${i}`} />;
+                return <EmptyRect key={`empty-${i}`} label={week.label} />;
             })}
         </div>
     )

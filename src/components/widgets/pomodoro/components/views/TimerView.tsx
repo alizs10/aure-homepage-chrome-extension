@@ -5,6 +5,7 @@ import { BetterTypography } from '@/components/common/BetterTypography'
 import Button from '@/components/ui/Button'
 import ProgressBar from '@/components/ui/ProgressBar'
 import { usePomodoro } from '../../hooks/usePomodoro'
+import { usePomodoroConfirm } from '../../hooks/usePomodoroConfirm'
 import CycleIndicator from '../CycleIndicator'
 import TaskSelectorModal from '../TaskSelectorModal'
 
@@ -12,11 +13,11 @@ export default function TimerView() {
     const {
         session, status, formattedTime, progress,
         cyclePosition, longBreakInterval,
-        start, pause, resume, reset, resetCycle,
-        includeOvertime, skipOvertime, completeEarly,
+        start, pause, resume,
         currentTaskId, tasks
     } = usePomodoro()
 
+    const { requestConfirm, confirmDialog } = usePomodoroConfirm()
     const [showTaskSelector, setShowTaskSelector] = useState(false)
     const currentTask = tasks.find(t => t.id === currentTaskId)
     const isInMiddleOfCycle = !(session === 'focus' && cyclePosition === 1);
@@ -87,6 +88,7 @@ export default function TimerView() {
 
             <div className="flex flex-col gap-3">
                 <div className="flex-center gap-x-0.5">
+                    {/* {true && ( */}
                     {status === 'idle' && (
                         <>
                             <Button
@@ -104,7 +106,7 @@ export default function TimerView() {
                             </Button>
                             {isInMiddleOfCycle && !isOvertime && (
                                 <Button
-                                    onClick={resetCycle}
+                                    onClick={() => requestConfirm('reset-cycle')}
                                     variant="ghost"
                                     size="sm"
                                     className="text-xs text-muted-foreground"
@@ -118,6 +120,7 @@ export default function TimerView() {
                         </>
                     )}
 
+                    {/* {true && ( */}
                     {status === 'running' && (
                         <>
                             <Button onClick={pause} variant="warning" size="sm" className="flex-1" leftIcon={<PauseIcon className="size-4" />}>
@@ -126,29 +129,7 @@ export default function TimerView() {
                                 </BetterTypography>
                             </Button>
                             <Button
-                                onClick={completeEarly}
-                                variant="ghost"
-                                size="sm"
-                            >
-                                <BetterTypography className='text-nowrap' variant='xs' weight='medium'>
-                                    {session === 'focus' ? 'Take a break' : 'Back to work'}
-                                </BetterTypography>
-                            </Button>
-                            <Button className='h-full' onClick={reset} variant="ghost" size="icon-sm" title="Reset current session">
-                                <RotateCcwIcon className="size-4" />
-                            </Button>
-                        </>
-                    )}
-
-                    {status === 'paused' && (
-                        <>
-                            <Button onClick={resume} variant="primary" size="sm" className="flex-1" leftIcon={<PlayIcon className="size-4" />}>
-                                <BetterTypography variant='xs' weight='medium'>
-                                    Resume
-                                </BetterTypography>
-                            </Button>
-                            <Button
-                                onClick={completeEarly}
+                                onClick={() => requestConfirm('complete-early')}
                                 variant="ghost"
                                 size="sm"
                                 leftIcon={session === 'focus' ? <Coffee className="size-4" /> : <Target className="size-4" />}
@@ -157,16 +138,41 @@ export default function TimerView() {
                                     {session === 'focus' ? 'Take a break' : 'Back to work'}
                                 </BetterTypography>
                             </Button>
-                            <Button className='h-full' onClick={reset} variant="ghost" size="icon-sm" title="Reset current session">
+                            <Button className='h-full' onClick={() => requestConfirm('reset-session')} variant="ghost" size="icon-sm" title="Reset current session">
                                 <RotateCcwIcon className="size-4" />
                             </Button>
                         </>
                     )}
 
+                    {/* {true && ( */}
+                    {status === 'paused' && (
+                        <>
+                            <Button onClick={resume} variant="primary" size="sm" className="flex-1" leftIcon={<PlayIcon className="size-4" />}>
+                                <BetterTypography variant='xs' weight='medium'>
+                                    Resume
+                                </BetterTypography>
+                            </Button>
+                            <Button
+                                onClick={() => requestConfirm('complete-early')}
+                                variant="ghost"
+                                size="sm"
+                                leftIcon={session === 'focus' ? <Coffee className="size-4" /> : <Target className="size-4" />}
+                            >
+                                <BetterTypography className='text-nowrap' variant='xs' weight='medium'>
+                                    {session === 'focus' ? 'Take a break' : 'Back to work'}
+                                </BetterTypography>
+                            </Button>
+                            <Button className='h-full' onClick={() => requestConfirm('reset-session')} variant="ghost" size="icon-sm" title="Reset current session">
+                                <RotateCcwIcon className="size-4" />
+                            </Button>
+                        </>
+                    )}
+
+                    {/* {true && ( */}
                     {isOvertime && (
                         <>
                             <Button
-                                onClick={includeOvertime}
+                                onClick={() => requestConfirm('include-overtime')}
                                 variant="primary"
                                 size="sm"
                                 className="flex-1"
@@ -177,9 +183,10 @@ export default function TimerView() {
                                 </BetterTypography>
                             </Button>
                             <Button
-                                onClick={skipOvertime}
+                                onClick={() => requestConfirm('skip-overtime')}
                                 variant="ghost"
                                 size="sm"
+                                leftIcon={<Coffee className="size-4" />}
                             >
                                 <BetterTypography variant='xs' weight='medium'>
                                     {session === 'focus' ? 'Break' : 'Focus'}
@@ -191,6 +198,8 @@ export default function TimerView() {
             </div>
 
             <TaskSelectorModal open={showTaskSelector} onClose={() => setShowTaskSelector(false)} />
+
+            {confirmDialog}
         </>
     )
 }

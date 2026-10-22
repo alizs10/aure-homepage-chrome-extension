@@ -1,10 +1,9 @@
 import { useSettingsStore } from "@/stores";
-import { FoldersRepository } from "@/components/settings/components/tabs-details/sites-and-folders/components/folders/db";
-import { useFoldersStore } from "@/components/settings/components/tabs-details/sites-and-folders/components/folders/store";
-import type { Folder, Website } from "@/components/settings/components/tabs-details/sites-and-folders/types";
-import { DEFAULT_FOLDERS } from "@/components/wizard/constants/defaultFolders";
-import { NotesRepository } from "@/components/widgets/notes-and-checklists/db";
-import type { AdvancedNote, Block, NoteAndChecklist, Note, Checklist } from "@/components/widgets/notes-and-checklists/types";
+import { FoldersRepository, useFoldersStore, type Folder, type Website } from "@/features/bookmarks";
+import { DEFAULT_FOLDERS } from "@/constants/defaultFolders";
+import { DEFAULT_WIDGET_LAYOUT } from "@/constants/widget-weights";
+import { NotesRepository } from "@/features/widgets";
+import type { AdvancedNote, Block, NoteAndChecklist, Note, Checklist } from "@/types/entities";
 import type { Settings, WidgetLayout } from "@/types";
 
 type LegacyNote = Note & { status?: boolean };
@@ -17,7 +16,7 @@ function isLegacyChecklist(note: LegacyNote): note is Checklist {
     return 'status' in note;
 }
 
-export const CURRENT_SCHEMA_VERSION = 3;
+export const CURRENT_SCHEMA_VERSION = 4;
 
 // Type for settings during migration (may have old properties)
 type LegacySettings = Settings & {
@@ -124,24 +123,25 @@ const migrations: Record<number, () => Promise<void>> = {
         let widgetLayout: WidgetLayout | undefined = legacySettings.widget_layout;
 
         if (!widgetLayout) {
-            // Create a default layout with main widgets on pages 1-2, blank page 3
-            widgetLayout = {
-                positions: [
-                    { widgetId: "notes-and-checklists", page: 1, column: 0, row: 0, size: 2 },
-                    { widgetId: "mood-tracker", page: 1, column: 1, row: 0, size: 2 },
-                    { widgetId: "counters", page: 1, column: 1, row: 1, size: 1 },
-                    { widgetId: "pomodoro", page: 1, column: 2, row: 0, size: 2 },
-                    { widgetId: "calendar", page: 2, column: 0, row: 0, size: 2 },
-                    { widgetId: "pet-house", page: 2, column: 1, row: 0, size: 1 },
-                    { widgetId: "progresses", page: 2, column: 2, row: 0, size: 2 },
-                ],
-                totalPages: 3, // ✅ Fixed: pages 1, 2, and blank page 3
-            };
+            widgetLayout = DEFAULT_WIDGET_LAYOUT;
         }
 
         await update({
             schema_version: 3,
             widget_layout: widgetLayout,
+        });
+    },
+
+    // Version 4: Add wallpaper_blur and wallpaper_brightness and Accent
+    4: async () => {
+        const { settings, update } = useSettingsStore.getState();
+        if (!settings) return;
+
+        await update({
+            schema_version: 4,
+            accent: "golden",
+            wallpaper_blur: settings.wallpaper_blur ?? 'none',
+            wallpaper_brightness: settings.wallpaper_brightness ?? '100',
         });
     },
 };

@@ -3,7 +3,7 @@ import Toggle from "@/components/ui/Toggle";
 import Button from "@/components/ui/Button";
 import ModalHeader from "@/components/ui/modal/ModalHeader";
 import ModalWrapper from "@/components/ui/modal/ModalWrapper";
-import { db } from "@/lib/db";
+import { useWallpaperStore } from "@/features/wallpapers";
 import { UploadIcon } from "lucide-react";
 import { toast } from '@/stores/useToastStore';
 import { BetterTypography } from "@/components/common/BetterTypography";
@@ -71,7 +71,7 @@ export default function AddWallpaperModal({
         try {
             const wallpaperId = crypto.randomUUID();
 
-            await db.wallpapers.put({
+            await useWallpaperStore.getState().addWallpaper({
                 id: wallpaperId,
                 name: "Custom Wallpaper",
                 variants: {

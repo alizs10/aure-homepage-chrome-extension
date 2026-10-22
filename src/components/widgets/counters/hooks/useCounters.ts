@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useCountersStore } from '../store';
 import { useCurrentDateString } from '@/hooks/useCurrentDateString';
-import { differenceInDays, parseISO } from 'date-fns';
+import { differenceInCalendarDays, parseISO } from 'date-fns';
 import type { Counter } from '../types';
 
 export function useCounters() {
@@ -25,7 +25,7 @@ export function useCounters() {
         if (filter === 'count_downs') filtered = data.filter(d => d.type === 'count_down');
 
         // Sort: Count downs by closest to end date, Count ups by longest running
-        return filtered.sort((a, b) => {
+        return [...filtered].sort((a, b) => {
             if (a.type === 'count_down' && b.type === 'count_down') {
                 return parseISO(a.endDate!).getTime() - parseISO(b.endDate!).getTime();
             }
@@ -39,10 +39,14 @@ export function useCounters() {
     const getDaysCount = (item: Counter) => {
         if (item.type === 'count_up') {
             const start = parseISO(item.startDate);
-            return differenceInDays(today, start);
+            return Math.max(0, differenceInCalendarDays(today, start));
         } else {
             const end = parseISO(item.endDate!);
-            return differenceInDays(end, today);
+            const diff = differenceInCalendarDays(end, today);
+            if (item.isRecurring && diff < 0) {
+                return 0;
+            }
+            return diff;
         }
     };
 

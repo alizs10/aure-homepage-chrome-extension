@@ -1,4 +1,5 @@
 import PaginationDots from "@/components/home/PaginationDots";
+import browser from 'webextension-polyfill';
 import SearchInput from "@/components/home/SearchInput";
 import LayoutCustomizer from "@/components/home/customizer/LayoutCustomizer";
 import Favorites from "@/components/home/favorites/Favorites";
@@ -44,14 +45,52 @@ export default function Home() {
     const [isCustomizing, setIsCustomizing] = useState(false);
 
     useEffect(() => {
-        const isNewTabPage = window.location.href.startsWith('chrome://newtab') ||
+        const isNewTabPage =
+            window.location.href.startsWith('chrome://newtab') ||
+            window.location.href.startsWith('about:newtab') ||
+            window.location.href.startsWith('about:home') ||
             window.location.pathname.endsWith('/newtab.html') ||
-            window.location.pathname.endsWith('/index.html');
+            window.location.pathname.endsWith('/index.html') ||
+            window.location.protocol === 'moz-extension:';
 
         if (!isNewTabPage) return;
 
         const hasHandledFocus = sessionStorage.getItem('aure_focus_bypass');
 
+        const isFirefox = import.meta.env.VITE_TARGET_BROWSER === 'firefox' ||
+            navigator.userAgent.includes('Firefox') ||
+            window.location.protocol === 'moz-extension:';
+
+        if (isFirefox) {
+            // If tab was opened with #focused, mark as handled and normalize URL
+            if (window.location.hash.includes('focused')) {
+                sessionStorage.setItem('aure_focus_bypass', 'true');
+                window.history.replaceState(null, "", window.location.pathname + '#/');
+                return;
+            }
+
+            // On initial Firefox newtab, Firefox locks focus to the URL bar/search bar.
+            // Swapping tab when visible creates a fresh tab that properly focuses page content.
+            if (!hasHandledFocus) {
+                sessionStorage.setItem('aure_focus_bypass', 'swapping');
+                const requestSwap = () => {
+                    if (document.visibilityState !== 'visible') {
+                        return;
+                    }
+                    document.removeEventListener('visibilitychange', requestSwap);
+                    browser.runtime.sendMessage({ action: 'SWAP_FIREFOX_NEWTAB_FOR_FOCUS' }).catch(() => {});
+                };
+
+                if (document.visibilityState === 'visible') {
+                    requestSwap();
+                } else {
+                    document.addEventListener('visibilitychange', requestSwap);
+                }
+            }
+            return;
+        }
+
+        // Chrome Focus Bypass (reloads once with ?focused to release Omnibox focus)
         if (!hasHandledFocus && window.location.search !== "?focused") {
             sessionStorage.setItem('aure_focus_bypass', 'true');
             window.location.search = "?focused";
@@ -158,7 +197,7 @@ export default function Home() {
                             {showTopSites && <TopSites />} {/* no limits*/}
                             {showFavorites && <Favorites />} {/* 15 limits*/}
                             {showFolders && <Folders />} {/* 5 limits*/}
-                            <Link className="transition-opacity duration-200 pointer-events-auto" to="/settings?tab=sites-and-folders">
+                            <Link className="transition-opacity duration-200 pointer-events-auto" to="/settings?tab=bookmarks">
                                 <Button
                                     size='icon-sm'
                                     variant='warning'
