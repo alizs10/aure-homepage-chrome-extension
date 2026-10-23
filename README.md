@@ -1,8 +1,8 @@
 # Aure Homepage
 
-A modern and customizable Chrome New Tab extension built with React, TypeScript, and Vite.
+A modern and customizable New Tab extension for **Google Chrome** and **Mozilla Firefox**, built with React, TypeScript, and Vite.
 
-Aure Homepage replaces Chrome's default new tab with a clean, fast, and privacy-friendly dashboard designed to help you stay organized and productive.
+Aure Homepage replaces your browser's default new tab with a clean, fast, and privacy-friendly dashboard designed to help you stay organized and productive.
 
 ---
 
@@ -37,10 +37,10 @@ Aure Homepage replaces Chrome's default new tab with a clean, fast, and privacy-
 ### Sites & Folders
 
 * Favorite Sites
-* Chrome Top Sites
+* Top Sites (Chrome & Firefox)
 * Custom folders
 * Default Google and AI website folders
-* Automatic Chrome favicon fetching
+* Automatic high-resolution favicon fetching
 * Search suggestions from browsing history and folder websites
 
 ### Productivity
@@ -75,24 +75,26 @@ Aure Homepage replaces Chrome's default new tab with a clean, fast, and privacy-
 
 ## Installation
 
-1. Download the latest release from the **Releases** page.
+### Google Chrome
+1. Download **`aure-homepage-chrome-v0.1.0.zip`** from the [Releases](https://github.com/alizs10/aure-homepage-chrome-extension/releases) page.
 2. Extract the ZIP file.
-3. Open `chrome://extensions`.
-4. Enable **Developer mode**.
-5. Click **Load unpacked**.
-6. Select the extracted extension folder.
+3. Open `chrome://extensions` in your browser.
+4. Enable **Developer mode** in the top-right corner.
+5. Click **Load unpacked** and select the extracted folder.
+
+### Mozilla Firefox
+1. Download **`aure-homepage-firefox-v0.1.0.zip`** from the [Releases](https://github.com/alizs10/aure-homepage-chrome-extension/releases) page.
+2. Extract the ZIP file.
+3. Open `about:debugging#/runtime/this-firefox` in your browser.
+4. Click **Load Temporary Add-on...** and select the `manifest.json` file inside the extracted folder.
 
 ---
 
 ## Updating
 
-1. Download the latest release.
-2. Extract the ZIP file.
-3. Open `chrome://extensions`.
-4. Click **Load unpacked**.
-5. Select the newly extracted extension folder.
+Download the latest ZIP for your browser from the [Releases](https://github.com/alizs10/aure-homepage-chrome-extension/releases) page and extract it over your existing installation folder, or reload the unpacked extension in your browser's extensions page (`chrome://extensions` or `about:debugging#/runtime/this-firefox`).
 
-Your data will be preserved as long as the extension ID remains the same.
+Your local settings, bookmarks, and widget data are stored locally and will be preserved across updates.
 
 ---
 
@@ -133,6 +135,13 @@ bun run dev
 Build the extension:
 
 ```bash
+# Build for Chrome
+bun run build:chrome
+
+# Build for Firefox
+bun run build:firefox
+
+# Build for both browsers
 bun run build
 ```
 
@@ -143,7 +152,7 @@ bun run build
 Aure Homepage stores all user data locally.
 
 * IndexedDB (Dexie) is used for widgets and user content.
-* Chrome Storage is used for application settings.
+* Browser Extension Storage (`storage.local`) is used for application settings.
 
 No user data is sent to external servers.
 
@@ -151,38 +160,42 @@ No user data is sent to external servers.
 
 ## Permissions
 
-Aure Homepage requests only the permissions required for its features.
+Aure Homepage requests only the permissions required for its features across Chrome and Firefox.
 
-### Chrome Permissions
+### Extension Permissions
 
-| Permission      | Purpose                                                                   |
-| --------------- | ------------------------------------------------------------------------- |
-| `storage`       | Saves application settings.                                               |
-| `topSites`      | Displays your most frequently visited websites on the homepage.           |
-| `history`       | Provides browsing history data for search suggestions.                    |
-| `favicon`       | Retrieves website favicon information through Chrome's favicon API.       |
-| `notifications` | Displays notifications for supported features such as focus sessions.     |
-| `alarms`        | Schedules background events required by features such as the focus timer. |
+| Permission      | Browser | Purpose                                                                   |
+| --------------- | ------- | ------------------------------------------------------------------------- |
+| `storage`       | Both    | Saves application settings and preferences locally.                       |
+| `topSites`      | Both    | Displays your most frequently visited websites on the homepage.           |
+| `history`       | Both    | Provides browsing history data for search suggestions.                    |
+| `notifications` | Both    | Displays notifications for supported features such as focus sessions.     |
+| `alarms`        | Both    | Schedules background events required by features such as the focus timer. |
+| `favicon`       | Chrome  | Retrieves website favicon information through Chrome's native API.        |
+| `sessions`      | Firefox | Restores and maintains active tab state in Firefox.                       |
+| `tabs`          | Firefox | Handles tab management and notification click focusing in Firefox.        |
 
 ### Host Permissions
 
 | Host                                          | Purpose                                                                |
 | --------------------------------------------- | ---------------------------------------------------------------------- |
 | `https://suggestqueries.google.com/*`         | Retrieves Google search suggestions while typing.                      |
-| `https://*.gstatic.com/*`                     | Allows loading favicon assets returned by Google's services.           |
+| `https://*.gstatic.com/*`                     | Pings connectivity check endpoint and loads Google favicon assets.     |
 | `https://raw.githubusercontent.com/alizs10/*` | Checks for extension updates by downloading the latest `version.json`. |
+| `https://*.geojs.io/*`                        | Fetches public IP address and location when IP Checker is enabled.     |
+| `https://ipwho.is/*`                          | Fallback provider for public IP and location lookup.                   |
+| `https://flagcdn.com/*`                       | Loads country flag images matching detected IP location.               |
+| `https://faviconapi.com/*`                    | High-resolution favicon provider for Firefox.                          |
 
 Aure Homepage does **not** request access to all websites (`<all_urls>`). It only requests host access to the specific domains required for its functionality.
 
-The favicon resources exposed through Chrome's `_favicon` API are made available to the extension through the required `web_accessible_resources` configuration.
-
-All requested permissions can be verified in the project's `manifest.json`.
+All requested permissions can be verified in each browser's respective `manifest.json`.
 
 ---
 
 ## Roadmap
 
-* Chrome Web Store release
+* Chrome Web Store & Firefox Add-ons (AMO) releases
 * Additional widgets
 * More themes and wallpapers
 * Widget customization

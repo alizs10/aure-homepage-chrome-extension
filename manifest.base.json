@@ -14,8 +14,9 @@
         "https://suggestqueries.google.com/*",
         "https://*.gstatic.com/*",
         "https://raw.githubusercontent.com/alizs10/*",
-        "https://freeipapi.com/*",
-        "https://*.freeipapi.com/*",
+        "https://get.geojs.io/*",
+        "https://*.geojs.io/*",
+        "https://ipwho.is/*",
         "https://flagcdn.com/*"
     ],
     "chrome_url_overrides": {

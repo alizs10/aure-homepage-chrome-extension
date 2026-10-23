@@ -20,6 +20,8 @@ This release introduces official **Mozilla Firefox** support, complete real-time
   * Apply customizable wallpaper blur (from subtle softening to full glass aesthetic) with seamless edge protection.
 * **Live IP & Network Checker**:
   * Inspect your public IP address and country flag directly from the Network Status widget.
+  * Powered by high-speed, unmetered GeoJS with automated failover to `ipwho.is` for maximum reliability.
+  * Optimized caching: 30-second on-demand cache life for manual click refreshes without API spam, combined with an automatic 5-minute background refresh.
   * Automatic network health and connection quality monitoring.
 * **Dedicated Privacy Settings**:
   * New **Privacy** tab in Settings to toggle IP inspection on or off and manage data preferences.

@@ -9,12 +9,47 @@ export interface IpInfo {
 }
 
 export const IP_CACHE_DURATION_MS = 30 * 1000; // 30 secs
-const PRIMARY_IP_API_URL = "https://free.freeipapi.com/api/v1/json";
-const FALLBACK_IP_API_URL = "https://freeipapi.com/api/json";
-const FETCH_TIMEOUT_MS = 6000;
+export const IP_AUTO_REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 mins
+const PRIMARY_IP_API_URL = "https://get.geojs.io/v1/ip/geo.json";
+const FALLBACK_IP_API_URL = "https://ipwho.is/";
+const FETCH_TIMEOUT_MS = 5000;
 
 // Deduplicate concurrent in-flight requests
 let inFlightRequest: Promise<IpInfo | null> | null = null;
+
+interface RawIpResponse {
+    ip?: string;
+    ipAddress?: string;
+    country?: string;
+    countryName?: string;
+    country_code?: string;
+    countryCode?: string;
+    city?: string;
+    cityName?: string;
+    success?: boolean;
+}
+
+function parseIpResponse(data: unknown): IpInfo | null {
+    if (!data || typeof data !== "object") return null;
+
+    const raw = data as RawIpResponse;
+    if (raw.success === false) return null;
+
+    const ip = raw.ip || raw.ipAddress;
+    if (!ip || typeof ip !== "string") return null;
+
+    const countryCode = (raw.country_code || raw.countryCode || "").toUpperCase();
+    const countryName = raw.country || raw.countryName || "";
+    const cityName = raw.city || raw.cityName || "";
+
+    return {
+        ip: ip.trim(),
+        countryCode: countryCode.trim(),
+        countryName: countryName.trim(),
+        cityName: cityName.trim(),
+        timestamp: Date.now(),
+    };
+}
 
 export function getCachedIpInfo(): IpInfo | null {
     try {
@@ -51,6 +86,30 @@ export function clearCachedIpInfo(): void {
     }
 }
 
+async function fetchEndpoint(url: string, timeoutMs: number): Promise<unknown> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            signal: controller.signal,
+            cache: "no-store",
+            headers: {
+                "Accept": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        return await response.json();
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
 export async function fetchIpInfo(force = false): Promise<IpInfo | null> {
     if (!force) {
         const cached = getCachedIpInfo();
@@ -64,53 +123,25 @@ export async function fetchIpInfo(force = false): Promise<IpInfo | null> {
     }
 
     inFlightRequest = (async () => {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-
         try {
-            let response: Response;
+            let data: unknown = null;
+
             try {
-                response = await fetch(PRIMARY_IP_API_URL, {
-                    method: "GET",
-                    signal: controller.signal,
-                    cache: "no-store",
-                });
+                data = await fetchEndpoint(PRIMARY_IP_API_URL, FETCH_TIMEOUT_MS);
             } catch {
-                response = await fetch(FALLBACK_IP_API_URL, {
-                    method: "GET",
-                    signal: controller.signal,
-                    cache: "no-store",
-                });
+                data = await fetchEndpoint(FALLBACK_IP_API_URL, FETCH_TIMEOUT_MS);
             }
 
-            if (!response.ok) {
+            const ipInfo = parseIpResponse(data);
+            if (!ipInfo) {
                 return getCachedIpInfo();
             }
-
-            const data = await response.json();
-            const ip = data.ipAddress || data.ip;
-            const countryCode = (data.countryCode || "").toUpperCase();
-            const countryName = data.countryName || "";
-            const cityName = data.cityName || "";
-
-            if (!ip) {
-                return getCachedIpInfo();
-            }
-
-            const ipInfo: IpInfo = {
-                ip,
-                countryCode,
-                countryName,
-                cityName,
-                timestamp: Date.now(),
-            };
 
             saveCachedIpInfo(ipInfo);
             return ipInfo;
         } catch {
             return getCachedIpInfo();
         } finally {
-            clearTimeout(timeoutId);
             inFlightRequest = null;
         }
     })();
