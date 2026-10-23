@@ -169,8 +169,11 @@ Aure Homepage requests only the permissions required for its features.
 | Host                                          | Purpose                                                                |
 | --------------------------------------------- | ---------------------------------------------------------------------- |
 | `https://suggestqueries.google.com/*`         | Retrieves Google search suggestions while typing.                      |
-| `https://*.gstatic.com/*`                     | Allows loading favicon assets returned by Google's services.           |
+| `https://*.gstatic.com/*`                     | Pings connectivity check endpoint and loads Google favicon assets.     |
 | `https://raw.githubusercontent.com/alizs10/*` | Checks for extension updates by downloading the latest `version.json`. |
+| `https://*.geojs.io/*`                        | Fetches public IP address and location when IP Checker is enabled.     |
+| `https://ipwho.is/*`                          | Fallback provider for public IP and location lookup.                   |
+| `https://flagcdn.com/*`                       | Loads country flag images matching detected IP location.               |
 
 Aure Homepage does **not** request access to all websites (`<all_urls>`). It only requests host access to the specific domains required for its functionality.
 

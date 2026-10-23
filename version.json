@@ -7,7 +7,7 @@
     "notes": [
         "Multi-Browser Support: Aure Homepage is now officially available for Mozilla Firefox alongside Google Chrome with complete feature parity.",
         "Real-Time Cross-Tab Sync: All settings, layouts, wallpapers, bookmarks, and widgets sync instantly across all open tabs without refreshing.",
-        "Live IP & Country Flag: View public IP address and country flag directly in Network Status with a dedicated Privacy toggle.",
+        "Live IP & Network Checker: High-speed IP detection powered by GeoJS with automatic failover to ipwho.is, 30-second on-demand caching, 5-minute auto-refresh, and dedicated privacy controls.",
         "Wallpaper Brightness & Blur: Fine-tune your background directly in Preferences with dedicated brightness and blur presets for better widget contrast.",
         "Progress Goals: A new detail modal with full info and all actions, plus customizable sorting options.",
         "Mood Tracker: You can now choose your mood for missed days directly in the tracker grid.",

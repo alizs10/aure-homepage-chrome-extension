@@ -6,8 +6,9 @@ import { LOCAL_STORAGE_KEYS } from "@/constants/storage_keys";
 import {
     fetchIpInfo,
     getCachedIpInfo,
+    isIpCacheValid,
     type IpInfo,
-    IP_CACHE_DURATION_MS,
+    IP_AUTO_REFRESH_INTERVAL_MS,
 } from "./ip.service";
 
 // CORS-enabled public endpoint for network connectivity check
@@ -100,12 +101,19 @@ export default function NetworkStatus() {
             setIsOnline(online);
 
             if (online && enableIpChecker) {
-                setIsCheckingIp(true);
-                try {
-                    const freshIp = await fetchIpInfo(forceIpRefresh);
-                    setIpInfo(freshIp);
-                } finally {
-                    setIsCheckingIp(false);
+                const cached = getCachedIpInfo();
+                const needsFetch = forceIpRefresh || !isIpCacheValid(cached);
+
+                if (needsFetch) {
+                    setIsCheckingIp(true);
+                    try {
+                        const freshIp = await fetchIpInfo(forceIpRefresh);
+                        setIpInfo(freshIp);
+                    } finally {
+                        setIsCheckingIp(false);
+                    }
+                } else if (cached) {
+                    setIpInfo(cached);
                 }
             }
         } catch {
@@ -145,25 +153,25 @@ export default function NetworkStatus() {
             checkConnection(false);
         }, 0);
 
-        // Periodic hourly IP check
-        const hourlyInterval = setInterval(() => {
+        // Periodic background IP auto-check every 5 minutes
+        const autoRefreshInterval = setInterval(() => {
             if (enableIpChecker && navigator.onLine) {
                 fetchIpInfo(true).then((info) => setIpInfo(info));
             }
-        }, IP_CACHE_DURATION_MS);
+        }, IP_AUTO_REFRESH_INTERVAL_MS);
 
         return () => {
             window.removeEventListener("online", handleOnline);
             window.removeEventListener("offline", handleOffline);
             window.removeEventListener("storage", handleStorage);
             clearTimeout(initialCheckId);
-            clearInterval(hourlyInterval);
+            clearInterval(autoRefreshInterval);
         };
     }, [checkConnection, enableIpChecker]);
 
     const handleManualClick = () => {
-        // Manually clicking when online forces a fresh IP check
-        checkConnection(true);
+        // Manually clicking when online checks connection and refreshes IP if cache is older than 30s
+        checkConnection(false);
     };
 
     const renderStatusContent = () => {

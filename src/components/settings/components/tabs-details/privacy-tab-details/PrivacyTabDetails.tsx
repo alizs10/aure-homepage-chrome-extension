@@ -60,8 +60,8 @@ const EXTENSION_PERMISSIONS = [
 
 const HOST_PERMISSIONS = [
     {
-        host: "https://freeipapi.com/* & https://*.freeipapi.com/*",
-        service: "Free IP API",
+        host: "https://*.geojs.io/* & https://ipwho.is/*",
+        service: "GeoJS & ipwho.is",
         description:
             "Fetches your public IP address and country info only when the IP Checker setting is enabled.",
     },
