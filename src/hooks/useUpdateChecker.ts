@@ -12,6 +12,7 @@ export interface VersionInfo {
 
 interface UpdateCheckState {
     lastCheckTime: number;
+    appVersion: string;
     hasUpdate: boolean;
     updateInfo: VersionInfo | null;
 }
@@ -23,14 +24,37 @@ export const UPDATE_CHECK_URL =
     import.meta.env.VITE_UPDATE_CHECK_URL ||
     'https://raw.githubusercontent.com/alizs10/aure-homepage-chrome-extension/main/version.json';
 
-function getCachedState(): UpdateCheckState | null {
+function getCachedState(currentVersion: string): UpdateCheckState | null {
     if (typeof window === 'undefined') return null;
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return null;
     try {
         const state: UpdateCheckState = JSON.parse(stored);
+
+        // If the stored update is no longer newer than currentVersion, or if appVersion
+        // changed since last check, the cached update notification is invalid.
+        const isUpdateStillValid = Boolean(
+            state.updateInfo?.latestVersion && isVersionHigher(state.updateInfo.latestVersion, currentVersion)
+        );
+
+        if (state.appVersion && state.appVersion !== currentVersion) {
+            // App was updated or changed since the last check; clear stale cache
+            localStorage.removeItem(STORAGE_KEY);
+            return null;
+        }
+
+        if (state.hasUpdate && !isUpdateStillValid) {
+            // Extension was updated to the latest version; clear stale "update available" flag
+            localStorage.removeItem(STORAGE_KEY);
+            return null;
+        }
+
         if (state.lastCheckTime && Date.now() - state.lastCheckTime < CHECK_INTERVAL_MS) {
-            return state;
+            return {
+                ...state,
+                hasUpdate: isUpdateStillValid,
+                updateInfo: isUpdateStillValid ? state.updateInfo : null,
+            };
         }
     } catch {
         // ignore
@@ -39,18 +63,48 @@ function getCachedState(): UpdateCheckState | null {
 }
 
 export function useUpdateChecker(autoCheck: boolean = false) {
-    const [cached] = useState(getCachedState);
+    const currentVersion = import.meta.env.VITE_APP_VERSION || '0.0.0';
+
+    const [cached] = useState(() => getCachedState(currentVersion));
     const [loading, setLoading] = useState(false);
-    const [updateInfo, setUpdateInfo] = useState<VersionInfo | null>(cached?.updateInfo ?? null);
-    const [hasUpdate, setHasUpdate] = useState<boolean>(cached?.hasUpdate ?? false);
+    const [updateInfo, setUpdateInfo] = useState<VersionInfo | null>(() => {
+        if (!cached?.updateInfo?.latestVersion) return null;
+        return isVersionHigher(cached.updateInfo.latestVersion, currentVersion) ? cached.updateInfo : null;
+    });
+    const [hasUpdate, setHasUpdate] = useState<boolean>(() => {
+        if (!cached?.hasUpdate || !cached?.updateInfo?.latestVersion) return false;
+        return isVersionHigher(cached.updateInfo.latestVersion, currentVersion);
+    });
     const [error, setError] = useState<Error | null>(null);
 
-    const currentVersion = import.meta.env.VITE_APP_VERSION || '0.0.0';
+    // Sync across open tabs if storage changes
+    useEffect(() => {
+        function handleStorage(e: StorageEvent) {
+            if (e.key === STORAGE_KEY && e.newValue) {
+                try {
+                    const state: UpdateCheckState = JSON.parse(e.newValue);
+                    const isHigher = Boolean(
+                        state.updateInfo?.latestVersion && isVersionHigher(state.updateInfo.latestVersion, currentVersion)
+                    );
+                    setHasUpdate(Boolean(state.hasUpdate && isHigher));
+                    setUpdateInfo(isHigher ? state.updateInfo : null);
+                } catch {
+                    // ignore
+                }
+            } else if (e.key === STORAGE_KEY && !e.newValue) {
+                setHasUpdate(false);
+                setUpdateInfo(null);
+            }
+        }
+
+        window.addEventListener('storage', handleStorage);
+        return () => window.removeEventListener('storage', handleStorage);
+    }, [currentVersion]);
 
     useEffect(() => {
         if (!autoCheck) return;
 
-        const freshCache = getCachedState();
+        const freshCache = getCachedState(currentVersion);
         if (freshCache) return;
 
         let cancelled = false;
@@ -65,6 +119,7 @@ export function useUpdateChecker(autoCheck: boolean = false) {
 
                 const newState: UpdateCheckState = {
                     lastCheckTime: Date.now(),
+                    appVersion: currentVersion,
                     hasUpdate: isHigher,
                     updateInfo: isHigher ? latest : null,
                 };
@@ -101,6 +156,7 @@ export function useUpdateChecker(autoCheck: boolean = false) {
 
             const newState: UpdateCheckState = {
                 lastCheckTime: Date.now(),
+                appVersion: currentVersion,
                 hasUpdate: isHigher,
                 updateInfo: isHigher ? latest : null,
             };

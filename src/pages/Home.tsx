@@ -13,6 +13,7 @@ import type { WidgetId, WidgetPosition } from "@/types";
 import { Tooltip } from "@base-ui/react/tooltip";
 import { Settings2Icon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { isFirefox } from "@/lib/browser";
 import { Link } from "react-router-dom";
 import TopSites from "../components/home/TopSites";
 import Folders from "../components/home/folders/Folders";
@@ -56,10 +57,6 @@ export default function Home() {
         if (!isNewTabPage) return;
 
         const hasHandledFocus = sessionStorage.getItem('aure_focus_bypass');
-
-        const isFirefox = import.meta.env.VITE_TARGET_BROWSER === 'firefox' ||
-            navigator.userAgent.includes('Firefox') ||
-            window.location.protocol === 'moz-extension:';
 
         if (isFirefox) {
             // If tab was opened with #focused, mark as handled and normalize URL
