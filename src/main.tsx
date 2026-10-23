@@ -6,6 +6,7 @@ import App from './App.tsx';
 import './index.css';
 import LiquidGlass from './components/ui/LiquidGlass.tsx';
 import { preloadFaviconCache } from './lib/favicon';
+import { isFirefox } from './lib/browser';
 import browser from 'webextension-polyfill';
 
 if (import.meta.env.DEV) {
@@ -18,11 +19,6 @@ if (import.meta.env.DEV) {
 preloadFaviconCache();
 
 // 🌟 Firefox focus bypass: immediately swap tab on new tab load to give web content focus
-const isFirefox =
-  import.meta.env.VITE_TARGET_BROWSER === 'firefox' ||
-  navigator.userAgent.includes('Firefox') ||
-  window.location.protocol === 'moz-extension:';
-
 if (isFirefox) {
   if (window.location.hash.includes('focused')) {
     sessionStorage.setItem('aure_focus_bypass', 'true');

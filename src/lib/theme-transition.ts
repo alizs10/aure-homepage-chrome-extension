@@ -1,5 +1,6 @@
 // src/lib/theme-transition.ts
 import { flushSync } from "react-dom";
+import { isFirefox } from "./browser";
 
 type Theme = "light" | "dark" | "system";
 
@@ -10,10 +11,6 @@ export function triggerThemeTransition(
 ) {
     // 1. Fallback for browsers that don't support View Transitions, reduced motion, or Firefox
     // (Firefox Bug 1657997: WebRender offscreen snapshots omit backdrop-filter, so updating directly on live DOM preserves blur)
-    const isFirefox =
-        import.meta.env.VITE_TARGET_BROWSER === "firefox" ||
-        (typeof navigator !== "undefined" && navigator.userAgent.includes("Firefox"));
-
     if (
         !document.startViewTransition ||
         isFirefox ||

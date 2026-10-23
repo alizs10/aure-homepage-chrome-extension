@@ -3,12 +3,13 @@ import { useImage } from "@/hooks/useImage";
 import { useWallpaperBackground } from "@/hooks/useWallpaperBackground";
 import { useSettingsStore } from "@/stores";
 import { wallpaperBlurOptions, wallpaperBrightnessOptions } from "@/types";
+import { isFirefox } from "@/lib/browser";
 
 export default function Background() {
     const { background, isLoading } = useWallpaperBackground();
     const status = useImage(background);
 
-    const wallpaperBlur = useSettingsStore((s) => s.settings?.wallpaper_blur ?? "none");
+    const wallpaperBlur = useSettingsStore((s) => s.settings?.wallpaper_blur ?? (isFirefox ? "xs" : "none"));
     const wallpaperBrightness = useSettingsStore((s) => s.settings?.wallpaper_brightness ?? "100");
 
     const blurOption = wallpaperBlurOptions.find((opt) => opt.key === wallpaperBlur);

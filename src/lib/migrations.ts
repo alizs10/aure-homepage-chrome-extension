@@ -5,6 +5,7 @@ import { DEFAULT_WIDGET_LAYOUT } from "@/constants/widget-weights";
 import { NotesRepository } from "@/features/widgets";
 import type { AdvancedNote, Block, NoteAndChecklist, Note, Checklist } from "@/types/entities";
 import type { Settings, WidgetLayout } from "@/types";
+import { isFirefox } from "@/lib/browser";
 
 type LegacyNote = Note & { status?: boolean };
 
@@ -140,8 +141,11 @@ const migrations: Record<number, () => Promise<void>> = {
         await update({
             schema_version: 4,
             accent: "golden",
-            wallpaper_blur: settings.wallpaper_blur ?? 'none',
+            wallpaper_blur: settings.wallpaper_blur ?? (isFirefox ? 'xs' : 'none'),
             wallpaper_brightness: settings.wallpaper_brightness ?? '100',
+            blur: isFirefox
+                ? (settings.blur === 'xs' ? 'none' : (settings.blur ?? 'none'))
+                : (settings.blur ?? 'xs'),
         });
     },
 };

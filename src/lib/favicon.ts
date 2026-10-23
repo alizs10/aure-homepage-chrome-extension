@@ -1,9 +1,8 @@
 import browser from 'webextension-polyfill';
 import { db } from './db';
 
-export const isFirefox =
-    import.meta.env.VITE_TARGET_BROWSER === 'firefox' ||
-    (typeof navigator !== 'undefined' && /firefox|fxios/i.test(navigator.userAgent));
+import { isFirefox } from './browser/detect';
+export { isFirefox };
 
 export const FAVICON_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 

@@ -9,6 +9,7 @@ import { WizardIntro } from "@/components/wizard/components/WizardIntro";
 import { WizardContent } from "@/components/wizard/WizardContent";
 import { toast } from '@/stores/useToastStore';
 import { DEFAULT_WIDGET_LAYOUT } from '@/constants/widget-weights';
+import { isFirefox } from '@/lib/browser';
 
 export default function Wizard() {
     const save = useSettingsStore((s) => s.save);
@@ -65,9 +66,9 @@ export default function Wizard() {
         const settingsToSave: Settings = {
             schema_version: 4, // ✅ Fixed: match current migration version
             ...data,
-            wallpaper_blur: 'none',
+            wallpaper_blur: isFirefox ? 'xs' : 'none',
             wallpaper_brightness: '100',
-            blur: 'xs',
+            blur: isFirefox ? 'none' : 'xs',
             accent: "golden",
             show_top_sites: true,
             show_favorites: true,
