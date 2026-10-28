@@ -1,17 +1,24 @@
 import { BetterTypography } from "@/components/common/BetterTypography";
+import { fetchIpInfo } from "@/components/features/network-status/ip.service";
+import Button from "@/components/ui/Button";
 import Toggle from "@/components/ui/Toggle";
+import {
+    useHostPermissions,
+    type HostPermissionItem,
+} from "@/lib/browser";
 import { useSettingsStore } from "@/stores";
 import { toast } from "@/stores/useToastStore";
 import {
+    BellIcon,
+    BookmarkIcon,
     DatabaseIcon,
     GlobeIcon,
-    BellIcon,
-    TimerIcon,
     HistoryIcon,
-    BookmarkIcon,
     ShieldCheckIcon,
+    ShieldIcon,
+    ShieldOffIcon,
+    TimerIcon
 } from "lucide-react";
-import { fetchIpInfo } from "@/components/features/network-status/ip.service";
 
 const EXTENSION_PERMISSIONS = [
     {
@@ -58,44 +65,33 @@ const EXTENSION_PERMISSIONS = [
     },
 ];
 
-const HOST_PERMISSIONS = [
-    {
-        host: "https://*.geojs.io/* & https://ipwho.is/*",
-        service: "GeoJS & ipwho.is",
-        description:
-            "Fetches your public IP address and country info only when the IP Checker setting is enabled.",
-    },
-    {
-        host: "https://flagcdn.com/*",
-        service: "Flag CDN",
-        description:
-            "Provides country flag images matching your detected IP address location.",
-    },
-    {
-        host: "https://suggestqueries.google.com/*",
-        service: "Google Search Suggestions",
-        description:
-            "Provides live autocomplete suggestions in the main search bar as you type.",
-    },
-    {
-        host: "https://*.gstatic.com/*",
-        service: "Google Connectivity Check",
-        description:
-            "Pings Google's lightweight generate_204 endpoint to accurately detect online/offline network status.",
-    },
-    {
-        host: "https://raw.githubusercontent.com/alizs10/*",
-        service: "GitHub Repository",
-        description:
-            "Checks for extension version updates and loads release notes.",
-    },
-];
-
 export default function PrivacyTabDetails() {
     const { settings, update } = useSettingsStore();
     const isIpCheckerEnabled = settings?.enable_ip_checker ?? false;
 
+    const {
+        allGranted,
+        statusMap,
+        isLoading,
+        applicableItems,
+        requestAll,
+        requestItem,
+        revokeAll,
+        revokeItem,
+    } = useHostPermissions();
+
     const handleToggleIpChecker = async (checked: boolean) => {
+        if (checked) {
+            const ipItem = applicableItems.find((item) => item.id === "ip-checker");
+            if (ipItem && !statusMap[ipItem.id]) {
+                const granted = await requestItem(ipItem);
+                if (!granted) {
+                    toast.warning("IP checker requires permission to query GeoJS & ipwho.is");
+                    return;
+                }
+            }
+        }
+
         await update({ enable_ip_checker: checked });
         if (checked) {
             toast.success("IP checker enabled");
@@ -108,9 +104,53 @@ export default function PrivacyTabDetails() {
         }
     };
 
+    const handleGrantAll = async () => {
+        const granted = await requestAll();
+        if (granted) {
+            toast.success("All host permissions granted!");
+        } else {
+            toast.info("Permissions request was cancelled or dismissed");
+        }
+    };
+
+    const handleRevokeAll = async () => {
+        const result = await revokeAll();
+        if (result.success) {
+            toast.info("All host permissions revoked");
+        } else if (result.error?.toLowerCase().includes("required")) {
+            toast.warning(
+                "These permissions were installed as required permissions in Chrome. To make them optional, reload the extension cleanly from chrome://extensions."
+            );
+        } else {
+            toast.warning("Failed to revoke permissions");
+        }
+    };
+
+    const handleToggleItem = async (item: HostPermissionItem, checked: boolean) => {
+        if (checked) {
+            const granted = await requestItem(item);
+            if (granted) {
+                toast.success(`Permission granted for ${item.service}`);
+            } else {
+                toast.info(`Permission request cancelled for ${item.service}`);
+            }
+        } else {
+            const result = await revokeItem(item);
+            if (result.success) {
+                toast.info(`Permission revoked for ${item.service}`);
+            } else if (result.error?.toLowerCase().includes("required")) {
+                toast.warning(
+                    `${item.service} was installed as a required permission in Chrome and cannot be removed via the app.`
+                );
+            } else {
+                toast.warning(`Failed to revoke permission for ${item.service}`);
+            }
+        }
+    };
+
     return (
         <div className="h-fit flex-1 flex flex-col gap-y-8">
-            {/* 🌟 1. Privacy Guarantee (Moved to the top) */}
+            {/* 🌟 1. Privacy Guarantee */}
             <div className="p-4 rounded-2xl liquid-glass border border-success/20 flex items-start gap-x-3">
                 <ShieldCheckIcon className="size-5 text-success shrink-0 mt-0.5" />
                 <div className="flex flex-col gap-y-1">
@@ -185,34 +225,103 @@ export default function PrivacyTabDetails() {
 
             {/* 🌟 4. Host Permissions Details */}
             <div className="flex flex-col gap-y-3">
-                <div className="flex flex-col gap-y-0.5">
-                    <BetterTypography variant="md" weight="semibold" as="h3">
-                        Host Permissions (External Network Access)
-                    </BetterTypography>
-                    <BetterTypography variant="xs" className="text-muted-foreground">
-                        External requests are strictly limited to the services listed below for specific optional functionality.
-                    </BetterTypography>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex flex-col gap-y-0.5">
+                        <BetterTypography variant="md" weight="semibold" as="h3">
+                            Host Permissions (External Network Access)
+                        </BetterTypography>
+                        <BetterTypography variant="xs" className="text-muted-foreground">
+                            External requests are strictly limited to the services listed below for optional functionality.
+                        </BetterTypography>
+                    </div>
+
+
                 </div>
 
-                <div className="flex flex-col gap-y-2.5">
-                    {HOST_PERMISSIONS.map((host) => (
-                        <div
-                            key={host.host}
-                            className="p-3.5 rounded-2xl liquid-glass flex flex-col gap-y-1"
-                        >
-                            <div className="flex-row-center gap-x-2 flex-wrap">
-                                <BetterTypography variant="sm" weight="semibold">
-                                    {host.service}
-                                </BetterTypography>
-                                <span className="text-xs text-muted-foreground font-mono truncate">
-                                    {host.host}
-                                </span>
-                            </div>
-                            <BetterTypography variant="xs" className="text-muted-foreground">
-                                {host.description}
+                {/* Notice when permissions are missing */}
+                {!isLoading && (
+                    <div className="p-3.5 rounded-3xl liquid-glass flex flex-col gap-y-1">
+                        <div className="flex justify-between items-center w-full gap-x-2">
+                            <BetterTypography variant="sm" weight="medium" className="text-foreground">
+                                External Permissions Notice
                             </BetterTypography>
+
+                            {!isLoading && (
+                                allGranted ? (
+                                    <Button
+                                        size="sm"
+                                        variant="ghost-destructive"
+                                        onClick={handleRevokeAll}
+                                        leftIcon={<ShieldOffIcon className="size-3.5" />}
+                                        className="w-fit shrink-0"
+                                    >
+                                        <BetterTypography variant="xs" weight="medium">
+                                            Revoke All Permissions
+                                        </BetterTypography>
+
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        size="sm"
+                                        variant="primary"
+                                        onClick={handleGrantAll}
+                                        leftIcon={<ShieldIcon className="size-3.5" />}
+                                        className="w-fit shrink-0"
+                                    >
+                                        <BetterTypography variant="xs" weight="medium">
+                                            Grant All Permissions
+                                        </BetterTypography>
+                                    </Button>
+                                )
+                            )}
                         </div>
-                    ))}
+                        <BetterTypography variant="xs" className="text-muted-foreground">
+                            External host permissions are optional. You can click <strong>Grant All Permissions</strong> to authorize them in one browser prompt, or toggle each service individually below.
+                        </BetterTypography>
+                    </div>
+                )}
+
+                <div className="flex flex-col gap-y-2.5">
+                    {applicableItems.map((item) => {
+                        const isGranted = statusMap[item.id] ?? false;
+
+                        return (
+                            <div
+                                key={item.id}
+                                className="p-3.5 md:p-4 rounded-3xl liquid-glass flex flex-col gap-y-1"
+                            >
+
+
+                                <div className="flex-center-between gap-x-2">
+                                    <div className="flex-row-center gap-x-2 flex-wrap">
+                                        <BetterTypography variant="sm" weight="semibold">
+                                            {item.service}
+                                        </BetterTypography>
+                                        <span className="text-xs text-muted-foreground font-mono truncate">
+                                            {item.displayHost}
+                                        </span>
+                                    </div>
+                                    <div className="shrink-0 flex items-center">
+                                        {isLoading ? (
+                                            <div className="w-12 h-7 rounded-full bg-muted/40 animate-pulse" />
+                                        ) : (
+                                            <Toggle
+                                                checked={isGranted}
+                                                onCheckedChange={(checked) => handleToggleItem(item, checked)}
+                                                size="md"
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+
+                                <BetterTypography variant="xs" className="text-muted-foreground">
+                                    {item.description}
+                                </BetterTypography>
+
+
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>

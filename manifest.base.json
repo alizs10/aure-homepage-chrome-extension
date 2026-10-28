@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Aure Homepage",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Custom New Tab",
     "permissions": [
         "storage",
@@ -10,11 +10,10 @@
         "alarms",
         "history"
     ],
-    "host_permissions": [
+    "optional_host_permissions": [
         "https://suggestqueries.google.com/*",
         "https://*.gstatic.com/*",
-        "https://raw.githubusercontent.com/alizs10/*",
-        "https://get.geojs.io/*",
+        "https://raw.githubusercontent.com/*",
         "https://*.geojs.io/*",
         "https://ipwho.is/*",
         "https://flagcdn.com/*"

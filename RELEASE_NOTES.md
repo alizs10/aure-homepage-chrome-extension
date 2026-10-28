@@ -1,23 +1,23 @@
-# Aure Homepage v0.1.1
+# Aure Homepage v0.1.2
 
-This update resolves an issue where initial default bookmark folders were omitted during fresh onboarding setups.
+This release adds the ability to manage external website permissions directly inside Privacy Settings.
 
-## Fixes
+## What's New
 
-### Onboarding
-* **Folder Initialization**: Resolved an issue where schema migration checks caused initial default bookmark folders to be omitted on fresh installations.
+### Privacy & Permissions
+* **Permission Controls in Privacy Settings**: You can now easily view, grant, and revoke external website permissions directly from the Privacy tab in Settings.
 
 ## Download & Installation
 
 ### Google Chrome
-1. Download **`aure-homepage-chrome-v0.1.1.zip`** from the Assets section below.
+1. Download **`aure-homepage-chrome-v0.1.2.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `chrome://extensions`.
 4. Enable **Developer mode** in the top-right corner.
 5. Click **Load unpacked** and select the extracted folder.
 
 ### Mozilla Firefox
-1. Download **`aure-homepage-firefox-v0.1.1.zip`** from the Assets section below.
+1. Download **`aure-homepage-firefox-v0.1.2.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `about:debugging#/runtime/this-firefox`.
 4. Click **Load Temporary Add-on...** and select `manifest.json` from the extracted folder.
