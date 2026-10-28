@@ -10,6 +10,7 @@ import { WizardContent } from "@/components/wizard/WizardContent";
 import { toast } from '@/stores/useToastStore';
 import { DEFAULT_WIDGET_LAYOUT } from '@/constants/widget-weights';
 import { isFirefox } from '@/lib/browser';
+import { seedDefaultFolders, useFoldersStore } from "@/features/bookmarks";
 
 export default function Wizard() {
     const save = useSettingsStore((s) => s.save);
@@ -77,6 +78,8 @@ export default function Wizard() {
             widget_layout: DEFAULT_WIDGET_LAYOUT,
         };
 
+        await seedDefaultFolders();
+        await useFoldersStore.getState().initialize();
         await save(settingsToSave);
         toast.success("All set, enjoy!")
         navigate("/", { replace: true });

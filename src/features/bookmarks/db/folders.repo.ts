@@ -14,6 +14,10 @@ export const FoldersRepository = {
         return db.folders.put(folder);
     },
 
+    bulkPut(folders: Folder[]) {
+        return db.folders.bulkPut(folders);
+    },
+
     remove(id: number) {
         return db.folders.delete(id);
     },
