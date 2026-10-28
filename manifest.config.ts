@@ -7,6 +7,14 @@ export function getManifest(target: TargetBrowser) {
     const manifestBasePath = fileURLToPath(new URL('./manifest.base.json', import.meta.url));
     const manifest = JSON.parse(fs.readFileSync(manifestBasePath, 'utf8'));
 
+    // In Manifest V3, origins must be in optional_host_permissions to allow
+    // permissions.request() and permissions.remove() at runtime in Chrome and Firefox.
+    const baseHostPerms = [
+        ...(manifest.host_permissions || []),
+        ...(manifest.optional_host_permissions || []),
+    ];
+    delete manifest.host_permissions;
+
     if (target === 'chrome') {
         manifest.key =
             'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqVSsWgHXNk5g1WZUuLpN/P+QgU36daupNUxHXkTCbCGhwDXXnksJ/PhXoUgJgZfLEzeNDiCmJSqqRjrTjbmxAGOb4kPgCplxUpC8nQAWOAZ+OLYE5XFqS3Sc65krb7SKxl33/ed4yq4R0Dna7lgwTwvOSxWxae8m+/MY6SZLpZ6jdUxN5hERgQmQUumMJhTx8hJ6Kdw1kscZT9w/vPtThsG3/ZfhXKdhx9R3BOlKqgZi8F5ji/+WHhU6gUw8AClJAZA8WE8vGRVxViXCcDO1oYP9/qdQlyJFKXbpricbT1iX/l7NHGYaIynJjuqhl+GpXyJlikAUrKNOAZ/MXmUMdwIDAQAB';
@@ -22,6 +30,7 @@ export function getManifest(target: TargetBrowser) {
             service_worker: 'background.js',
             type: 'module',
         };
+        manifest.optional_host_permissions = Array.from(new Set(baseHostPerms));
     } else if (target === 'firefox') {
         manifest.browser_specific_settings = {
             gecko: {
@@ -41,10 +50,9 @@ export function getManifest(target: TargetBrowser) {
             'sessions',
             'tabs',
         ];
-        manifest.host_permissions = [
-            ...(manifest.host_permissions || []),
-            'https://faviconapi.com/*',
-        ];
+        manifest.optional_host_permissions = Array.from(
+            new Set([...baseHostPerms, 'https://faviconapi.com/*'])
+        );
     }
 
     return manifest;

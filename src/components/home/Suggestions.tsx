@@ -4,6 +4,10 @@ import { commands } from "@/lib/commands";
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { BetterTypography } from "../common/BetterTypography";
 import Badge from "../ui/Badge";
+import Button from "../ui/Button";
+import { SparklesIcon } from "lucide-react";
+import { toast } from "@/stores/useToastStore";
+import { checkHostPermissions, requestHostPermissions, subscribePermissionsChange } from "@/lib/browser";
 import { sliceText } from "@/helpers";
 import { useFavoritesStore, useFoldersStore } from "@/features/bookmarks";
 import { isValidUrl } from "./helpers/search";
@@ -64,15 +68,43 @@ export default function Suggestions({
     return sites;
   }, [folders]);
 
+  const [hasGooglePermission, setHasGooglePermission] = useState<boolean>(true);
+
   useEffect(() => {
     getTopSites().then(setTopSites);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    checkHostPermissions(["https://suggestqueries.google.com/*"]).then((has) => {
+      if (isMounted) setHasGooglePermission(has);
+    });
+    const unsubscribe = subscribePermissionsChange(() => {
+      checkHostPermissions(["https://suggestqueries.google.com/*"]).then((has) => {
+        if (isMounted) setHasGooglePermission(has);
+      });
+    });
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, []);
+
+  const handleGrantGooglePermission = useCallback(async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const granted = await requestHostPermissions(["https://suggestqueries.google.com/*"]);
+    if (granted) {
+      setHasGooglePermission(true);
+      toast.success("Google suggestions enabled!");
+    }
   }, []);
 
   const query = searchValue.toLowerCase().trim();
   const rawQuery = searchValue.trim();
 
   const shouldFetchHistory = !isCommandMode && query.length > 0;
-  const shouldFetchGoogle = !isCommandMode && rawQuery.length > 0 && !isValidUrl(rawQuery);
+  const shouldFetchGoogle = !isCommandMode && rawQuery.length > 0 && !isValidUrl(rawQuery) && hasGooglePermission;
 
   if (!shouldFetchHistory && historySuggestions.length > 0) setHistorySuggestions([]);
   if (!shouldFetchGoogle && googleSuggestions.length > 0) setGoogleSuggestions([]);
@@ -239,6 +271,24 @@ export default function Suggestions({
               {searchValue.trim().length > 0 ? "No matches found" : "Start typing to see suggestions"}
             </BetterTypography>
           </div>
+          {!isCommandMode && !hasGooglePermission && rawQuery.length > 0 && (
+            <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
+              <div className="flex items-center gap-x-2 min-w-0">
+                <SparklesIcon className="size-4 text-primary shrink-0" />
+                <BetterTypography variant="xs" className="text-muted-foreground truncate">
+                  Enable Google live search completions
+                </BetterTypography>
+              </div>
+              <Button
+                size="xs"
+                variant="primary"
+                onClick={handleGrantGooglePermission}
+                className="shrink-0 text-xs"
+              >
+                Grant Permission
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -279,6 +329,25 @@ export default function Suggestions({
               </li>
             ))}
           </ul>
+
+          {!isCommandMode && !hasGooglePermission && rawQuery.length > 0 && (
+            <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
+              <div className="flex items-center gap-x-2 min-w-0">
+                <SparklesIcon className="size-4 text-primary shrink-0" />
+                <BetterTypography variant="xs" className="text-muted-foreground truncate">
+                  Enable Google live search completions
+                </BetterTypography>
+              </div>
+              <Button
+                size="xs"
+                variant="primary"
+                onClick={handleGrantGooglePermission}
+                className="shrink-0 text-xs"
+              >
+                Grant Permission
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

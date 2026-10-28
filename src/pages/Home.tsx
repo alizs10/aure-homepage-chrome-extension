@@ -17,6 +17,7 @@ import { isFirefox } from "@/lib/browser";
 import { Link } from "react-router-dom";
 import TopSites from "../components/home/TopSites";
 import Folders from "../components/home/folders/Folders";
+import FirefoxPermissionsBanner from "@/components/home/FirefoxPermissionsBanner";
 import Calendar from "../components/widgets/calendar/Calendar";
 import MoodTracker from "../components/widgets/mood-tracker/MoodTracker";
 import NotesAndChecklists from "../components/widgets/notes-and-checklists/NotesAndChecklists";
@@ -75,7 +76,7 @@ export default function Home() {
                         return;
                     }
                     document.removeEventListener('visibilitychange', requestSwap);
-                    browser.runtime.sendMessage({ action: 'SWAP_FIREFOX_NEWTAB_FOR_FOCUS' }).catch(() => {});
+                    browser.runtime.sendMessage({ action: 'SWAP_FIREFOX_NEWTAB_FOR_FOCUS' }).catch(() => { });
                 };
 
                 if (document.visibilityState === 'visible') {
@@ -185,6 +186,8 @@ export default function Home() {
 
     return (
         <section className="w-full max-w-6xl m-auto gap-y-4 md:gap-y-8 flex-center flex-col pt-10 pb-20 space-y-6 overflow-x-clip">
+            <FirefoxPermissionsBanner />
+
             <div className="sticky top-10 z-40 h-fit min-h-fit w-full flex flex-col gap-y-2 md:gap-y-4">
                 <SearchInput />
 
