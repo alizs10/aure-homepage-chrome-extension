@@ -15,6 +15,7 @@
     "package": "bun run build && bun run package:chrome && bun run package:firefox",
     "package:chrome": "bun run build:chrome && node scripts/package.js chrome",
     "package:firefox": "bun run build:firefox && node scripts/package.js firefox",
+    "package:source": "node scripts/package.js source",
     "lint": "eslint .",
     "preview": "vite preview"
   },

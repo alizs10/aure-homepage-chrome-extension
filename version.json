@@ -1,20 +1,10 @@
 {
-    "latestVersion": "0.1.0",
+    "latestVersion": "0.1.1",
     "minimumSupportedVersion": "0.0.1",
-    "releaseDate": "2026-10-22",
-    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.1.0/aure-homepage-chrome-v0.1.0.zip",
-    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.1.0",
+    "releaseDate": "2026-10-28",
+    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.1.1/aure-homepage-chrome-v0.1.1.zip",
+    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.1.1",
     "notes": [
-        "Multi-Browser Support: Aure Homepage is now officially available for Mozilla Firefox alongside Google Chrome with complete feature parity.",
-        "Real-Time Cross-Tab Sync: All settings, layouts, wallpapers, bookmarks, and widgets sync instantly across all open tabs without refreshing.",
-        "Live IP & Network Checker: High-speed IP detection powered by GeoJS with automatic failover to ipwho.is, 30-second on-demand caching, 5-minute auto-refresh, and dedicated privacy controls.",
-        "Wallpaper Brightness & Blur: Fine-tune your background directly in Preferences with dedicated brightness and blur presets for better widget contrast.",
-        "Progress Goals: A new detail modal with full info and all actions, plus customizable sorting options.",
-        "Mood Tracker: You can now choose your mood for missed days directly in the tracker grid.",
-        "Pomodoro Safeguards: Protective confirmation prompts across widgets and header popups for timer resets, early breaks, and overtime to prevent lost session progress.",
-        "Smarter Countdowns: Clear negative day indicators for expired countdowns and refined reset rules for recurring targets.",
-        "Smart Multi-Line Paste: Pasting multi-line text into quick notes automatically enables multi-line editing while preserving formatting.",
-        "Pet House Shortcuts: Click-to-copy confirmation phrases when releasing or deleting pets.",
-        "Visuals & Polish: Renamed interface blur to UI Blur, updated default wallpapers, and optimized clock performance."
+        "Onboarding Fix: Resolved an issue where initial bookmark folder seeding was bypassed for new users, ensuring default folders are populated properly."
     ]
 }

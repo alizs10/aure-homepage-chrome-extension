@@ -1,6 +1,5 @@
 import { useSettingsStore } from "@/stores";
-import { FoldersRepository, useFoldersStore, type Folder, type Website } from "@/features/bookmarks";
-import { DEFAULT_FOLDERS } from "@/constants/defaultFolders";
+import { seedDefaultFolders, useFoldersStore } from "@/features/bookmarks";
 import { DEFAULT_WIDGET_LAYOUT } from "@/constants/widget-weights";
 import { NotesRepository } from "@/features/widgets";
 import type { AdvancedNote, Block, NoteAndChecklist, Note, Checklist } from "@/types/entities";
@@ -30,25 +29,7 @@ type LegacySettings = Settings & {
 const migrations: Record<number, () => Promise<void>> = {
     // Version 1: Add default folders feature
     1: async () => {
-        const existing = await FoldersRepository.getAll();
-        if (existing.length === 0) {
-            const baseTime = Date.now();
-            const foldersToInsert: Folder[] = DEFAULT_FOLDERS.map((f, folderIndex) => ({
-                id: baseTime + folderIndex,
-                title: f.title,
-                order: folderIndex,
-                websites: f.websites.map((w, siteIndex) => ({
-                    id: baseTime + folderIndex * 100 + siteIndex,
-                    title: w.title,
-                    url: w.url,
-                    order: siteIndex
-                })) as Website[]
-            }));
-
-            for (const folder of foldersToInsert) {
-                await FoldersRepository.put(folder);
-            }
-        }
+        await seedDefaultFolders();
 
         const { settings, update } = useSettingsStore.getState();
         if (settings) {
