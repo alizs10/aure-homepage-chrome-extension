@@ -1,10 +1,10 @@
 {
-    "latestVersion": "0.1.2",
+    "latestVersion": "0.1.3",
     "minimumSupportedVersion": "0.0.1",
-    "releaseDate": "2026-10-28",
-    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.1.2/aure-homepage-chrome-v0.1.2.zip",
-    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.1.2",
+    "releaseDate": "2026-10-31",
+    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.1.3/aure-homepage-chrome-v0.1.3.zip",
+    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.1.3",
     "notes": [
-        "Privacy & Permissions: You can now view and handle external website permissions directly from the Privacy tab in Settings."
+        "Firefox Startup & Home: Fixed an issue where Firefox showed its default home page on startup or new windows instead of Aure Homepage."
     ]
 }

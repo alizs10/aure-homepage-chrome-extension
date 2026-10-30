@@ -1,23 +1,23 @@
-# Aure Homepage v0.1.2
+# Aure Homepage v0.1.3
 
-This release adds the ability to manage external website permissions directly inside Privacy Settings.
+This release fixes an issue in Firefox where the default Firefox home screen appeared on startup or when opening new windows instead of Aure Homepage.
 
-## What's New
+## Fixes
 
-### Privacy & Permissions
-* **Permission Controls in Privacy Settings**: You can now easily view, grant, and revoke external website permissions directly from the Privacy tab in Settings.
+### Mozilla Firefox
+* **Homepage & Startup Support**: Fixed an issue where Firefox opened its default home screen on browser launch, new windows, or when clicking the Home button. Aure Homepage now reliably opens on startup, new windows, and new tabs.
 
 ## Download & Installation
 
 ### Google Chrome
-1. Download **`aure-homepage-chrome-v0.1.2.zip`** from the Assets section below.
+1. Download **`aure-homepage-chrome-v0.1.3.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `chrome://extensions`.
 4. Enable **Developer mode** in the top-right corner.
 5. Click **Load unpacked** and select the extracted folder.
 
 ### Mozilla Firefox
-1. Download **`aure-homepage-firefox-v0.1.2.zip`** from the Assets section below.
+1. Download **`aure-homepage-firefox-v0.1.3.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `about:debugging#/runtime/this-firefox`.
 4. Click **Load Temporary Add-on...** and select `manifest.json` from the extracted folder.
