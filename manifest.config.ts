@@ -41,6 +41,9 @@ export function getManifest(target: TargetBrowser) {
                 },
             },
         };
+        manifest.chrome_settings_overrides = {
+            homepage: 'index.html',
+        };
         manifest.background = {
             scripts: ['background.js'],
             type: 'module',
