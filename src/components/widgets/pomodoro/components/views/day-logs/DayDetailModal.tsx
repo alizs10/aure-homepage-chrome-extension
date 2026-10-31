@@ -81,8 +81,8 @@ export default function DayDetailModal({ open, onClose, day, formatDuration }: D
             {/* 1. Outer Shell: Handles shadows and rounded corners without clipping them */}
             <div ref={captureRef} className={
                 cn(
-                    "w-full max-w-4/5 sm:max-w-md max-h-[80vh] flex flex-col relative overflow-y-scroll scrollbar-none",
-                    isCapturing ? "" : "rounded-3xl liquid-glass"
+                    "w-full max-w-4/5 sm:max-w-md max-h-[80vh] flex flex-col relative overflow-y-scroll scrollbar-none liquid-glass",
+                    isCapturing ? "" : "rounded-3xl"
                 )
             }>
 
@@ -90,14 +90,14 @@ export default function DayDetailModal({ open, onClose, day, formatDuration }: D
                     style={{ backgroundImage: `url(${background})` }}
                     className={
                         cn(
-                            "absolute z-0 inset-0 bg-cover bg-center",
+                            "absolute z-0 inset-0 bg-cover bg-center blur-xs",
                         )
                     }
                 />
                 <div
                     className={
                         cn(
-                            "absolute z-0 inset-0 backdrop-blur-xs bg-background/50",
+                            "absolute z-0 inset-0 bg-background/50",
                         )
                     }
                 />
