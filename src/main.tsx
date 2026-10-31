@@ -1,6 +1,8 @@
+import './init';
 import { scan } from 'react-scan';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { z } from 'zod';
 import Wrappers from './Wrappers.tsx';
 import App from './App.tsx';
 import './index.css';
@@ -8,6 +10,9 @@ import LiquidGlass from './components/ui/LiquidGlass.tsx';
 import { preloadFaviconCache } from './lib/favicon';
 import { isFirefox } from './lib/browser';
 import browser from 'webextension-polyfill';
+
+// Configure Zod for strict Content Security Policy (skips new Function() JIT eval probe)
+z.config({ jitless: true });
 
 if (import.meta.env.DEV) {
   scan({

@@ -1,23 +1,23 @@
-# Aure Homepage v0.1.3
+# Aure Homepage v0.1.4
 
-This release fixes an issue in Firefox where the default Firefox home screen appeared on startup or when opening new windows instead of Aure Homepage.
+This release fixes an issue in Firefox where website preview icons inside folder items were not displayed.
 
 ## Fixes
 
-### Mozilla Firefox
-* **Homepage & Startup Support**: Fixed an issue where Firefox opened its default home screen on browser launch, new windows, or when clicking the Home button. Aure Homepage now reliably opens on startup, new windows, and new tabs.
+### Folder Previews
+* **Website Icons in Folders**: Fixed an issue in Firefox where website favicons inside folder items were not displayed.
 
 ## Download & Installation
 
 ### Google Chrome
-1. Download **`aure-homepage-chrome-v0.1.3.zip`** from the Assets section below.
+1. Download **`aure-homepage-chrome-v0.1.4.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `chrome://extensions`.
 4. Enable **Developer mode** in the top-right corner.
 5. Click **Load unpacked** and select the extracted folder.
 
 ### Mozilla Firefox
-1. Download **`aure-homepage-firefox-v0.1.3.zip`** from the Assets section below.
+1. Download **`aure-homepage-firefox-v0.1.4.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `about:debugging#/runtime/this-firefox`.
 4. Click **Load Temporary Add-on...** and select `manifest.json` from the extracted folder.
