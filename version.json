@@ -1,10 +1,11 @@
 {
-    "latestVersion": "0.1.4",
+    "latestVersion": "0.1.5",
     "minimumSupportedVersion": "0.0.1",
     "releaseDate": "2026-10-31",
-    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.1.4/aure-homepage-chrome-v0.1.4.zip",
-    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.1.4",
+    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.1.5/aure-homepage-chrome-v0.1.5.zip",
+    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.1.5",
     "notes": [
-        "Folder Website Icons: Fixed an issue in Firefox where website favicons inside folder items were not displayed."
+        "Pomodoro Summary Screenshots: Fixed an issue in Firefox where the background blur was not included in saved screenshots.",
+        "Firefox Stability: Resolved startup Content Security Policy warnings in Firefox."
     ]
 }

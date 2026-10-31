@@ -1,23 +1,26 @@
-# Aure Homepage v0.1.4
+# Aure Homepage v0.1.5
 
-This release fixes an issue in Firefox where website preview icons inside folder items were not displayed.
+This release fixes an issue where the background blur effect was missing from Pomodoro summary screenshots in Firefox, and eliminates startup Content Security Policy (CSP) console warnings in Firefox.
 
 ## Fixes
 
-### Folder Previews
-* **Website Icons in Folders**: Fixed an issue in Firefox where website favicons inside folder items were not displayed.
+### Pomodoro Widget
+* **Daily Summary Screenshots**: Fixed an issue in Firefox where the background blur effect was missing from saved daily summary screenshots.
+
+### Firefox Stability
+* **Security Policy Compliance**: Resolved startup Content Security Policy (CSP) warnings in Firefox for a cleaner console and improved stability.
 
 ## Download & Installation
 
 ### Google Chrome
-1. Download **`aure-homepage-chrome-v0.1.4.zip`** from the Assets section below.
+1. Download **`aure-homepage-chrome-v0.1.5.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `chrome://extensions`.
 4. Enable **Developer mode** in the top-right corner.
 5. Click **Load unpacked** and select the extracted folder.
 
 ### Mozilla Firefox
-1. Download **`aure-homepage-firefox-v0.1.4.zip`** from the Assets section below.
+1. Download **`aure-homepage-firefox-v0.1.5.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `about:debugging#/runtime/this-firefox`.
 4. Click **Load Temporary Add-on...** and select `manifest.json` from the extracted folder.
