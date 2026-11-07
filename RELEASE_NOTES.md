@@ -34,8 +34,6 @@ Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly
 ### Pomodoro Daily Summary
 
 - **Visual Time Breakdown**: The Daily Summary popup now wraps your total focus time in an intuitive multi-segment circular progress ring, distinctly separating your focus sessions, short breaks, and long breaks.
-- **Session Breakdown Indicators**: Color-coded badges display the exact time spent in each session type for the selected day.
-- **Vibrant Screenshot Export**: Capturing and saving your daily summary as an image now reliably preserves all session colors and progress rings in both light and dark themes.
 
 ## Fixes
 
