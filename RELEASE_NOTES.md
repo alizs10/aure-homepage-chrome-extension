@@ -1,26 +1,45 @@
-# Aure Homepage v0.1.5
+# Aure Homepage v0.2.0
 
-This release fixes an issue where the background blur effect was missing from Pomodoro summary screenshots in Firefox, and eliminates startup Content Security Policy (CSP) console warnings in Firefox.
+Aure Homepage v0.2.0 introduces customizable search engine selection with a dedicated Search settings tab, configurable new-tab opening behaviors for searches and bookmarks, and a smoother hover experience on Mozilla Firefox.
+
+## What's New
+
+### Search Engine Selection
+
+- **Multiple Search Providers**: You can now choose your preferred default search engine directly from a dedicated **Search** tab in Settings.
+- **Supported Engines**: Out-of-the-box support for Google, DuckDuckGo, Brave, Bing, Yandex, Zarebin, Gerdoo, and ChatGPT.
+- **Dynamic Search Routing**: Homepage search queries and instant completions seamlessly route to your selected engine.
+
+### Flexible Opening Behaviors
+
+- **Open Search in New Tab**: Configure web searches launched from your homepage search bar to open in a new tab or replace the current tab.
+- **Open Bookmarks in New Tab**: Choose whether favorites, folder websites, and top sites shortcuts open in a fresh new tab or the active tab.
+
+## Improvements
+
+### Bookmarks Settings
+
+- **More Organized**: Bookmarks settings are now more organized, making it simpler to manage your shortcuts, folders, and display options.
 
 ## Fixes
 
-### Pomodoro Widget
-* **Daily Summary Screenshots**: Fixed an issue in Firefox where the background blur effect was missing from saved daily summary screenshots.
+### Firefox Smoothness
 
-### Firefox Stability
-* **Security Policy Compliance**: Resolved startup Content Security Policy (CSP) warnings in Firefox for a cleaner console and improved stability.
+- **Smoother Hover Experience**: Refined bookmark and shortcut animations to make the hover experience feel much smoother and more responsive in Firefox.
 
 ## Download & Installation
 
 ### Google Chrome
-1. Download **`aure-homepage-chrome-v0.1.5.zip`** from the Assets section below.
+
+1. Download **`aure-homepage-chrome-v0.2.0.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `chrome://extensions`.
 4. Enable **Developer mode** in the top-right corner.
 5. Click **Load unpacked** and select the extracted folder.
 
 ### Mozilla Firefox
-1. Download **`aure-homepage-firefox-v0.1.5.zip`** from the Assets section below.
+
+1. Download **`aure-homepage-firefox-v0.2.0.zip`** from the Assets section below.
 2. Extract the ZIP file.
 3. Navigate to `about:debugging#/runtime/this-firefox`.
 4. Click **Load Temporary Add-on...** and select `manifest.json` from the extracted folder.

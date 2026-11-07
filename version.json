@@ -1,11 +1,14 @@
 {
-    "latestVersion": "0.1.5",
-    "minimumSupportedVersion": "0.0.1",
-    "releaseDate": "2026-10-31",
-    "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.1.5/aure-homepage-chrome-v0.1.5.zip",
-    "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.1.5",
-    "notes": [
-        "Pomodoro Summary Screenshots: Fixed an issue in Firefox where the background blur was not included in saved screenshots.",
-        "Firefox Stability: Resolved startup Content Security Policy warnings in Firefox."
-    ]
+  "latestVersion": "0.2.0",
+  "minimumSupportedVersion": "0.0.1",
+  "releaseDate": "2026-11-07",
+  "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.2.0/aure-homepage-chrome-v0.2.0.zip",
+  "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.2.0",
+  "notes": [
+    "Search Engine Selection: Choose your preferred default search engine from Google, DuckDuckGo, Brave, Bing, Yandex, Zarebin, Gerdoo, or ChatGPT in the new Search settings tab.",
+    "Search Behavior: Added an option to open search queries and results in a new tab.",
+    "Bookmark Behavior: Added an option to open bookmarks, favorites, and folder sites in a new tab.",
+    "Bookmarks Settings: Bookmarks settings are now more organized, making it simpler to manage your shortcuts, folders, and display options.",
+    "Firefox Smoothness: Refined bookmark and shortcut animations to make the hover experience feel much smoother in Firefox."
+  ]
 }
