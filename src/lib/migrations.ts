@@ -142,7 +142,7 @@ const migrations: Record<number, () => Promise<void>> = {
     });
   },
 
-  // Version 5: Add default search_engine
+  // Version 5: Add default search_engine and open_search_in_new_tab
   5: async () => {
     const { settings, update } = useSettingsStore.getState();
     if (!settings) return;
@@ -150,6 +150,7 @@ const migrations: Record<number, () => Promise<void>> = {
     await update({
       schema_version: 5,
       search_engine: settings.search_engine ?? "google",
+      open_search_in_new_tab: settings.open_search_in_new_tab ?? false,
     });
   },
 };

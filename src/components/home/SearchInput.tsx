@@ -23,7 +23,18 @@ export default function SearchInput() {
 
   const searchEngine =
     useSettingsStore((state) => state.settings?.search_engine) ?? "google";
+  const openInNewTab =
+    useSettingsStore((state) => state.settings?.open_search_in_new_tab) ??
+    false;
   const activeEngine = getSearchEngine(searchEngine);
+
+  const navigateTo = (url: string) => {
+    if (openInNewTab) {
+      window.open(url, "_blank");
+    } else {
+      window.location.href = url;
+    }
+  };
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -97,7 +108,11 @@ export default function SearchInput() {
       suggestion.url !== "#" &&
       suggestion.url !== "undefined"
     ) {
-      window.location.href = suggestion.url;
+      navigateTo(suggestion.url);
+      setSearchValue("");
+      setInputDisplayValue("");
+      setShowSuggestions(false);
+      setSelectedIndex(-1);
     } else {
       console.warn("Attempted to navigate to invalid URL:", suggestion.url);
     }
@@ -133,7 +148,7 @@ export default function SearchInput() {
     ) {
       const dest = getDestination(highlightedSuggestion.url, searchEngine);
       if (dest) {
-        window.location.href = dest;
+        navigateTo(dest);
         setSearchValue("");
         setInputDisplayValue("");
         setShowSuggestions(false);
@@ -190,7 +205,7 @@ export default function SearchInput() {
     const url = getDestination(queryToSearch, searchEngine);
     if (!url) return;
 
-    window.location.href = url;
+    navigateTo(url);
     setSearchValue("");
     setInputDisplayValue("");
     setShowSuggestions(false);

@@ -75,6 +75,7 @@ export default function Wizard() {
       blur: isFirefox ? "none" : "xs",
       accent: "golden",
       search_engine: "google",
+      open_search_in_new_tab: false,
       show_top_sites: true,
       show_favorites: true,
       show_folders: true,
