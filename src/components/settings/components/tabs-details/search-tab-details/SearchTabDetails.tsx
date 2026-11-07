@@ -102,18 +102,13 @@ export default function SearchTabDetails() {
                     </div>
 
                     <div className="flex flex-col min-w-0">
-                      <div className="flex items-center gap-x-2">
-                        <BetterTypography
-                          variant="sm"
-                          weight="semibold"
-                          className="truncate"
-                        >
-                          {engine.name}
-                        </BetterTypography>
-                        <span className="font-mono text-[10px] text-muted-foreground bg-secondary/80 px-1.5 py-0.5 rounded-md shrink-0">
-                          @{engine.id}
-                        </span>
-                      </div>
+                      <BetterTypography
+                        variant="sm"
+                        weight="semibold"
+                        className="truncate"
+                      >
+                        {engine.name}
+                      </BetterTypography>
                       <a
                         href={engine.url}
                         target="_blank"
