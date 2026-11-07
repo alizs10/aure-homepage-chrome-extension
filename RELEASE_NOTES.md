@@ -1,6 +1,6 @@
 # Aure Homepage v0.2.0
 
-Aure Homepage v0.2.0 introduces customizable search engine selection with a dedicated Search settings tab, configurable new-tab opening behaviors for searches and bookmarks, and a smoother hover experience on Mozilla Firefox.
+Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly `@<engine>` search commands, configurable new-tab opening behaviors for searches and bookmarks, a clean unified search suggestions interface, and a smoother hover experience on Mozilla Firefox.
 
 ## What's New
 
@@ -10,12 +10,22 @@ Aure Homepage v0.2.0 introduces customizable search engine selection with a dedi
 - **Supported Engines**: Out-of-the-box support for Google, DuckDuckGo, Brave, Bing, Yandex, Zarebin, Gerdoo, and ChatGPT.
 - **Dynamic Search Routing**: Homepage search queries and instant completions seamlessly route to your selected engine.
 
+### Quick Search Engine Commands
+
+- **On-the-Fly Engine Queries**: Type `@` in the search bar to browse available search engines, or use `@<engine> <query>` (e.g., `@chatgpt`, `@brave`, `@duckduckgo`, `@bing`) to quickly search using a specific engine without changing your default settings.
+- **Adaptive Suggestions**: Search suggestions dynamically route through your targeted engine command in real time.
+
 ### Flexible Opening Behaviors
 
 - **Open Search in New Tab**: Configure web searches launched from your homepage search bar to open in a new tab or replace the current tab.
 - **Open Bookmarks in New Tab**: Choose whether favorites, folder websites, and top sites shortcuts open in a fresh new tab or the active tab.
 
 ## Improvements
+
+### Unified Search Suggestions
+
+- **Distraction-Free Layout**: Standardized all search suggestions, history items, bookmarks, and commands into a consistent two-line layout.
+- **Clear Badges**: Integrated distinct badge indicators to effortlessly distinguish between search engine commands, bookmarks, browsing history, and live query completions.
 
 ### Bookmarks Settings
 

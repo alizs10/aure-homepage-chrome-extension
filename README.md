@@ -18,11 +18,13 @@ Aure Homepage replaces your browser's default new tab with a clean, fast, and pr
 
 ### Search
 
-* Fast Google search
-* Command support
+* Multi-engine support (Google, DuckDuckGo, Brave, Bing, Yandex, Zarebin, Gerdoo, ChatGPT)
+* Quick engine search commands (`@<engine> <query>`)
+* Widget commands (`/task`, `/counter`, etc.)
 * Search suggestions
 * Direct URL navigation
 * Localhost and IP address support
+* Configurable new tab opening behavior
 
 ### Widgets
 
@@ -76,14 +78,14 @@ Aure Homepage replaces your browser's default new tab with a clean, fast, and pr
 ## Installation
 
 ### Google Chrome
-1. Download **`aure-homepage-chrome-v0.1.0.zip`** from the [Releases](https://github.com/alizs10/aure-homepage-chrome-extension/releases) page.
+1. Download **`aure-homepage-chrome-v0.2.0.zip`** from the [Releases](https://github.com/alizs10/aure-homepage-chrome-extension/releases) page.
 2. Extract the ZIP file.
 3. Open `chrome://extensions` in your browser.
 4. Enable **Developer mode** in the top-right corner.
 5. Click **Load unpacked** and select the extracted folder.
 
 ### Mozilla Firefox
-1. Download **`aure-homepage-firefox-v0.1.0.zip`** from the [Releases](https://github.com/alizs10/aure-homepage-chrome-extension/releases) page.
+1. Download **`aure-homepage-firefox-v0.2.0.zip`** from the [Releases](https://github.com/alizs10/aure-homepage-chrome-extension/releases) page.
 2. Extract the ZIP file.
 3. Open `about:debugging#/runtime/this-firefox` in your browser.
 4. Click **Load Temporary Add-on...** and select the `manifest.json` file inside the extracted folder.
