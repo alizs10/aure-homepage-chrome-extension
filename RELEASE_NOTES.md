@@ -1,6 +1,6 @@
 # Aure Homepage v0.2.0
 
-Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly `@<engine>` search commands, configurable new-tab opening behaviors for searches and bookmarks, a clean unified search suggestions interface, and a smoother hover experience on Mozilla Firefox.
+Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly `@<engine>` search commands, configurable new-tab opening behaviors for searches and bookmarks, a clean unified search suggestions interface, a visual Pomodoro daily time breakdown ring, and a smoother hover experience on Mozilla Firefox.
 
 ## What's New
 
@@ -30,6 +30,12 @@ Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly
 ### Bookmarks Settings
 
 - **More Organized**: Bookmarks settings are now more organized, making it simpler to manage your shortcuts, folders, and display options.
+
+### Pomodoro Daily Summary
+
+- **Visual Time Breakdown**: The Daily Summary popup now wraps your total focus time in an intuitive multi-segment circular progress ring, distinctly separating your focus sessions, short breaks, and long breaks.
+- **Session Breakdown Indicators**: Color-coded badges display the exact time spent in each session type for the selected day.
+- **Vibrant Screenshot Export**: Capturing and saving your daily summary as an image now reliably preserves all session colors and progress rings in both light and dark themes.
 
 ## Fixes
 
