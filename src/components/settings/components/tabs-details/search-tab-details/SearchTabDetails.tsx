@@ -32,17 +32,10 @@ export default function SearchTabDetails() {
   return (
     <div className="h-fit flex-1 flex flex-col gap-y-8">
       {/* 🌟 1. Header Information */}
-      <div className="flex flex-col gap-y-2">
-        <BetterTypography variant="sm" className="text-muted-foreground">
-          Choose the default search engine and search behavior used for web
-          queries from your homepage search bar.
-        </BetterTypography>
-        <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20 flex items-center gap-x-2.5">
-          <BetterTypography variant="xs" className="text-primary font-medium">
-            💡 ProTip: Type <span className="font-mono bg-primary/20 px-1 py-0.5 rounded text-foreground font-semibold">@&lt;engine&gt;</span> (e.g. <span className="font-mono bg-primary/20 px-1 py-0.5 rounded text-foreground font-semibold">@chatgpt search query</span>) in the homepage search bar to search with any engine on the fly!
-          </BetterTypography>
-        </div>
-      </div>
+      <BetterTypography variant="sm" className="text-muted-foreground">
+        Choose the default search engine and search behavior used for web
+        queries from your homepage search bar.
+      </BetterTypography>
 
       {/* 🌟 2. Search Behavior */}
       <div className="flex flex-col gap-y-3">
