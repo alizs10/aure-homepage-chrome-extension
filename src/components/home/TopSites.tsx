@@ -5,12 +5,16 @@ import { ItemTooltip } from "@/components/common/ItemTooltip";
 import Button from "@/components/ui/Button";
 import Skeleton from "../ui/Skeleton";
 import { isFirefox } from "@/lib/browser";
+import { useSettingsStore } from "@/stores";
 
 const SKELETON_COUNT = 8;
 
 export default function TopSites() {
   const [sites, setSites] = useState<TopSite[]>([]);
   const [loading, setLoading] = useState(true);
+  const openInNewTab =
+    useSettingsStore((state) => state.settings?.open_bookmarks_in_new_tab) ??
+    false;
 
   useEffect(() => {
     let mounted = true;
@@ -53,6 +57,8 @@ export default function TopSites() {
         >
           <Button
             href={site.url}
+            target={openInNewTab ? "_blank" : undefined}
+            rel={openInNewTab ? "noopener noreferrer" : undefined}
             variant="primary"
             className="size-10 md:size-14 w-auto min-w-10 min-h-10 max-w-10 max-h-10 md:max-w-14 md:max-h-14 md:min-w-14 md:min-h-14 aspect-square group z-30 px-0 rounded-full pointer-events-auto"
           >

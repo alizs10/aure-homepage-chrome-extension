@@ -1,22 +1,19 @@
-import { BetterTypography } from '@/components/common/BetterTypography'
-import React from 'react'
-import AddNewFavorite from './AddNewFavorite'
-import FavoritesList from './FavoritesList'
+import { BetterTypography } from "@/components/common/BetterTypography";
+import AddNewFavorite from "./AddNewFavorite";
+import FavoritesList from "./FavoritesList";
 
 export default function FavoritesContent() {
-    return (
-        <>
+  return (
+    <div className="flex flex-col gap-y-3">
+      <div className="flex-center-between">
+        <BetterTypography variant="md" weight="semibold" as="h3">
+          Favorite Websites
+        </BetterTypography>
 
-            <div className="flex-center-between mt-4 pt-6 ">
-                <BetterTypography variant="md" weight="medium">
-                    Favorites websites
-                </BetterTypography>
+        <AddNewFavorite />
+      </div>
 
-                <AddNewFavorite />
-            </div>
-
-            <FavoritesList />
-
-        </>
-    )
+      <FavoritesList />
+    </div>
+  );
 }

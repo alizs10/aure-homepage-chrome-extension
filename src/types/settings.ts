@@ -188,5 +188,6 @@ export interface Settings {
   enable_ip_checker?: boolean;
   search_engine?: SearchEngineId;
   open_search_in_new_tab?: boolean;
+  open_bookmarks_in_new_tab?: boolean;
   widget_layout?: WidgetLayout;
 }

@@ -3,9 +3,13 @@ import { ItemTooltip } from "@/components/common/ItemTooltip";
 import { useFavorites } from "@/features/bookmarks";
 import Button from "@/components/ui/Button";
 import { isFirefox } from "@/lib/browser";
+import { useSettingsStore } from "@/stores";
 
 export default function Favorites() {
   const { data: sites } = useFavorites();
+  const openInNewTab =
+    useSettingsStore((state) => state.settings?.open_bookmarks_in_new_tab) ??
+    false;
 
   if (sites.length === 0) return null;
 
@@ -19,6 +23,8 @@ export default function Favorites() {
         >
           <Button
             href={site.url}
+            target={openInNewTab ? "_blank" : undefined}
+            rel={openInNewTab ? "noopener noreferrer" : undefined}
             variant="primary"
             className="size-10 md:size-14 w-auto min-w-10 min-h-10 max-w-10 max-h-10 md:max-w-14 md:max-h-14 md:min-w-14 md:min-h-14 aspect-square group z-30 px-0 rounded-full pointer-events-auto"
           >

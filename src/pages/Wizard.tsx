@@ -68,7 +68,7 @@ export default function Wizard() {
 
   const onSubmit = async (data: WizardFormValues) => {
     const settingsToSave: Settings = {
-      schema_version: 5, // ✅ Fixed: match current migration version
+      schema_version: 6, // ✅ Fixed: match current migration version
       ...data,
       wallpaper_blur: isFirefox ? "xs" : "none",
       wallpaper_brightness: "100",
@@ -76,6 +76,7 @@ export default function Wizard() {
       accent: "golden",
       search_engine: "google",
       open_search_in_new_tab: false,
+      open_bookmarks_in_new_tab: false,
       show_top_sites: true,
       show_favorites: true,
       show_folders: true,

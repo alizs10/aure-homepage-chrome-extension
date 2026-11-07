@@ -6,6 +6,7 @@ import type { Website } from "@/features/bookmarks";
 import { BetterTypography } from "@/components/common/BetterTypography";
 import Button from "@/components/ui/Button";
 import { isFirefox } from "@/lib/browser";
+import { useSettingsStore } from "@/stores";
 
 interface FolderModalProps {
   open: boolean;
@@ -20,6 +21,10 @@ export default function FolderModal({
   open,
   onClose,
 }: FolderModalProps) {
+  const openInNewTab =
+    useSettingsStore((state) => state.settings?.open_bookmarks_in_new_tab) ??
+    false;
+
   function stopPropagation(e: MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
   }
@@ -40,6 +45,8 @@ export default function FolderModal({
             >
               <Button
                 href={w.url}
+                target={openInNewTab ? "_blank" : undefined}
+                rel={openInNewTab ? "noopener noreferrer" : undefined}
                 size="icon"
                 onClick={onClose}
                 variant="primary"
