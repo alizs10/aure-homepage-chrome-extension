@@ -37,6 +37,11 @@ export default function SearchTabDetails() {
           Choose the default search engine and search behavior used for web
           queries from your homepage search bar.
         </BetterTypography>
+        <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20 flex items-center gap-x-2.5">
+          <BetterTypography variant="xs" className="text-primary font-medium">
+            💡 ProTip: Type <span className="font-mono bg-primary/20 px-1 py-0.5 rounded text-foreground font-semibold">@&lt;engine&gt;</span> (e.g. <span className="font-mono bg-primary/20 px-1 py-0.5 rounded text-foreground font-semibold">@chatgpt search query</span>) in the homepage search bar to search with any engine on the fly!
+          </BetterTypography>
+        </div>
       </div>
 
       {/* 🌟 2. Search Behavior */}
@@ -97,13 +102,18 @@ export default function SearchTabDetails() {
                     </div>
 
                     <div className="flex flex-col min-w-0">
-                      <BetterTypography
-                        variant="sm"
-                        weight="semibold"
-                        className="truncate"
-                      >
-                        {engine.name}
-                      </BetterTypography>
+                      <div className="flex items-center gap-x-2">
+                        <BetterTypography
+                          variant="sm"
+                          weight="semibold"
+                          className="truncate"
+                        >
+                          {engine.name}
+                        </BetterTypography>
+                        <span className="font-mono text-[10px] text-muted-foreground bg-secondary/80 px-1.5 py-0.5 rounded-md shrink-0">
+                          @{engine.id}
+                        </span>
+                      </div>
                       <a
                         href={engine.url}
                         target="_blank"

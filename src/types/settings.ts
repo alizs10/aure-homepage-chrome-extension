@@ -154,6 +154,7 @@ export interface SearchEngineOption {
   description: string;
   url: string;
   queryUrl: (query: string) => string;
+  keywords?: string[];
 }
 
 // 🌟 Widget position in the grid

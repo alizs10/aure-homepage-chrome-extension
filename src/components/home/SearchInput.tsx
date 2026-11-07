@@ -9,7 +9,10 @@ import useClickOutside from "@/hooks/useOutsideClick";
 import { motion } from "framer-motion";
 import useWidth from "@/hooks/useWidth";
 import { useSettingsStore } from "@/stores";
-import { getSearchEngine } from "@/constants/searchEngines";
+import {
+  getSearchEngine,
+  parseEngineCommand,
+} from "@/constants/searchEngines";
 
 export default function SearchInput() {
   const [searchValue, setSearchValue] = useState("");
@@ -72,6 +75,9 @@ export default function SearchInput() {
   const { width } = useWidth();
 
   const isCommandMode = searchValue.startsWith("/");
+  const parsedEngine = parseEngineCommand(searchValue);
+  const isEngineMode = parsedEngine.isEngineMode;
+  const targetEngine = parsedEngine.engine;
 
   const wrapperRef = useClickOutside(() => {
     setShowSuggestions(false);
@@ -103,6 +109,34 @@ export default function SearchInput() {
       return;
     }
 
+    if (suggestion.source === "engine") {
+      if (
+        typeof suggestion.id === "string" &&
+        suggestion.id.startsWith("engine-choice-")
+      ) {
+        const engineId = suggestion.id.replace("engine-choice-", "");
+        const newValue = `@${engineId} `;
+        setSearchValue(newValue);
+        setInputDisplayValue(newValue);
+        setShowSuggestions(true);
+        setSelectedIndex(-1);
+        inputRef.current?.focus();
+        return;
+      }
+      if (
+        suggestion.url &&
+        suggestion.url !== "#" &&
+        suggestion.url !== "undefined"
+      ) {
+        navigateTo(suggestion.url);
+        setSearchValue("");
+        setInputDisplayValue("");
+        setShowSuggestions(false);
+        setSelectedIndex(-1);
+        return;
+      }
+    }
+
     if (
       suggestion.url &&
       suggestion.url !== "#" &&
@@ -120,11 +154,28 @@ export default function SearchInput() {
 
   function handleHighlight(suggestion: Suggestion | null) {
     setHighlightedSuggestion(suggestion);
-    if (suggestion && suggestion.source !== "direct") {
-      setInputDisplayValue(suggestion.label);
-    } else {
+    if (!suggestion) {
       setInputDisplayValue(searchValue);
+      return;
     }
+
+    if (suggestion.source === "direct") {
+      setInputDisplayValue(searchValue);
+      return;
+    }
+
+    if (isEngineMode && targetEngine) {
+      if (suggestion.id === "direct-engine-search") {
+        setInputDisplayValue(searchValue);
+      } else if (suggestion.source === "google") {
+        setInputDisplayValue(`@${parsedEngine.trigger} ${suggestion.label}`);
+      } else {
+        setInputDisplayValue(suggestion.label);
+      }
+      return;
+    }
+
+    setInputDisplayValue(suggestion.label);
   }
 
   function onChange(e: ChangeEvent<HTMLInputElement>) {
@@ -144,7 +195,8 @@ export default function SearchInput() {
     if (
       highlightedSuggestion &&
       highlightedSuggestion.source !== "command" &&
-      highlightedSuggestion.source !== "google"
+      highlightedSuggestion.source !== "google" &&
+      highlightedSuggestion.source !== "engine"
     ) {
       const dest = getDestination(highlightedSuggestion.url, searchEngine);
       if (dest) {
@@ -166,6 +218,13 @@ export default function SearchInput() {
     }
 
     if (highlightedSuggestion?.source === "google") {
+      handleSuggestionSelect(highlightedSuggestion);
+      setHighlightedSuggestion(null);
+      setSelectedIndex(-1);
+      return;
+    }
+
+    if (highlightedSuggestion?.source === "engine") {
       handleSuggestionSelect(highlightedSuggestion);
       setHighlightedSuggestion(null);
       setSelectedIndex(-1);
@@ -232,7 +291,11 @@ export default function SearchInput() {
             placeholder={
               isCommandMode
                 ? "Type a command..."
-                : `Search with ${activeEngine.name}...`
+                : targetEngine
+                  ? `Search with ${targetEngine.name}...`
+                  : isEngineMode
+                    ? "Choose a search engine..."
+                    : `Search with ${activeEngine.name}...`
             }
             value={inputDisplayValue}
             onChange={onChange}

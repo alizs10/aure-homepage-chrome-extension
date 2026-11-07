@@ -4,6 +4,7 @@ import {
     CheckSquareIcon,
     FileTextIcon,
     PaletteIcon,
+    SearchIcon,
     SmileIcon,
     TimerIcon
 } from 'lucide-react';
@@ -14,11 +15,30 @@ export default function CommandsTabDetails() {
             {/* Header Section */}
             <BetterTypography variant="sm" className="text-muted-foreground">
                 Quickly interact with your widgets and settings using simple text commands.
-                Type <span className="font-mono bg-muted px-1.5 py-0.5 rounded text-primary">/</span> in the command input to get started.
+                Type <span className="font-mono bg-muted px-1.5 py-0.5 rounded text-primary">/</span> for widget actions or <span className="font-mono bg-muted px-1.5 py-0.5 rounded text-primary">@</span> to search with a specific engine.
             </BetterTypography>
 
             {/* Commands List */}
             <div className="flex flex-col gap-y-4">
+
+                {/* Search Engine Command */}
+                <div className="flex flex-col gap-y-2 p-4 rounded-3xl liquid-glass">
+                    <div className="flex-row-center gap-x-2">
+                        <SearchIcon className="size-5 text-primary" />
+                        <BetterTypography variant="md" weight="semibold">
+                            <span className="font-mono text-primary">@&lt;engine&gt;</span> &lt;query&gt;
+                        </BetterTypography>
+                    </div>
+                    <BetterTypography variant="sm" className="text-muted-foreground">
+                        Performs a one-time search using a specific search engine with real-time suggestions. Supported engines: <span className="font-semibold text-foreground">@chatgpt</span>, <span className="font-semibold text-foreground">@google</span>, <span className="font-semibold text-foreground">@duckduckgo</span>, <span className="font-semibold text-foreground">@brave</span>, <span className="font-semibold text-foreground">@bing</span>, <span className="font-semibold text-foreground">@yandex</span>, <span className="font-semibold text-foreground">@zarebin</span>, <span className="font-semibold text-foreground">@gerdoo</span>.
+                    </BetterTypography>
+                    <div className="px-5 py-3 bg-secondary/50 rounded-3xl font-mono text-xs text-muted-foreground">
+                        Example: <span className="text-foreground">@chatgpt how to build a browser extension</span>
+                    </div>
+                    <div className="px-5 py-3 bg-secondary/50 rounded-3xl font-mono text-xs text-muted-foreground">
+                        Shorter Example: <span className="text-foreground">@gpt how to build a browser extension</span>
+                    </div>
+                </div>
 
                 {/* Note Command */}
                 <div className="flex flex-col gap-y-2 p-4 rounded-3xl liquid-glass">

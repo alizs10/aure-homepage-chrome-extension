@@ -10,6 +10,7 @@ export const SEARCH_ENGINES: SearchEngineOption[] = [
     url: "https://www.google.com",
     queryUrl: (q: string) =>
       `https://www.google.com/search?q=${encodeURIComponent(q)}`,
+    keywords: ["google", "g"],
   },
   {
     id: "duckduckgo",
@@ -19,6 +20,7 @@ export const SEARCH_ENGINES: SearchEngineOption[] = [
     url: "https://duckduckgo.com",
     queryUrl: (q: string) =>
       `https://duckduckgo.com/?q=${encodeURIComponent(q)}`,
+    keywords: ["duckduckgo", "ddg", "duck", "d"],
   },
   {
     id: "brave",
@@ -27,6 +29,7 @@ export const SEARCH_ENGINES: SearchEngineOption[] = [
     url: "https://search.brave.com",
     queryUrl: (q: string) =>
       `https://search.brave.com/search?q=${encodeURIComponent(q)}`,
+    keywords: ["brave", "b"],
   },
   {
     id: "bing",
@@ -35,6 +38,7 @@ export const SEARCH_ENGINES: SearchEngineOption[] = [
     url: "https://www.bing.com",
     queryUrl: (q: string) =>
       `https://www.bing.com/search?q=${encodeURIComponent(q)}`,
+    keywords: ["bing"],
   },
   {
     id: "chatgpt",
@@ -43,6 +47,7 @@ export const SEARCH_ENGINES: SearchEngineOption[] = [
     url: "https://chatgpt.com",
     queryUrl: (q: string) =>
       `https://chatgpt.com/?hints=search&ref=ext&q=${encodeURIComponent(q)}`,
+    keywords: ["chatgpt", "gpt", "chat", "chat-gpt", "ai"],
   },
   {
     id: "yandex",
@@ -51,6 +56,7 @@ export const SEARCH_ENGINES: SearchEngineOption[] = [
     url: "https://yandex.com",
     queryUrl: (q: string) =>
       `https://yandex.com/search/?text=${encodeURIComponent(q)}`,
+    keywords: ["yandex", "y"],
   },
   {
     id: "zarebin",
@@ -59,6 +65,7 @@ export const SEARCH_ENGINES: SearchEngineOption[] = [
     url: "https://zarebin.ir",
     queryUrl: (q: string) =>
       `https://zarebin.ir/search?q=${encodeURIComponent(q)}`,
+    keywords: ["zarebin", "z"],
   },
   {
     id: "gerdoo",
@@ -67,6 +74,7 @@ export const SEARCH_ENGINES: SearchEngineOption[] = [
     url: "https://gerdoo.me",
     queryUrl: (q: string) =>
       `https://gerdoo.me/search/?query=${encodeURIComponent(q)}`,
+    keywords: ["gerdoo"],
   },
 ];
 
@@ -74,4 +82,78 @@ export function getSearchEngine(
   id?: SearchEngineId | string,
 ): SearchEngineOption {
   return SEARCH_ENGINES.find((engine) => engine.id === id) || SEARCH_ENGINES[0];
+}
+
+export interface ParsedEngineCommand {
+  isEngineMode: boolean;
+  engine: SearchEngineOption | null;
+  trigger: string;
+  query: string;
+  hasSpace: boolean;
+}
+
+export function findSearchEngineByTrigger(
+  trigger: string,
+): SearchEngineOption | undefined {
+  const normalized = trigger.toLowerCase().trim();
+  if (!normalized) return undefined;
+
+  return SEARCH_ENGINES.find(
+    (engine) =>
+      engine.id.toLowerCase() === normalized ||
+      engine.name.toLowerCase() === normalized ||
+      engine.keywords?.some((k) => k.toLowerCase() === normalized),
+  );
+}
+
+export function filterSearchEngines(query: string): SearchEngineOption[] {
+  const normalized = query.toLowerCase().trim();
+  if (!normalized) return SEARCH_ENGINES;
+
+  return SEARCH_ENGINES.filter(
+    (engine) =>
+      engine.id.toLowerCase().includes(normalized) ||
+      engine.name.toLowerCase().includes(normalized) ||
+      engine.keywords?.some((k) => k.toLowerCase().includes(normalized)),
+  );
+}
+
+export function parseEngineCommand(input: string): ParsedEngineCommand {
+  const trimmedInput = input.trimStart();
+  if (!trimmedInput.startsWith("@")) {
+    return {
+      isEngineMode: false,
+      engine: null,
+      trigger: "",
+      query: "",
+      hasSpace: false,
+    };
+  }
+
+  const withoutAt = trimmedInput.slice(1);
+  const spaceIndex = withoutAt.indexOf(" ");
+
+  if (spaceIndex === -1) {
+    const trigger = withoutAt.toLowerCase();
+    const engine = findSearchEngineByTrigger(trigger) ?? null;
+    return {
+      isEngineMode: true,
+      engine,
+      trigger,
+      query: "",
+      hasSpace: false,
+    };
+  }
+
+  const trigger = withoutAt.slice(0, spaceIndex).toLowerCase();
+  const query = withoutAt.slice(spaceIndex + 1).trim();
+  const engine = findSearchEngineByTrigger(trigger) ?? null;
+
+  return {
+    isEngineMode: true,
+    engine,
+    trigger,
+    query,
+    hasSpace: true,
+  };
 }

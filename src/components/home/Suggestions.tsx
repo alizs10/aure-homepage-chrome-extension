@@ -17,7 +17,11 @@ import { useFavoritesStore, useFoldersStore } from "@/features/bookmarks";
 import { isValidUrl } from "./helpers/search";
 import type { ComponentProps } from "react";
 import { useSettingsStore } from "@/stores";
-import { getSearchEngine } from "@/constants/searchEngines";
+import {
+  getSearchEngine,
+  parseEngineCommand,
+  filterSearchEngines,
+} from "@/constants/searchEngines";
 
 export interface Suggestion {
   id: string | number;
@@ -31,7 +35,8 @@ export interface Suggestion {
     | "history"
     | "favorite"
     | "folder"
-    | "direct";
+    | "direct"
+    | "engine";
 }
 
 const BADGE_CONFIG: Record<
@@ -45,6 +50,7 @@ const BADGE_CONFIG: Record<
   folder: { variant: "ocean", label: "Folder" },
   history: { variant: "secondary", label: "History" },
   direct: { variant: "tangerine", label: "Go" },
+  engine: { variant: "ocean", label: "Engine" },
 };
 
 interface SuggestionsProps {
@@ -96,6 +102,13 @@ export default function Suggestions({
 
   const [hasGooglePermission, setHasGooglePermission] = useState<boolean>(true);
 
+  const parsedEngine = useMemo(
+    () => parseEngineCommand(searchValue),
+    [searchValue],
+  );
+  const isEngineMode = parsedEngine.isEngineMode;
+  const targetEngine = parsedEngine.engine;
+
   useEffect(() => {
     getTopSites().then(setTopSites);
   }, []);
@@ -138,11 +151,15 @@ export default function Suggestions({
   const query = searchValue.toLowerCase().trim();
   const rawQuery = searchValue.trim();
 
-  const shouldFetchHistory = !isCommandMode && query.length > 0;
+  const isEngineQueryMode = isEngineMode && !!targetEngine;
+  const effectiveQuery = isEngineQueryMode ? parsedEngine.query : rawQuery;
+
+  const shouldFetchHistory =
+    !isCommandMode && !isEngineMode && query.length > 0;
   const shouldFetchGoogle =
     !isCommandMode &&
-    rawQuery.length > 0 &&
-    !isValidUrl(rawQuery) &&
+    effectiveQuery.length > 0 &&
+    !isValidUrl(effectiveQuery) &&
     hasGooglePermission;
 
   if (!shouldFetchHistory && historySuggestions.length > 0)
@@ -177,6 +194,41 @@ export default function Suggestions({
         }));
     }
 
+    if (isEngineMode) {
+      if (!parsedEngine.hasSpace || !targetEngine) {
+        const filtered = filterSearchEngines(parsedEngine.trigger);
+        return filtered.map((engine) => ({
+          id: `engine-choice-${engine.id}`,
+          url: engine.url,
+          label: `@${engine.id}`,
+          description: `${engine.name} - ${engine.description}`,
+          source: "engine" as const,
+        }));
+      }
+
+      if (!parsedEngine.query) {
+        return [
+          {
+            id: "engine-prompt",
+            url: targetEngine.url,
+            label: `Search with ${targetEngine.name}`,
+            description: targetEngine.description || targetEngine.url,
+            source: "engine" as const,
+          },
+        ];
+      }
+
+      return [
+        {
+          id: "direct-engine-search",
+          url: targetEngine.queryUrl(parsedEngine.query),
+          label: `Search "${parsedEngine.query}"`,
+          description: targetEngine.queryUrl(parsedEngine.query),
+          source: "google" as const,
+        },
+      ];
+    }
+
     const combined: Suggestion[] = [];
 
     if (isValidUrl(searchValue)) {
@@ -207,6 +259,7 @@ export default function Suggestions({
         id: `top-${index}`,
         url: site.url,
         label: site.title || site.url,
+        description: site.url,
         source: "top-sites",
       });
     });
@@ -248,7 +301,17 @@ export default function Suggestions({
     });
 
     return combined;
-  }, [searchValue, isCommandMode, topSites, favorites, folderWebsites, query]);
+  }, [
+    searchValue,
+    isCommandMode,
+    isEngineMode,
+    parsedEngine,
+    targetEngine,
+    topSites,
+    favorites,
+    folderWebsites,
+    query,
+  ]);
 
   useEffect(() => {
     if (!shouldFetchHistory) return;
@@ -287,10 +350,11 @@ export default function Suggestions({
 
   useEffect(() => {
     if (!shouldFetchGoogle) return;
+    const currentActiveEngine = targetEngine ?? activeEngine;
     const timer = setTimeout(async () => {
       try {
         const response = await fetch(
-          `https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(rawQuery)}`,
+          `https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(effectiveQuery)}`,
         );
         const data = await response.json();
         if (Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
@@ -298,8 +362,9 @@ export default function Suggestions({
             .slice(0, 10)
             .map((suggestion: string, index: number) => ({
               id: `search-${index}`,
-              url: activeEngine.queryUrl(suggestion),
+              url: currentActiveEngine.queryUrl(suggestion),
               label: suggestion,
+              description: currentActiveEngine.queryUrl(suggestion),
               source: "google",
             }));
           setGoogleSuggestions(items);
@@ -309,11 +374,42 @@ export default function Suggestions({
       }
     }, 200);
     return () => clearTimeout(timer);
-  }, [shouldFetchGoogle, rawQuery, activeEngine]);
+  }, [shouldFetchGoogle, effectiveQuery, targetEngine, activeEngine]);
 
   const suggestions = useMemo(() => {
     return [...localSuggestions, ...historySuggestions, ...googleSuggestions];
   }, [localSuggestions, historySuggestions, googleSuggestions]);
+
+  const headerTitle = useMemo(() => {
+    if (isCommandMode) return "Commands";
+    if (isEngineMode) {
+      if (targetEngine && parsedEngine.hasSpace) {
+        return `Search with ${targetEngine.name}`;
+      }
+      return "Search Engines";
+    }
+    return "Suggestions";
+  }, [isCommandMode, isEngineMode, targetEngine, parsedEngine.hasSpace]);
+
+  const emptyStateMessage = useMemo(() => {
+    if (
+      isEngineMode &&
+      (!parsedEngine.hasSpace || !targetEngine) &&
+      parsedEngine.trigger
+    ) {
+      return `No search engines matching "@${parsedEngine.trigger}"`;
+    }
+    if (searchValue.trim().length > 0) {
+      return "No matches found";
+    }
+    return "Start typing to see suggestions";
+  }, [
+    isEngineMode,
+    parsedEngine.hasSpace,
+    parsedEngine.trigger,
+    targetEngine,
+    searchValue,
+  ]);
 
   useEffect(() => {
     if (selectedIndex >= 0) {
@@ -348,6 +444,7 @@ export default function Suggestions({
           e.preventDefault();
           onIndexChange((prev) => (prev > 0 ? prev - 1 : prev));
           break;
+        case "Tab":
         case "Enter":
           if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
             e.preventDefault();
@@ -384,37 +481,37 @@ export default function Suggestions({
         <div className="rounded-3xl liquid-glass bg-background/80! overflow-clip">
           <div className="p-4 app-blur bg-background/30 z-10">
             <BetterTypography variant="md" weight="medium">
-              {isCommandMode ? "Commands" : "Suggestions"}
+              {headerTitle}
             </BetterTypography>
           </div>
           <div className="p-6 flex-center">
             <BetterTypography variant="sm" className="text-muted-foreground">
-              {searchValue.trim().length > 0
-                ? "No matches found"
-                : "Start typing to see suggestions"}
+              {emptyStateMessage}
             </BetterTypography>
           </div>
-          {!isCommandMode && !hasGooglePermission && rawQuery.length > 0 && (
-            <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
-              <div className="flex items-center gap-x-2 min-w-0">
-                <SparklesIcon className="size-4 text-primary shrink-0" />
-                <BetterTypography
-                  variant="xs"
-                  className="text-muted-foreground truncate"
+          {!isCommandMode &&
+            !hasGooglePermission &&
+            effectiveQuery.length > 0 && (
+              <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
+                <div className="flex items-center gap-x-2 min-w-0">
+                  <SparklesIcon className="size-4 text-primary shrink-0" />
+                  <BetterTypography
+                    variant="xs"
+                    className="text-muted-foreground truncate"
+                  >
+                    Enable live search completions
+                  </BetterTypography>
+                </div>
+                <Button
+                  size="xs"
+                  variant="primary"
+                  onClick={handleGrantGooglePermission}
+                  className="shrink-0 text-xs"
                 >
-                  Enable live search completions
-                </BetterTypography>
+                  Grant Permission
+                </Button>
               </div>
-              <Button
-                size="xs"
-                variant="primary"
-                onClick={handleGrantGooglePermission}
-                className="shrink-0 text-xs"
-              >
-                Grant Permission
-              </Button>
-            </div>
-          )}
+            )}
         </div>
       </div>
     );
@@ -429,7 +526,7 @@ export default function Suggestions({
         >
           <div className="p-4 app-blur bg-background/30 z-10">
             <BetterTypography variant="md" weight="medium">
-              {isCommandMode ? "Commands" : "Suggestions"}
+              {headerTitle}
             </BetterTypography>
           </div>
 
@@ -472,7 +569,9 @@ export default function Suggestions({
                     className="shrink-0"
                   >
                     {s.source === "google"
-                      ? activeEngine.name
+                      ? targetEngine
+                        ? targetEngine.name
+                        : activeEngine.name
                       : BADGE_CONFIG[s.source].label}
                   </Badge>
                 </a>
@@ -480,27 +579,29 @@ export default function Suggestions({
             ))}
           </ul>
 
-          {!isCommandMode && !hasGooglePermission && rawQuery.length > 0 && (
-            <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
-              <div className="flex items-center gap-x-2 min-w-0">
-                <SparklesIcon className="size-4 text-primary shrink-0" />
-                <BetterTypography
-                  variant="xs"
-                  className="text-muted-foreground truncate"
+          {!isCommandMode &&
+            !hasGooglePermission &&
+            effectiveQuery.length > 0 && (
+              <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
+                <div className="flex items-center gap-x-2 min-w-0">
+                  <SparklesIcon className="size-4 text-primary shrink-0" />
+                  <BetterTypography
+                    variant="xs"
+                    className="text-muted-foreground truncate"
+                  >
+                    Enable live search completions
+                  </BetterTypography>
+                </div>
+                <Button
+                  size="xs"
+                  variant="primary"
+                  onClick={handleGrantGooglePermission}
+                  className="shrink-0 text-xs"
                 >
-                  Enable live search completions
-                </BetterTypography>
+                  Grant Permission
+                </Button>
               </div>
-              <Button
-                size="xs"
-                variant="primary"
-                onClick={handleGrantGooglePermission}
-                className="shrink-0 text-xs"
-              >
-                Grant Permission
-              </Button>
-            </div>
-          )}
+            )}
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { getSearchEngine } from "@/constants/searchEngines";
+import { getSearchEngine, parseEngineCommand } from "@/constants/searchEngines";
 import type { SearchEngineId } from "@/types";
 
 /**
@@ -46,6 +46,15 @@ export function getDestination(
   if (!query || !query.trim()) return null;
 
   const trimmed = query.trim();
+
+  // If it's an @engine command (e.g. "@chatgpt query" or "@chatgpt")
+  const parsed = parseEngineCommand(trimmed);
+  if (parsed.isEngineMode && parsed.engine) {
+    if (parsed.query) {
+      return parsed.engine.queryUrl(parsed.query);
+    }
+    return parsed.engine.url;
+  }
 
   // If it's a valid URL, navigate directly (prepend https:// if missing)
   if (isValidUrl(trimmed)) {
