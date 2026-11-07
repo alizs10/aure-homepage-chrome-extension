@@ -15,6 +15,7 @@ dist.pem
 *.zip
 .mimocode
 PROJECT_LOGIC.md
+skills/
 
 # Editor directories and files
 .vscode/*

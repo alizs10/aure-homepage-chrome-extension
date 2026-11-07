@@ -1,34 +1,50 @@
 import { getTopSites, type TopSite } from "@/lib/browser/top-sites";
-import browser from 'webextension-polyfill';
+import browser from "webextension-polyfill";
 import { commands } from "@/lib/commands";
-import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { BetterTypography } from "../common/BetterTypography";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import { SparklesIcon } from "lucide-react";
 import { toast } from "@/stores/useToastStore";
-import { checkHostPermissions, requestHostPermissions, subscribePermissionsChange } from "@/lib/browser";
+import {
+  checkHostPermissions,
+  requestHostPermissions,
+  subscribePermissionsChange,
+} from "@/lib/browser";
 import { sliceText } from "@/helpers";
 import { useFavoritesStore, useFoldersStore } from "@/features/bookmarks";
 import { isValidUrl } from "./helpers/search";
 import type { ComponentProps } from "react";
+import { useSettingsStore } from "@/stores";
+import { getSearchEngine } from "@/constants/searchEngines";
 
 export interface Suggestion {
   id: string | number;
   url: string;
   label: string;
   description?: string;
-  source: "google" | "top-sites" | "command" | "history" | "favorite" | "folder" | "direct";
+  source:
+    | "google"
+    | "top-sites"
+    | "command"
+    | "history"
+    | "favorite"
+    | "folder"
+    | "direct";
 }
 
-const BADGE_CONFIG: Record<Suggestion['source'], { variant: ComponentProps<typeof Badge>['variant'], label: string }> = {
-  google: { variant: 'lime', label: 'Google' },
-  'top-sites': { variant: 'cherry', label: 'Top Site' },
-  command: { variant: 'default', label: 'Command' },
-  favorite: { variant: 'orchid', label: 'Favorite' },
-  folder: { variant: 'ocean', label: 'Folder' },
-  history: { variant: 'secondary', label: 'History' },
-  direct: { variant: 'tangerine', label: 'Go' },
+const BADGE_CONFIG: Record<
+  Suggestion["source"],
+  { variant: ComponentProps<typeof Badge>["variant"]; label: string }
+> = {
+  google: { variant: "lime", label: "Search" },
+  "top-sites": { variant: "cherry", label: "Top Site" },
+  command: { variant: "default", label: "Command" },
+  favorite: { variant: "orchid", label: "Favorite" },
+  folder: { variant: "ocean", label: "Folder" },
+  history: { variant: "secondary", label: "History" },
+  direct: { variant: "tangerine", label: "Go" },
 };
 
 interface SuggestionsProps {
@@ -46,11 +62,17 @@ export default function Suggestions({
   selectedIndex,
   onIndexChange,
   onSuggestionSelect,
-  onHighlight
+  onHighlight,
 }: SuggestionsProps) {
   const [topSites, setTopSites] = useState<TopSite[]>([]);
-  const [historySuggestions, setHistorySuggestions] = useState<Suggestion[]>([]);
+  const [historySuggestions, setHistorySuggestions] = useState<Suggestion[]>(
+    [],
+  );
   const [googleSuggestions, setGoogleSuggestions] = useState<Suggestion[]>([]);
+
+  const searchEngine =
+    useSettingsStore((state) => state.settings?.search_engine) ?? "google";
+  const activeEngine = getSearchEngine(searchEngine);
 
   const favorites = useFavoritesStore((state) => state.data);
   const folders = useFoldersStore((state) => state.data);
@@ -60,9 +82,13 @@ export default function Suggestions({
 
   const folderWebsites = useMemo(() => {
     const sites: { url: string; title: string; folderTitle: string }[] = [];
-    folders.forEach(folder => {
-      folder.websites.forEach(site => {
-        sites.push({ url: site.url, title: site.title, folderTitle: folder.title });
+    folders.forEach((folder) => {
+      folder.websites.forEach((site) => {
+        sites.push({
+          url: site.url,
+          title: site.title,
+          folderTitle: folder.title,
+        });
       });
     });
     return sites;
@@ -76,13 +102,17 @@ export default function Suggestions({
 
   useEffect(() => {
     let isMounted = true;
-    checkHostPermissions(["https://suggestqueries.google.com/*"]).then((has) => {
-      if (isMounted) setHasGooglePermission(has);
-    });
-    const unsubscribe = subscribePermissionsChange(() => {
-      checkHostPermissions(["https://suggestqueries.google.com/*"]).then((has) => {
+    checkHostPermissions(["https://suggestqueries.google.com/*"]).then(
+      (has) => {
         if (isMounted) setHasGooglePermission(has);
-      });
+      },
+    );
+    const unsubscribe = subscribePermissionsChange(() => {
+      checkHostPermissions(["https://suggestqueries.google.com/*"]).then(
+        (has) => {
+          if (isMounted) setHasGooglePermission(has);
+        },
+      );
     });
     return () => {
       isMounted = false;
@@ -90,76 +120,131 @@ export default function Suggestions({
     };
   }, []);
 
-  const handleGrantGooglePermission = useCallback(async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const granted = await requestHostPermissions(["https://suggestqueries.google.com/*"]);
-    if (granted) {
-      setHasGooglePermission(true);
-      toast.success("Google suggestions enabled!");
-    }
-  }, []);
+  const handleGrantGooglePermission = useCallback(
+    async (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const granted = await requestHostPermissions([
+        "https://suggestqueries.google.com/*",
+      ]);
+      if (granted) {
+        setHasGooglePermission(true);
+        toast.success("Live search suggestions enabled!");
+      }
+    },
+    [],
+  );
 
   const query = searchValue.toLowerCase().trim();
   const rawQuery = searchValue.trim();
 
   const shouldFetchHistory = !isCommandMode && query.length > 0;
-  const shouldFetchGoogle = !isCommandMode && rawQuery.length > 0 && !isValidUrl(rawQuery) && hasGooglePermission;
+  const shouldFetchGoogle =
+    !isCommandMode &&
+    rawQuery.length > 0 &&
+    !isValidUrl(rawQuery) &&
+    hasGooglePermission;
 
-  if (!shouldFetchHistory && historySuggestions.length > 0) setHistorySuggestions([]);
-  if (!shouldFetchGoogle && googleSuggestions.length > 0) setGoogleSuggestions([]);
+  if (!shouldFetchHistory && historySuggestions.length > 0)
+    setHistorySuggestions([]);
+  if (!shouldFetchGoogle && googleSuggestions.length > 0)
+    setGoogleSuggestions([]);
 
   const localSuggestions = useMemo(() => {
     if (isCommandMode) {
       const cmdQuery = searchValue.slice(1).toLowerCase().trim();
       if (!cmdQuery) {
-        return commands.map(cmd => ({
-          id: cmd.id, url: '#', label: cmd.label, description: cmd.description, source: "command" as const
+        return commands.map((cmd) => ({
+          id: cmd.id,
+          url: "#",
+          label: cmd.label,
+          description: cmd.description,
+          source: "command" as const,
         }));
       }
       return commands
-        .filter(cmd =>
-          cmd.keywords.some(keyword => keyword.includes(cmdQuery)) ||
-          cmd.label.toLowerCase().includes(cmdQuery)
+        .filter(
+          (cmd) =>
+            cmd.keywords.some((keyword) => keyword.includes(cmdQuery)) ||
+            cmd.label.toLowerCase().includes(cmdQuery),
         )
-        .map(cmd => ({
-          id: cmd.id, url: '#', label: cmd.label, description: cmd.description, source: "command" as const
+        .map((cmd) => ({
+          id: cmd.id,
+          url: "#",
+          label: cmd.label,
+          description: cmd.description,
+          source: "command" as const,
         }));
     }
 
     const combined: Suggestion[] = [];
 
     if (isValidUrl(searchValue)) {
-      const cleanUrl = searchValue.startsWith('http') ? searchValue : `https://${searchValue}`;
+      const cleanUrl = searchValue.startsWith("http")
+        ? searchValue
+        : `https://${searchValue}`;
       combined.push({
-        id: 'direct', url: cleanUrl, label: `Go to ${searchValue}`, description: 'Direct Navigation', source: 'direct'
+        id: "direct",
+        url: cleanUrl,
+        label: `Go to ${searchValue}`,
+        description: "Direct Navigation",
+        source: "direct",
       });
     }
 
     const limit = query.length === 0 ? 5 : 10;
 
     const filteredTopSites = topSites
-      .filter(site => site.title?.toLowerCase().includes(query) || site.url.toLowerCase().includes(query))
+      .filter(
+        (site) =>
+          site.title?.toLowerCase().includes(query) ||
+          site.url.toLowerCase().includes(query),
+      )
       .slice(0, limit);
 
     filteredTopSites.forEach((site, index) => {
-      combined.push({ id: `top-${index}`, url: site.url, label: site.title || site.url, source: "top-sites" });
+      combined.push({
+        id: `top-${index}`,
+        url: site.url,
+        label: site.title || site.url,
+        source: "top-sites",
+      });
     });
 
     const filteredFavorites = favorites
-      .filter(fav => fav.title.toLowerCase().includes(query) || fav.url.toLowerCase().includes(query))
+      .filter(
+        (fav) =>
+          fav.title.toLowerCase().includes(query) ||
+          fav.url.toLowerCase().includes(query),
+      )
       .slice(0, limit);
 
     filteredFavorites.forEach((fav) => {
-      combined.push({ id: `fav-${fav.id}`, url: fav.url, label: fav.title, description: fav.url, source: "favorite" });
+      combined.push({
+        id: `fav-${fav.id}`,
+        url: fav.url,
+        label: fav.title,
+        description: fav.url,
+        source: "favorite",
+      });
     });
 
     const filteredFolderSites = folderWebsites
-      .filter(site => site.title.toLowerCase().includes(query) || site.url.toLowerCase().includes(query))
+      .filter(
+        (site) =>
+          site.title.toLowerCase().includes(query) ||
+          site.url.toLowerCase().includes(query),
+      )
       .slice(0, limit);
 
     filteredFolderSites.forEach((site, index) => {
-      combined.push({ id: `folder-${index}`, url: site.url, label: site.title, description: `${site.folderTitle} Folder`, source: "folder" });
+      combined.push({
+        id: `folder-${index}`,
+        url: site.url,
+        label: site.title,
+        description: `${site.folderTitle} Folder`,
+        source: "folder",
+      });
     });
 
     return combined;
@@ -168,40 +253,63 @@ export default function Suggestions({
   useEffect(() => {
     if (!shouldFetchHistory) return;
     let isCancelled = false;
-    const historyApi = typeof browser !== 'undefined' && browser.history ? browser.history : (typeof chrome !== 'undefined' ? chrome.history : null);
+    const historyApi =
+      typeof browser !== "undefined" && browser.history
+        ? browser.history
+        : typeof chrome !== "undefined"
+          ? chrome.history
+          : null;
     if (!historyApi) return;
 
-    historyApi.search({ text: query, maxResults: 10 }).then(historyItems => {
-      if (isCancelled) return;
-      const items: Suggestion[] = [];
-      historyItems.forEach((item, index) => {
-        if (item.url) {
-          items.push({ id: `history-${index}`, url: item.url, label: item.title || item.url, description: item.url, source: "history" });
-        }
-      });
-      setHistorySuggestions(items);
-    }).catch(e => console.warn("History search failed", e));
-    return () => { isCancelled = true; };
+    historyApi
+      .search({ text: query, maxResults: 10 })
+      .then((historyItems) => {
+        if (isCancelled) return;
+        const items: Suggestion[] = [];
+        historyItems.forEach((item, index) => {
+          if (item.url) {
+            items.push({
+              id: `history-${index}`,
+              url: item.url,
+              label: item.title || item.url,
+              description: item.url,
+              source: "history",
+            });
+          }
+        });
+        setHistorySuggestions(items);
+      })
+      .catch((e) => console.warn("History search failed", e));
+    return () => {
+      isCancelled = true;
+    };
   }, [shouldFetchHistory, query]);
 
   useEffect(() => {
     if (!shouldFetchGoogle) return;
     const timer = setTimeout(async () => {
       try {
-        const response = await fetch(`https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(rawQuery)}`);
+        const response = await fetch(
+          `https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(rawQuery)}`,
+        );
         const data = await response.json();
         if (Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
-          const items: Suggestion[] = data[1].slice(0, 10).map((suggestion: string, index: number) => ({
-            id: `google-${index}`, url: `https://www.google.com/search?q=${encodeURIComponent(suggestion)}`, label: suggestion, source: 'google'
-          }));
+          const items: Suggestion[] = data[1]
+            .slice(0, 10)
+            .map((suggestion: string, index: number) => ({
+              id: `search-${index}`,
+              url: activeEngine.queryUrl(suggestion),
+              label: suggestion,
+              source: "google",
+            }));
           setGoogleSuggestions(items);
         }
       } catch (error) {
-        console.error("Error fetching Google suggestions:", error);
+        console.error("Error fetching suggestions:", error);
       }
     }, 200);
     return () => clearTimeout(timer);
-  }, [shouldFetchGoogle, rawQuery]);
+  }, [shouldFetchGoogle, rawQuery, activeEngine]);
 
   const suggestions = useMemo(() => {
     return [...localSuggestions, ...historySuggestions, ...googleSuggestions];
@@ -209,44 +317,57 @@ export default function Suggestions({
 
   useEffect(() => {
     if (selectedIndex >= 0) {
-      if (selectedIndex === 0) scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' });
-      else if (itemRefs.current[selectedIndex]) itemRefs.current[selectedIndex]?.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+      if (selectedIndex === 0)
+        scrollContainerRef.current?.scrollTo({ top: 0, behavior: "instant" });
+      else if (itemRefs.current[selectedIndex])
+        itemRefs.current[selectedIndex]?.scrollIntoView({
+          block: "nearest",
+          behavior: "instant",
+        });
     }
   }, [selectedIndex]);
 
-  const handleSuggestionClick = useCallback((suggestion: Suggestion) => {
-    if (onSuggestionSelect) onSuggestionSelect(suggestion);
-  }, [onSuggestionSelect]);
+  const handleSuggestionClick = useCallback(
+    (suggestion: Suggestion) => {
+      if (onSuggestionSelect) onSuggestionSelect(suggestion);
+    },
+    [onSuggestionSelect],
+  );
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (suggestions.length === 0) return;
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        onIndexChange(prev => prev < suggestions.length - 1 ? prev + 1 : prev);
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        onIndexChange(prev => prev > 0 ? prev - 1 : prev);
-        break;
-      case 'Enter':
-        if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (suggestions.length === 0) return;
+      switch (e.key) {
+        case "ArrowDown":
           e.preventDefault();
-          handleSuggestionClick(suggestions[selectedIndex]);
-        }
-        break;
-      case 'Escape':
-        e.preventDefault();
-        onIndexChange(-1);
-        break;
-      default:
-        break;
-    }
-  }, [suggestions, selectedIndex, handleSuggestionClick, onIndexChange]);
+          onIndexChange((prev) =>
+            prev < suggestions.length - 1 ? prev + 1 : prev,
+          );
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          onIndexChange((prev) => (prev > 0 ? prev - 1 : prev));
+          break;
+        case "Enter":
+          if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
+            e.preventDefault();
+            handleSuggestionClick(suggestions[selectedIndex]);
+          }
+          break;
+        case "Escape":
+          e.preventDefault();
+          onIndexChange(-1);
+          break;
+        default:
+          break;
+      }
+    },
+    [suggestions, selectedIndex, handleSuggestionClick, onIndexChange],
+  );
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
   useEffect(() => {
@@ -259,7 +380,7 @@ export default function Suggestions({
 
   if (suggestions.length === 0) {
     return (
-      <div className='absolute top-full left-0 right-0 px-4 md:px-8 lg:px-10 mt-4 z-50'>
+      <div className="absolute top-full left-0 right-0 px-4 md:px-8 lg:px-10 mt-4 z-50">
         <div className="rounded-3xl liquid-glass bg-background/80! overflow-clip">
           <div className="p-4 app-blur bg-background/30 z-10">
             <BetterTypography variant="md" weight="medium">
@@ -268,15 +389,20 @@ export default function Suggestions({
           </div>
           <div className="p-6 flex-center">
             <BetterTypography variant="sm" className="text-muted-foreground">
-              {searchValue.trim().length > 0 ? "No matches found" : "Start typing to see suggestions"}
+              {searchValue.trim().length > 0
+                ? "No matches found"
+                : "Start typing to see suggestions"}
             </BetterTypography>
           </div>
           {!isCommandMode && !hasGooglePermission && rawQuery.length > 0 && (
             <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
               <div className="flex items-center gap-x-2 min-w-0">
                 <SparklesIcon className="size-4 text-primary shrink-0" />
-                <BetterTypography variant="xs" className="text-muted-foreground truncate">
-                  Enable Google live search completions
+                <BetterTypography
+                  variant="xs"
+                  className="text-muted-foreground truncate"
+                >
+                  Enable live search completions
                 </BetterTypography>
               </div>
               <Button
@@ -295,35 +421,59 @@ export default function Suggestions({
   }
 
   return (
-    <div className='absolute top-full left-0 right-0 px-4 md:px-8 lg:px-10 mt-4 z-50'>
+    <div className="absolute top-full left-0 right-0 px-4 md:px-8 lg:px-10 mt-4 z-50">
       <div className="rounded-3xl liquid-glass bg-background/80! overflow-clip">
-        <div ref={scrollContainerRef} className="flex flex-col max-h-[calc(50vh-3rem)] overflow-y-scroll rounded-3xl scrollbar-none">
+        <div
+          ref={scrollContainerRef}
+          className="flex flex-col max-h-[calc(50vh-3rem)] overflow-y-scroll rounded-3xl scrollbar-none"
+        >
           <div className="p-4 app-blur bg-background/30 z-10">
             <BetterTypography variant="md" weight="medium">
               {isCommandMode ? "Commands" : "Suggestions"}
             </BetterTypography>
           </div>
 
-          <ul className='flex flex-col overflow-clip'>
+          <ul className="flex flex-col overflow-clip">
             {suggestions.map((s, index) => (
-              <li key={s.id} ref={(el) => { itemRefs.current[index] = el; }}>
+              <li
+                key={s.id}
+                ref={(el) => {
+                  itemRefs.current[index] = el;
+                }}
+              >
                 <a
                   href={s.url}
-                  target={s.source === 'command' ? '_self' : "_blank"}
+                  target={s.source === "command" ? "_self" : "_blank"}
                   rel="noopener noreferrer"
-                  onClick={(e) => { e.preventDefault(); handleSuggestionClick(s); }}
-                  className={`flex justify-between items-center py-2.5 px-5 transition-colors duration-200 ${selectedIndex === index ? 'bg-muted' : 'bg-transparent hover:bg-muted'}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSuggestionClick(s);
+                  }}
+                  className={`flex justify-between items-center py-2.5 px-5 transition-colors duration-200 ${selectedIndex === index ? "bg-muted" : "bg-transparent hover:bg-muted"}`}
                 >
                   <div className="flex flex-col gap-y-0.5 min-w-0 flex-1 pr-4">
-                    <BetterTypography variant="sm" weight="medium" className="line-clamp-1">
+                    <BetterTypography
+                      variant="sm"
+                      weight="medium"
+                      className="line-clamp-1"
+                    >
                       {s.label}
                     </BetterTypography>
-                    <BetterTypography variant="xs" className="text-muted-foreground line-clamp-1">
+                    <BetterTypography
+                      variant="xs"
+                      className="text-muted-foreground line-clamp-1"
+                    >
                       {sliceText(s.description || s.url, 60)}
                     </BetterTypography>
                   </div>
-                  <Badge variant={BADGE_CONFIG[s.source].variant} size="sm" className="shrink-0">
-                    {BADGE_CONFIG[s.source].label}
+                  <Badge
+                    variant={BADGE_CONFIG[s.source].variant}
+                    size="sm"
+                    className="shrink-0"
+                  >
+                    {s.source === "google"
+                      ? activeEngine.name
+                      : BADGE_CONFIG[s.source].label}
                   </Badge>
                 </a>
               </li>
@@ -334,8 +484,11 @@ export default function Suggestions({
             <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
               <div className="flex items-center gap-x-2 min-w-0">
                 <SparklesIcon className="size-4 text-primary shrink-0" />
-                <BetterTypography variant="xs" className="text-muted-foreground truncate">
-                  Enable Google live search completions
+                <BetterTypography
+                  variant="xs"
+                  className="text-muted-foreground truncate"
+                >
+                  Enable live search completions
                 </BetterTypography>
               </div>
               <Button
