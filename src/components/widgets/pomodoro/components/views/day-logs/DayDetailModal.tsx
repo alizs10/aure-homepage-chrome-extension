@@ -229,9 +229,9 @@ export default function DayDetailModal({
         ref={captureRef}
         data-accent={settings?.accent || "default"}
         className={cn(
-          "w-full max-w-4/5 sm:max-w-md max-h-[80vh] flex flex-col relative overflow-y-scroll scrollbar-none liquid-glass",
+          "w-full max-w-4/5 sm:max-w-md max-h-[80vh] flex flex-col relative overflow-y-scroll scrollbar-none",
           isDark ? "dark" : "",
-          isCapturing ? "" : "rounded-3xl",
+          isCapturing ? "" : "liquid-glass rounded-3xl",
         )}
       >
         <div
