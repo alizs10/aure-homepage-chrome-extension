@@ -1,6 +1,6 @@
 # Aure Homepage v0.2.0
 
-Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly `@<engine>` search commands, configurable new-tab opening behaviors for searches and bookmarks, a visual Pomodoro daily time breakdown ring, cleaner IPv4 network status display, and a smoother hover experience on Mozilla Firefox.
+Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly `@<engine>` search commands, configurable new-tab opening behaviors for searches and bookmarks, a visual Pomodoro daily time breakdown ring, cleaner IPv4 network status display, proper text wrapping in notes and checklists, and a smoother hover experience on Mozilla Firefox.
 
 ## What's New
 
@@ -31,6 +31,10 @@ Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly
 - **Visual Time Breakdown**: The Daily Summary popup now wraps your total focus time in an intuitive multi-segment circular progress ring, distinctly separating your focus sessions, short breaks, and long breaks.
 
 ## Fixes
+
+### Notes & Checklists Text Wrapping
+
+- **Proper Text Wrapping**: Fixed an issue where long continuous text or unbroken words in notes, tasks, and checklist items would overflow outside their cards instead of wrapping properly.
 
 ### Network Status IP Display
 
