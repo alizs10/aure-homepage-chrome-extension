@@ -531,29 +531,27 @@ export default function Suggestions({
               {emptyStateMessage}
             </BetterTypography>
           </div>
-          {!isCommandMode &&
-            !hasPermission &&
-            effectiveQuery.length > 0 && (
-              <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
-                <div className="flex items-center gap-x-2 min-w-0">
-                  <SparklesIcon className="size-4 text-primary shrink-0" />
-                  <BetterTypography
-                    variant="xs"
-                    className="text-muted-foreground truncate"
-                  >
-                    Enable live {currentActiveEngine.name} search completions
-                  </BetterTypography>
-                </div>
-                <Button
-                  size="xs"
-                  variant="primary"
-                  onClick={handleGrantPermission}
-                  className="shrink-0 text-xs"
+          {!isCommandMode && !hasPermission && effectiveQuery.length > 0 && (
+            <div className="p-3 flex items-center justify-between gap-x-3">
+              <div className="flex items-center gap-x-2 min-w-0">
+                <SparklesIcon className="size-4 text-primary shrink-0" />
+                <BetterTypography
+                  variant="xs"
+                  className="text-muted-foreground truncate"
                 >
-                  Grant Permission
-                </Button>
+                  Enable live {currentActiveEngine.name} search completions
+                </BetterTypography>
               </div>
-            )}
+              <Button
+                size="xs"
+                variant="primary"
+                onClick={handleGrantPermission}
+                className="shrink-0 text-xs"
+              >
+                Grant Permission
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -621,29 +619,27 @@ export default function Suggestions({
             ))}
           </ul>
 
-          {!isCommandMode &&
-            !hasPermission &&
-            effectiveQuery.length > 0 && (
-              <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
-                <div className="flex items-center gap-x-2 min-w-0">
-                  <SparklesIcon className="size-4 text-primary shrink-0" />
-                  <BetterTypography
-                    variant="xs"
-                    className="text-muted-foreground truncate"
-                  >
-                    Enable live {currentActiveEngine.name} search completions
-                  </BetterTypography>
-                </div>
-                <Button
-                  size="xs"
-                  variant="primary"
-                  onClick={handleGrantPermission}
-                  className="shrink-0 text-xs"
+          {!isCommandMode && !hasPermission && effectiveQuery.length > 0 && (
+            <div className="p-3 flex items-center justify-between gap-x-3">
+              <div className="flex items-center gap-x-2 min-w-0">
+                <SparklesIcon className="size-4 text-primary shrink-0" />
+                <BetterTypography
+                  variant="xs"
+                  className="text-muted-foreground truncate"
                 >
-                  Grant Permission
-                </Button>
+                  Enable live {currentActiveEngine.name} search completions
+                </BetterTypography>
               </div>
-            )}
+              <Button
+                size="xs"
+                variant="primary"
+                onClick={handleGrantPermission}
+                className="shrink-0 text-xs"
+              >
+                Grant Permission
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

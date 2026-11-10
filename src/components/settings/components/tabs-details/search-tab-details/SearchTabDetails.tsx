@@ -10,8 +10,8 @@ import {
 } from "@/lib/browser";
 import { useSettingsStore } from "@/stores";
 import { toast } from "@/stores/useToastStore";
-import type { SearchEngineId, SearchEngineOption } from "@/types";
-import { CheckIcon, ExternalLinkIcon, SparklesIcon } from "lucide-react";
+import type { SearchEngineId } from "@/types";
+import { CheckIcon, ExternalLinkIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function SearchTabDetails() {
@@ -48,32 +48,25 @@ export default function SearchTabDetails() {
   const handleSelectEngine = async (id: SearchEngineId) => {
     if (id === currentEngineId) return;
     const target = getSearchEngine(id);
-    await update({ search_engine: id });
 
-    if (target.suggestOrigins && target.suggestOrigins.length > 0) {
-      const hasPerm = await checkHostPermissions(target.suggestOrigins);
-      if (!hasPerm) {
-        const granted = await requestHostPermissions(target.suggestOrigins);
-        if (granted) {
-          toast.success(
-            `Search engine set to ${target.name} (live suggestions enabled)`,
-          );
-          return;
-        }
+    const hasOrigins = Boolean(
+      target.suggestOrigins && target.suggestOrigins.length > 0,
+    );
+    const hasPerm = !hasOrigins || enginePerms[id] === true;
+
+    if (!hasPerm && target.suggestOrigins) {
+      // ⚠️ In Firefox, permissions.request() must be invoked directly within
+      // the user gesture callback with NO prior await, otherwise Gecko drops the gesture context.
+      const granted = await requestHostPermissions(target.suggestOrigins);
+      if (!granted) {
+        toast.info(`Permission is required to select ${target.name}`);
+        return;
       }
+      setEnginePerms((prev) => ({ ...prev, [id]: true }));
     }
 
+    await update({ search_engine: id });
     toast.success(`Search engine set to ${target.name}`);
-  };
-
-  const handleRequestPermission = async (engine: SearchEngineOption) => {
-    if (!engine.suggestOrigins || engine.suggestOrigins.length === 0) return;
-    const granted = await requestHostPermissions(engine.suggestOrigins);
-    if (granted) {
-      toast.success(`Live search suggestions enabled for ${engine.name}`);
-    } else {
-      toast.info(`Permission request cancelled for ${engine.name}`);
-    }
   };
 
   const handleToggleOpenInNewTab = async (checked: boolean) => {
@@ -134,16 +127,12 @@ export default function SearchTabDetails() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 xl:grid-cols-2 gap-3.5">
           {SEARCH_ENGINES.map((engine) => {
             const isSelected = engine.id === currentEngineId;
-            const hasSuggestPerm =
-              !engine.suggestOrigins ||
-              engine.suggestOrigins.length === 0 ||
-              Boolean(enginePerms[engine.id]);
 
             return (
               <div
                 key={engine.id}
                 onClick={() => handleSelectEngine(engine.id)}
-                className={`group relative p-4 rounded-3xl liquid-glass border transition-all duration-200 cursor-pointer flex flex-col gap-y-3`}
+                className="group relative p-4 rounded-3xl liquid-glass border transition-all duration-200 cursor-pointer flex flex-col gap-y-3"
               >
                 <div className="flex items-start justify-between gap-x-3">
                   <div className="flex items-center gap-x-3 min-w-0">
@@ -175,50 +164,26 @@ export default function SearchTabDetails() {
                     </div>
                   </div>
 
-                  <div className="shrink-0 flex items-center gap-x-2">
-                    {isSelected ? (
-                      <>
-                        {!hasSuggestPerm && (
-                          <Button
-                            size="xs"
-                            variant="muted"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRequestPermission(engine);
-                            }}
-                            leftIcon={
-                              <SparklesIcon className="size-3 text-primary" />
-                            }
-                          >
-                            <BetterTypography variant="xxs">
-                              Enable Suggestions
-                            </BetterTypography>
-                          </Button>
-                        )}
-                        <Button
-                          size="xs"
-                          variant="primary-active"
-                          leftIcon={<CheckIcon className="size-3.5" />}
-                        >
-                          <BetterTypography variant="xxs">
-                            Selected
-                          </BetterTypography>
-                        </Button>
-                      </>
-                    ) : (
-                      <Button
-                        size="xs"
-                        variant="ghost"
-                        onClick={(e) => {
-                          e.stopPropagation();
+                  <div className="shrink-0 flex items-center">
+                    <Button
+                      size="xs"
+                      variant={isSelected ? "primary-active" : "ghost"}
+                      leftIcon={
+                        isSelected ? (
+                          <CheckIcon className="size-3.5" />
+                        ) : undefined
+                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!isSelected) {
                           handleSelectEngine(engine.id);
-                        }}
-                      >
-                        <BetterTypography variant="xxs">
-                          Select
-                        </BetterTypography>
-                      </Button>
-                    )}
+                        }
+                      }}
+                    >
+                      <BetterTypography variant="xxs">
+                        {isSelected ? "Selected" : "Select"}
+                      </BetterTypography>
+                    </Button>
                   </div>
                 </div>
 
