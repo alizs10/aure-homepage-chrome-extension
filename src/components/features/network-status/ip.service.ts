@@ -10,8 +10,11 @@ export interface IpInfo {
 
 export const IP_CACHE_DURATION_MS = 30 * 1000; // 30 secs
 export const IP_AUTO_REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 mins
-const PRIMARY_IP_API_URL = "https://get.geojs.io/v1/ip/geo.json";
-const FALLBACK_IP_API_URL = "https://ipwho.is/";
+const IP_API_ENDPOINTS = [
+    "https://ipv4.geojs.io/v1/ip/geo.json",
+    "https://get.geojs.io/v1/ip/geo.json",
+    "https://ipwho.is/",
+];
 const FETCH_TIMEOUT_MS = 5000;
 
 // Deduplicate concurrent in-flight requests
@@ -124,15 +127,21 @@ export async function fetchIpInfo(force = false): Promise<IpInfo | null> {
 
     inFlightRequest = (async () => {
         try {
-            let data: unknown = null;
+            let ipInfo: IpInfo | null = null;
 
-            try {
-                data = await fetchEndpoint(PRIMARY_IP_API_URL, FETCH_TIMEOUT_MS);
-            } catch {
-                data = await fetchEndpoint(FALLBACK_IP_API_URL, FETCH_TIMEOUT_MS);
+            for (const endpoint of IP_API_ENDPOINTS) {
+                try {
+                    const data = await fetchEndpoint(endpoint, FETCH_TIMEOUT_MS);
+                    const parsed = parseIpResponse(data);
+                    if (parsed) {
+                        ipInfo = parsed;
+                        break;
+                    }
+                } catch {
+                    // Try next endpoint on network or HTTP error
+                }
             }
 
-            const ipInfo = parseIpResponse(data);
             if (!ipInfo) {
                 return getCachedIpInfo();
             }
