@@ -1,6 +1,6 @@
 # Aure Homepage v0.2.0
 
-Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly `@<engine>` search commands, configurable new-tab opening behaviors for searches and bookmarks, a clean unified search suggestions interface, a visual Pomodoro daily time breakdown ring, and a smoother hover experience on Mozilla Firefox.
+Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly `@<engine>` search commands, configurable new-tab opening behaviors for searches and bookmarks, a visual Pomodoro daily time breakdown ring, and a smoother hover experience on Mozilla Firefox.
 
 ## What's New
 
@@ -21,11 +21,6 @@ Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly
 - **Open Bookmarks in New Tab**: Choose whether favorites, folder websites, and top sites shortcuts open in a fresh new tab or the active tab.
 
 ## Improvements
-
-### Unified Search Suggestions
-
-- **Distraction-Free Layout**: Standardized all search suggestions, history items, bookmarks, and commands into a consistent two-line layout.
-- **Clear Badges**: Integrated distinct badge indicators to effortlessly distinguish between search engine commands, bookmarks, browsing history, and live query completions.
 
 ### Bookmarks Settings
 

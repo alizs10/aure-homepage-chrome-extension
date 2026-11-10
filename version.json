@@ -1,13 +1,12 @@
 {
   "latestVersion": "0.2.0",
   "minimumSupportedVersion": "0.0.1",
-  "releaseDate": "2026-11-07",
+  "releaseDate": "2026-11-10",
   "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.2.0/aure-homepage-chrome-v0.2.0.zip",
   "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.2.0",
   "notes": [
     "Search Engine Selection: Choose your preferred default search engine from Google, DuckDuckGo, Brave, Bing, Yandex, Gerdoo, or ChatGPT in the new Search settings tab.",
     "Quick Engine Commands: Type @ or @<engine> (e.g., @chatgpt, @brave) in the search bar to search on any provider on the fly with live suggestions.",
-    "Unified Suggestions UI: Redesigned search dropdown items with a clean, consistent two-line layout and clear badges for commands, bookmarks, and history.",
     "Search Behavior: Added an option to open search queries and results in a new tab.",
     "Bookmark Behavior: Added an option to open bookmarks, favorites, and folder sites in a new tab.",
     "Bookmarks Settings: Bookmarks settings are now more organized, making it simpler to manage your shortcuts, folders, and display options.",
