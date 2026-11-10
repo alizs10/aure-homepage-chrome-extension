@@ -111,8 +111,9 @@ export const useCountersStore = create<CountersState>((set, get) => ({
         } else if (item.type === 'count_down' && item.isRecurring && item.intervalDays) {
             // Push end date forward by intervalDays from today
             updated.endDate = format(addDays(now, item.intervalDays), 'yyyy-MM-dd');
-            // 🌟 Reset the progress bar by updating createdAt to now
+            // 🌟 Reset the progress bar by updating createdAt and startDate to now
             updated.createdAt = now.getTime();
+            updated.startDate = format(now, 'yyyy-MM-dd');
         } else {
             return;
         }

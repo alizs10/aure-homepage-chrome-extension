@@ -50,7 +50,7 @@ export default function CounterCircle({ counter, size = 56 }: CounterCircleProps
     let progress = 0;
     if (counter.type === 'count_down') {
         // 🎯 FIX: Use calendar days to completely ignore hours, minutes, and timezone offsets
-        const start = new Date(counter.createdAt);
+        const start = counter.startDate ? parseISO(counter.startDate) : new Date(counter.createdAt);
         const end = parseISO(counter.endDate!);
         const now = new Date();
 
