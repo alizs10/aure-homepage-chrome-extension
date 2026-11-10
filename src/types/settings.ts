@@ -144,7 +144,6 @@ export type SearchEngineId =
   | "brave"
   | "bing"
   | "yandex"
-  | "zarebin"
   | "gerdoo"
   | "chatgpt";
 
@@ -155,6 +154,9 @@ export interface SearchEngineOption {
   url: string;
   queryUrl: (query: string) => string;
   keywords?: string[];
+  suggestUrl?: (query: string) => string;
+  suggestOrigins?: string[];
+  parseSuggestions?: (data: unknown) => string[];
 }
 
 // 🌟 Widget position in the grid

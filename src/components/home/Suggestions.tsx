@@ -74,7 +74,7 @@ export default function Suggestions({
   const [historySuggestions, setHistorySuggestions] = useState<Suggestion[]>(
     [],
   );
-  const [googleSuggestions, setGoogleSuggestions] = useState<Suggestion[]>([]);
+  const [engineSuggestions, setEngineSuggestions] = useState<Suggestion[]>([]);
 
   const searchEngine =
     useSettingsStore((state) => state.settings?.search_engine) ?? "google";
@@ -100,14 +100,22 @@ export default function Suggestions({
     return sites;
   }, [folders]);
 
-  const [hasGooglePermission, setHasGooglePermission] = useState<boolean>(true);
-
   const parsedEngine = useMemo(
     () => parseEngineCommand(searchValue),
     [searchValue],
   );
   const isEngineMode = parsedEngine.isEngineMode;
   const targetEngine = parsedEngine.engine;
+  const currentActiveEngine = targetEngine ?? activeEngine;
+
+  const requiredOrigins = useMemo(() => {
+    return currentActiveEngine.suggestOrigins &&
+      currentActiveEngine.suggestOrigins.length > 0
+      ? currentActiveEngine.suggestOrigins
+      : ["https://suggestqueries.google.com/*"];
+  }, [currentActiveEngine]);
+
+  const [hasPermission, setHasPermission] = useState<boolean>(true);
 
   useEffect(() => {
     getTopSites().then(setTopSites);
@@ -115,37 +123,33 @@ export default function Suggestions({
 
   useEffect(() => {
     let isMounted = true;
-    checkHostPermissions(["https://suggestqueries.google.com/*"]).then(
-      (has) => {
-        if (isMounted) setHasGooglePermission(has);
-      },
-    );
+    checkHostPermissions(requiredOrigins).then((has) => {
+      if (isMounted) setHasPermission(has);
+    });
     const unsubscribe = subscribePermissionsChange(() => {
-      checkHostPermissions(["https://suggestqueries.google.com/*"]).then(
-        (has) => {
-          if (isMounted) setHasGooglePermission(has);
-        },
-      );
+      checkHostPermissions(requiredOrigins).then((has) => {
+        if (isMounted) setHasPermission(has);
+      });
     });
     return () => {
       isMounted = false;
       unsubscribe();
     };
-  }, []);
+  }, [requiredOrigins]);
 
-  const handleGrantGooglePermission = useCallback(
+  const handleGrantPermission = useCallback(
     async (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      const granted = await requestHostPermissions([
-        "https://suggestqueries.google.com/*",
-      ]);
+      const granted = await requestHostPermissions(requiredOrigins);
       if (granted) {
-        setHasGooglePermission(true);
-        toast.success("Live search suggestions enabled!");
+        setHasPermission(true);
+        toast.success(
+          `Live ${currentActiveEngine.name} search suggestions enabled!`,
+        );
       }
     },
-    [],
+    [requiredOrigins, currentActiveEngine],
   );
 
   const query = searchValue.toLowerCase().trim();
@@ -156,16 +160,16 @@ export default function Suggestions({
 
   const shouldFetchHistory =
     !isCommandMode && !isEngineMode && query.length > 0;
-  const shouldFetchGoogle =
+  const shouldFetchEngineSuggestions =
     !isCommandMode &&
     effectiveQuery.length > 0 &&
     !isValidUrl(effectiveQuery) &&
-    hasGooglePermission;
+    hasPermission;
 
   if (!shouldFetchHistory && historySuggestions.length > 0)
     setHistorySuggestions([]);
-  if (!shouldFetchGoogle && googleSuggestions.length > 0)
-    setGoogleSuggestions([]);
+  if (!shouldFetchEngineSuggestions && engineSuggestions.length > 0)
+    setEngineSuggestions([]);
 
   const localSuggestions = useMemo(() => {
     if (isCommandMode) {
@@ -349,36 +353,74 @@ export default function Suggestions({
   }, [shouldFetchHistory, query]);
 
   useEffect(() => {
-    if (!shouldFetchGoogle) return;
-    const currentActiveEngine = targetEngine ?? activeEngine;
+    if (!shouldFetchEngineSuggestions) return;
     const timer = setTimeout(async () => {
       try {
-        const response = await fetch(
-          `https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(effectiveQuery)}`,
-        );
+        const suggestUrl = currentActiveEngine.suggestUrl
+          ? currentActiveEngine.suggestUrl(effectiveQuery)
+          : `https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(effectiveQuery)}`;
+
+        const response = await fetch(suggestUrl);
         const data = await response.json();
-        if (Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
-          const items: Suggestion[] = data[1]
-            .slice(0, 10)
-            .map((suggestion: string, index: number) => ({
-              id: `search-${index}`,
-              url: currentActiveEngine.queryUrl(suggestion),
-              label: suggestion,
-              description: currentActiveEngine.queryUrl(suggestion),
-              source: "google",
-            }));
-          setGoogleSuggestions(items);
+
+        let stringSuggestions: string[] = [];
+        if (currentActiveEngine.parseSuggestions) {
+          stringSuggestions = currentActiveEngine.parseSuggestions(data);
+        } else if (Array.isArray(data) && Array.isArray(data[1])) {
+          stringSuggestions = data[1].filter(
+            (item): item is string => typeof item === "string",
+          );
         }
+
+        const items: Suggestion[] = stringSuggestions
+          .slice(0, 10)
+          .map((suggestion: string, index: number) => ({
+            id: `search-${index}`,
+            url: currentActiveEngine.queryUrl(suggestion),
+            label: suggestion,
+            description: currentActiveEngine.queryUrl(suggestion),
+            source: "google",
+          }));
+        setEngineSuggestions(items);
       } catch (error) {
+        // Fallback gracefully to Google if available and engine failed
+        if (currentActiveEngine.id !== "google") {
+          try {
+            const hasGoogle = await checkHostPermissions([
+              "https://suggestqueries.google.com/*",
+            ]);
+            if (hasGoogle) {
+              const fallbackRes = await fetch(
+                `https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(effectiveQuery)}`,
+              );
+              const data = await fallbackRes.json();
+              if (Array.isArray(data) && Array.isArray(data[1])) {
+                const items: Suggestion[] = data[1]
+                  .slice(0, 10)
+                  .map((suggestion: string, index: number) => ({
+                    id: `search-${index}`,
+                    url: currentActiveEngine.queryUrl(suggestion),
+                    label: suggestion,
+                    description: currentActiveEngine.queryUrl(suggestion),
+                    source: "google",
+                  }));
+                setEngineSuggestions(items);
+                return;
+              }
+            }
+          } catch {
+            // Ignore fallback errors
+          }
+        }
         console.error("Error fetching suggestions:", error);
       }
     }, 200);
     return () => clearTimeout(timer);
-  }, [shouldFetchGoogle, effectiveQuery, targetEngine, activeEngine]);
+  }, [shouldFetchEngineSuggestions, effectiveQuery, currentActiveEngine]);
 
   const suggestions = useMemo(() => {
-    return [...localSuggestions, ...historySuggestions, ...googleSuggestions];
-  }, [localSuggestions, historySuggestions, googleSuggestions]);
+    return [...localSuggestions, ...historySuggestions, ...engineSuggestions];
+  }, [localSuggestions, historySuggestions, engineSuggestions]);
 
   const headerTitle = useMemo(() => {
     if (isCommandMode) return "Commands";
@@ -490,7 +532,7 @@ export default function Suggestions({
             </BetterTypography>
           </div>
           {!isCommandMode &&
-            !hasGooglePermission &&
+            !hasPermission &&
             effectiveQuery.length > 0 && (
               <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
                 <div className="flex items-center gap-x-2 min-w-0">
@@ -499,13 +541,13 @@ export default function Suggestions({
                     variant="xs"
                     className="text-muted-foreground truncate"
                   >
-                    Enable live search completions
+                    Enable live {currentActiveEngine.name} search completions
                   </BetterTypography>
                 </div>
                 <Button
                   size="xs"
                   variant="primary"
-                  onClick={handleGrantGooglePermission}
+                  onClick={handleGrantPermission}
                   className="shrink-0 text-xs"
                 >
                   Grant Permission
@@ -580,7 +622,7 @@ export default function Suggestions({
           </ul>
 
           {!isCommandMode &&
-            !hasGooglePermission &&
+            !hasPermission &&
             effectiveQuery.length > 0 && (
               <div className="p-3 border-t border-border/40 bg-primary/5 flex items-center justify-between gap-x-3">
                 <div className="flex items-center gap-x-2 min-w-0">
@@ -589,13 +631,13 @@ export default function Suggestions({
                     variant="xs"
                     className="text-muted-foreground truncate"
                   >
-                    Enable live search completions
+                    Enable live {currentActiveEngine.name} search completions
                   </BetterTypography>
                 </div>
                 <Button
                   size="xs"
                   variant="primary"
-                  onClick={handleGrantGooglePermission}
+                  onClick={handleGrantPermission}
                   className="shrink-0 text-xs"
                 >
                   Grant Permission

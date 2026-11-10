@@ -14,6 +14,7 @@ import { toast } from "@/stores/useToastStore";
 import { DEFAULT_WIDGET_LAYOUT } from "@/constants/widget-weights";
 import { isFirefox } from "@/lib/browser";
 import { seedDefaultFolders, useFoldersStore } from "@/features/bookmarks";
+import { CURRENT_SCHEMA_VERSION } from "@/lib/migrations";
 
 export default function Wizard() {
   const save = useSettingsStore((s) => s.save);
@@ -68,7 +69,7 @@ export default function Wizard() {
 
   const onSubmit = async (data: WizardFormValues) => {
     const settingsToSave: Settings = {
-      schema_version: 6, // ✅ Fixed: match current migration version
+      schema_version: CURRENT_SCHEMA_VERSION,
       ...data,
       wallpaper_blur: isFirefox ? "xs" : "none",
       wallpaper_brightness: "100",

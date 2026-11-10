@@ -30,7 +30,7 @@ export default function CommandsTabDetails() {
                         </BetterTypography>
                     </div>
                     <BetterTypography variant="sm" className="text-muted-foreground">
-                        Performs a one-time search using a specific search engine with real-time suggestions. Supported engines: <span className="font-semibold text-foreground">@chatgpt</span>, <span className="font-semibold text-foreground">@google</span>, <span className="font-semibold text-foreground">@duckduckgo</span>, <span className="font-semibold text-foreground">@brave</span>, <span className="font-semibold text-foreground">@bing</span>, <span className="font-semibold text-foreground">@yandex</span>, <span className="font-semibold text-foreground">@zarebin</span>, <span className="font-semibold text-foreground">@gerdoo</span>.
+                        Performs a one-time search using a specific search engine with real-time suggestions. Supported engines: <span className="font-semibold text-foreground">@chatgpt</span>, <span className="font-semibold text-foreground">@google</span>, <span className="font-semibold text-foreground">@duckduckgo</span>, <span className="font-semibold text-foreground">@brave</span>, <span className="font-semibold text-foreground">@bing</span>, <span className="font-semibold text-foreground">@yandex</span>, <span className="font-semibold text-foreground">@gerdoo</span>.
                     </BetterTypography>
                     <div className="px-5 py-3 bg-secondary/50 rounded-3xl font-mono text-xs text-muted-foreground">
                         Example: <span className="text-foreground">@chatgpt how to build a browser extension</span>

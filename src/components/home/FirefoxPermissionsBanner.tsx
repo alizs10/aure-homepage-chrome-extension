@@ -51,7 +51,7 @@ export default function FirefoxPermissionsBanner() {
                         <ShieldCheckIcon className="h-auto w-5 sm:w-7 md:w-18 text-primary" />
                     </div>
                     <BetterTypography variant="sm" className="text-muted-foreground text-pretty">
-                        Firefox requires permission to load live Google suggestions and network info. Grant permissions with one native prompt.
+                        Firefox requires permission to load live search suggestions and network info. Grant permissions with one native prompt.
                     </BetterTypography>
                 </div>
 

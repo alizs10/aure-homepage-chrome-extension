@@ -18,7 +18,7 @@ Aure Homepage replaces your browser's default new tab with a clean, fast, and pr
 
 ### Search
 
-* Multi-engine support (Google, DuckDuckGo, Brave, Bing, Yandex, Zarebin, Gerdoo, ChatGPT)
+* Multi-engine support (Google, DuckDuckGo, Brave, Bing, Yandex, Gerdoo, ChatGPT)
 * Quick engine search commands (`@<engine> <query>`)
 * Widget commands (`/task`, `/counter`, etc.)
 * Search suggestions

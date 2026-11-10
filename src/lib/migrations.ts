@@ -24,7 +24,7 @@ function isLegacyChecklist(note: LegacyNote): note is Checklist {
   return "status" in note;
 }
 
-export const CURRENT_SCHEMA_VERSION = 6;
+export const CURRENT_SCHEMA_VERSION = 5;
 
 // Type for settings during migration (may have old properties)
 type LegacySettings = Settings & {
@@ -142,7 +142,7 @@ const migrations: Record<number, () => Promise<void>> = {
     });
   },
 
-  // Version 5: Add default search_engine and open_search_in_new_tab
+  // Version 5: Add default search_engine, open_search_in_new_tab, and open_bookmarks_in_new_tab
   5: async () => {
     const { settings, update } = useSettingsStore.getState();
     if (!settings) return;
@@ -151,16 +151,6 @@ const migrations: Record<number, () => Promise<void>> = {
       schema_version: 5,
       search_engine: settings.search_engine ?? "google",
       open_search_in_new_tab: settings.open_search_in_new_tab ?? false,
-    });
-  },
-
-  // Version 6: Add default open_bookmarks_in_new_tab
-  6: async () => {
-    const { settings, update } = useSettingsStore.getState();
-    if (!settings) return;
-
-    await update({
-      schema_version: 6,
       open_bookmarks_in_new_tab: settings.open_bookmarks_in_new_tab ?? false,
     });
   },

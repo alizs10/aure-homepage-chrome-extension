@@ -7,7 +7,7 @@ Aure Homepage v0.2.0 introduces customizable search engine selection, on-the-fly
 ### Search Engine Selection
 
 - **Multiple Search Providers**: You can now choose your preferred default search engine directly from a dedicated **Search** tab in Settings.
-- **Supported Engines**: Out-of-the-box support for Google, DuckDuckGo, Brave, Bing, Yandex, Zarebin, Gerdoo, and ChatGPT.
+- **Supported Engines**: Out-of-the-box support for Google, DuckDuckGo, Brave, Bing, Yandex, Gerdoo, and ChatGPT.
 - **Dynamic Search Routing**: Homepage search queries and instant completions seamlessly route to your selected engine.
 
 ### Quick Search Engine Commands
