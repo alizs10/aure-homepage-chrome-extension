@@ -61,12 +61,23 @@ export default function CounterDetailModal({ open, onClose, counter, onEdit }: C
                             </div>
                         </div>
 
-                        {counter.type === 'count_down' && counter.isRecurring && (
-                            <BetterTypography variant="xs" className="text-muted-foreground">
-                                Recurring Interval: <BetterTypography as="span" variant="sm" weight="medium">
-                                    Every {counter.intervalDays} days
-                                </BetterTypography>
-                            </BetterTypography>
+                        {counter.type === 'count_down' && (
+                            <div className="flex flex-col gap-y-1">
+                                {counter.startDate && (
+                                    <BetterTypography variant="xs" className="text-muted-foreground">
+                                        Started: <BetterTypography as="span" variant="sm" weight="medium">
+                                            {format(parseISO(counter.startDate), 'MMM d, yyyy')}
+                                        </BetterTypography>
+                                    </BetterTypography>
+                                )}
+                                {counter.isRecurring && (
+                                    <BetterTypography variant="xs" className="text-muted-foreground">
+                                        Recurring Interval: <BetterTypography as="span" variant="sm" weight="medium">
+                                            Every {counter.intervalDays} days
+                                        </BetterTypography>
+                                    </BetterTypography>
+                                )}
+                            </div>
                         )}
                     </div>
 

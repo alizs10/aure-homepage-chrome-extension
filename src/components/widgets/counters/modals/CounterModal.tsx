@@ -11,10 +11,11 @@ import { useCounters } from '../hooks/useCounters';
 import { toast } from '@/stores/useToastStore';
 import type { Counter, CounterColor, CounterType } from '../types';
 import { accentOptions } from '@/types/settings';
-import { format } from 'date-fns';
+import { format, differenceInCalendarDays, parseISO } from 'date-fns';
 import { useMemo } from 'react';
 import { counterSchema, type CounterFormValues } from '../validation/counter-schema';
 import { useTheme } from '@/hooks/useTheme';
+import { useCurrentDateString } from '@/hooks/useCurrentDateString';
 
 interface CounterModalProps {
     open: boolean;
@@ -25,6 +26,7 @@ interface CounterModalProps {
 export default function CounterModal({ open, onClose, counter }: CounterModalProps) {
     const { addItem, updateItem } = useCounters();
     const { resolvedTheme } = useTheme();
+    const todayStr = useCurrentDateString();
     const isEditing = !!counter;
 
     const colorOptions = useMemo(() =>
@@ -36,14 +38,13 @@ export default function CounterModal({ open, onClose, counter }: CounterModalPro
         })),
         [resolvedTheme]);
 
-    const { register, handleSubmit, control, watch, formState: { errors } } = useForm<CounterFormValues>({
+    const { register, handleSubmit, control, watch, setValue, getValues, formState: { errors } } = useForm<CounterFormValues>({
         resolver: zodResolver(counterSchema),
         defaultValues: {
             name: counter?.name || "",
             type: counter?.type || "count_up",
             color: counter?.color || "default",
-            // 🌟 Defaults to today silently for Count Downs
-            startDate: counter?.startDate || format(new Date(), 'yyyy-MM-dd'),
+            startDate: counter?.startDate || (counter?.type === 'count_down' ? "" : todayStr),
             endDate: counter?.endDate || "",
             isRecurring: counter?.isRecurring || false,
             intervalDays: counter?.intervalDays || undefined,
@@ -52,13 +53,26 @@ export default function CounterModal({ open, onClose, counter }: CounterModalPro
 
     const watchType = watch("type");
     const watchIsRecurring = watch("isRecurring");
+    const watchStartDate = watch("startDate");
+    const watchEndDate = watch("endDate");
+
+    const minIntervalDays = useMemo(() => {
+        if (!watchEndDate) return 1;
+        const startStr = watchStartDate?.trim() ? watchStartDate : todayStr;
+        const diff = differenceInCalendarDays(parseISO(watchEndDate), parseISO(startStr));
+        return diff > 0 ? diff : 1;
+    }, [watchEndDate, watchStartDate, todayStr]);
 
     const onSubmit = async (data: CounterFormValues) => {
+        const resolvedStartDate = (data.type === 'count_down' && (!data.startDate || data.startDate.trim() === ''))
+            ? todayStr
+            : (data.startDate || todayStr);
+
         const payload = {
             name: data.name,
             type: data.type as CounterType,
             color: data.color as CounterColor,
-            startDate: data.startDate,
+            startDate: resolvedStartDate,
             endDate: data.type === 'count_down' ? data.endDate : undefined,
             isRecurring: data.type === 'count_down' ? data.isRecurring : false,
             intervalDays: data.type === 'count_down' && data.isRecurring ? data.intervalDays : undefined,
@@ -100,7 +114,12 @@ export default function CounterModal({ open, onClose, counter }: CounterModalPro
                                         type="button"
                                         size="sm"
                                         variant={field.value === 'count_up' ? 'primary-active' : 'ghost'}
-                                        onClick={() => field.onChange('count_up')}
+                                        onClick={() => {
+                                            field.onChange('count_up');
+                                            if (!isEditing && !getValues("startDate")) {
+                                                setValue("startDate", todayStr);
+                                            }
+                                        }}
                                         className="flex-1"
                                     >
                                         Count Up
@@ -109,7 +128,12 @@ export default function CounterModal({ open, onClose, counter }: CounterModalPro
                                         type="button"
                                         size="sm"
                                         variant={field.value === 'count_down' ? 'primary-active' : 'ghost'}
-                                        onClick={() => field.onChange('count_down')}
+                                        onClick={() => {
+                                            field.onChange('count_down');
+                                            if (!isEditing && getValues("startDate") === todayStr) {
+                                                setValue("startDate", "");
+                                            }
+                                        }}
                                         className="flex-1"
                                     >
                                         Count Down
@@ -123,16 +147,35 @@ export default function CounterModal({ open, onClose, counter }: CounterModalPro
                     {watchType === 'count_up' && (
                         <div className="flex flex-col gap-y-1.5">
                             <BetterTypography variant="xs" weight="medium">Start Date</BetterTypography>
-                            <TextInput type="date" {...register("startDate")} error={errors.startDate?.message as string} />
+                            <TextInput
+                                type="date"
+                                {...register("startDate")}
+                                error={errors.startDate?.message as string}
+                            />
                         </div>
                     )}
 
-                    {/* 🌟 Count Down: Only needs End Date */}
+                    {/* 🌟 Count Down: Optional Start Date & Required End Date */}
                     {watchType === 'count_down' && (
-                        <div className="flex flex-col gap-y-1.5">
-                            <BetterTypography variant="xs" weight="medium">End Date</BetterTypography>
-                            <TextInput type="date" {...register("endDate")} error={errors.endDate?.message as string} />
-                        </div>
+                        <>
+                            <div className="flex flex-col gap-y-1.5">
+                                <BetterTypography variant="xs" weight="medium">Start Date (Optional)</BetterTypography>
+                                <TextInput
+                                    type="date"
+                                    {...register("startDate")}
+                                    error={errors.startDate?.message as string}
+                                />
+                            </div>
+
+                            <div className="flex flex-col gap-y-1.5">
+                                <BetterTypography variant="xs" weight="medium">End Date</BetterTypography>
+                                <TextInput
+                                    type="date"
+                                    {...register("endDate")}
+                                    error={errors.endDate?.message as string}
+                                />
+                            </div>
+                        </>
                     )}
 
                     {watchType === 'count_down' && (
@@ -164,7 +207,7 @@ export default function CounterModal({ open, onClose, counter }: CounterModalPro
                                         {...register("intervalDays", {
                                             setValueAs: (v) => v === "" || v === undefined ? undefined : Number(v)
                                         })}
-                                        placeholder="7"
+                                        placeholder={String(minIntervalDays)}
                                         className="placeholder:text-muted-foreground"
                                         error={errors.intervalDays?.message as string}
                                     />
