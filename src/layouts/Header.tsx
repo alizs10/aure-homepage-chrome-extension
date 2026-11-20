@@ -1,86 +1,98 @@
-import { BetterTypography } from '@/components/common/BetterTypography'
-import ThemeToggle from '@/components/common/ThemeToggle'
-import Clock from '@/components/features/clock/Clock'
-import NetworkStatus from '@/components/features/network-status/NetworkStatus'
-import PomodoroHeaderFeature from '@/components/features/pomodoro/PomodoroHeaderFeature'
-import HeaderUpdateChecker from '@/components/features/updates/HeaderUpdateChecker'
-import Updates from '@/components/features/updates/Updates'
-import Button from '@/components/ui/Button'
-import { useSettingsStore } from '@/stores'
-import { HomeIcon, SettingsIcon } from 'lucide-react'
-import { useMemo } from 'react'
-import { useLocation } from 'react-router-dom'
+import { BetterTypography } from "@/components/common/BetterTypography";
+import ThemeToggle from "@/components/common/ThemeToggle";
+import Clock from "@/components/features/clock/Clock";
+import NetworkStatus from "@/components/features/network-status/NetworkStatus";
+import PomodoroHeaderFeature from "@/components/features/pomodoro/PomodoroHeaderFeature";
+import HeaderUpdateChecker from "@/components/features/updates/HeaderUpdateChecker";
+import Updates from "@/components/features/updates/Updates";
+import Button from "@/components/ui/Button";
+import { useSettingsStore } from "@/stores";
+import { HomeIcon, SettingsIcon } from "lucide-react";
+import { useMemo } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function Header() {
-    const location = useLocation();
+  const location = useLocation();
 
-    const isSettingsPath = useMemo(() => {
-        if (!location?.pathname) return false
-        return location?.pathname === '/settings'
-    }, [location])
+  const isSettingsPath = useMemo(() => {
+    if (!location?.pathname) return false;
+    return location?.pathname === "/settings";
+  }, [location]);
 
-    const isHomePath = useMemo(() => {
-        if (!location?.pathname) return false
-        return location?.pathname === '/'
-    }, [location])
+  const isHomePath = useMemo(() => {
+    if (!location?.pathname) return false;
+    return location?.pathname === "/";
+  }, [location]);
 
-    const { settings } = useSettingsStore();
+  const { settings } = useSettingsStore();
 
+  return (
+    <header className="sticky top-3 mx-5 rounded-3xl flex justify-between h-8 min-h-8 px-2 md:px-3 lg:px-4 liquid-glass-sm z-50">
+      <div className="flex-row-center gap-x-4">
+        {!isHomePath && (
+          <Button
+            variant="ghost"
+            href="/"
+            size="xs"
+            className="gap-x-1"
+            leftIcon={<HomeIcon className="size-3.5" />}
+          >
+            <BetterTypography
+              className="text-nowrap"
+              variant="12"
+              weight="medium"
+              as="span"
+            >
+              Home
+            </BetterTypography>
+          </Button>
+        )}
 
+        <div className="hidden sm:flex h-full w-fit flex-center">
+          <BetterTypography
+            className="text-nowrap"
+            variant="12"
+            weight="semibold"
+            as="h2"
+          >
+            Hey, {settings?.name}
+          </BetterTypography>
+        </div>
 
-    return (
-        <header className="sticky top-0 flex justify-between h-8 min-h-8 px-4 md:px-8 lg:px-10 liquid-glass-sm z-50">
-            <div className="flex-row-center gap-x-4">
-                {!isHomePath && (
-                    <Button
-                        variant="ghost"
-                        href='/'
-                        size='xs'
-                        className='gap-x-1'
-                        leftIcon={<HomeIcon className="size-3.5" />}
-                    >
-                        <BetterTypography className="text-nowrap" variant="12" weight='medium' as="span">
-                            Home
-                        </BetterTypography>
-                    </Button>
-                )}
+        {!isSettingsPath && (
+          <Button
+            variant="ghost"
+            href="/settings"
+            size="xs"
+            className="gap-x-1"
+            leftIcon={<SettingsIcon className="size-3.5" />}
+          >
+            <BetterTypography
+              className="text-nowrap"
+              variant="12"
+              weight="medium"
+              as="span"
+            >
+              Settings
+            </BetterTypography>
+          </Button>
+        )}
+      </div>
 
-                <div className="hidden sm:flex h-full w-fit flex-center">
-                    <BetterTypography className="text-nowrap" variant="12" weight='semibold' as="h2">
-                        Hey, {settings?.name}
-                    </BetterTypography>
-                </div>
+      <div className="flex-row-center gap-x-1 sm:gap-x-2">
+        {/* 🌟 New Update Checker Feature */}
+        <HeaderUpdateChecker />
 
-                {!isSettingsPath && (
-                    <Button
-                        variant="ghost"
-                        href='/settings'
-                        size='xs'
-                        className='gap-x-1'
-                        leftIcon={<SettingsIcon className="size-3.5" />}
-                    >
-                        <BetterTypography className="text-nowrap" variant="12" weight='medium' as="span">
-                            Settings
-                        </BetterTypography>
-                    </Button>
-                )}
-            </div>
+        {/* 🌟 Pomodoro Header Feature */}
+        <PomodoroHeaderFeature />
 
-            <div className="flex-row-center gap-x-1 sm:gap-x-2">
+        <NetworkStatus />
 
-                {/* 🌟 New Update Checker Feature */}
-                <HeaderUpdateChecker />
+        <Clock />
 
-                {/* 🌟 Pomodoro Header Feature */}
-                <PomodoroHeaderFeature />
-
-                <NetworkStatus />
-
-                <Clock />
-
-                <Updates />
-                <ThemeToggle />
-            </div>
-        </header>
-    )
+        <Updates />
+        <ThemeToggle />
+      </div>
+    </header>
+  );
 }
