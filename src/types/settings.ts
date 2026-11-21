@@ -8,6 +8,11 @@ export type Theme = "dark" | "light" | "system";
 export type Wallpaper = {
   id: string;
   name: string;
+  description?: string;
+  variantNames?: {
+    light: string;
+    dark: string;
+  };
   variants: {
     light?: string;
     dark?: string;

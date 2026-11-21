@@ -7,6 +7,7 @@ import CircularProgressBar, {
 } from "@/components/ui/CircularProgressBar";
 import { format } from "date-fns";
 import type { DayLog } from "../../../types";
+import { isColor } from "@/features/wallpapers";
 import { useWallpaperBackground } from "@/hooks/useWallpaperBackground";
 import { useTheme } from "@/hooks/useTheme";
 import { useSettingsStore } from "@/stores";
@@ -235,7 +236,11 @@ export default function DayDetailModal({
         )}
       >
         <div
-          style={{ backgroundImage: `url(${background})` }}
+          style={
+            isColor(background)
+              ? { backgroundColor: background }
+              : { backgroundImage: `url(${background})` }
+          }
           className={cn("absolute z-0 inset-0 bg-cover bg-center blur-xs")}
         />
         <div className={cn("absolute z-0 inset-0 bg-background/50")} />

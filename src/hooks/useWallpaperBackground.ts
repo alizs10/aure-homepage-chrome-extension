@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSettingsStore } from "@/stores";
-import { useWallpaperStore } from "@/features/wallpapers";
+import { BUILTIN_WALLPAPERS, useWallpaperStore } from "@/features/wallpapers";
 import { useTheme } from "./useTheme";
 
 import lightBackground from "../assets/background/default-light.webp";
@@ -19,7 +19,9 @@ export function useWallpaperBackground() {
 
     const activeWallpaper = (!wallpaperId || wallpaperId === "default")
         ? null
-        : (customWallpapers.find((w) => w.id === wallpaperId) ?? null);
+        : (BUILTIN_WALLPAPERS.find((w) => w.id === wallpaperId) ??
+           customWallpapers.find((w) => w.id === wallpaperId) ??
+           null);
 
     const defaultBackground = resolvedTheme === "dark" ? darkBackground : lightBackground;
 

@@ -6,6 +6,7 @@ import { sliceText } from "@/helpers";
 interface ItemTooltipProps {
     title: string;
     subtitle?: string;
+    subtitleLength?: number;
     children: ReactElement;
     onClick?: MouseEventHandler<HTMLElement>;
 }
@@ -15,7 +16,7 @@ type SafeTriggerProps = HTMLAttributes<HTMLElement> & {
     onClick?: MouseEventHandler<HTMLElement>;
 };
 
-export function ItemTooltip({ title, subtitle, children, onClick }: ItemTooltipProps) {
+export function ItemTooltip({ title, subtitle, subtitleLength = 100, children, onClick }: ItemTooltipProps) {
     return (
         <Tooltip.Root>
             <Tooltip.Trigger
@@ -51,7 +52,7 @@ export function ItemTooltip({ title, subtitle, children, onClick }: ItemTooltipP
                         </BetterTypography>
                         {subtitle && (
                             <BetterTypography className="text-nowrap text-muted-foreground" variant="10-10-14" as="span">
-                                {sliceText(subtitle, 50)}
+                                {sliceText(subtitle, subtitleLength)}
                             </BetterTypography>
                         )}
                     </Tooltip.Popup>

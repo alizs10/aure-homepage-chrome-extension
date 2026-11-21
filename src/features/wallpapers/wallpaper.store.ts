@@ -1,12 +1,9 @@
 import { create } from "zustand";
 import type { Wallpaper } from "@/types";
 import { wallpaperRepository } from "./wallpaper.repo";
-import defaultDark1 from "@/assets/background/default-dark.webp";
-import defaultLight from "@/assets/background/default-light.webp";
+import { DEFAULT_WALLPAPERS, BUILTIN_WALLPAPERS } from "./wallpaper.constants";
 
-export const DEFAULT_WALLPAPERS: Wallpaper[] = [
-    { id: "default", name: "Default", variants: { light: defaultLight, dark: defaultDark1 } }
-];
+export { DEFAULT_WALLPAPERS, BUILTIN_WALLPAPERS };
 
 // 🌟 Cross-Tab Sync Setup
 const TAB_ID = typeof crypto !== 'undefined' && crypto.randomUUID
@@ -97,6 +94,8 @@ export const useWallpaperStore = create<WallpaperState>((set, get) => ({
         if (!id || id === "default") {
             return DEFAULT_WALLPAPERS[0];
         }
+        const builtin = BUILTIN_WALLPAPERS.find((w) => w.id === id);
+        if (builtin) return builtin;
         const found = get().customWallpapers.find((w) => w.id === id);
         if (found) return found;
         const fromDb = await wallpaperRepository.getById(id);
