@@ -11,15 +11,37 @@
     /* A little white (non-linear) for light theme */
     --liquid-glass-background: rgba(255, 255, 255, 0.3);
     --liquid-glass-background-sm: rgba(255, 255, 255, 0.3);
+
+    /* Specular Shine (Light theme): Wide, high-luminance physical highlights */
+    --liquid-glass-shine-start: rgba(255, 255, 255, 0.68);
+    --liquid-glass-shine-mid: rgba(255, 255, 255, 0.20);
+    --liquid-glass-shine-bounce-start: rgba(255, 255, 255, 0.45);
+    --liquid-glass-shine-bounce-mid: rgba(255, 255, 255, 0.12);
+
+    --liquid-glass-shine-sm-start: rgba(255, 255, 255, 0.52);
+    --liquid-glass-shine-sm-mid: rgba(255, 255, 255, 0.14);
+    --liquid-glass-shine-sm-bounce-start: rgba(255, 255, 255, 0.36);
+    --liquid-glass-shine-sm-bounce-mid: rgba(255, 255, 255, 0.08);
 }
 
 .dark {
-    --liquid-glass-highlight: rgba(255, 255, 255, 0.24);
-    --liquid-glass-shadow: rgba(255, 255, 255, 0.3);
+    --liquid-glass-highlight: rgba(255, 255, 255, 0.20);
+    --liquid-glass-shadow: rgba(255, 255, 255, 0.2);
 
-    /* A little dark (non-linear) for dark theme */
-    --liquid-glass-background: rgba(0, 0, 0, 0.3);
-    --liquid-glass-background-sm: rgba(0, 0, 0, 0.3);
+    /* Deeper dark body for sleek contrast in dark theme */
+    --liquid-glass-background: rgba(0, 0, 0, 0.35);
+    --liquid-glass-background-sm: rgba(0, 0, 0, 0.35);
+
+    /* Specular Shine (Dark theme): Subtle, sleek physical glass reflections */
+    --liquid-glass-shine-start: rgba(255, 255, 255, 0.12);
+    --liquid-glass-shine-mid: rgba(255, 255, 255, 0.025);
+    --liquid-glass-shine-bounce-start: rgba(255, 255, 255, 0.07);
+    --liquid-glass-shine-bounce-mid: rgba(255, 255, 255, 0.015);
+
+    --liquid-glass-shine-sm-start: rgba(255, 255, 255, 0.10);
+    --liquid-glass-shine-sm-mid: rgba(255, 255, 255, 0.02);
+    --liquid-glass-shine-sm-bounce-start: rgba(255, 255, 255, 0.05);
+    --liquid-glass-shine-sm-bounce-mid: rgba(255, 255, 255, 0.01);
 }
 
 /* ========================================================
@@ -30,7 +52,24 @@
     --liquid-glass-shadow-size: 3px;
 
     position: relative;
-    background: var(--liquid-glass-background);
+    background-color: var(--liquid-glass-background);
+
+    /* Specular Shine: Physical diagonal light reflections directly on background.
+       Keeps shines behind content and permanently covers scrollable containers. */
+    background-image:
+        linear-gradient(
+            135deg,
+            var(--liquid-glass-shine-start, rgba(255, 255, 255, 0.68)) 0%,
+            var(--liquid-glass-shine-mid, rgba(255, 255, 255, 0.20)) 42%,
+            transparent 82%
+        ),
+        linear-gradient(
+            315deg,
+            var(--liquid-glass-shine-bounce-start, rgba(255, 255, 255, 0.45)) 0%,
+            var(--liquid-glass-shine-bounce-mid, rgba(255, 255, 255, 0.12)) 38%,
+            transparent 75%
+        );
+    background-attachment: scroll, scroll;
 
     /* Glass Edge: Physical thickness and directional light catching the border */
     border: 1px solid rgba(255, 255, 255, 0.18);
@@ -47,36 +86,6 @@
         inset 0 -1px 1px 0 rgba(0, 0, 0, 0.08),
         inset 0 0 var(--liquid-glass-shadow-size) var(--liquid-glass-shadow),
         0 8px 24px -4px rgba(0, 0, 0, 0.08) !important;
-
-    /* Specular Shine: Physical diagonal light reflection */
-    &::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.16) 0%,
-            rgba(255, 255, 255, 0.04) 35%,
-            transparent 85%
-        );
-        pointer-events: none;
-        z-index: 1;
-    }
-    &::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        background: linear-gradient(
-            315deg,
-            rgba(255, 255, 255, 0.16) 0%,
-            rgba(255, 255, 255, 0.04) 35%,
-            transparent 85%
-        );
-        pointer-events: none;
-        z-index: 1;
-    }
 }
 
 /* ========================================================
@@ -87,7 +96,22 @@
     --liquid-glass-shadow-size: 2px;
 
     position: relative;
-    background: var(--liquid-glass-background-sm);
+    background-color: var(--liquid-glass-background-sm);
+
+    background-image:
+        linear-gradient(
+            135deg,
+            var(--liquid-glass-shine-sm-start, rgba(255, 255, 255, 0.52)) 0%,
+            var(--liquid-glass-shine-sm-mid, rgba(255, 255, 255, 0.14)) 42%,
+            transparent 82%
+        ),
+        linear-gradient(
+            315deg,
+            var(--liquid-glass-shine-sm-bounce-start, rgba(255, 255, 255, 0.36)) 0%,
+            var(--liquid-glass-shine-sm-bounce-mid, rgba(255, 255, 255, 0.08)) 38%,
+            transparent 75%
+        );
+    background-attachment: scroll, scroll;
 
     /* Thinner glass edge for small components */
     border: 1px solid rgba(255, 255, 255, 0.14);
@@ -102,33 +126,4 @@
         inset 0 -0.5px 0.5px 0 rgba(0, 0, 0, 0.06),
         inset 0 0 var(--liquid-glass-shadow-size) var(--liquid-glass-shadow),
         0 4px 12px -2px rgba(0, 0, 0, 0.04) !important;
-
-    &::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.12) 0%,
-            rgba(255, 255, 255, 0.03) 35%,
-            transparent 85%
-        );
-        pointer-events: none;
-        z-index: 1;
-    }
-    &::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        background: linear-gradient(
-            315deg,
-            rgba(255, 255, 255, 0.12) 0%,
-            rgba(255, 255, 255, 0.03) 35%,
-            transparent 85%
-        );
-        pointer-events: none;
-        z-index: 1;
-    }
 }
