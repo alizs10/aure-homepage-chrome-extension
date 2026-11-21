@@ -22,7 +22,7 @@ export const SOLID_COLOR_WALLPAPERS: Wallpaper[] = [
   },
   {
     id: "solid-default",
-    name: "Default",
+    name: "Lavender",
     description: "Muted lavender-gray / midnight indigo",
     variants: {
       light: "#E0DEEB",

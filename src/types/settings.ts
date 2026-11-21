@@ -88,7 +88,7 @@ export type WidgetPreferences = {
 export const accentOptions = [
   {
     id: "default",
-    label: "Default",
+    label: "Lavender",
     light: "hsl(249.2 75.8% 58.6%)",
     dark: "hsl(243.6 85.5% 66.7%)",
     foreground: { light: "hsl(0 0% 100%)", dark: "hsl(0 0% 100%)" },
