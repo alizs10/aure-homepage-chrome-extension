@@ -83,7 +83,7 @@ function getMatchScore(suggestion: Suggestion, query: string): number {
     host = url;
   }
 
-  let score = 0;
+  let score: number;
 
   if (label === q) {
     score = 500;

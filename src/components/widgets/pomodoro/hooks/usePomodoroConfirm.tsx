@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, type ReactNode } from 'react';
+import { useState, useCallback, useEffect, useRef, type ReactNode } from 'react';
 import { usePomodoro } from './usePomodoro';
 import type { PomodoroConfirmAction } from '../types';
 import PomodoroConfirmDialog from '../components/PomodoroConfirmDialog';
@@ -13,10 +13,12 @@ export function usePomodoroConfirm(options?: UsePomodoroConfirmOptions) {
     const { reset, resetCycle, completeEarly, includeOvertime, skipOvertime } = usePomodoro();
 
     const onConfirmedRef = useRef(options?.onConfirmed);
-    onConfirmedRef.current = options?.onConfirmed;
-
     const onCancelledRef = useRef(options?.onCancelled);
-    onCancelledRef.current = options?.onCancelled;
+
+    useEffect(() => {
+        onConfirmedRef.current = options?.onConfirmed;
+        onCancelledRef.current = options?.onCancelled;
+    }, [options?.onConfirmed, options?.onCancelled]);
 
     const requestConfirm = useCallback((action: PomodoroConfirmAction) => {
         setConfirmAction(action);
