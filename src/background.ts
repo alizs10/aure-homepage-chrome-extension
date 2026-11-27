@@ -66,6 +66,22 @@ browser.runtime.onMessage.addListener(async (rawMessage: unknown, sender: Runtim
         return { status: 'ok', wasCleared };
     }
 
+    if (action === 'CAPTURE_VISIBLE_TAB') {
+        try {
+            const win = await browser.windows.getLastFocused();
+            const captureVisibleTab = browser.tabs.captureVisibleTab as unknown as (
+                windowId: number | null,
+                options: { format: 'png' }
+            ) => Promise<string>;
+            const dataUrl = await captureVisibleTab(win?.id ?? null, { format: 'png' });
+            return { success: true, dataUrl };
+        } catch (err: unknown) {
+            console.error('Background captureVisibleTab failed', err);
+            const errorMessage = err instanceof Error ? err.message : 'Capture failed';
+            return { success: false, error: errorMessage };
+        }
+    }
+
     if (action === 'POMODORO_COMPLETE') {
         await browser.notifications.create('aure-pomodoro-complete', {
             type: 'basic',
