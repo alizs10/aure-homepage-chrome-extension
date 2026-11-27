@@ -1,89 +1,33 @@
 import { BetterTypography } from "@/components/common/BetterTypography";
-import { AnimatePresence, motion } from "framer-motion";
-import { CheckIcon } from "lucide-react";
 import { STEPS } from "../constants/steps";
 
 export function WizardStepper({ currentStep }: { currentStep: number }) {
     return (
-        <motion.div
-            layout
-            className="liquid-glass p-1.5 rounded-full overflow-clip flex flex-nowrap gap-x-1.5 mt-4 h-12"
-        >
-            {STEPS.map((step, i) => {
-                const completed = step.id < currentStep;
-                const active = step.id === currentStep;
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full liquid-glass border border-border/40 select-none">
+            <BetterTypography variant="xs" className="text-muted-foreground font-medium whitespace-nowrap">
+                Step <span className="text-foreground font-semibold">{currentStep}</span> of {STEPS.length}
+            </BetterTypography>
 
-                return (
-                    <motion.div
-                        key={step.id}
-                        layout // Magic: Automatically animates the pixel width changes from flex-1 to w-10!
-                        className={`
-                            flex items-center justify-center h-full rounded-full text-center overflow-hidden min-w-10
-                            ${active ? "text-primary bg-background" : "bg-background text-muted-foreground"}
-                            ${completed ? "bg-primary text-primary-foreground" : ""}
-                        `}
+            <div className="flex items-center gap-1" aria-hidden="true">
+                {STEPS.map((step) => {
+                    const active = step.id === currentStep;
+                    const completed = step.id < currentStep;
 
-                        initial={false}
-                        animate={{
-                            width: active ? "calc(100% - 5.75rem)" : "2.5rem"
-                        }}
-                        // Slower, softer spring for a premium feel
-                        transition={{
-                            type: "spring",
-                            stiffness: 150,
-                            damping: 22,
-                            mass: 0.8,
-                            // delay: .3
-                        }}
-                    >
-                        {/* AnimatePresence handles the content swap */}
-                        <AnimatePresence mode="wait" initial={false}>
-                            {completed ? (
-                                <motion.div
-                                    key="check"
-                                    initial={{ opacity: 0, y: -15 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 15 }}
-                                    transition={{ duration: 0.25, ease: "easeInOut" }}
-                                    className="flex items-center justify-center"
-                                >
-                                    <CheckIcon className="size-5" strokeWidth={2.5} />
-                                </motion.div>
-                            ) : active ? (
-                                <motion.div
-                                    key="label"
-                                    initial={{ opacity: 0, y: -15 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 15 }}
-                                    transition={{
-                                        duration: 0.25, ease: "easeInOut",
-                                        // delay: .3
-
-                                    }}
-                                    className="w-full flex items-center justify-center px-2"
-                                >
-                                    <BetterTypography className="text-nowrap capitalize" variant="sm" weight="medium">
-                                        {step.id}. {step.label}
-                                    </BetterTypography>
-                                </motion.div>
-                            ) : (
-                                <motion.div
-                                    key="number"
-                                    initial={{ opacity: 0, y: -15 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 15 }}
-                                    transition={{ duration: 0.25, ease: "easeInOut" }}
-                                    className="flex items-center justify-center"
-                                >
-                                    <BetterTypography variant="sm" weight="medium">
-                                        {i + 1}
-                                    </BetterTypography>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </motion.div>
-                );
-            })}
-        </motion.div>
+                    return (
+                        <div
+                            key={step.id}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                                active
+                                    ? "w-3.5 bg-primary"
+                                    : completed
+                                    ? "w-1.5 bg-primary/60"
+                                    : "w-1.5 bg-muted-foreground/30"
+                            }`}
+                        />
+                    );
+                })}
+            </div>
+        </div>
     );
 }
+

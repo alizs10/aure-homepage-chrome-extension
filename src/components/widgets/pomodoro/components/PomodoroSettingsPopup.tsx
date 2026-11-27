@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import browser from 'webextension-polyfill'
 import { toast } from '@/stores/useToastStore'
 
 import { BetterTypography } from '@/components/common/BetterTypography'
@@ -56,16 +57,32 @@ export default function PomodoroSettingsPopup({ open, onClose }: PomodoroSetting
         onClose()
     }
 
-    // 🌟 Request notification permission when the toggle is turned on
+    // 🌟 Verify notification permission when the toggle is turned on
     const handleNotificationsChange = async (enabled: boolean) => {
         setValue('notifications', enabled, { shouldDirty: true });
-        if (enabled && typeof window !== 'undefined' && 'Notification' in window) {
+        if (!enabled) return;
+
+        // Extension notifications use browser.notifications (backed by the manifest
+        // "notifications" permission), not the DOM Notification API which can report
+        // "default" or "denied" on moz-extension:// pages in Firefox.
+        const hasExtensionRuntime =
+            (typeof browser !== 'undefined' && Boolean(browser.runtime?.id)) ||
+            (typeof chrome !== 'undefined' && Boolean(chrome.runtime?.id));
+
+        if (hasExtensionRuntime) {
+            return;
+        }
+
+        if (typeof window !== 'undefined' && 'Notification' in window) {
             if (Notification.permission === 'default') {
                 const permission = await Notification.requestPermission();
                 if (permission !== 'granted') {
                     setValue('notifications', false, { shouldDirty: true });
                     toast.error('Notification permission denied');
                 }
+            } else if (Notification.permission === 'denied') {
+                setValue('notifications', false, { shouldDirty: true });
+                toast.error('Notification permission denied');
             }
         }
     };

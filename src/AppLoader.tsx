@@ -5,7 +5,7 @@ import { useMoodTracker } from "./components/widgets/mood-tracker/hooks/useMoodT
 import { useCalendar } from "./components/widgets/calendar/hooks/useCalendar";
 import { usePetHouse } from "./components/widgets/pet-house/hooks/usePetHouse";
 import { useNotesAndChecklists } from "./components/widgets/notes-and-checklists/hooks/useNotesAndChecklists";
-import { useFavorites, useFolders } from "@/features/bookmarks";
+import { useFavorites, useFolders, useRoutines } from "@/features/bookmarks";
 import { blurOptions } from "@/types";
 import { usePomodoro } from "./components/widgets/pomodoro/hooks/usePomodoro";
 import { runMigrations } from "./lib/migrations";
@@ -19,6 +19,7 @@ type AppLoaderProps = {
 export default function AppLoader({ children }: AppLoaderProps) {
     const loading = useSettingsStore((s) => s.loading);
     const settings = useSettingsStore((s) => s.settings);
+    const isImporting = useSettingsStore((s) => s.isImporting);
     const load = useSettingsStore((s) => s.load);
     const [migrationsDone, setMigrationsDone] = useState(false);
 
@@ -28,11 +29,12 @@ export default function AppLoader({ children }: AppLoaderProps) {
     const { initialize: initNotes, loading: isNotesLoading } = useNotesAndChecklists();
     const { initialize: initFavorites, loading: isFavoritesLoading } = useFavorites();
     const { initialize: initFolders, loading: isFoldersLoading } = useFolders();
+    const { initialize: initRoutines, loading: isRoutinesLoading } = useRoutines();
     const { initialize: initPomodoro, loading: isPomodoroLoading } = usePomodoro();
     const { initialize: initCounters, loading: isCountersLoading } = useCounters();
     const { initialize: initProgresses, loading: isProgressesLoading } = useProgresses();
 
-    const isLoading = loading || isFavoritesLoading || isFoldersLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading || isPomodoroLoading || isCountersLoading || isProgressesLoading;
+    const isLoading = loading || isFavoritesLoading || isFoldersLoading || isRoutinesLoading || isMoodsLoading || isCalendarLoading || isPetHouseLoading || isNotesLoading || isPomodoroLoading || isCountersLoading || isProgressesLoading;
     const location = useLocation();
 
     useEffect(() => {
@@ -43,10 +45,11 @@ export default function AppLoader({ children }: AppLoaderProps) {
         initPetHouse();
         initFavorites();
         initFolders();
+        initRoutines();
         initPomodoro();
         initCounters();
         initProgresses();
-    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders, initPomodoro, initCounters, initProgresses]);
+    }, [load, initNotes, initMoods, initCalendar, initPetHouse, initFavorites, initFolders, initRoutines, initPomodoro, initCounters, initProgresses]);
 
     useEffect(() => {
         // If still loading, already done, or no settings (fresh user), do nothing synchronously
@@ -63,19 +66,31 @@ export default function AppLoader({ children }: AppLoaderProps) {
             });
     }, [loading, settings, migrationsDone]);
 
-    // 🌟 Apply global CSS variables as soon as settings are loaded
-    useEffect(() => {
-        if (!settings) return;
+    // 🌟 Apply global CSS variables as soon as settings are loaded or previewed
+    const previewAccent = useSettingsStore((s) => s.preview?.accent);
+    const previewBlur = useSettingsStore((s) => s.preview?.blur);
 
-        // 1. Apply Accent via data attribute (CSS handles the variable mapping)
-        document.documentElement.setAttribute('data-accent', settings.accent);
+    useEffect(() => {
+        const activeAccent = previewAccent ?? settings?.accent;
+        if (activeAccent) {
+            // 1. Apply Accent via data attribute (CSS handles the variable mapping)
+            document.documentElement.setAttribute('data-accent', activeAccent);
+        }
 
         // 2. Apply Blur
-        const blur = blurOptions.find(option => option.key === settings.blur);
-        if (blur) {
-            document.documentElement.style.setProperty("--liquid-glass-blur", blur.value);
+        const activeBlur = previewBlur ?? settings?.blur;
+        if (activeBlur) {
+            const blur = blurOptions.find(option => option.key === activeBlur);
+            if (blur) {
+                document.documentElement.style.setProperty("--liquid-glass-blur", blur.value);
+            }
         }
-    }, [settings]);
+    }, [settings, previewAccent, previewBlur]);
+
+    // 0. While importing data, keep rendering children without interruptions so overlay is visible
+    if (isImporting) {
+        return <>{children}</>;
+    }
 
     // 1. Block rendering while initial data is loading
     if (isLoading) {

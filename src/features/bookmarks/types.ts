@@ -13,3 +13,10 @@ export type Folder = {
     websites: Website[];
     order: number;
 };
+
+export type Routine = {
+    id: number;
+    title: string;
+    websites: Website[];
+    order: number;
+};

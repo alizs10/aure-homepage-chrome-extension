@@ -53,6 +53,73 @@ const BADGE_CONFIG: Record<
   engine: { variant: "ocean", label: "Engine" },
 };
 
+function getMatchScore(suggestion: Suggestion, query: string): number {
+  if (suggestion.source === "command" || suggestion.source === "engine") {
+    return 0;
+  }
+
+  if (suggestion.source === "direct") {
+    return 1000;
+  }
+
+  const q = query.toLowerCase().trim();
+  if (!q) return 0;
+
+  const label = suggestion.label.toLowerCase().trim();
+  let url = "";
+  let host = "";
+  try {
+    if (suggestion.url && suggestion.url !== "#") {
+      const parsed = new URL(
+        suggestion.url.startsWith("http")
+          ? suggestion.url
+          : `https://${suggestion.url}`,
+      );
+      host = parsed.hostname.toLowerCase().replace(/^www\./, "");
+      url = suggestion.url.toLowerCase();
+    }
+  } catch {
+    url = (suggestion.url || "").toLowerCase();
+    host = url;
+  }
+
+  let score: number;
+
+  if (label === q) {
+    score = 500;
+  } else if (host === q) {
+    score = 480;
+  } else if (label.startsWith(q)) {
+    score = 400;
+  } else if (host.startsWith(q)) {
+    score = 380;
+  } else if (label.split(/[\s\-_/|:]+/).some((word) => word.startsWith(q))) {
+    score = 300;
+  } else if (label.includes(q)) {
+    score = 200;
+  } else if (host.includes(q)) {
+    score = 150;
+  } else if (url.includes(q)) {
+    score = 100;
+  } else {
+    score = 50;
+  }
+
+  if (suggestion.source === "top-sites") {
+    score += 8;
+  } else if (suggestion.source === "favorite") {
+    score += 7;
+  } else if (suggestion.source === "folder") {
+    score += 6;
+  } else if (suggestion.source === "history") {
+    score += 5;
+  } else if (suggestion.source === "google") {
+    score += 1;
+  }
+
+  return score;
+}
+
 interface SuggestionsProps {
   searchValue: string;
   isCommandMode: boolean;
@@ -158,8 +225,7 @@ export default function Suggestions({
   const isEngineQueryMode = isEngineMode && !!targetEngine;
   const effectiveQuery = isEngineQueryMode ? parsedEngine.query : rawQuery;
 
-  const shouldFetchHistory =
-    !isCommandMode && !isEngineMode && query.length > 0;
+  const shouldFetchHistory = !isCommandMode && !isEngineMode;
   const shouldFetchEngineSuggestions =
     !isCommandMode &&
     effectiveQuery.length > 0 &&
@@ -328,22 +394,59 @@ export default function Suggestions({
           : null;
     if (!historyApi) return;
 
+    const searchOptions: {
+      text: string;
+      startTime: number;
+      maxResults?: number;
+    } = {
+      text: query,
+      startTime: 0,
+    };
+    if (query.length === 0) {
+      searchOptions.maxResults = 30;
+    }
+
     historyApi
-      .search({ text: query, maxResults: 10 })
+      .search(searchOptions)
       .then((historyItems) => {
         if (isCancelled) return;
         const items: Suggestion[] = [];
-        historyItems.forEach((item, index) => {
-          if (item.url) {
-            items.push({
-              id: `history-${index}`,
-              url: item.url,
-              label: item.title || item.url,
-              description: item.url,
-              source: "history",
-            });
+        const seenUrls = new Set<string>();
+
+        const sorted = [...historyItems].sort(
+          (a, b) => (b.lastVisitTime ?? 0) - (a.lastVisitTime ?? 0),
+        );
+
+        for (const item of sorted) {
+          if (!item.url) continue;
+          const url = item.url.trim();
+          if (
+            !url ||
+            url.startsWith("chrome://") ||
+            url.startsWith("chrome-extension://") ||
+            url.startsWith("moz-extension://") ||
+            url.startsWith("edge://") ||
+            url.startsWith("about:") ||
+            url.startsWith("javascript:")
+          ) {
+            continue;
           }
-        });
+
+          const normalized = url.replace(/\/$/, "");
+          if (seenUrls.has(normalized)) continue;
+          seenUrls.add(normalized);
+
+          items.push({
+            id: `history-${item.id || items.length}`,
+            url: item.url,
+            label: item.title || item.url,
+            description: item.url,
+            source: "history",
+          });
+
+          if (query.length === 0 && items.length >= 5) break;
+        }
+
         setHistorySuggestions(items);
       })
       .catch((e) => console.warn("History search failed", e));
@@ -419,8 +522,66 @@ export default function Suggestions({
   }, [shouldFetchEngineSuggestions, effectiveQuery, currentActiveEngine]);
 
   const suggestions = useMemo(() => {
-    return [...localSuggestions, ...historySuggestions, ...engineSuggestions];
-  }, [localSuggestions, historySuggestions, engineSuggestions]);
+    if (isCommandMode || isEngineMode) {
+      return [...localSuggestions, ...engineSuggestions];
+    }
+
+    // When the input is empty, history must be at the top (capped to 5 latest)
+    if (query.length === 0) {
+      const historyItems = historySuggestions.slice(0, 5);
+      const historyUrls = new Set(
+        historyItems
+          .map((s) => s.url.replace(/\/$/, ""))
+          .filter((url) => url && url !== "#"),
+      );
+
+      const filteredLocal = localSuggestions.filter(
+        (l) => !historyUrls.has(l.url.replace(/\/$/, "")),
+      );
+
+      return [...historyItems, ...filteredLocal];
+    }
+
+    // When the input is not empty, order is based on best match with no count limit for history
+    const allCandidates = [
+      ...localSuggestions,
+      ...historySuggestions,
+      ...engineSuggestions,
+    ];
+
+    allCandidates.sort(
+      (a, b) => getMatchScore(b, query) - getMatchScore(a, query),
+    );
+
+    const seenUrls = new Set<string>();
+    const ranked: Suggestion[] = [];
+
+    for (const item of allCandidates) {
+      if (item.source === "google") {
+        ranked.push(item);
+        continue;
+      }
+
+      if (!item.url || item.url === "#") {
+        ranked.push(item);
+        continue;
+      }
+
+      const normalized = item.url.replace(/\/$/, "");
+      if (seenUrls.has(normalized)) continue;
+      seenUrls.add(normalized);
+      ranked.push(item);
+    }
+
+    return ranked;
+  }, [
+    isCommandMode,
+    isEngineMode,
+    query,
+    localSuggestions,
+    historySuggestions,
+    engineSuggestions,
+  ]);
 
   const headerTitle = useMemo(() => {
     if (isCommandMode) return "Commands";

@@ -17,6 +17,7 @@ import { isFirefox } from "@/lib/browser";
 import { Link } from "react-router-dom";
 import TopSites from "../components/home/TopSites";
 import Folders from "../components/home/folders/Folders";
+import Routines from "../components/home/routines/Routines";
 import FirefoxPermissionsBanner from "@/components/home/FirefoxPermissionsBanner";
 import Calendar from "../components/widgets/calendar/Calendar";
 import MoodTracker from "../components/widgets/mood-tracker/MoodTracker";
@@ -41,7 +42,8 @@ export default function Home() {
     const showTopSites = settings?.show_top_sites;
     const showFavorites = settings?.show_favorites;
     const showFolders = settings?.show_folders ?? true;
-    const showSitesRow = showTopSites || showFavorites || showFolders;
+    const showRoutines = settings?.show_routines ?? true;
+    const showSitesRow = showTopSites || showFavorites || showFolders || showRoutines;
 
     const { currentPage, totalPages, setCurrentPage, viewportSize } = useWidgetPagination(widgetLayout?.totalPages);
     const [isCustomizing, setIsCustomizing] = useState(false);
@@ -197,6 +199,7 @@ export default function Home() {
                             {showTopSites && <TopSites />} {/* no limits*/}
                             {showFavorites && <Favorites />} {/* 15 limits*/}
                             {showFolders && <Folders />} {/* 5 limits*/}
+                            {showRoutines && <Routines />} {/* 5 limits*/}
                             <Link className="transition-opacity duration-200 pointer-events-auto" to="/settings?tab=bookmarks">
                                 <Button
                                     size='icon-sm'

@@ -1,6 +1,79 @@
 // background.ts
 import browser, { type Runtime } from 'webextension-polyfill';
 
+const POMODORO_NOTIFICATION_PREFIX = 'aure-pomodoro-complete';
+const LAST_NOTIFIED_STORAGE_KEY = 'pomodoroLastNotifiedEndTime';
+let lastNotifiedSessionEndTime: number | null = null;
+
+async function recordNotifiedSessionEndTime(sessionEndTime: number | null) {
+    lastNotifiedSessionEndTime = sessionEndTime;
+    if (sessionEndTime !== null) {
+        await browser.storage.local.set({ [LAST_NOTIFIED_STORAGE_KEY]: sessionEndTime }).catch(() => {});
+    } else {
+        await browser.storage.local.remove(LAST_NOTIFIED_STORAGE_KEY).catch(() => {});
+    }
+}
+
+async function wasSessionAlreadyNotified(sessionEndTime?: number): Promise<boolean> {
+    if (!sessionEndTime) return false;
+    if (lastNotifiedSessionEndTime === sessionEndTime) return true;
+
+    try {
+        const stored = await browser.storage.local.get(LAST_NOTIFIED_STORAGE_KEY);
+        const persisted = stored[LAST_NOTIFIED_STORAGE_KEY];
+        if (typeof persisted === 'number' && persisted === sessionEndTime) {
+            lastNotifiedSessionEndTime = persisted;
+            return true;
+        }
+    } catch {
+        // Ignore storage read errors
+    }
+
+    return false;
+}
+
+function isPomodoroNotificationId(notificationId: string): boolean {
+    return (
+        notificationId === POMODORO_NOTIFICATION_PREFIX ||
+        notificationId.startsWith(`${POMODORO_NOTIFICATION_PREFIX}-`)
+    );
+}
+
+// Clear any previous Pomodoro notification and create one with a fresh ID so
+// Firefox / macOS Notification Center never suppresses repeated alerts.
+async function showPomodoroNotification(title: string, message: string) {
+    try {
+        const active = await browser.notifications.getAll();
+        await Promise.all(
+            Object.keys(active)
+                .filter(isPomodoroNotificationId)
+                .map((id) => browser.notifications.clear(id).catch(() => {}))
+        );
+    } catch {
+        // Fallback: best-effort clear of legacy fixed ID
+        await browser.notifications.clear(POMODORO_NOTIFICATION_PREFIX).catch(() => {});
+    }
+
+    const notificationId = `${POMODORO_NOTIFICATION_PREFIX}-${Date.now()}`;
+    const iconUrl = browser.runtime.getURL('icon-128.png');
+
+    try {
+        await browser.notifications.create(notificationId, {
+            type: 'basic',
+            iconUrl,
+            title,
+            message,
+        });
+    } catch (error) {
+        console.warn('Failed to create notification with icon, retrying without iconUrl:', error);
+        await browser.notifications.create(notificationId, {
+            type: 'basic',
+            title,
+            message,
+        });
+    }
+}
+
 // 🌟 Listen for the background alarm (fires even if tab is closed)
 browser.alarms.onAlarm.addListener(async (alarm) => {
     if (alarm.name === 'pomodoro-session-end') {
@@ -10,9 +83,15 @@ browser.alarms.onAlarm.addListener(async (alarm) => {
             session: string;
             cyclePosition: number;
             longBreakInterval: number;
+            notifications?: boolean;
+            sessionEndTime?: number;
         } | undefined;
 
-        if (context) {
+        await browser.storage.local.remove('pomodoroAlarmContext').catch(() => {});
+
+        if (context && context.notifications !== false) {
+            await recordNotifiedSessionEndTime(context.sessionEndTime ?? null);
+
             const { session, cyclePosition, longBreakInterval } = context;
             const sessionLabel =
                 session === 'focus' ? 'Focus' : session === 'short-break' ? 'Short Break' : 'Long Break';
@@ -26,13 +105,10 @@ browser.alarms.onAlarm.addListener(async (alarm) => {
             const nextLabel =
                 nextSession === 'focus' ? 'Focus' : nextSession === 'short-break' ? 'Short Break' : 'Long Break';
 
-            // 🌟 Use fixed notification ID so multiple alerts don't stack up
-            await browser.notifications.create('aure-pomodoro-complete', {
-                type: 'basic',
-                iconUrl: browser.runtime.getURL('icon-128.png'),
-                title: `${sessionLabel} Complete!`,
-                message: `Time for your ${nextLabel.toLowerCase()}.`,
-            });
+            await showPomodoroNotification(
+                `${sessionLabel} Complete!`,
+                `Time for your ${nextLabel.toLowerCase()}.`
+            );
         }
     }
 });
@@ -44,6 +120,7 @@ browser.runtime.onMessage.addListener(async (rawMessage: unknown, sender: Runtim
         action?: string;
         endTime?: number;
         delayInMinutes?: number;
+        sessionEndTime?: number;
         title?: string;
         body?: string;
         message?: string;
@@ -51,12 +128,13 @@ browser.runtime.onMessage.addListener(async (rawMessage: unknown, sender: Runtim
     const action = message.type || message.action;
 
     if (action === 'SET_POMODORO_ALARM') {
+        await recordNotifiedSessionEndTime(null);
         if (message.endTime) {
             const when = Math.max(message.endTime, Date.now() + 1000);
-            browser.alarms.create('pomodoro-session-end', { when });
+            await browser.alarms.create('pomodoro-session-end', { when });
         } else if (message.delayInMinutes) {
             const delayInMinutes = Math.max(message.delayInMinutes, 0.1);
-            browser.alarms.create('pomodoro-session-end', { delayInMinutes });
+            await browser.alarms.create('pomodoro-session-end', { delayInMinutes });
         }
         return { status: 'ok' };
     }
@@ -66,13 +144,35 @@ browser.runtime.onMessage.addListener(async (rawMessage: unknown, sender: Runtim
         return { status: 'ok', wasCleared };
     }
 
+    if (action === 'CAPTURE_VISIBLE_TAB') {
+        try {
+            const win = await browser.windows.getLastFocused();
+            const captureVisibleTab = browser.tabs.captureVisibleTab as unknown as (
+                windowId: number | null,
+                options: { format: 'png' }
+            ) => Promise<string>;
+            const dataUrl = await captureVisibleTab(win?.id ?? null, { format: 'png' });
+            return { success: true, dataUrl };
+        } catch (err: unknown) {
+            console.error('Background captureVisibleTab failed', err);
+            const errorMessage = err instanceof Error ? err.message : 'Capture failed';
+            return { success: false, error: errorMessage };
+        }
+    }
+
     if (action === 'POMODORO_COMPLETE') {
-        await browser.notifications.create('aure-pomodoro-complete', {
-            type: 'basic',
-            iconUrl: browser.runtime.getURL('icon-128.png'),
-            title: message.title || 'Pomodoro Completed!',
-            message: message.body || message.message || 'Your Pomodoro session has ended. Take a break!',
-        });
+        if (await wasSessionAlreadyNotified(message.sessionEndTime)) {
+            return { status: 'ok', deduplicated: true };
+        }
+
+        await recordNotifiedSessionEndTime(message.sessionEndTime ?? null);
+        await browser.alarms.clear('pomodoro-session-end').catch(() => {});
+        await browser.storage.local.remove('pomodoroAlarmContext').catch(() => {});
+
+        await showPomodoroNotification(
+            message.title || 'Pomodoro Completed!',
+            message.body || message.message || 'Your Pomodoro session has ended. Take a break!'
+        );
         return { status: 'ok' };
     }
 
@@ -210,8 +310,8 @@ async function openOrFocusAureTab() {
 
 // 🌟 Focus existing Aure tab or open new tab when notification is clicked
 browser.notifications.onClicked.addListener(async (notificationId) => {
-    if (notificationId === 'aure-pomodoro-complete') {
-        await browser.notifications.clear(notificationId);
+    if (isPomodoroNotificationId(notificationId)) {
+        await browser.notifications.clear(notificationId).catch(() => {});
         await openOrFocusAureTab();
     }
 });

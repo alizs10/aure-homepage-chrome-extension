@@ -11,7 +11,7 @@ import { useCounters } from '../hooks/useCounters';
 import { toast } from '@/stores/useToastStore';
 import type { Counter, CounterColor, CounterType } from '../types';
 import { accentOptions } from '@/types/settings';
-import { format, differenceInCalendarDays, parseISO } from 'date-fns';
+import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { useMemo } from 'react';
 import { counterSchema, type CounterFormValues } from '../validation/counter-schema';
 import { useTheme } from '@/hooks/useTheme';

@@ -6,7 +6,6 @@ import { z } from 'zod';
 import Wrappers from './Wrappers.tsx';
 import App from './App.tsx';
 import './index.css';
-import LiquidGlass from './components/ui/LiquidGlass.tsx';
 import { preloadFaviconCache } from './lib/favicon';
 import { isFirefox } from './lib/browser';
 import browser from 'webextension-polyfill';
@@ -47,7 +46,6 @@ if (isFirefox) {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Wrappers>
-      <LiquidGlass />
       <App />
     </Wrappers>
   </StrictMode>,

@@ -15,7 +15,7 @@ const IP_API_ENDPOINTS = [
     "https://get.geojs.io/v1/ip/geo.json",
     "https://ipwho.is/",
 ];
-const FETCH_TIMEOUT_MS = 5000;
+const FETCH_TIMEOUT_MS = 10000;
 
 // Deduplicate concurrent in-flight requests
 let inFlightRequest: Promise<IpInfo | null> | null = null;

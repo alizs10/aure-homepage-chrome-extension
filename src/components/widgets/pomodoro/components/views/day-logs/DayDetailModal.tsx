@@ -7,16 +7,17 @@ import CircularProgressBar, {
 } from "@/components/ui/CircularProgressBar";
 import { format } from "date-fns";
 import type { DayLog } from "../../../types";
+import { isColor } from "@/features/wallpapers";
 import { useWallpaperBackground } from "@/hooks/useWallpaperBackground";
 import { useTheme } from "@/hooks/useTheme";
 import { useSettingsStore } from "@/stores";
 import { accentOptions } from "@/types";
-import { toPng } from "html-to-image";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "@/stores/useToastStore";
 import Button from "@/components/ui/Button";
 import { ScanSquareIcon } from "lucide-react";
 import { cn } from "@/lib/util";
+import { captureElementToPng } from "@/lib/dom-screenshot";
 
 interface DayDetailModalProps {
   open: boolean;
@@ -36,14 +37,14 @@ export default function DayDetailModal({
   const isDark = resolvedTheme === "dark";
   const { settings } = useSettingsStore();
 
-  const captureRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const [isCapturing, setIsCapturing] = useState(false);
 
   const [year, month, dayNum] = day.dateKey.split("-").map(Number);
   const dateObj = new Date(year, month - 1, dayNum);
   const fullDate = format(dateObj, "MMM d, yyyy");
 
-  // Accent and Theme Colors (safe for html-to-image without currentColor / CSS variable loss)
+  // Accent and Theme Colors (safe for capture without currentColor / CSS variable loss)
   const currentAccent =
     accentOptions.find((opt) => opt.id === settings?.accent) ||
     accentOptions[0];
@@ -126,98 +127,27 @@ export default function DayDetailModal({
   const totalFocusTime = focusTime;
 
   const handleCapture = async () => {
-    if (!captureRef.current) return;
-
-    setIsCapturing(true);
-
-    // Wait for React to render the capture state (hiding buttons, showing watermark)
-    await new Promise((resolve) => setTimeout(resolve, 150));
-
-    // 🌟 Fix for html-to-image: Inline live computed colors for all SVG strokes and fills
-    // so that html-to-image never defaults currentColor or CSS variables to black in the SVG foreignObject
-    const svgElements =
-      captureRef.current.querySelectorAll<SVGElement>("circle, path, rect");
-    const originalStyles: Array<{
-      el: SVGElement;
-      stroke: string | null;
-      strokeStyle: string;
-      fill: string | null;
-      fillStyle: string;
-    }> = [];
-
-    svgElements.forEach((el) => {
-      const computed = window.getComputedStyle(el);
-      originalStyles.push({
-        el,
-        stroke: el.getAttribute("stroke"),
-        strokeStyle: el.style.stroke,
-        fill: el.getAttribute("fill"),
-        fillStyle: el.style.fill,
-      });
-
-      const currentStroke = el.getAttribute("stroke");
-      if (currentStroke && currentStroke !== "none") {
-        const resolved =
-          currentStroke === "currentColor"
-            ? computed.color || computed.stroke
-            : computed.stroke && computed.stroke !== "none"
-              ? computed.stroke
-              : currentStroke;
-        if (resolved && resolved !== "none" && resolved !== "currentColor") {
-          el.setAttribute("stroke", resolved);
-          el.style.stroke = resolved;
-        }
-      }
-
-      const currentFill = el.getAttribute("fill");
-      if (
-        currentFill &&
-        currentFill !== "none" &&
-        currentFill !== "transparent"
-      ) {
-        const resolvedFill =
-          currentFill === "currentColor" ? computed.color : computed.fill;
-        if (
-          resolvedFill &&
-          resolvedFill !== "none" &&
-          resolvedFill !== "currentColor"
-        ) {
-          el.setAttribute("fill", resolvedFill);
-          el.style.fill = resolvedFill;
-        }
-      }
-    });
-
+    if (!modalRef.current) return;
     try {
-      const dataUrl = await toPng(captureRef.current, {
-        cacheBust: true,
-        pixelRatio: 2, // Crisp retina quality
-      });
+      setIsCapturing(true);
+      // Wait for React to render the capture state (hide buttons)
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // Create a temporary link to download the image
+      const dataUrl = await captureElementToPng(modalRef.current);
+
       const link = document.createElement("a");
-      // ⬇️ Add current time to the filename (e.g., focus-summary-2026-10-10_14-30-05.png)
       const timeString = format(new Date(), "HH-mm-ss");
       link.download = `focus-summary-${day.dateKey}_${timeString}.png`;
-
       link.href = dataUrl;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
 
       toast.success("Screenshot saved!");
     } catch (err) {
       console.error("Screenshot failed", err);
-      toast.error("Failed to generate screenshot");
+      toast.error("Failed to capture screenshot");
     } finally {
-      // Restore original SVG attributes and styles
-      originalStyles.forEach(({ el, stroke, strokeStyle, fill, fillStyle }) => {
-        if (stroke !== null) el.setAttribute("stroke", stroke);
-        else el.removeAttribute("stroke");
-        el.style.stroke = strokeStyle;
-
-        if (fill !== null) el.setAttribute("fill", fill);
-        else el.removeAttribute("fill");
-        el.style.fill = fillStyle;
-      });
       setIsCapturing(false);
     }
   };
@@ -226,27 +156,35 @@ export default function DayDetailModal({
     <ModalWrapper open={open} onClose={onClose}>
       {/* 1. Outer Shell: Handles shadows and rounded corners without clipping them */}
       <div
-        ref={captureRef}
+        ref={modalRef}
         data-accent={settings?.accent || "default"}
         className={cn(
-          "w-full max-w-4/5 sm:max-w-md max-h-[80vh] flex flex-col relative overflow-y-scroll scrollbar-none",
+          "w-full max-w-4/5 sm:max-w-md max-h-[80vh] flex flex-col relative overflow-y-scroll scrollbar-none bg-background",
           isDark ? "dark" : "",
-          isCapturing ? "" : "liquid-glass rounded-3xl",
+          isCapturing ? "" : "rounded-3xl",
         )}
       >
+        {/* Solid base to prevent transparent edge bleed */}
+        <div className="absolute z-0 inset-0 bg-background" />
+
+        {/* Blurred wallpaper background */}
         <div
-          style={{ backgroundImage: `url(${background})` }}
-          className={cn("absolute z-0 inset-0 bg-cover bg-center blur-xs")}
+          style={
+            isColor(background)
+              ? { backgroundColor: background }
+              : { backgroundImage: `url(${background})` }
+          }
+          className={cn(
+            "absolute z-0 inset-0 bg-cover bg-center",
+            isColor(background) ? "" : "blur-sm",
+          )}
         />
-        <div className={cn("absolute z-0 inset-0 bg-background/50")} />
+
+        {/* Dark overlay with inset vignette to absorb Gaussian blur edge-feathering */}
+        <div className="absolute z-0 inset-0 bg-background/50" />
 
         {/* 2. Clipping Layer: Handles overflow and hides the blurred edges */}
-        <div
-          className={cn(
-            "relative flex-1 overflow-hidden flex flex-col",
-            // isCapturing ? "" : "rounded-3xl"
-          )}
-        >
+        <div className="relative flex-1 overflow-hidden flex flex-col">
           {/* 3. Scrollable Content Layer */}
           <div className="relative z-10 flex-1 overflow-y-auto scrollbar-none flex flex-col p-5 gap-5">
             <ModalHeader
@@ -256,29 +194,31 @@ export default function DayDetailModal({
             />
 
             <div className="w-full flex flex-col items-center gap-3 py-1">
-              <div className="relative flex flex-col items-center justify-center rounded-full size-56 liquid-glass bg-background/70">
+              <div className="relative flex items-center justify-center rounded-full size-56 liquid-glass bg-background/70">
                 <CircularProgressBar
                   size={200}
                   strokeWidth={10}
                   gap={4}
                   segments={segments}
                   showTrack={false}
-                  className="absolute inset-3"
-                />
-                <BetterTypography
-                  variant="2xl"
-                  weight="bold"
-                  className="text-primary tabular-nums leading-tight"
                 >
-                  {formatDuration(totalFocusTime)}
-                </BetterTypography>
+                  <BetterTypography
+                    as="div"
+                    variant="2xl"
+                    weight="bold"
+                    className="text-primary tabular-nums leading-tight m-0 text-center"
+                  >
+                    {formatDuration(totalFocusTime)}
+                  </BetterTypography>
 
-                <BetterTypography
-                  variant="xs"
-                  className="text-muted-foreground"
-                >
-                  Total focus time
-                </BetterTypography>
+                  <BetterTypography
+                    as="div"
+                    variant="xs"
+                    className="text-muted-foreground m-0 text-center"
+                  >
+                    Total focus time
+                  </BetterTypography>
+                </CircularProgressBar>
               </div>
 
               {/* Session type breakdown indicators */}

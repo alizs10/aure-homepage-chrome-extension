@@ -1,19 +1,17 @@
 {
-  "latestVersion": "0.2.0",
+  "latestVersion": "0.3.0",
   "minimumSupportedVersion": "0.0.1",
-  "releaseDate": "2026-11-15",
-  "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.2.0/aure-homepage-chrome-v0.2.0.zip",
-  "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.2.0",
+  "releaseDate": "2026-11-27",
+  "downloadUrl": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/download/v0.3.0/aure-homepage-chrome-v0.3.0.zip",
+  "releasePage": "https://github.com/alizs10/aure-homepage-chrome-extension/releases/tag/v0.3.0",
   "notes": [
-    "Search Engine Selection: Choose your preferred default search engine from Google, DuckDuckGo, Brave, Bing, Yandex, Gerdoo, or ChatGPT in the new Search settings tab.",
-    "Quick Engine Commands: Type @ or @<engine> (e.g., @chatgpt, @brave) in the search bar to search on any provider on the fly with live suggestions.",
-    "Search Behavior: Added an option to open search queries and results in a new tab.",
-    "Bookmark Behavior: Added an option to open bookmarks, favorites, and folder sites in a new tab.",
-    "Bookmarks Settings: Bookmarks settings are now more organized, making it simpler to manage your shortcuts, folders, and display options.",
-    "Pomodoro Daily Summary: View a circular progress ring separating your focus, short break, and long break times in your daily summary.",
-    "Countdown Start Dates: Set an optional start date for countdowns to accurately track progress across your timeline, with smarter recurrence validation for repeat intervals.",
-    "Network Status: Prioritized clean IPv4 address detection in the network status widget to prevent overly long IPv6 strings.",
-    "Firefox Smoothness: Refined bookmark and shortcut animations to make the hover experience feel much smoother in Firefox.",
-    "Notes & Tasks Text Wrapping: Fixed an issue where long unbroken text or continuous words in checklist items and advanced notes would overflow outside the card instead of wrapping properly."
+    "Site Routines: Group up to 5 websites into a single Routine shortcut and open them all together in one click.",
+    "Existing Website Picker: Quickly reuse saved favorites, folder sites, routines, or top sites when adding bookmarks without retyping URLs.",
+    "Redesigned Setup Wizard: Enjoy a new welcome screen with instant backup restore, real-time live appearance previews, and dedicated search and privacy steps.",
+    "Solid Color Background Presets: Choose from 8 accent-tuned solid color backgrounds with automatic light and dark mode variants.",
+    "Live Ping Latency Badge: See your real-time connection latency (in ms) directly inside the Network Status header widget.",
+    "Smarter Search Suggestions: View your 5 most recent history visits on an empty search bar, with best-match ranking as you type.",
+    "Refined Clear Glass & Search Icons: Enjoy cleaner clear glass surfaces across light and dark modes, plus crisp icons for all supported search engines.",
+    "Pomodoro & Widget Fixes: Improved Firefox completion notifications, prevented duplicate timer alerts, fixed the exported Daily Summary image across Chrome and Firefox, and polished countdown rings."
   ]
 }

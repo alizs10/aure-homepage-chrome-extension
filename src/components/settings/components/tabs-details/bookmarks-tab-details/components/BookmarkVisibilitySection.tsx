@@ -10,6 +10,7 @@ interface FormValues {
   show_top_sites: boolean;
   show_favorites: boolean;
   show_folders: boolean;
+  show_routines: boolean;
 }
 
 export default function BookmarkVisibilitySection() {
@@ -25,6 +26,7 @@ export default function BookmarkVisibilitySection() {
       show_top_sites: settings?.show_top_sites ?? true,
       show_favorites: settings?.show_favorites ?? true,
       show_folders: settings?.show_folders ?? true,
+      show_routines: settings?.show_routines ?? true,
     },
   });
 
@@ -33,6 +35,7 @@ export default function BookmarkVisibilitySection() {
       show_top_sites: settings?.show_top_sites ?? true,
       show_favorites: settings?.show_favorites ?? true,
       show_folders: settings?.show_folders ?? true,
+      show_routines: settings?.show_routines ?? true,
     });
   }, [settings, reset]);
 
@@ -96,6 +99,22 @@ export default function BookmarkVisibilitySection() {
               leftLabel={
                 <BetterTypography variant="sm" weight="medium">
                   Show folders?
+                </BetterTypography>
+              }
+            />
+          )}
+        />
+
+        <Controller
+          name="show_routines"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <Toggle
+              checked={value}
+              onCheckedChange={onChange}
+              leftLabel={
+                <BetterTypography variant="sm" weight="medium">
+                  Show routines?
                 </BetterTypography>
               }
             />

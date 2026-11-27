@@ -1,14 +1,33 @@
-import type { Theme } from "@/types";
-import { useMemo } from "react";
+import type { Accent, BlurSize, SearchEngineId, Theme } from "@/types";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { BetterTypography } from "../common/BetterTypography";
-import { ChooseTheme } from "./components/ChooseTheme";
-import { ChooseWallpaper } from "./components/ChooseWallpaper";
-import { EnterName } from "./components/EnterName";
-import { WizardNavigation } from "./components/WizardNavigation";
-import { STEPS } from "./constants/steps";
 import type { WizardFormValues } from "./validation/wizard-schema";
+import { EnterName } from "./components/EnterName";
+import { FullPreferencesStep } from "./components/FullPreferencesStep";
+import { ChooseSearchEngine } from "./components/ChooseSearchEngine";
+import { PrivacyAndPermissions } from "./components/PrivacyAndPermissions";
 
+export interface WizardContentProps {
+    currentStep: number;
+    register: UseFormRegister<WizardFormValues>;
+    errors: FieldErrors<WizardFormValues>;
+    theme: Theme;
+    wallpaper: string;
+    wallpaperBrightness: string;
+    wallpaperBlur: string;
+    accent: Accent;
+    blur: BlurSize;
+    searchEngine: SearchEngineId | string;
+    enableIpChecker: boolean;
+    onThemeChange: (theme: Theme) => void;
+    onWallpaperChange: (id: string) => void;
+    onBrightnessChange: (brightness: string) => void;
+    onWallpaperBlurChange: (blur: string) => void;
+    onAccentChange: (accent: Accent) => void;
+    onBlurChange: (blur: BlurSize) => void;
+    onSearchEngineChange: (engineId: SearchEngineId) => void;
+    onToggleIpChecker: (enabled: boolean) => void;
+    onNext: () => void;
+}
 
 export function WizardContent({
     currentStep,
@@ -16,54 +35,63 @@ export function WizardContent({
     errors,
     theme,
     wallpaper,
+    wallpaperBrightness,
+    wallpaperBlur,
+    accent,
+    blur,
+    searchEngine,
+    enableIpChecker,
     onThemeChange,
     onWallpaperChange,
+    onBrightnessChange,
+    onWallpaperBlurChange,
+    onAccentChange,
+    onBlurChange,
+    onSearchEngineChange,
+    onToggleIpChecker,
     onNext,
-    onPrev,
-}: {
-    currentStep: number;
-    register: UseFormRegister<WizardFormValues>;
-    errors: FieldErrors<WizardFormValues>;
-    theme: Theme;
-    wallpaper: string;
-    onThemeChange: (theme: Theme) => void;
-    onWallpaperChange: (id: string) => void;
-    onNext: () => void;
-    onPrev: () => void;
-}) {
-    const step = useMemo(() => {
-        return STEPS.find(s => s.id === currentStep);
-    }, [currentStep]);
-
-    return (
-        <div className="flex flex-col gap-y-4 col-span-1 lg:col-span-3 flex-1 rounded-3xl liquid-glass p-5 min-h-80 lg:min-h-100">
-            {step && (
-                <BetterTypography className="capitalize" variant="lg" weight="semibold">
-                    {`${step.id}. ${step.label}`}
-                </BetterTypography>
-            )}
-
-            {currentStep === 1 && (
-                <EnterName register={register} errors={errors} onNext={onNext} />
-            )}
-            {currentStep === 2 && (
-                <ChooseTheme
-                    value={theme}
-                    onChange={onThemeChange}
+}: WizardContentProps) {
+    switch (currentStep) {
+        case 1:
+            return (
+                <EnterName
+                    register={register}
+                    errors={errors}
+                    onNext={onNext}
                 />
-            )}
-            {currentStep === 3 && (
-                <ChooseWallpaper
-                    value={wallpaper}
-                    onChange={onWallpaperChange}
+            );
+        case 2:
+            return (
+                <FullPreferencesStep
+                    theme={theme}
+                    onThemeChange={onThemeChange}
+                    wallpaper={wallpaper}
+                    onWallpaperChange={onWallpaperChange}
+                    wallpaperBrightness={wallpaperBrightness}
+                    onWallpaperBrightnessChange={onBrightnessChange}
+                    wallpaperBlur={wallpaperBlur}
+                    onWallpaperBlurChange={onWallpaperBlurChange}
+                    accent={accent}
+                    onAccentChange={onAccentChange}
+                    blur={blur}
+                    onBlurChange={onBlurChange}
                 />
-            )}
-
-            <WizardNavigation
-                currentStep={currentStep}
-                onPrev={onPrev}
-                onNext={onNext}
-            />
-        </div>
-    );
+            );
+        case 3:
+            return (
+                <ChooseSearchEngine
+                    value={searchEngine}
+                    onChange={onSearchEngineChange}
+                />
+            );
+        case 4:
+            return (
+                <PrivacyAndPermissions
+                    enableIpChecker={enableIpChecker}
+                    onToggleIpChecker={onToggleIpChecker}
+                />
+            );
+        default:
+            return null;
+    }
 }
