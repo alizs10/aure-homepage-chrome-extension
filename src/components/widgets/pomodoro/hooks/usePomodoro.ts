@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { startPomodoroRefresh, stopPomodoroRefresh, usePomodoroStore } from '../store';
+import { acquirePomodoroRefresh, releasePomodoroRefresh, stopPomodoroRefresh, usePomodoroStore } from '../store';
 
 export function usePomodoro() {
     const store = usePomodoroStore();
@@ -14,11 +14,10 @@ export function usePomodoro() {
 
     useEffect(() => {
         if (store.status === 'running' || store.status === 'overtime') {
-            startPomodoroRefresh();
-        } else {
-            stopPomodoroRefresh();
+            acquirePomodoroRefresh();
+            return () => releasePomodoroRefresh();
         }
-        return () => stopPomodoroRefresh();
+        stopPomodoroRefresh();
     }, [store.status]);
 
     const formatTime = (ms: number) => {

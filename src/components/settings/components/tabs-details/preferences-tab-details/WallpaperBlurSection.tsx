@@ -3,9 +3,15 @@ import Button from "@/components/ui/Button";
 import { useSettingsStore } from "@/stores";
 import { wallpaperBlurOptions } from "@/types";
 
-export default function WallpaperBlurSection() {
+export default function WallpaperBlurSection({
+    value,
+    onChange,
+}: {
+    value?: string;
+    onChange?: (val: string) => void;
+} = {}) {
     const { settings, update } = useSettingsStore();
-    const selectedBlur = settings?.wallpaper_blur ?? "none";
+    const selectedBlur = value !== undefined ? value : (settings?.wallpaper_blur ?? "none");
 
     return (
         <div className="flex flex-col gap-y-2">
@@ -20,7 +26,8 @@ export default function WallpaperBlurSection() {
                         size="sm"
                         variant={selectedBlur === key ? "primary-active" : "primary"}
                         onClick={() => {
-                            update({ wallpaper_blur: key });
+                            if (onChange) onChange(key);
+                            else update({ wallpaper_blur: key });
                         }}
                     >
                         <BetterTypography variant="xs" weight="medium">

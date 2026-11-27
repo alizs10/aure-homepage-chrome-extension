@@ -12,9 +12,11 @@ import TextInput from '@/components/ui/TextInput'
 
 import { useFolders } from '../hooks/useFolders'
 import { websiteSchema, type WebsiteFormValues } from '../validation/website-schema'
+import { normalizeUrl } from '@/lib/url'
 import type { Folder, Website } from '../../../types'
 import EditWebsite from '../EditWebsite'
 import { OrderableList } from '../../../OrderableList'
+import ExistingWebsitesPicker from '../../ExistingWebsitesPicker'
 
 interface ManageFolderModalProps {
     open: boolean
@@ -38,10 +40,12 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
         register,
         handleSubmit,
         reset,
+        setFocus,
+        setValue,
         formState: { errors, isValid, isSubmitting, isDirty },
     } = useForm<WebsiteFormValues>({
         resolver: zodResolver(websiteSchema),
-        defaultValues: { title: '', url: 'https://' },
+        defaultValues: { title: '', url: '' },
         mode: 'onChange',
     })
 
@@ -52,7 +56,7 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
 
     const handleCancelEdit = () => {
         setEditingWebsiteId(null)
-        reset({ title: '', url: 'https://' })
+        reset({ title: '', url: '' })
     }
 
     const handleClose = () => {
@@ -60,18 +64,26 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
         onClose()
     }
 
+    const handleSiteSelect = (site: { title: string; url: string }) => {
+        setValue('title', site.title || site.url, { shouldValidate: true, shouldDirty: true });
+        setValue('url', site.url, { shouldValidate: true, shouldDirty: true });
+    };
+
     const onSubmit = async (data: WebsiteFormValues) => {
+        const payload = {
+            title: data.title,
+            url: normalizeUrl(data.url),
+        };
         if (editingWebsiteId && editingWebsite) {
-            await updateWebsiteInFolder(folder.id, editingWebsiteId, {
-                title: data.title,
-                url: data.url,
-            })
+            await updateWebsiteInFolder(folder.id, editingWebsiteId, payload)
             toast.success('Website updated!')
+            handleCancelEdit()
         } else {
-            await addWebsiteToFolder(folder.id, { title: data.title, url: data.url })
+            await addWebsiteToFolder(folder.id, payload)
             toast.success('Website added to folder!')
+            handleCancelEdit()
+            setTimeout(() => setFocus('url'), 50);
         }
-        handleCancelEdit()
     }
 
     return (
@@ -87,7 +99,7 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
                     <div className="flex flex-col gap-2">
                         <TextInput
                             {...register('url')}
-                            placeholder="Website URL..."
+                            placeholder="Website URL (e.g. localhost:3000 or https://...)"
                             className="px-3 py-1.5 text-sm"
                             error={errors.url?.message}
                         />
@@ -98,6 +110,18 @@ export default function ManageFolderModal({ open, onClose, folder }: ManageFolde
                             error={errors.title?.message}
                         />
                     </div>
+
+                    {!editingWebsiteId && (
+                        <ExistingWebsitesPicker
+                            onSelect={handleSiteSelect}
+                            excludeUrls={websites.map((w) => w.url)}
+                            excludeFolderId={folder.id}
+                            includeFavorites={true}
+                            includeFolders={true}
+                            includeRoutines={true}
+                            includeTopSites={true}
+                        />
+                    )}
 
                     <div className="flex gap-2">
                         {editingWebsiteId && (

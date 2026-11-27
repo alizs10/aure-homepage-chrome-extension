@@ -1,39 +1,50 @@
-
 import { BetterTypography } from "@/components/common/BetterTypography";
 import Button from "@/components/ui/Button";
-import { STEPS } from "../constants/steps";
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from "lucide-react";
+import { WizardStepper } from "./WizardStepper";
 
 export function WizardNavigation({
-    currentStep,
-    onPrev,
-    onNext,
+  currentStep,
+  isLastStep,
+  onPrev,
+  onNext,
 }: {
-    currentStep: number;
-    onPrev: () => void;
-    onNext: () => void;
+  currentStep: number;
+  isLastStep: boolean;
+  onPrev: () => void;
+  onNext: () => void;
 }) {
-    return (
-        <div className="flex justify-end mt-auto gap-x-1 items-end h-fit">
-            {currentStep !== 1 && (
-                <Button
-                    onClick={onPrev}
-                    variant="ghost"
-                    size="lg"
-                >
-                    <BetterTypography variant="sm" weight="medium">
-                        Prev
-                    </BetterTypography>
-                </Button>
-            )}
-            <Button
-                onClick={onNext}
-                variant="primary"
-                size="lg"
-            >
-                <BetterTypography variant="sm" weight="medium">
-                    {currentStep === STEPS.length ? "Finish" : "Next"}
-                </BetterTypography>
-            </Button>
-        </div>
-    );
+  return (
+    <div className="flex items-center justify-between w-full">
+      <Button
+        onClick={onPrev}
+        variant="ghost"
+        size="md"
+        leftIcon={<ArrowLeftIcon className="size-4" />}
+      >
+        <BetterTypography variant="sm" weight="medium">
+          Back
+        </BetterTypography>
+      </Button>
+
+      <WizardStepper currentStep={currentStep} />
+
+      <Button
+        onClick={onNext}
+        variant="primary-active"
+        size="md"
+        rightIcon={
+          isLastStep ? (
+            <CheckIcon className="size-4" />
+          ) : (
+            <ArrowRightIcon className="size-4" />
+          )
+        }
+      >
+        <BetterTypography variant="sm" weight="medium">
+          {isLastStep ? "Finish & Launch" : "Continue"}
+        </BetterTypography>
+      </Button>
+    </div>
+  );
 }

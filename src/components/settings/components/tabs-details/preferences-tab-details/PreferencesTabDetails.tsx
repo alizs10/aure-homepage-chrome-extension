@@ -9,7 +9,7 @@ import WallpaperBrightnessSection from "./WallpaperBrightnessSection"
 import WallpaperBlurSection from "./WallpaperBlurSection"
 
 export default function PreferencesTabDetails() {
-    const { update } = useSettingsStore()
+    const { settings, update } = useSettingsStore()
     const { resolvedTheme } = useTheme()
 
     return (
@@ -25,8 +25,9 @@ export default function PreferencesTabDetails() {
 
 
                 <ChooseTheme
-                    value={resolvedTheme}
+                    value={settings?.theme ?? resolvedTheme}
                     onChange={t => update({ theme: t })}
+                    wallpaper={settings?.wallpaper}
                 />
             </div>
 

@@ -1,6 +1,7 @@
 import BookmarkVisibilitySection from "./BookmarkVisibilitySection";
 import FavoritesContent from "./favorites/FavoritesContent";
 import FoldersContent from "./folders/FoldersContent";
+import RoutinesContent from "./routines/RoutinesContent";
 
 export default function BookmarksContent() {
   return (
@@ -8,6 +9,7 @@ export default function BookmarksContent() {
       <BookmarkVisibilitySection />
       <FavoritesContent />
       <FoldersContent />
+      <RoutinesContent />
     </div>
   );
 }

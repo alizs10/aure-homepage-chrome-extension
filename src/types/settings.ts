@@ -8,6 +8,11 @@ export type Theme = "dark" | "light" | "system";
 export type Wallpaper = {
   id: string;
   name: string;
+  description?: string;
+  variantNames?: {
+    light: string;
+    dark: string;
+  };
   variants: {
     light?: string;
     dark?: string;
@@ -83,7 +88,7 @@ export type WidgetPreferences = {
 export const accentOptions = [
   {
     id: "default",
-    label: "Default",
+    label: "Lavender",
     light: "hsl(249.2 75.8% 58.6%)",
     dark: "hsl(243.6 85.5% 66.7%)",
     foreground: { light: "hsl(0 0% 100%)", dark: "hsl(0 0% 100%)" },
@@ -188,6 +193,7 @@ export interface Settings {
   show_top_sites: boolean;
   show_favorites: boolean;
   show_folders: boolean;
+  show_routines?: boolean;
   enable_ip_checker?: boolean;
   search_engine?: SearchEngineId;
   open_search_in_new_tab?: boolean;

@@ -70,8 +70,13 @@ if (storageApi?.onChanged) {
 
 type SettingsStore = {
     settings: Settings | null;
+    preview: Partial<Settings> | null;
     loading: boolean;
+    isImporting: boolean;
 
+    setIsImporting: (isImporting: boolean) => void;
+    setPreview: (preview: Partial<Settings> | null) => void;
+    updatePreview: (updates: Partial<Settings>) => void;
     load: () => Promise<void>;
     save: (settings: Settings) => Promise<void>;
     update: (updates: Partial<Settings>) => Promise<void>;
@@ -80,7 +85,15 @@ type SettingsStore = {
 
 export const useSettingsStore = create<SettingsStore>((set, get) => ({
     settings: null,
+    preview: null,
     loading: true,
+    isImporting: false,
+
+    setIsImporting: (isImporting) => set({ isImporting }),
+    setPreview: (preview) => set({ preview }),
+    updatePreview: (updates) => set((state) => ({
+        preview: { ...(state.preview || {}), ...updates }
+    })),
 
     load: async () => {
         const settings = await storage.get<Settings>("settings");

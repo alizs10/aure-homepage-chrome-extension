@@ -1,11 +1,17 @@
 import { BetterTypography } from "@/components/common/BetterTypography";
 import Button from "@/components/ui/Button";
 import { useSettingsStore } from "@/stores";
-import { blurOptions } from "@/types";
+import { blurOptions, type BlurSize } from "@/types";
 
-export default function BlurSection() {
+export default function BlurSection({
+    value,
+    onChange,
+}: {
+    value?: BlurSize;
+    onChange?: (val: BlurSize) => void;
+} = {}) {
     const { settings, update } = useSettingsStore();
-    const selectedBlur = settings?.blur ?? 'md';
+    const selectedBlur = value !== undefined ? value : (settings?.blur ?? 'md');
 
     return (
         <div className="flex flex-col gap-y-2">
@@ -18,7 +24,8 @@ export default function BlurSection() {
                         size="sm"
                         variant={selectedBlur === key ? "primary-active" : "primary"}
                         onClick={() => {
-                            update({ blur: key });
+                            if (onChange) onChange(key);
+                            else update({ blur: key });
                         }}
                     >
                         <BetterTypography variant="xs" weight="medium">{label}</BetterTypography>

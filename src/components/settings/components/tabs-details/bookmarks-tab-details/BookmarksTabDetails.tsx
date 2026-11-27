@@ -9,7 +9,7 @@ export default function BookmarksTabDetails() {
       <div className="flex flex-col gap-y-2">
         <BetterTypography variant="sm" className="text-muted-foreground">
           Choose bookmark opening behavior and manage your homepage bookmarks,
-          favorite websites, and folders.
+          favorite websites, folders, and routines.
         </BetterTypography>
       </div>
 
