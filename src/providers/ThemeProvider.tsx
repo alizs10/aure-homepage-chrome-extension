@@ -8,7 +8,7 @@ export function ThemeProvider({
 }: {
     children: ReactNode;
 }) {
-    const theme = useSettingsStore((s) => s.settings?.theme) ?? "system";
+    const theme = useSettingsStore((s) => s.preview?.theme ?? s.settings?.theme) ?? "system";
     const update = useSettingsStore((s) => s.update);
     const loading = useSettingsStore((s) => s.loading);
 

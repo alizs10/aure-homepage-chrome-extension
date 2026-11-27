@@ -3,9 +3,15 @@ import Button from "@/components/ui/Button";
 import { useSettingsStore } from "@/stores";
 import { wallpaperBrightnessOptions } from "@/types";
 
-export default function WallpaperBrightnessSection() {
+export default function WallpaperBrightnessSection({
+    value,
+    onChange,
+}: {
+    value?: string;
+    onChange?: (val: string) => void;
+} = {}) {
     const { settings, update } = useSettingsStore();
-    const selectedBrightness = settings?.wallpaper_brightness ?? "100";
+    const selectedBrightness = value !== undefined ? value : (settings?.wallpaper_brightness ?? "100");
 
     return (
         <div className="flex flex-col gap-y-2">
@@ -20,7 +26,8 @@ export default function WallpaperBrightnessSection() {
                         size="sm"
                         variant={selectedBrightness === key ? "primary-active" : "primary"}
                         onClick={() => {
-                            update({ wallpaper_brightness: key });
+                            if (onChange) onChange(key);
+                            else update({ wallpaper_brightness: key });
                         }}
                     >
                         <BetterTypography variant="xs" weight="medium">

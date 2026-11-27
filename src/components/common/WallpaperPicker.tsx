@@ -8,6 +8,9 @@ import AddWallpaperModal from "@/components/settings/components/tabs-details/pre
 import { DEFAULT_WALLPAPERS, SOLID_COLOR_WALLPAPERS, useWallpaperStore } from "@/features/wallpapers";
 import { cn } from "@/lib/util";
 
+export const SETTINGS_WALLPAPER_GRID_COLS =
+    "grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 p-1";
+
 export interface WallpaperPickerProps {
     value?: string;
     onSelect: (wallpaperId: string) => void;
@@ -56,7 +59,7 @@ export default function WallpaperPicker({
             {/* --- Photos / Wallpapers Section --- */}
             <div className="flex flex-col gap-y-2">
                 {headerAction ? (
-                    <div className="flex-center-between">
+                    <div className="flex-center-between px-1">
                         <BetterTypography as="h3" variant="md" weight="medium">
                             Wallpapers
                         </BetterTypography>
@@ -71,15 +74,15 @@ export default function WallpaperPicker({
                         </Button>
                     </div>
                 ) : (
-                    <BetterTypography as="h4" variant="sm" weight="medium" className="text-muted-foreground">
+                    <BetterTypography as="h4" variant="sm" weight="medium" className="text-muted-foreground px-1">
                         Wallpapers
                     </BetterTypography>
                 )}
 
                 <div
                     className={cn(
-                        "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4",
-                        gridClassName
+                        "grid",
+                        gridClassName || SETTINGS_WALLPAPER_GRID_COLS
                     )}
                 >
                     {allWallpapers.map((wp) => (
@@ -112,14 +115,14 @@ export default function WallpaperPicker({
 
             {/* --- Solid Colors Section --- */}
             <div className="flex flex-col gap-y-2">
-                <BetterTypography as="h4" variant="sm" weight="medium" className="text-muted-foreground">
+                <BetterTypography as="h4" variant="sm" weight="medium" className="text-muted-foreground px-1">
                     Solid Colors
                 </BetterTypography>
 
                 <div
                     className={cn(
-                        "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4",
-                        gridClassName
+                        "grid",
+                        gridClassName || SETTINGS_WALLPAPER_GRID_COLS
                     )}
                 >
                     {SOLID_COLOR_WALLPAPERS.map((wp) => (

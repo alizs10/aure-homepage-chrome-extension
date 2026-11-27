@@ -14,7 +14,7 @@
 
     /* Specular Shine (Light theme): Wide, high-luminance physical highlights */
     --liquid-glass-shine-start: rgba(255, 255, 255, 0.68);
-    --liquid-glass-shine-mid: rgba(255, 255, 255, 0.20);
+    --liquid-glass-shine-mid: rgba(255, 255, 255, 0.2);
     --liquid-glass-shine-bounce-start: rgba(255, 255, 255, 0.45);
     --liquid-glass-shine-bounce-mid: rgba(255, 255, 255, 0.12);
 
@@ -25,7 +25,7 @@
 }
 
 .dark {
-    --liquid-glass-highlight: rgba(255, 255, 255, 0.20);
+    --liquid-glass-highlight: rgba(255, 255, 255, 0.2);
     --liquid-glass-shadow: rgba(255, 255, 255, 0.2);
 
     /* Deeper dark body for sleek contrast in dark theme */
@@ -38,7 +38,7 @@
     --liquid-glass-shine-bounce-start: rgba(255, 255, 255, 0.07);
     --liquid-glass-shine-bounce-mid: rgba(255, 255, 255, 0.015);
 
-    --liquid-glass-shine-sm-start: rgba(255, 255, 255, 0.10);
+    --liquid-glass-shine-sm-start: rgba(255, 255, 255, 0.1);
     --liquid-glass-shine-sm-mid: rgba(255, 255, 255, 0.02);
     --liquid-glass-shine-sm-bounce-start: rgba(255, 255, 255, 0.05);
     --liquid-glass-shine-sm-bounce-mid: rgba(255, 255, 255, 0.01);
@@ -60,7 +60,7 @@
         linear-gradient(
             135deg,
             var(--liquid-glass-shine-start, rgba(255, 255, 255, 0.68)) 0%,
-            var(--liquid-glass-shine-mid, rgba(255, 255, 255, 0.20)) 42%,
+            var(--liquid-glass-shine-mid, rgba(255, 255, 255, 0.2)) 42%,
             transparent 82%
         ),
         linear-gradient(
@@ -107,8 +107,10 @@
         ),
         linear-gradient(
             315deg,
-            var(--liquid-glass-shine-sm-bounce-start, rgba(255, 255, 255, 0.36)) 0%,
-            var(--liquid-glass-shine-sm-bounce-mid, rgba(255, 255, 255, 0.08)) 38%,
+            var(--liquid-glass-shine-sm-bounce-start, rgba(255, 255, 255, 0.36))
+                0%,
+            var(--liquid-glass-shine-sm-bounce-mid, rgba(255, 255, 255, 0.08))
+                38%,
             transparent 75%
         );
     background-attachment: scroll, scroll;

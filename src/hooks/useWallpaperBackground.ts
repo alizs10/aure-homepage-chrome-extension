@@ -9,7 +9,7 @@ import darkBackground from "../assets/background/default-dark.webp";
 export function useWallpaperBackground() {
     const { resolvedTheme } = useTheme();
     const settingsLoading = useSettingsStore((s) => s.loading);
-    const wallpaperId = useSettingsStore((s) => s.settings?.wallpaper);
+    const wallpaperId = useSettingsStore((s) => s.preview?.wallpaper ?? s.settings?.wallpaper);
     const customWallpapers = useWallpaperStore((s) => s.customWallpapers);
     const fetchWallpapers = useWallpaperStore((s) => s.fetchWallpapers);
 

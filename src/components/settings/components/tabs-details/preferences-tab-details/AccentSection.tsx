@@ -2,11 +2,17 @@ import { BetterTypography } from "@/components/common/BetterTypography";
 import Button from "@/components/ui/Button";
 import { useTheme } from "@/hooks/useTheme";
 import { useSettingsStore } from "@/stores";
-import { accentOptions } from "@/types";
+import { accentOptions, type Accent } from "@/types";
 
-export default function AccentSection() {
+export default function AccentSection({
+    value,
+    onChange,
+}: {
+    value?: Accent;
+    onChange?: (val: Accent) => void;
+} = {}) {
     const { settings, update } = useSettingsStore();
-    const selectedAccent = settings?.accent ?? 'default';
+    const selectedAccent = value !== undefined ? value : (settings?.accent ?? 'default');
     const { resolvedTheme: theme } = useTheme();
 
     return (
@@ -22,7 +28,8 @@ export default function AccentSection() {
                         size="sm"
                         variant={selectedAccent === id ? "primary-active" : "primary"}
                         onClick={() => {
-                            update({ accent: id });
+                            if (onChange) onChange(id);
+                            else update({ accent: id });
                         }}
                         leftIcon={
                             <div

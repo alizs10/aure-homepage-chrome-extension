@@ -1,15 +1,31 @@
 import { BetterTypography } from "@/components/common/BetterTypography";
-import Button from "@/components/ui/Button";
+import Button, { type ButtonVariant } from "@/components/ui/Button";
 import { exportUserData, importUserData } from "@/lib/backup";
 import { useSettingsStore } from "@/stores";
 import { DownloadIcon, UploadIcon, Loader2, CheckCircle2, XCircle } from "lucide-react";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
 type ImportStatus = 'idle' | 'loading' | 'success' | 'error';
 
-export default function DataBackup() {
+export default function DataBackup({
+    showExport = true,
+    triggerOnly = false,
+    importLabel = "Import Data",
+    importButtonVariant,
+    importButtonSize = "sm",
+    importButtonClassName,
+    importLabelWeight,
+}: {
+    showExport?: boolean;
+    triggerOnly?: boolean;
+    importLabel?: string;
+    importButtonVariant?: ButtonVariant;
+    importButtonSize?: "sm" | "md";
+    importButtonClassName?: string;
+    importLabelWeight?: "normal" | "medium" | "semibold" | "bold";
+} = {}) {
     const username = useSettingsStore(s => s.settings?.name)
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [importStatus, setImportStatus] = useState<ImportStatus>('idle');
@@ -23,16 +39,17 @@ export default function DataBackup() {
         }
     };
 
-    const handleImportClick = () => {
+    const handleImportClick = useCallback(() => {
         if (importStatus === 'idle') {
             fileInputRef.current?.click();
         }
-    };
+    }, [importStatus]);
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        useSettingsStore.getState().setIsImporting(true);
         setImportStatus('loading');
         setErrorMessage("");
 
@@ -147,7 +164,10 @@ export default function DataBackup() {
                                 </div>
                                 <Button
                                     variant="primary"
-                                    onClick={() => setImportStatus('idle')}
+                                    onClick={() => {
+                                        useSettingsStore.getState().setIsImporting(false);
+                                        setImportStatus('idle');
+                                    }}
                                     className="w-full"
                                 >
                                     Try Again
@@ -161,51 +181,74 @@ export default function DataBackup() {
         document.body
     ) : null;
 
+    const importButton = (
+        <Button
+            leftIcon={importStatus === 'loading' ? <Loader2 className="size-4 animate-spin" /> : <UploadIcon className="size-4" />}
+            variant={importButtonVariant ?? (showExport ? "primary" : "primary-active")}
+            onClick={handleImportClick}
+            size={importButtonSize}
+            disabled={importStatus === 'loading'}
+            className={importButtonClassName}
+        >
+            <BetterTypography variant="sm" weight={importLabelWeight}>
+                {importStatus === 'loading' ? "Importing..." : importLabel}
+            </BetterTypography>
+        </Button>
+    );
+
+    const fileInput = (
+        <input
+            type="file"
+            accept=".json,application/json"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+        />
+    );
+
+    if (triggerOnly) {
+        return (
+            <>
+                {overlayContent}
+                {importButton}
+                {fileInput}
+            </>
+        );
+    }
+
     return (
         <div className="flex flex-col gap-2 md:gap-4">
             {overlayContent}
 
             <div className="space-y-1">
                 <BetterTypography variant="md" weight="semibold">
-                    Backup & Restore
+                    {showExport ? "Backup & Restore" : "Restore from Backup"}
                 </BetterTypography>
 
                 <BetterTypography variant="sm" className="text-muted-foreground">
-                    Export your settings, widgets, and data to a file, or restore from a previous backup.
+                    {showExport
+                        ? "Export your settings, widgets, and data to a file, or restore from a previous backup."
+                        : "Have an existing backup file? Restore your settings, widgets, and preferences instantly."}
                 </BetterTypography>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-1 md:gap-3">
-                <Button
-                    leftIcon={<DownloadIcon className="size-4" />}
-                    variant="primary"
-                    onClick={handleExport}
-                    size="sm"
-                    disabled={importStatus === 'loading'}
-                >
-                    <BetterTypography variant="sm">Export Data</BetterTypography>
-                </Button>
+                {showExport && (
+                    <Button
+                        leftIcon={<DownloadIcon className="size-4" />}
+                        variant="primary"
+                        onClick={handleExport}
+                        size="sm"
+                        disabled={importStatus === 'loading'}
+                    >
+                        <BetterTypography variant="sm">Export Data</BetterTypography>
+                    </Button>
+                )}
 
-                <Button
-                    leftIcon={importStatus === 'loading' ? <Loader2 className="size-4 animate-spin" /> : <UploadIcon className="size-4" />}
-                    variant="primary"
-                    onClick={handleImportClick}
-                    size="sm"
-                    disabled={importStatus === 'loading'}
-                >
-                    <BetterTypography variant="sm">
-                        {importStatus === 'loading' ? "Importing..." : "Import Data"}
-                    </BetterTypography>
-                </Button>
+                {importButton}
             </div>
 
-            <input
-                type="file"
-                accept=".json,application/json"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-            />
+            {fileInput}
         </div>
     );
 }

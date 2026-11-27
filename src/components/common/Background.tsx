@@ -12,8 +12,8 @@ export default function Background() {
     const status = useImage(isColorBg ? "" : (background ?? ""));
     const isLoaded = isColorBg ? true : status === "loaded";
 
-    const wallpaperBlur = useSettingsStore((s) => s.settings?.wallpaper_blur ?? (isFirefox ? "xs" : "none"));
-    const wallpaperBrightness = useSettingsStore((s) => s.settings?.wallpaper_brightness ?? "100");
+    const wallpaperBlur = useSettingsStore((s) => s.preview?.wallpaper_blur ?? s.settings?.wallpaper_blur ?? (isFirefox ? "xs" : "none"));
+    const wallpaperBrightness = useSettingsStore((s) => s.preview?.wallpaper_brightness ?? s.settings?.wallpaper_brightness ?? "100");
 
     const blurOption = wallpaperBlurOptions.find((opt) => opt.key === wallpaperBlur);
     const brightnessOption = wallpaperBrightnessOptions.find((opt) => opt.key === wallpaperBrightness);
