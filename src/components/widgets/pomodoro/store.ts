@@ -126,16 +126,33 @@ function playCompletionSound() {
 // 🌟 Helper: Browser Notification (Delegated to Background Service Worker)
 export function showCompletionNotification(
     title: string,
-    body: string
+    body: string,
+    sessionEndTime?: number
 ) {
+    const createFallbackNotification = async () => {
+        try {
+            if (typeof browser !== 'undefined' && browser.notifications?.create) {
+                await browser.notifications.create(`aure-pomodoro-complete-${Date.now()}`, {
+                    type: 'basic',
+                    iconUrl: browser.runtime.getURL('icon-128.png'),
+                    title,
+                    message: body,
+                });
+            }
+        } catch {
+            // Silently ignore if notifications API is unavailable
+        }
+    };
+
     try {
         if (typeof browser !== 'undefined' && browser.runtime?.sendMessage) {
             browser.runtime.sendMessage({
                 type: 'POMODORO_COMPLETE',
                 title,
                 body,
+                sessionEndTime,
             }).catch(() => {
-                // Silently ignore if worker is inactive
+                void createFallbackNotification();
             });
             return;
         }
@@ -145,9 +162,10 @@ export function showCompletionNotification(
                 type: 'POMODORO_COMPLETE',
                 title,
                 body,
+                sessionEndTime,
             }, () => {
                 if (chrome.runtime.lastError) {
-                    // Silently ignore if worker is inactive
+                    void createFallbackNotification();
                 }
             });
         }
@@ -157,7 +175,7 @@ export function showCompletionNotification(
 }
 
 // 🌟 Helper: Trigger both alerts based on settings
-function triggerCompletionAlerts(session: PomodoroSession) {
+function triggerCompletionAlerts(session: PomodoroSession, sessionEndTime?: number) {
     const state = usePomodoroStore.getState();
     const sessionLabel = session === 'focus' ? 'Focus' : session === 'short-break' ? 'Short Break' : 'Long Break';
 
@@ -170,22 +188,39 @@ function triggerCompletionAlerts(session: PomodoroSession) {
         const nextLabel = nextSession === 'focus' ? 'Focus' : nextSession === 'short-break' ? 'Short Break' : 'Long Break';
         showCompletionNotification(
             `${sessionLabel} Complete!`,
-            `Time for your ${nextLabel.toLowerCase()}.`
+            `Time for your ${nextLabel.toLowerCase()}.`,
+            sessionEndTime
         );
     }
 }
 
 // 🌟 Helper: Schedule background alarm for when tab is closed
-async function setPomodoroAlarm(remaining: number, session: PomodoroSession, cyclePosition: number, longBreakInterval: number) {
+async function setPomodoroAlarm(
+    sessionEndTime: number,
+    session: PomodoroSession,
+    cyclePosition: number,
+    longBreakInterval: number,
+    notificationsEnabled: boolean
+) {
+    if (!notificationsEnabled) {
+        clearPomodoroAlarm();
+        return;
+    }
+
     try {
-        const endTime = Date.now() + remaining;
-        const context = { session, cyclePosition, longBreakInterval };
+        const context = {
+            session,
+            cyclePosition,
+            longBreakInterval,
+            notifications: notificationsEnabled,
+            sessionEndTime,
+        };
 
         if (typeof browser !== 'undefined' && browser.runtime?.sendMessage && browser.storage?.local) {
             await browser.storage.local.set({ pomodoroAlarmContext: context });
             browser.runtime.sendMessage({
                 type: 'SET_POMODORO_ALARM',
-                endTime
+                endTime: sessionEndTime
             }).catch(() => {});
             return;
         }
@@ -197,7 +232,7 @@ async function setPomodoroAlarm(remaining: number, session: PomodoroSession, cyc
 
             chrome.runtime.sendMessage({
                 type: 'SET_POMODORO_ALARM',
-                endTime
+                endTime: sessionEndTime
             }, () => {
                 if (chrome.runtime.lastError) {
                     // Silently ignore if worker is inactive
@@ -270,7 +305,10 @@ export const usePomodoroStore = create<PomodoroState>((set, get) => ({
         });
 
         const globalSettings = await waitForSettings();
-        const settings = globalSettings?.widgetPreferences?.pomodoro || DEFAULT_POMODORO_SETTINGS;
+        const settings: PomodoroSettings = {
+            ...DEFAULT_POMODORO_SETTINGS,
+            ...globalSettings?.widgetPreferences?.pomodoro,
+        };
 
         const saved = await PomodoroActiveStateRepository.get();
         const tasks = await PomodoroTasksRepository.getAll();
@@ -371,19 +409,20 @@ export const usePomodoroStore = create<PomodoroState>((set, get) => ({
     start: async () => {
         localCompletionClaimed = false; // 🌟 Reset claim
         const state = get();
+        const startedAt = Date.now();
         let cycleStartedAt = state.cycleStartedAt;
         if (!cycleStartedAt && state.session === 'focus' && state.cyclePosition === 1) {
-            cycleStartedAt = Date.now();
+            cycleStartedAt = startedAt;
         }
         set({
-            status: 'running', startedAt: Date.now(), remaining: state.duration,
-            cycleStartedAt, overtimeStartedAt: null, updatedAt: Date.now(),
+            status: 'running', startedAt, remaining: state.duration,
+            cycleStartedAt, overtimeStartedAt: null, updatedAt: startedAt,
             ownerTabId: TAB_ID // 🌟 Track owner
         });
         await PomodoroActiveStateRepository.save(getPersistableState(get()));
         broadcastState(); // 🌟 Sync
 
-        await setPomodoroAlarm(state.duration, state.session, state.cyclePosition, state.settings.longBreakInterval);
+        await setPomodoroAlarm(startedAt + state.duration, state.session, state.cyclePosition, state.settings.longBreakInterval, state.settings.notifications);
     },
     pause: async () => {
         clearPomodoroAlarm();
@@ -400,7 +439,7 @@ export const usePomodoroStore = create<PomodoroState>((set, get) => ({
 
         await PomodoroActiveStateRepository.save(getPersistableState(get()));
         broadcastState(); // 🌟 Sync
-        await setPomodoroAlarm(state.remaining, state.session, state.cyclePosition, state.settings.longBreakInterval);
+        await setPomodoroAlarm(newStartedAt + state.duration, state.session, state.cyclePosition, state.settings.longBreakInterval, state.settings.notifications);
     },
 
     reset: async () => {
@@ -569,6 +608,19 @@ async function transitionToNextSession() {
 }
 
 let refreshInterval: number | null = null;
+let refreshConsumers = 0;
+
+export function acquirePomodoroRefresh() {
+    refreshConsumers += 1;
+    startPomodoroRefresh();
+}
+
+export function releasePomodoroRefresh() {
+    refreshConsumers = Math.max(0, refreshConsumers - 1);
+    if (refreshConsumers === 0) {
+        stopPomodoroRefresh();
+    }
+}
 
 export function startPomodoroRefresh() {
     if (refreshInterval) return;
@@ -594,8 +646,9 @@ export function startPomodoroRefresh() {
                     pomodoroChannel.postMessage({ type: 'COMPLETION_CLAIM', tabId: TAB_ID });
                 }
 
+                const sessionEndTime = state.startedAt + state.duration;
                 clearPomodoroAlarm();
-                triggerCompletionAlerts(state.session);
+                triggerCompletionAlerts(state.session, sessionEndTime);
                 enterOvertime();
             } else if (remaining > 0) {
                 usePomodoroStore.setState({ remaining });
@@ -617,7 +670,7 @@ function enterOvertime() {
 }
 
 export function stopPomodoroRefresh() {
-
+    refreshConsumers = 0;
     if (refreshInterval) {
         clearInterval(refreshInterval);
         refreshInterval = null;
