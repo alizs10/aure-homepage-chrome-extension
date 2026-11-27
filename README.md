@@ -57,7 +57,7 @@ Aure Homepage replaces your browser's default new tab with a clean, fast, and pr
 * Wallpaper support
 * Curated special backgrounds
 * Adjustable background blur
-* Liquid Glass interface
+* Clear Glass interface
 * Configurable widgets
 
 ### Updates
