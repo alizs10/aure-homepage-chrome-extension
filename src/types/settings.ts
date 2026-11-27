@@ -193,6 +193,7 @@ export interface Settings {
   show_top_sites: boolean;
   show_favorites: boolean;
   show_folders: boolean;
+  show_routines?: boolean;
   enable_ip_checker?: boolean;
   search_engine?: SearchEngineId;
   open_search_in_new_tab?: boolean;

@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { BetterTypography } from '@/components/common/BetterTypography';
 import Button from '@/components/ui/Button';
 import ModalHeader from '@/components/ui/modal/ModalHeader';
 import ModalWrapper from '@/components/ui/modal/ModalWrapper';
 import TextInput from '@/components/ui/TextInput';
-import { getTopSites, type TopSite } from '@/lib/browser/top-sites';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from '@/stores/useToastStore';
 import { useFavorites } from '../hooks/useFavorites';
 import { favoriteSchema, type FavoriteFormValues } from '../validation/favorite-schema';
+import { normalizeUrl } from '@/lib/url';
+import ExistingWebsitesPicker from '../../ExistingWebsitesPicker';
 
 interface FavoriteModalProps {
     open: boolean;
@@ -23,16 +24,9 @@ interface FavoriteModalProps {
 }
 
 export default function FavoriteModal({ open, onClose, favorite_id, init_value }: FavoriteModalProps) {
+    const { data: favorites, addItem, updateItem } = useFavorites();
 
-    const [topSites, setTopSites] = useState<TopSite[]>([]);
-
-    useEffect(() => {
-        getTopSites().then(setTopSites);
-    }, []);
-
-    const { data: favorites, addItem, updateItem } = useFavorites()
-
-    const editing = Boolean(favorite_id)
+    const editing = Boolean(favorite_id);
 
     const {
         register,
@@ -44,45 +38,45 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
         resolver: zodResolver(favoriteSchema),
         defaultValues: {
             title: init_value?.title ?? "",
-            url: init_value?.url ?? "https://",
+            url: init_value?.url ?? "",
         },
         mode: 'onChange',
     });
 
     useEffect(() => {
         if (open && !editing) {
-            reset({ title: '', url: "https://" });
+            reset({ title: '', url: "" });
         }
     }, [open, reset, editing]);
 
     const onSubmit = async (data: FavoriteFormValues) => {
+        const payload = {
+            ...data,
+            url: normalizeUrl(data.url),
+        };
+
         if (editing && favorite_id) {
-            updateItem({ ...data, id: favorite_id })
-            onClose()
-            toast.success("Favorite updated!")
-            return
+            updateItem({ ...payload, id: favorite_id });
+            onClose();
+            toast.success("Favorite updated!");
+            return;
         }
 
         if (favorites.length >= 15) {
-            toast.info("Favorite limit reached. Maximum 15 favorites allowed.")
-            onClose()
-            return
+            toast.info("Favorite limit reached. Maximum 15 favorites allowed.");
+            onClose();
+            return;
         }
 
-        addItem(data)
-        onClose()
-        toast.success("New favorite added!")
+        addItem(payload);
+        onClose();
+        toast.success("New favorite added!");
     };
 
-    // 👇 Handle clicking a top site to fill the form
-    function handleTopSiteClick(site: TopSite) {
-        // shouldDirty: true ensures the "Add Favorite" button becomes enabled
-        // shouldValidate: true triggers immediate validation feedback
+    const handleSiteSelect = (site: { title: string; url: string }) => {
         setValue('title', site.title || site.url, { shouldValidate: true, shouldDirty: true });
         setValue('url', site.url, { shouldValidate: true, shouldDirty: true });
-    }
-
-
+    };
 
     return (
         <ModalWrapper open={open} onClose={onClose}>
@@ -98,7 +92,7 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
                     <TextInput
                         {...register('url')}
                         autoFocus
-                        placeholder="Your url..."
+                        placeholder="Website URL (e.g. localhost:3000 or https://...)"
                         className="px-4 py-1 text-sm placeholder:text-sm"
                         error={errors.url?.message}
                     />
@@ -109,34 +103,16 @@ export default function FavoriteModal({ open, onClose, favorite_id, init_value }
                         error={errors.title?.message}
                     />
 
-                    {/* 👇 Top Sites Selection UI */}
-                    {topSites.length > 0 && !editing && (
-                        <div className="flex flex-col gap-2 pt-2 /50">
-                            <BetterTypography
-                                variant="xs"
-                                className="text-muted-foreground"
-                            >
-                                Or choose from your Top Sites
-                            </BetterTypography>
-                            <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto scrollbar-none px-1">
-                                {topSites.map((site) => (
-                                    <button
-                                        key={site.url}
-                                        type="button" // Prevents accidental form submission
-                                        onClick={() => handleTopSiteClick(site)}
-                                        className="rounded-3xl app_shadow bg-background hover:bg-secondary transition-colors px-3 py-1.5 rounded-full flex items-center gap-2 group col-span-1"
-                                    >
-
-                                        <BetterTypography
-                                            variant="xs"
-                                            className="text-nowrap line-clamp-1 group-hover:text-primary transition-colors text-ellipsis"
-                                        >
-                                            {site.title || site.url}
-                                        </BetterTypography>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                    {/* 👇 Pick from Existing Bookmarks & Top Sites */}
+                    {!editing && (
+                        <ExistingWebsitesPicker
+                            onSelect={handleSiteSelect}
+                            excludeUrls={favorites.map((f) => f.url)}
+                            includeFavorites={false}
+                            includeFolders={true}
+                            includeRoutines={true}
+                            includeTopSites={true}
+                        />
                     )}
 
                     <Button

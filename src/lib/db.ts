@@ -1,4 +1,4 @@
-import type { Favorite, Folder } from '@/features/bookmarks';
+import type { Favorite, Folder, Routine } from '@/features/bookmarks';
 import type {
     CalendarNote,
     Counter,
@@ -22,6 +22,7 @@ export class NewTabDB extends Dexie {
     notes!: Table<NoteAndChecklist, number>;
     favorites!: Table<Favorite, number>;
     folders!: Table<Folder, number>;
+    routines!: Table<Routine, number>;
     pomodoroHistory!: Table<PomodoroHistoryEntry, number>;
     pomodoroTasks!: Table<PomodoroTask, number>;
     pomodoroActiveState!: Table<PomodoroActiveState, string>;
@@ -51,6 +52,10 @@ export class NewTabDB extends Dexie {
 
         this.version(15).stores({
             cachedFavicons: 'domain, updatedAt',
+        });
+
+        this.version(16).stores({
+            routines: 'id',
         });
     }
 }

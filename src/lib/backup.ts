@@ -3,7 +3,7 @@ import { storage } from "@/lib/storage";
 import { STORAGE_KEYS } from "@/constants/storage_keys";
 
 // ✅ Import types for strict casting during import
-import type { Favorite, Folder } from '@/features/bookmarks';
+import type { Favorite, Folder, Routine } from '@/features/bookmarks';
 import type {
     CalendarNote,
     Counter,
@@ -40,7 +40,7 @@ async function clearAllData() {
     await db.transaction('rw',
         [
             db.wallpapers, db.moods, db.pets, db.calendar,
-            db.notes, db.favorites, db.folders, db.counters,
+            db.notes, db.favorites, db.folders, db.routines, db.counters,
             db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState,
             db.progresses, db.progressLabels
         ],
@@ -52,6 +52,7 @@ async function clearAllData() {
             await db.notes.clear();
             await db.favorites.clear();
             await db.folders.clear();
+            await db.routines.clear();
             await db.pomodoroHistory.clear();
             await db.pomodoroTasks.clear();
             await db.pomodoroActiveState.clear();
@@ -70,6 +71,7 @@ export async function exportUserData(username?: string) {
     const notes = await db.notes.toArray();
     const favorites = await db.favorites.toArray();
     const folders = await db.folders.toArray();
+    const routines = await db.routines.toArray();
     const counters = await db.counters.toArray();
     const progresses = await db.progresses.toArray();
     const progressLabels = await db.progressLabels.toArray();
@@ -88,7 +90,7 @@ export async function exportUserData(username?: string) {
             appVersion: import.meta.env.VITE_APP_VERSION,
         },
         indexedDB: {
-            wallpapers, moods, pets, calendar, notes, favorites, folders, counters, progresses, progressLabels,
+            wallpapers, moods, pets, calendar, notes, favorites, folders, routines, counters, progresses, progressLabels,
             pomodoroHistory, pomodoroTasks, pomodoroActiveState
         },
         chromeStorage,
@@ -145,7 +147,7 @@ export async function importUserData(file: File) {
     }
 
     const expectedTables = [
-        'wallpapers', 'moods', 'pets', 'calendar', 'notes', 'favorites', 'folders',
+        'wallpapers', 'moods', 'pets', 'calendar', 'notes', 'favorites', 'folders', 'routines',
         'pomodoroHistory', 'pomodoroTasks', 'pomodoroActiveState', 'counters', 'progresses', 'progressLabels'
     ];
 
@@ -171,7 +173,7 @@ export async function importUserData(file: File) {
     await db.transaction('rw',
         [
             db.wallpapers, db.moods, db.pets, db.calendar,
-            db.notes, db.favorites, db.folders, db.counters,
+            db.notes, db.favorites, db.folders, db.routines, db.counters,
             db.pomodoroHistory, db.pomodoroTasks, db.pomodoroActiveState,
             db.progresses, db.progressLabels
         ],
@@ -190,6 +192,8 @@ export async function importUserData(file: File) {
                 await db.favorites.bulkPut(dbData.favorites as Favorite[]);
             if (Array.isArray(dbData.folders) && dbData.folders.length)
                 await db.folders.bulkPut(dbData.folders as Folder[]);
+            if (Array.isArray(dbData.routines) && dbData.routines.length)
+                await db.routines.bulkPut(dbData.routines as Routine[]);
             if (Array.isArray(dbData.counters) && dbData.counters.length)
                 await db.counters.bulkPut(dbData.counters as Counter[]);
             if (Array.isArray(dbData.pomodoroHistory) && dbData.pomodoroHistory.length)
